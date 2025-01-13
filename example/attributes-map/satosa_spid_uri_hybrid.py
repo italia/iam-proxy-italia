@@ -12,7 +12,7 @@ LDAPGVAT_UCL_DIR_PILOT = UCL_DIR_PILOT
 LDAPGVAT_X500ATTR_OID = X500ATTR_OID
 NETSCAPE_LDAP = "urn:oid:2.16.840.1.113730.3.1."
 NOREDUPERSON_OID = "urn:oid:1.3.6.1.4.1.2428.90.1."
-PKCS_9 = "urn:oid:1.2.840.113549.1.9.1."
+PKCS_9 = "urn:oid:1.2.840.113549.1.9."
 SCHAC = "urn:oid:1.3.6.1.4.1.25178.1.2."
 SIS = "urn:oid:1.2.752.194.10.2."
 UMICH = "urn:oid:1.3.6.1.4.1.250.1.57."
@@ -108,7 +108,7 @@ _MAP = {
     OPENOSI_OID + "107": "osiOtherEmail",
     OPENOSI_OID + "109": "osiOtherHomePhone",
     OPENOSI_OID + "120": "osiWorkURL",
-    PKCS_9 + "1": "mail",
+    PKCS_9 + "1": "email",
     SCHAC + "1": "schacMotherTongue",
     SCHAC + "2": "schacGender",
     SCHAC + "3": "schacDateOfBirth",
