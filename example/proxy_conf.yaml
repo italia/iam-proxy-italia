@@ -50,39 +50,39 @@ LOGGING:
     syslog:
       format: "[SATOSA] [%(name)s] [%(levelname)s]: %(message)s"
   handlers:
-    spid_daily:
-      class: logging.handlers.TimedRotatingFileHandler
-      level: INFO
-      formatter: simple
-      filename: logs/spid.log
-      when: D
-      interval: 1
-      backupCount: 860
-    syslog:
-      class: logging.handlers.SysLogHandler
-      level: INFO
-      formatter: syslog
     console:
       class: logging.StreamHandler
       level: DEBUG
       formatter: simple
       stream: ext://sys.stdout
-    saml2_debug_file:
-      class: logging.handlers.RotatingFileHandler
-      level: DEBUG
-      formatter: simple
-      filename: logs/saml2_debug.log
-      maxBytes: 104857600 # 100MB
-      backupCount: 20
-      encoding: utf8
-    oidcop_debug_file:
-      class: logging.handlers.RotatingFileHandler
-      level: DEBUG
-      formatter: simple
-      filename: logs/oidcop_debug.log
-      maxBytes: 104857600 # 100MB
-      backupCount: 20
-      encoding: utf8
+    #spid_daily:
+    #  class: logging.handlers.TimedRotatingFileHandler
+    #  level: INFO
+    #  formatter: simple
+    #  filename: logs/spid.log
+    #  when: D
+    #  interval: 1
+    #  backupCount: 860
+    #syslog:
+    #  class: logging.handlers.SysLogHandler
+    #  level: INFO
+    #  formatter: syslog
+    #  saml2_debug_file:
+    #  class: logging.handlers.RotatingFileHandler
+    #  level: DEBUG
+    #  formatter: simple
+    #  filename: logs/saml2_debug.log
+    #  maxBytes: 104857600 # 100MB
+    #  backupCount: 20
+    #  encoding: utf8
+    #oidcop_debug_file:
+    #  class: logging.handlers.RotatingFileHandler
+    #  level: DEBUG
+    #  formatter: simple
+    #  filename: logs/oidcop_debug.log
+    #  maxBytes: 104857600 # 100MB
+    #  backupCount: 20
+    #  encoding: utf8
   loggers:
     satosa:
       level: INFO
