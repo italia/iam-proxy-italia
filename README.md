@@ -1,7 +1,7 @@
-# Satosa-Saml2Spid
+# IAM Proxy Italia
 
-A SAML2/OIDC IAM Proxy based on [SATOSA](https://github.com/IdentityPython/SATOSA)
-for **SAML-to-SAML**, **OIDC-to-SAML** and **SAML-to-Wallet** interoperability
+IAM Proxy Italia is the SAML2/OIDC IAM Proxy based on [SATOSA](https://github.com/IdentityPython/SATOSA)
+for **SAML-to-SAML**, **OIDC-to-SAML**, **SAML-to-Wallet** and **OIDC-to-Wallet** interoperability
 with the  **Italian Digital Identity Systems**.
 
 ## Table of Contents
@@ -15,24 +15,22 @@ with the  **Italian Digital Identity Systems**.
 7. [Author](#authors)
 8. [Credits](#credits)
 
-
 ## Glossary
 
-- **Frontend**, SAML2 Identity Provider, OpenID Connect Provider.
-- **Backend**, SAML2 Service Provider, OpenID Connect Relying Party, Wallet Relying Party.
+- **Frontend**, SAML2 Identity Provider and or OpenID Connect Provider.
+- **Backend**, SAML2 Service Provider, OpenID Connect Relying Party and or Wallet Relying Party.
 - **TargetRouting**, a SATOSA microservice for selecting the output backend to reach the endpoint (IdP) selected by the user.
-- **Discovery Service**, interface that allows users to select the authentication endpoint.
-
+- **Discovery Service**, interface that allows users to select the authentication endpoint (which backend to use).
 
 ## General features
 
 Backends:
 
 - SPID SP
-- CIE SP
+- CIE id SP
 - FICEP SP (eIDAS 1.0)
 - SAML2 SP
-- EUDI Wallet (eIDAS 2.0, experimental and not intended for production use)
+- EUDI Wallet (eIDAS 2.0, experimental)
 
 Frontends:
 
@@ -44,9 +42,10 @@ with Metadata, Authn Requests and Responses.
 
 ## Introduction
 
-Satosa-Saml2 Spid is an intermediate between many SAML2/OIDC 
-Service Providers and many SAML2 Identity Providers.
-It allows traditional Saml2 Service Providers to communicate with
+IAM Proxy Italia is an intermediate between many SAML2/OIDC 
+Service Providers and many SAML2/OIDC Identity Providers or Wallet authentication sytems based on OpenID4VP.
+
+It allows traditional Saml2 Service Providers, or OIDC RP or OAuth2 Clients to communicate with
 **Spid**, **CIE** and **eIDAS** Identity Providers adapting Metadata and AuthnRequest operations.
 
 <img src="gallery/spid_proxy.png" width="256">
@@ -88,14 +87,13 @@ For the setup of this project, the following dependency must be installed in you
 
 ### Setup
 
-If you want to deploy Satosa-Saml2SPID without using Docker, all the setup instructions for your Satosa-Saml2spid configuration are available in [README-SETUP.md](README-Setup.md).
+If you want to deploy IAM Proxy Italia without using Docker, all the setup instructions for your configuration are available in [README-SETUP.md](README-Setup.md).
 
 ### Docker Compose
 
 This project uses Docker, all the instructions to configure this project using the official docker images are available [here](Docker-compose/README.md).
 
-The docker compose uses the enviroment variables as documented [here](README-Setup.md#configuration-by-environment-variables) 
-to configure Satosa-Saml2Spid.
+The docker compose uses the enviroment variables as documented [here](README-Setup.md#configuration-by-environment-variables).
 
 <img src="gallery/docker-design.svg" width="512">
 
@@ -105,7 +103,7 @@ to configure Satosa-Saml2Spid.
 This project provides an example SAML2 Service Provider for demo purposes, 
 this Service Provider is executed by default in the Docker Compose.
 
-For any further detail about its configuration, see [example_sp/djangosaml2_sp/README.md](example_sp/djangosaml2_sp/README.md).
+For any further detail about the configuration, see [example_sp/djangosaml2_sp/README.md](example_sp/djangosaml2_sp/README.md).
 
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
@@ -121,7 +119,7 @@ Below an example using a djangosaml2 Service Provider:
 https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
 ```
 
-If you're going to test Satosa-Saml2Spid with spid-sp-test, take a look to
+If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
 [.github/workflows/python-app.yml](.github/workflows/python-app.yml).
 
 If you are using this project as a testing tool or playground for [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) or any other of its Python dependencies, take a look [here](README-Python-Dev.md)
@@ -133,7 +131,7 @@ Additional information can be found [here](README-DEV.md).
 Here something that you should know before start.
 
 - You must enable more than a single IdP (multiple metadata or single metadata with multiple entities) to get *Discovery Service* working.
-- Proxy doesn't handle SAML2 SLO, so the spidSaml2 backend is configured with Authnforce -> True. For any further information see [Single Logout in Satosa](https://github.com/IdentityPython/SATOSA/issues/211).
+- [To be updated, SATOSA now supports SLO] Proxy doesn't handle SAML2 SLO, so the spidSaml2 backend is configured with Authnforce -> True. For any further information see [Single Logout in Satosa](https://github.com/IdentityPython/SATOSA/issues/211).
 - SATOSA Saml2 backend configuration has a **policy** section that will let us to define specialized behaviours
   and configuration for each SP (each by entityid). In this example I defined a single "default" behaviour with attributes **name_format**
   to **urn:oasis:names:tc:SAML:2.0:attrname-format:uri**, due to my needs to handle many service providers for which it could be painfull do a static definition each time.
@@ -173,12 +171,14 @@ Here something that you should know before start.
 
 - Giuseppe De Marco
 - Andrea Ranaldi and his Team @ ISPRA Ambiente
-- Stefano Colagreco @ CNR 
+
 
 ## Acknowledgments
 
 - Salvatore Laiso
 - Fulvio Scorza and his Team @ Università del Piemonte Orientale
 - Paolo Smiraglia (SPID certs)
+- Stefano Colagreco @ CNR
+- Elisa 
 - Identity Python Community (pySAML2 and SATOSA)
 - GARR IDEM Community
