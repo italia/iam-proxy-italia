@@ -1,7 +1,7 @@
 ## Nginx Virtual Host example
 
 NGINX is quick and light web server.
-Nginx is commonly used as frontend proxy for Satosa and his implementation Satosa-saml2spid.
+Nginx is commonly used as frontend proxy for Satosa and his implementation iam-proxy-italia.
 On follow some configuration examples.
 
 ### General information
@@ -52,7 +52,7 @@ server {
     location @satosa {
       include /etc/nginx/uwsgi_params;
       
-      uwsgi_pass satosa-saml2spid:10000;
+      uwsgi_pass iam-proxy-italia:10000;
       uwsgi_param Host $host;
       uwsgi_param X-Real-IP $remote_addr;
       uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -102,5 +102,5 @@ For docker instance the logs are sent to STDOUT and going in docker logs. This d
 
 ### Insights
 * For more details on satosa-nginx compose service read [satosa-nginx_compose doc](./satosa-nginx_compose.md)
-* For more details on Satosa-saml2spid docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
+* For more details on iam-proxy-italia docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
 * For more details on NGINX try_files directive read the [official docs](https://www.slingacademy.com/article/nginx-try_files-directive-explained-with-examples/)

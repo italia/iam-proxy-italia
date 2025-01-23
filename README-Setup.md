@@ -1,6 +1,6 @@
 # Setup
 
-In this section there are all the required information to install, configure and run Satosa-Saml2SPID.
+In this section there are all the required information to install, configure and run iam-proxy-italia.
 
 ### NGINX setup
 
@@ -24,7 +24,7 @@ sudo yum install -y python3-wheel python3-devel
 
 ###### Prepare environment
 
-Within the directory `/{your path}/Satosa-Saml2Spid` execute the following commands:
+Within the directory `/{your path}/iam-proxy-italia` execute the following commands:
 
 ```
 pip install --upgrade pip
@@ -34,7 +34,7 @@ mkdir satosa_proxy && cd satosa_proxy
 virtualenv -ppython3 satosa.env
 source satosa.env/bin/activate
 
-git clone https://github.com/italia/Satosa-Saml2Spid.git repository
+git clone https://github.com/italia/iam-proxy-italia.git repository
 cd repository
 pip install -r requirements.txt
 ```
@@ -64,7 +64,7 @@ Remember to:
 This project uses [SATOSA_oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) as OAuth2/OIDC frontend module.
 Comment/uncomment the following statement in the proxy_configuration to enable it.
 
-https://github.com/italia/Satosa-Saml2Spid/blob/oidcop/example/proxy_conf.yaml#L32
+https://github.com/italia/iam-proxy-italia/blob/oidcop/example/proxy_conf.yaml#L32
 
 ### Configuration by environment variables
 

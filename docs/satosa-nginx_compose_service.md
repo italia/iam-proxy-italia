@@ -1,7 +1,7 @@
 ## satosa-nginx Compose service
 
 This service run a container with the last version of [Docker official Alpine NGINX](https://hub.docker.com/_/nginx/) image. 
-This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to [satosa-saml2spid](./satosa-saml2spid_compose_service.md) containers and serve static file like the discovery page.
+This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to [iam-proxy-italia](./iam-proxy-italia_compose_service.md) containers and serve static file like the discovery page.
 
 ### Environments
 | Environment | from            | Default value | Description
@@ -46,9 +46,9 @@ For security are added these header key
 * `X-XSS-Protection "1; mode=block"` prevents some categories of XSS attacks
 * `X-Robots-Tag none` crawler are not welcome
 
-`location @satosa` contain all information to send and get data from satosa-saml2spid uWSGI server.
-The default configuration set `satosa-saml2spid:1000` as reverse uWSGI proxy destination.
-This permits to balance the connection with multiple satosa-saml2spid instance.
+`location @satosa` contain all information to send and get data from iam-proxy-italia uWSGI server.
+The default configuration set `iam-proxy-italia:10000` as reverse uWSGI proxy destination.
+This permits to balance the connection with multiple iam-proxy-italia instance.
 
 Satosa Virtual Host use the `try_files` directive to send the request on the proxy.
 The proxy test if the request is sended to a existent file. If the file not exists send the request to @satosa location. On detail:
@@ -58,5 +58,5 @@ The proxy test if the request is sended to a existent file. If the file not exis
 
 ### Insights
 * For more details and example on NGINX satosa virtual host read [satosa-vitual-host doc](./satosa-virtual-host.md)
-* For more details on Satosa-saml2spid docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
+* For more details on iam-proxy-italia docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
 

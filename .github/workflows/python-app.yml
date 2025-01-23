@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Satosa-Saml2Spid
+name: iam-proxy-italia
 
 on:
   push:
@@ -54,14 +54,14 @@ jobs:
         cat Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
     - name: Inspect Satosa status
       run: |
-        docker container inspect satosa-saml2spid
-        docker container logs satosa-saml2spid 
+        docker container inspect iam-proxy-italia
+        docker container logs iam-proxy-italia 
     - name: Copy Satosa IDP Metadata to djangosaml2 SP
       run: |
-        wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/satosa-saml2spid.xml
+        wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
     - name: Inspect Satosa IDP Metadata
       run: |
-        cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/satosa-saml2spid.xml
+        cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
     - name: spid-sp-test SPID metadata, requests and responses
       run: |
         cd Docker-compose/satosa-project
