@@ -19,7 +19,7 @@ services:
     ports:
       - '27017-27019:27017-27019'
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
 
   satosa-mongo-express:
     profiles:
@@ -39,7 +39,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@satosa-mongo:27017/
       TZ: "${TZ:-Europe/Rome}"
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
 
   django_sp:
     profiles:
@@ -58,17 +58,17 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
 
-  satosa-saml2spid:
-    image: ghcr.io/italia/satosa-saml2spid:latest
-    #image: satosa-saml2spid:latest
+  iam-proxy-italia:
+    image: ghcr.io/italia/iam-proxy-italia:latest
+    #image: iam-proxy-italia:latest
     #build: 
     #    context: ../      
     #    args: 
     #        - NODE_ENV=local        
     #    dockerfile: Dockerfile
-    container_name: satosa-saml2spid
+    container_name: iam-proxy-italia
     # depends_on:
     #  - satosa-mongo
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
@@ -122,11 +122,11 @@ services:
       - "10000:10000"
     volumes:
       - ./satosa-project:/satosa_proxy:rwx
-      # - satosadata:/satosa_proxy # to be used for external volumes
+      # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
     healthcheck:
       test: wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate || exit 1
       interval: 30s
@@ -138,7 +138,7 @@ services:
     image: nginx:alpine
     container_name: satosa-nginx
     depends_on:
-      - satosa-saml2spid
+      - iam-proxy-italia
     ports:
       - "443:443"
     volumes:
@@ -147,7 +147,7 @@ services:
       - ./nginx/certs:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
     environment:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
@@ -161,22 +161,22 @@ services:
     ports:
       - "8443:8443"
     networks:
-      - satosa-saml2spid
+      - iam-proxy-italia
 networks:
-  satosa-saml2spid:
-    name: satosa-saml2spid
+  iam-proxy-italia:
+    name: iam-proxy-italia
 
 ## External volumes 
 # volumes:
 #   mongodata:
-#     name: satosa-saml2spid_mongodata
+#     name: iam-proxy-italia_mongodata
 #     external: true
 #   nginx_certs:
-#     name: satosa-saml2spid_nginx_certs
+#     name: iam-proxy-italia_nginx_certs
 #     external: true
-#   satosadata:
-#     name: satosa-data
+#   iam-proxy-italia:
+#     name: iam-proxy-italia-data
 #     external: true
 #   static:
-#     name: satosa-static
+#     name: iam-proxy-italia-static
 #     external: true

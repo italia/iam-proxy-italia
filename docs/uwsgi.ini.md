@@ -1,6 +1,6 @@
 ## uWSGI configuration example
 
-Satosa proxy and his istance Satosa-saml2spid are served by uWSGY. NGINX work as HTTP <-> uWSGI proxy to one or more Satosa-saml2spid istance.
+Satosa proxy and his istance iam-proxy-italia are served by uWSGY. NGINX work as HTTP <-> uWSGI proxy to one or more iam-proxy-italia istance.
 
 General information on uWSGI ini configuration:
 
@@ -22,18 +22,18 @@ On follow we present some uWSGI configuration example for various situations.
 
 ### local instance with logrotate on localhost
 #### important note:
-* The project is located in `%(base)/%(project)` where `/opt` is `base` and `satosa-saml2spid` is `project`
+* The project is located in `%(base)/%(project)` where `/opt` is `base` and `iam-proxy-italia` is `project`
 * uWSGI server is runned with user: 'satosa' and group `satosa`. You can change this with the key `uid` and `gid`
-* the VirtualEnv path is `%(base)/%(project)/env` or `/opt/satosa-saml2spid/env`
-* Log are saved at `/var/log/uwsgi/%(project).log` or `/var/log/uwsgi/satosa-saml2spid.log`
-* pid are saved at `/var/log/uwsgi/%(project).pid` or `/var/log/uwsgi/satosa-saml2spid.pid`
-* the configuration is reloaded when change the date of `%(base)/%(project)/proxy_conf.yaml` or `/opt/satosa-saml2spid/proxy_conf.yaml`
+* the VirtualEnv path is `%(base)/%(project)/env` or `/opt/iam-proxy-italia/env`
+* Log are saved at `/var/log/uwsgi/%(project).log` or `/var/log/uwsgi/iam-proxy-italia.log`
+* pid are saved at `/var/log/uwsgi/%(project).pid` or `/var/log/uwsgi/iam-proxy-italia.pid`
+* the configuration is reloaded when change the date of `%(base)/%(project)/proxy_conf.yaml` or `/opt/iam-proxy-italia/proxy_conf.yaml`
 * uwsgi server listen at 127.0.0.1:3002, only for local host! 
 
 #### uwsgi.ini
 ```ini
 [uwsgi]                
-project     = satosa-saml2spid                                                                 
+project     = iam-proxy-italia                                                                
 base        = /opt
                                                
 chdir       = %(base)/%(project)
@@ -81,19 +81,19 @@ touch-reload    = %(base)/%(project)/proxy_conf.yaml
 
 ### local instance on socket
 #### important note
-* The project is located in `%(base)/%(project)` where `/opt` is `base` and `satosa-saml2spid` is `project`
+* The project is located in `%(base)/%(project)` where `/opt` is `base` and `iam-proxy-italia` is `project`
 * uWSGI server is runned with user: 'satosa' and group `satosa`. You can change this with the key `uid` and `gid`
-* the VirtualEnv path is `%(base)/%(project)/env` or `/opt/satosa-saml2spid/env`
-* Log are saved at `/var/log/uwsgi/%(project).log` or `/var/log/uwsgi/satosa-saml2spid.log`
-* pid are saved at `/var/log/uwsgi/%(project).pid` or `/var/log/uwsgi/satosa-saml2spid.pid`
-* the configuration is reloaded when change the date of `%(base)/%(project)/proxy_conf.yaml` or `/opt/satosa-saml2spid/proxy_conf.yaml`
-* uwsgi server listen in `/opt/satosa-saml2spid/tmp/sockets/satosa.sock`
+* the VirtualEnv path is `%(base)/%(project)/env` or `/opt/iam-proxy-italia/env`
+* Log are saved at `/var/log/uwsgi/%(project).log` or `/var/log/uwsgi/iam-proxy-italia.log`
+* pid are saved at `/var/log/uwsgi/%(project).pid` or `/var/log/uwsgi/iam-proxy-italia.pid`
+* the configuration is reloaded when change the date of `%(base)/%(project)/proxy_conf.yaml` or `/opt/iam-proxy-italia/proxy_conf.yaml`
+* uwsgi server listen in `/opt/iam-proxy-italia/tmp/sockets/satosa.sock`
 
 
 #### uwsgi.ini
 ```ini
 [uwsgi]
-project     = satosa-saml2
+project     = iam-proxy-italia
 base        = /opt
 
 chdir       = %(base)/%(project)
@@ -157,12 +157,12 @@ stats-http      = True
 #### uwsgi.ini
 ```
 [uwsgi]
-project     = satosa-saml2spid
+project     = iam-proxy-italia
 
 chdir       = /satosa_proxy
 
-uid         = root
-gid         = root
+uid         = satosa
+gid         = satosa
 
 socket      = 0.0.0.0:10000
 master      = true

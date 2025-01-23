@@ -6,7 +6,7 @@ The instructions below are intended to be a suggestion or a guideline rather tha
 
 ## Step 0: Identify which Python dependency requires development
 
-We assume that the developer needs to develop a modified version of the library [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) which is a dependency of the container `satosa-saml2spid`.
+We assume that the developer needs to develop a modified version of the library [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) which is a dependency of the container `iam-proxy-italia`.
 A local copy of the library is required.
 We assume that the project eudi-wallet-it-python has been cloned in the folder `/home/username/my/development/folder/eudi-wallet-it-python/pyeudiw`. The path prefix `/home/username/my/development/folder/` is an example and should be replaced here with the location of your own development package.
 
@@ -16,7 +16,7 @@ Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the
 
 ## Step 2: Update the docker volume by binding the local development directory
 
-In the file [docker-compose.yml](Docker-example/docker-compose.yml), among the volumes of the container `satosa-saml2spid`, add the entry
+In the file [docker-compose.yml](Docker-example/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
     
         volumes:
             - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
@@ -27,7 +27,7 @@ This will replace the installed dependency package with your own local code.
 
 ## Step 3: Run the container
 
-Launch the script [run-docker-compose.sh](Docker-compose/run-docker-compose.sh). This will launch the docker composition that includes the container `satosa-saml2spid`.
+Launch the script [run-docker-compose.sh](Docker-compose/run-docker-compose.sh). This will launch the docker composition that includes the container `iam-proxy-italia`.
 
 ## Step 4 (Optional): Install further dependencies in the container
 
@@ -36,16 +36,16 @@ Two different options are presented, based on your preferences or requirements.
 
 ### Option 4.1: Add the dependency to an existing container
 
-The following steps instructs on how to install a new pip dependency to an existing container. We will assume that the container has name `satosa-saml2spid`.
+The following steps instructs on how to install a new pip dependency to an existing container. We will assume that the container has name `iam-proxy-italia`.
 
-1. Enter in the container environment with `docker exec -it satosa-saml2spid bash`. Note that to perform the `docker exec` command, the container MUST be running.
+1. Enter in the container environment with `docker exec -it iam-proxy-italia bash`. Note that to perform the `docker exec` command, the container MUST be running.
 2. Execute the following commands to install you own dependencies; replace `new_package_name` with the new dependency
 
         source /.venv/bin/activate
         pip3 install new_package_name
 
 3. Exit from the container area with Docker escape control sequence, that is, `Ctrl+P` followed by `Ctrl+Q`.
-4. Freeze the changes with the command `docker container commit satosa-saml2spid`.
+4. Freeze the changes with the command `docker container commit iam-proxy-italia`.
 5. Stop and then restart the container.
 
 At the end of the procedure, you will find the required dependency as part of your container.
@@ -54,23 +54,23 @@ At the end of the procedure, you will find the required dependency as part of yo
 
 The following steps instruct on how to create a new image with the new required python dependency. This new image will be the base of the updated container.
 
-1. Stop the container `satosa-saml2spid` with the command `docker stop satosa-saml2spid`.
+1. Stop the container `iam-proxy-italia` with the command `docker stop iam-proxy-italia`.
 2. Create a new folder.
 3. Inside the new folder, create a Dockerfile with the following content, replacing `new_package_name` with the target package:
 
-        FROM ghcr.io/italia/satosa-saml2spid:latest
+        FROM ghcr.io/italia/iam-proxy-italia:latest
         RUN source /.venv/bin/activate && pip3 install new_package_name
 
-4. Build the new image: `docker build . -t satosa-saml2spid`.
-5. Modify docker-compose.yml to replace the old image reference with `satosa-saml2spid`.
+4. Build the new image: `docker build . -t iam-proxy-italia`.
+5. Modify docker-compose.yml to replace the old image reference with `iam-proxy-italia`.
 6. Re-run `docker compose up`.
 
 **NOTE:** if the image is already built locally, you can simply update the existing Dockerfile instead of creating a new one from scratch.
 
 ## Step 5 (Optional): Insert a breakpoint to check that your setting is working as intended
 
-1. Stop the container `docker stop satosa-saml2spid`.
+1. Stop the container `docker stop iam-proxy-italia`.
 2. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
-3. Start the container `docker start satosa-saml2spid`.
+3. Start the container `docker start iam-proxy-italia`.
 
-If everything worked as intended, the program execution should stop at the given `breakpoint()`. To further investigate the state of the program at the time it was stopped, you can use the command `docker attach statosa-saml2spid` in a new terminal.
+If everything worked as intended, the program execution should stop at the given `breakpoint()`. To further investigate the state of the program at the time it was stopped, you can use the command `docker attach iam-proxy-italia` in a new terminal.

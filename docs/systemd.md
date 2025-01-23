@@ -1,9 +1,9 @@
-## Start a local Satosa-saml2spid istance with a SystemD Service
+## Start a local iam-proxy-italia istance with a SystemD Service
 
 This example is project with these assumptions:
-* Satosa-saml2spid is installed in `/opt/satosa`
-* Satosa-saml2spid is executed from a Python VirtualENV sited in `/opt/satosa/env`
-* Satosa-saml2spid is executed from `satosa` user
+* iam-proxy-italia is installed in `/opt/satosa`
+* iam-proxy-italia is executed from a Python VirtualENV sited in `/opt/satosa/env`
+* iam-proxy-italia is executed from `satosa` user
 
 Create a new SystemD service with the command:
 ```
@@ -43,7 +43,7 @@ sudo systemctl enable satosa.service
 ```
 
 ### Satosa with socket
-If you want enable Satosa-saml2spid by socket  you should edit the service:
+If you want enable iam-proxy-italia by socket you should edit the service:
 ```
 sudo systemctl edit --full satosa.service
 ```

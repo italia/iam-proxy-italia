@@ -141,10 +141,10 @@ Here something that you should know before start.
 ## External references
 
 
-### Satosa-Saml2Spid tutorials
+### IAM-Proxy-Italia tutorials
 
 - [Corso-OIDC-in-IDEM-via-Proxy](https://github.com/IDEM-GARR-AAI/Corso-OIDC-in-IDEM-via-Proxy/)
-- [Satosa-Saml2Spid installation tutorial](https://github.com/aslbat/Satosa-SPID-Proxy).
+- [Setup Tutorial](https://github.com/aslbat/Satosa-SPID-Proxy).
 
 ### SATOSA Official Documentation
 
@@ -179,7 +179,7 @@ Here something that you should know before start.
 - Fulvio Scorza and his Team @ Università del Piemonte Orientale
 - Paolo Smiraglia (SPID certs)
 - Stefano Colagreco @ CNR
-- Elisa @ Trentino Digitale
+- Elisa Nicolussi Paolaz @ Trentino Digitale
 - Thomas Chiozzi @ Trentino Digitale
 - Identity Python Community (pySAML2 and SATOSA)
 - GARR IDEM Community

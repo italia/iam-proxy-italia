@@ -1,5 +1,5 @@
 [uwsgi]
-project     = satosa-saml2spid
+project     = iam-proxy-italia
 base        = /opt
 
 chdir       = /satosa_proxy

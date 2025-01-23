@@ -35,7 +35,7 @@ The script creates the directories for local mounts and copies all required file
 
 The result is represented by the following services:
 
-* Satosa-saml2spid is published with nginx frontend on https://localhost
+* iam-proxy-italia is published with nginx frontend on https://localhost
 * Mongo Espress is published on http://localhost:8081
 * Django SAML2 SP is published on https://localhost:8000
 * Spid-samlcheck is published on https://localhost:8443
@@ -48,7 +48,7 @@ Enter in `Docker-compose` directory and make required direcotries for local moun
 ```bash
 cd Docker-compose
 mkdir -p ./mongo/db          # DB Data directory
-mkdir -p ./satosa-project    # Satosa-saml2spid data istance
+mkdir -p ./satosa-project    # iam-proxy-italia data istance
 mkdir -p ./djangosaml2_sp    # Service provider directory
 mkdir -p ./nginx/html/static # static files for nginx
 ```
