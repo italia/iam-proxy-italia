@@ -172,13 +172,14 @@ Here something that you should know before start.
 - Giuseppe De Marco
 - Andrea Ranaldi and his Team @ ISPRA Ambiente
 
-
 ## Acknowledgments
 
-- Salvatore Laiso
+- Nicola Squartini @ Dipartimento per la trasformazione
+- Salvatore Laiso @ E&Y
 - Fulvio Scorza and his Team @ Università del Piemonte Orientale
 - Paolo Smiraglia (SPID certs)
 - Stefano Colagreco @ CNR
-- Elisa 
+- Elisa @ Trentino Digitale
+- Thomas Chiozzi @ Trentino Digitale
 - Identity Python Community (pySAML2 and SATOSA)
 - GARR IDEM Community
