@@ -51,7 +51,7 @@ function help {
   echo ""
   echo "### run-docker-compose.sh ###"
   echo ""
-  echo "initialize check update and start Satosa-Saml2Spid compose structure"
+  echo "initialize check update and start iam-proxy-italia compose structure"
   echo ""
   echo "Options"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
