@@ -1,6 +1,6 @@
 # this project still needs pplnx's forks
-git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.4.2
-git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.4.0
+git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.0
+git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.0
 
 # OpenID Connect OP
 pymongo
