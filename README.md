@@ -1,7 +1,7 @@
 # IAM Proxy Italia
 
-IAM Proxy Italia is the SAML2/OIDC IAM Proxy based on [SATOSA](https://github.com/IdentityPython/SATOSA)
-for **SAML-to-SAML**, **OIDC-to-SAML**, **SAML-to-Wallet** and **OIDC-to-Wallet** interoperability
+IAM Proxy Italia is the distribution of the [SATOSA](https://github.com/IdentityPython/SATOSA) SAML2/OIDC IAM Proxy allowing
+**SAML-to-SAML**, **OIDC-to-SAML**, **SAML-to-Wallet** and **OIDC-to-Wallet** interoperability
 with the  **Italian Digital Identity Systems**.
 
 ## Table of Contents
