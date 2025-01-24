@@ -28,6 +28,7 @@ Within the directory `/{your path}/iam-proxy-italia` execute the following comma
 
 ```
 sudo pip install pipx poetry
+pip install --upgrade packaging
 
 mkdir satosa_proxy && cd satosa_proxy
 
