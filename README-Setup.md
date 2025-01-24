@@ -27,8 +27,12 @@ sudo yum install -y python3-wheel python3-devel
 Within the directory `/{your path}/iam-proxy-italia` execute the following commands:
 
 ```
-sudo pip install pipx poetry
+pip install --upgrade pip
+pip install flake8 pipx poetry
 pip install --upgrade packaging
+poetry install
+source $(poetry env info | grep -m1 Path  | awk -F" " {'print $2'})/bin/activate
+pip install "spid-sp-test>=1.2.17"
 
 mkdir satosa_proxy && cd satosa_proxy
 

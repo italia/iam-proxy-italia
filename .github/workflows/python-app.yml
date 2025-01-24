@@ -69,6 +69,7 @@ jobs:
     - name: spid-sp-test SPID metadata, requests and responses
       run: |
         cd Docker-compose/satosa-project
+        source $(poetry env info | grep -m1 Path  | awk -F" " {'print $2'})/bin/activate
         spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
         spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
     - name: spid-sp-test CIE id metadata
