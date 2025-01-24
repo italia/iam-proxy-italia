@@ -31,6 +31,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install spid-sp-test>=1.2.17 flake8 pipx poetry
+        pip install --upgrade packaging
         poetry install
     - name: Ispect Python dependencies
       run: |
