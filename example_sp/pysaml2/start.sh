@@ -47,10 +47,7 @@ function check_idp () {
 }
 
 function prepare () {
-  virtualenv -ppython3 sp.env
-  source sp.env/bin/activate
-  pip install --upgrade pip
-  pip install -r requirements.txt
+  poetry install
   mkdir -p ${CPATH}/pki ${CPATH}/metadata
 }
 

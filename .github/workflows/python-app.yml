@@ -5,9 +5,9 @@ name: iam-proxy-italia
 
 on:
   push:
-    branches: [ master, dev, eudi ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ master, dev, eudi ]
+    branches: [ master, dev ]
 
 jobs:
   build:
@@ -30,11 +30,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install Python dependencies
       run: |
-        pip install spid-sp-test>=1.2.17
-        pip install flake8
+        pip install spid-sp-test>=1.2.17 flake8 pipx poetry
+        poetry install
     - name: Ispect Python dependencies
       run: |
-        pip list
+        poetry show --tree
     - name: Lint with flake8
       run: |
         ## stop the build if there are Python syntax errors or undefined names

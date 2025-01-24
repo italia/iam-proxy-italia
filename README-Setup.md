@@ -27,16 +27,15 @@ sudo yum install -y python3-wheel python3-devel
 Within the directory `/{your path}/iam-proxy-italia` execute the following commands:
 
 ```
-pip install --upgrade pip
-pip install virtualenv
+sudo pip install pipx poetry
 
 mkdir satosa_proxy && cd satosa_proxy
-virtualenv -ppython3 satosa.env
-source satosa.env/bin/activate
 
 git clone https://github.com/italia/iam-proxy-italia.git repository
 cd repository
-pip install -r requirements.txt
+
+poetry install
+poetry env info
 ```
 
 ## Configure the Proxy
@@ -64,7 +63,6 @@ Remember to:
 This project uses [SATOSA_oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) as OAuth2/OIDC frontend module.
 Comment/uncomment the following statement in the proxy_configuration to enable it.
 
-https://github.com/italia/iam-proxy-italia/blob/oidcop/example/proxy_conf.yaml#L32
 
 ### Configuration by environment variables
 

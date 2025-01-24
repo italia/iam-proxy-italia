@@ -4,7 +4,7 @@ git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.0
 
 # OpenID Connect OP
 pymongo
-satosa_oidcop >= 2.0.0
+satosa_oidcop>=2.0.0
 
 uwsgi
 jinja2

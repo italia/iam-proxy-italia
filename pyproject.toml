@@ -1,0 +1,36 @@
+[project]
+name = "iam-proxy-italia"
+version = "2.2.1"
+description = "IAM Proxy"
+authors = [
+    {name = "Giuseppe De Marco",email = "demarcog83@gmail.com"}
+]
+license = {text = "Apache 2.0"}
+readme = "README.md"
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "pysaml2 @ git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.0",
+    "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.0",
+    "pymongo (>=4.10.1,<5.0.0)",
+    "satosa-oidcop (>=2.0.0)",
+    "uwsgi (>=2.0.28,<3.0.0)",
+    "jinja2 (>=3.1.5,<4.0.0)",
+    "pyeudiw (>=0.8.0,<0.9.0)",
+    "pillow (>=11.1.0,<12.0.0)",
+    "device-detector (>=5.0,<6)",
+    "satosa (>=8.4,<8.6)",
+    "jinja2 (>=3.0,<4)",
+    "pymongo (>=4.10.1,<5.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "asyncio (>=3.4.3,<4.0.0)",
+    "aiohttp (>=3.11.11,<4.0.0)",
+    "sd-jwt (>=0.10.4,<0.11.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
