@@ -97,9 +97,8 @@ The following steps instruct on how to create a new image with the new required 
 
 ## Step 5 (Optional): Insert a breakpoint to check that your setting is working as intended
 
-1. Stop the container `docker stop iam-proxy-italia`.
-2. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
-3. Start the container `docker start iam-proxy-italia`.
+1. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
+2. restart the iam-proxy-italia container (`docker stop iam-proxy-italia && docker start iam-proxy-italia`.) or touch the uwsgi reload file within the running container: `touch /satosa_proxy/proxy_conf.yaml`
 
 If everything worked as intended, the program execution should stop at the given `breakpoint()`.
 To further investigate the state of the program at the time it was stopped,
