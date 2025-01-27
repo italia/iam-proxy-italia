@@ -75,6 +75,7 @@ services:
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
       - TZ=${TZ:-Europe/Rome}
+      - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
       - SATOSA_BY_DOCKER=1
       - GET_IDEM_MDQ_KEY=${GET_IDEM_MDQ_KEY:-true}
 
@@ -122,6 +123,7 @@ services:
       - "10000:10000"
     volumes:
       - ./satosa-project:/satosa_proxy:rwx
+      # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"

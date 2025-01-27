@@ -1,6 +1,6 @@
-# Developing a Python dependency of this project
+# Developing a Python package for this project
 
-This document contains a suggested approach on how to develop or modify a Python library that uses the current project Docker as a test or develop environment.
+This document contains a smart approach about how to develop or modify a Python library that uses the current project Docker as a test or develop environment.
 For example, those instructions can be used to create a developer environment for further development of [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python).
 The instructions below are intended to be a suggestion or a guideline rather than a standard.
 
@@ -21,6 +21,7 @@ In the file [docker-compose.yml](Docker-example/docker-compose.yml), among the v
         volumes:
             - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
 
+Please note that `python3.12/` may vary depending new versions of the project. 
 This will replace the installed dependency package with your own local code.
 
 **NOTE:** at the time of writing, container volume is binded to the location `/.venv/lib/python3.12/site-packages`, but your location might be different as it always reference the Python version that is awailable in the container, which in this case is `Python3.12`. Check che actual python version of your container before completing with this step.
@@ -50,7 +51,34 @@ The following steps instructs on how to install a new pip dependency to an exist
 
 At the end of the procedure, you will find the required dependency as part of your container.
 
-### Options 4.2: Create a new image Dockerfile
+### Option 4.2: mount a volume containing your dev package
+
+Instead of installing by hand a new package and commit the change on the container,
+you can stop the container, mount the path of your package and restart the container.
+
+This enables fast updates to your code, that would only require the respawn of the uwsgi process:
+
+  - restart iam-proxy-italia container
+  - respawn process by touching the uwsgi respawn file through an attached shell
+
+This can be easily achieved by doing a configuration like the one below,
+in the documer compose section about the container iam-proxy-italia
+
+````
+    volumes:
+      - ./satosa-project:/satosa_proxy:rwx
+      - /home/User/Dev/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+````
+
+If you might not see the changes in realtime, you shoud `down` the compose and do an `up`.
+
+````
+docker compose down
+# ...
+docker compose up
+````
+
+### Option 4.3: Create a new image Dockerfile
 
 The following steps instruct on how to create a new image with the new required python dependency. This new image will be the base of the updated container.
 
@@ -69,8 +97,9 @@ The following steps instruct on how to create a new image with the new required 
 
 ## Step 5 (Optional): Insert a breakpoint to check that your setting is working as intended
 
-1. Stop the container `docker stop iam-proxy-italia`.
-2. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
-3. Start the container `docker start iam-proxy-italia`.
+1. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
+2. restart the iam-proxy-italia container (`docker stop iam-proxy-italia && docker start iam-proxy-italia`.) or touch the uwsgi reload file within the running container: `touch /satosa_proxy/proxy_conf.yaml`
 
-If everything worked as intended, the program execution should stop at the given `breakpoint()`. To further investigate the state of the program at the time it was stopped, you can use the command `docker attach iam-proxy-italia` in a new terminal.
+If everything worked as intended, the program execution should stop at the given `breakpoint()`.
+To further investigate the state of the program at the time it was stopped,
+you can use the command `docker attach iam-proxy-italia` in a new terminal.
