@@ -27,8 +27,9 @@ RUN addgroup -S satosa && adduser -S satosa -G satosa && chown satosa:satosa $BA
 # "mailcap" package is required to add mimetype support
 RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev poetry openssl build-base gcc wget bash pcre-dev
 
+ADD poetry.lock /
+ADD pyproject.toml /
 RUN poetry config virtualenvs.in-project true
-ADD poetry.lock pyproject.toml /
 RUN poetry lock && poetry install
 
 RUN poetry show
