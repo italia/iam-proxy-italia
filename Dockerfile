@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM alpine:3.21.2
 
 # Metadata params
 ARG BUILD_DATE
@@ -25,13 +25,17 @@ RUN addgroup -S satosa && adduser -S satosa -G satosa && chown satosa:satosa $BA
 
 # "tzdata"  package is required to set timezone with TZ environment
 # "mailcap" package is required to add mimetype support
-RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev poetry openssl build-base gcc wget bash pcre-dev
+RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev py3-pip openssl build-base gcc wget bash pcre-dev
 
-ADD poetry.lock /
-ADD pyproject.toml /
+COPY poetry.lock /
+COPY pyproject.toml /
+
+RUN python3 -m venv .venv && . .venv/bin/activate
+RUN pip3 install --upgrade pip --break-system-packages
+RUN pip3 install flake8 pipx poetry --break-system-packages 
+RUN poetry self update
 RUN poetry config virtualenvs.in-project true
-RUN poetry lock && poetry install
-
-RUN poetry show
+RUN poetry install
+RUN poetry add setuptools
 
 WORKDIR $BASEDIR/

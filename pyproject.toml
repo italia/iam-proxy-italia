@@ -15,7 +15,7 @@ dependencies = [
     "satosa-oidcop (>=2.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
     "jinja2 (>=3.1.5,<4.0.0)",
-    "pyeudiw (>=0.8.0,<0.9.0)",
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python",
     "pillow (>=11.1.0,<12.0.0)",
     "device-detector (>=5.0,<6)",
     "satosa (>=8.4,<8.6)",
@@ -24,11 +24,20 @@ dependencies = [
     "requests (>=2.32.3,<3.0.0)",
     "asyncio (>=3.4.3,<4.0.0)",
     "aiohttp (>=3.11.11,<4.0.0)",
+    "pymdoccbor @ git+https://github.com/IdentityPython/pyMDOC-CBOR",
+    "pydantic (>=2.10.6,<3.0.0)",
 ]
 
 [tool.poetry]
 package-mode = false
 
+
+[tool.poetry.group.extras.dependencies]
+pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", extras = ["satosa"]}
+
+
+[tool.poetry.group.satosa.dependencies]
+pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", extras = ["satosa"]}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
