@@ -30,8 +30,9 @@ Within the directory `/{your path}/iam-proxy-italia` execute the following comma
 pip install --upgrade pip
 pip install flake8 pipx poetry
 pip install --upgrade packaging
+poetry config virtualenvs.in-project true
 poetry install
-source $(poetry env info | grep -m1 Path  | awk -F" " {'print $2'})/bin/activate
+source .venv/bin/activate
 pip install "spid-sp-test>=1.2.17"
 
 mkdir satosa_proxy && cd satosa_proxy
