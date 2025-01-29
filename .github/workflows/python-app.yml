@@ -22,66 +22,70 @@ jobs:
         poetry-version:
           - 'latest'
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install xmlsec1
-      run: sudo apt-get install -y xmlsec1
-    - name: Install Python dependencies
-      run: |
-        poetry add "spid-sp-test>=1.2.17"
-        : # source $(poetry env info | grep -m1 Path  | awk -F" " {'print $2'})/bin/activate
-        : # pip install "spid-sp-test>=1.2.17"
-    - name: Inspect Python dependencies
-      run: |
-        poetry show --tree
-    - name: Lint with flake8
-      run: |
-        ## stop the build if there are Python syntax errors or undefined names
-        flake8 --count --select=E9,F63,F7,F82 --show-source --statistics example
-        ## exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 --max-line-length 120 --count --exit-zero --statistics example
-    - name: docker compose
-      run: |       
-        cd Docker-compose
-        ./run-docker-compose.sh
-        docker ps -a
-    - name: djangosaml2 SP metadata to Proxy
-      run: |
-        wget http://localhost:8000/saml2/metadata -O Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
-    - name: Inspect djangosaml2 SP metadata
-      run: |
-        cat Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
-    - name: Inspect Satosa status
-      run: |
-        docker container inspect iam-proxy-italia
-        docker container logs iam-proxy-italia 
-    - name: Copy Satosa IDP Metadata to djangosaml2 SP
-      run: |
-        wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
-    - name: Inspect Satosa IDP Metadata
-      run: |
-        cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
-    - name: spid-sp-test SPID metadata, requests and responses
-      run: |
-        cd Docker-compose/satosa-project
-        : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
-        : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
-        poetry env activate
-        poetry run spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
-        poetry run spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
-    - name: spid-sp-test CIE id metadata
-      run: |
-        cd Docker-compose/satosa-project
-        : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
-        : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
-        poetry env activate
-        poetry run spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
-    - name: spid-sp-test eIDAS FiCEP metadata
-      run: |
-        cd Docker-compose/satosa-project
-        : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
-        : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
-        poetry env activate
-        poetry run spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install xmlsec1
+        run: sudo apt-get install -y xmlsec1
+      - name: Install Python dependencies
+        run: |
+          poetry add "spid-sp-test>=1.2.17"
+          : # source $(poetry env info | grep -m1 Path  | awk -F" " {'print $2'})/bin/activate
+          : # pip install "spid-sp-test>=1.2.17"
+      - name: Inspect Python dependencies
+        run: |
+          poetry show --tree
+      - name: Lint with flake8
+        run: |
+          ## stop the build if there are Python syntax errors or undefined names
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics example
+          ## exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 --max-line-length 120 --count --exit-zero --statistics example
+      - name: docker compose
+        run: |       
+          cd Docker-compose
+          ./run-docker-compose.sh
+          docker ps -a
+      - name: djangosaml2 SP metadata to Proxy
+        run: |
+          wget http://localhost:8000/saml2/metadata -O Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
+      - name: Inspect djangosaml2 SP metadata
+        run: |
+          cat Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
+      - name: Inspect Satosa status
+        run: |
+          docker container inspect iam-proxy-italia
+          docker container logs iam-proxy-italia 
+      - name: Copy Satosa IDP Metadata to djangosaml2 SP
+        run: |
+          wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+      - name: Inspect Satosa IDP Metadata
+        run: |
+          cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+      - name: spid-sp-test SPID metadata, requests and responses
+        run: |
+          cd Docker-compose/satosa-project
+          : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
+          : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
+          poetry env activate
+          poetry run spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
+          poetry run spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+      - name: spid-sp-test CIE id metadata
+        run: |
+          cd Docker-compose/satosa-project
+          : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
+          : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
+          poetry env activate
+          poetry run spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+      - name: spid-sp-test eIDAS FiCEP metadata
+        run: |
+          cd Docker-compose/satosa-project
+          : # source $(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin/activate
+          : # export PATH=$PATH:$(poetry env info | grep -m1 Path | awk -F" " {'print $2'})/bin
+          poetry env activate
+          poetry run spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
