@@ -11,7 +11,7 @@ if [[ $GET_IDEM_MDQ_KEY == true ]]; then
   wget $REMOTE_DATA_LOCATION
   status=$?
   while [[ $status != 0 && $MAX_RETRY -gt 0 ]]; do
-    echo "Retrying download from registry.spid.gov.it..."
+    echo "Retrying download from registry.spid.gov.it ..."
     wget $REMOTE_DATA_LOCATION
     status=$?
     MAX_RETRY=$((MAX_RETRY-1))
@@ -24,6 +24,8 @@ if [[ $GET_IDEM_MDQ_KEY == true ]]; then
 
   echo "Downloaded IDEM MDQ key"
 fi
+
+poetry show
 
 wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
 wsgi_cmd="uwsgi --ini /satosa_proxy/uwsgi_setup/uwsgi/uwsgi.ini.docker --wsgi-file $wsgi_file"

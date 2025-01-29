@@ -2,7 +2,7 @@
 project     = iam-proxy-italia
 base        = /opt
 
-chdir       = %(base)/%(project)/example
+chdir       = %(base)/%(project)/project
 
 uid         = satosa
 gid         = satosa

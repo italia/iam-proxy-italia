@@ -6,3 +6,5 @@
 !requirements.txt
 !oids.conf
 !build_spid_certs.sh
+!pyproject.toml
+!poetry.lock

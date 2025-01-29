@@ -28,15 +28,20 @@ Within the directory `/{your path}/iam-proxy-italia` execute the following comma
 
 ```
 pip install --upgrade pip
-pip install virtualenv
+pip install flake8 pipx poetry
+pip install --upgrade packaging
+poetry config virtualenvs.in-project true
+poetry install
+source .venv/bin/activate
+pip install "spid-sp-test>=1.2.17"
 
 mkdir satosa_proxy && cd satosa_proxy
-virtualenv -ppython3 satosa.env
-source satosa.env/bin/activate
 
 git clone https://github.com/italia/iam-proxy-italia.git repository
 cd repository
-pip install -r requirements.txt
+
+poetry install
+poetry env info
 ```
 
 ## Configure the Proxy
@@ -64,7 +69,6 @@ Remember to:
 This project uses [SATOSA_oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) as OAuth2/OIDC frontend module.
 Comment/uncomment the following statement in the proxy_configuration to enable it.
 
-https://github.com/italia/iam-proxy-italia/blob/oidcop/example/proxy_conf.yaml#L32
 
 ### Configuration by environment variables
 
