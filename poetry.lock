@@ -1579,7 +1579,7 @@ pyqrcode = ">=1.2,<1.3"
 type = "git"
 url = "https://github.com/italia/eudi-wallet-it-python"
 reference = "HEAD"
-resolved_reference = "486aa592d793e7a9922fe83430ce6b6558eefd45"
+resolved_reference = "61a27bf8a2cf11249422a4c48491c6bad20b4669"
 
 [[package]]
 name = "pyhpke"
