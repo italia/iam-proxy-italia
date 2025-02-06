@@ -148,6 +148,33 @@ config:
       - https://www.spid.gov.it/SpidL2
       - https://www.spid.gov.it/SpidL3
 
+    #The following section contains all the algorithms supported for the encryption of id token response
+    id_token_encrypted_response_alg: *enc_alg_supported
+    id_token_encrypted_response_enc: *enc_enc_supported
+    id_token_signed_response_alg: *sig_alg_supported
+
+    # loaded in the __init__
+    # jwks:
+
+    redirect_uris: 
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
+    request_uris: 
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
+
+    # not necessary according to openid4vp
+    # default_max_age: 1111
+    # require_auth_time: true
+    # subject_type: pairwise
+
+    vp_formats:
+      vc+sd-jwt:
+        sd-jwt_alg_values:
+          - ES256
+          - ES384
+        kb-jwt_alg_values:
+          - ES256
+          - ES384
+
   trust:
     direct_trust_sd_jwt_vc:
       module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
@@ -230,34 +257,3 @@ config:
           connection_params:
             username: !ENV MONGODB_USERNAME
             password: !ENV MONGODB_PASSWORD
-
-
-
-
-
-    #The following section contains all the algorithms supported for the encryption of id token response
-    id_token_encrypted_response_alg: *enc_alg_supported
-    id_token_encrypted_response_enc: *enc_enc_supported
-    id_token_signed_response_alg: *sig_alg_supported
-
-    # loaded in the __init__
-    # jwks:
-
-    redirect_uris: 
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
-    request_uris: 
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
-
-    # not necessary according to openid4vp
-    # default_max_age: 1111
-    # require_auth_time: true
-    # subject_type: pairwise
-
-    vp_formats:
-      vc+sd-jwt:
-        sd-jwt_alg_values:
-          - ES256
-          - ES384
-        kb-jwt_alg_values:
-          - ES256
-          - ES384
