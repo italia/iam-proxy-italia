@@ -32,7 +32,8 @@ COPY pyproject.toml /
 
 RUN python3 -m venv .venv && . .venv/bin/activate
 RUN pip3 install --upgrade pip --break-system-packages
-RUN pip3 install flake8 pipx poetry --break-system-packages 
+RUN pip3 install flake8 pipx poetry pdbpp --break-system-packages
+
 RUN poetry self update
 RUN poetry config virtualenvs.in-project true
 RUN poetry install

@@ -70,7 +70,7 @@ services:
         # dockerfile: Dockerfile
     container_name: iam-proxy-italia
     # depends_on:
-    #  - satosa-mongo
+     # - satosa-mongo
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -123,7 +123,7 @@ services:
       - "10000:10000"
     volumes:
       - ./satosa-project:/satosa_proxy:rwx
-      - /home/wert/DEV/DTD/Wallet/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      - /tmp/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
