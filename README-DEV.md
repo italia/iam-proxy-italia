@@ -1,6 +1,6 @@
 ## SPID technical Requirements
 
-The SaToSa **SPID** backend contained in this project adopt specialized forks of pySAML2 and SATOSA, that implements the following patches,
+The SaToSa **SPID** backend contained in this project uses specialized forks of pySAML2 and SATOSA, that implements the following patches,
 read [this](README.idpy.forks.mngmnt.md) for any further explaination about how to patch by hands.
 
 All the patches and features are currently merged and available with the following releases:
@@ -16,4 +16,3 @@ These are mandatory only for getting Spid SAML2 working, these are not needed fo
 - [ns_prefixes](https://github.com/IdentityPython/pysaml2/pull/625)
 - [SATOSA unknow error handling](https://github.com/IdentityPython/SATOSA/pull/324)
 - [SATOSA redirect page on error](https://github.com/IdentityPython/SATOSA/pull/325)
-- [SATOSA cookie configuration](https://github.com/IdentityPython/SATOSA/pull/363)
