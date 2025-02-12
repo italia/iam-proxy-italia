@@ -70,7 +70,7 @@ services:
         # dockerfile: Dockerfile
     container_name: iam-proxy-italia
     # depends_on:
-     # - satosa-mongo
+    # - satosa-mongo
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
