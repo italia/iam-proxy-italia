@@ -31,7 +31,7 @@ Backends:
 - FICEP SP (eIDAS 1.0)
 - SAML2 SP
 - SPID/CIE OIDC (Work In Progress)
-- EUDI Wallet (eIDAS 2.0, experimental)
+- EUDI Wallet (eIDAS 2.0, experimental using [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python))
 
 Frontends:
 
