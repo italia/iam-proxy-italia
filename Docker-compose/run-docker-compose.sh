@@ -41,7 +41,11 @@ function update {
 }
 
 function start {
-  docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
+  if [[ -z $BUILD ]]; then
+    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
+  else 
+    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans --build
+  fi
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker-compose -f docker-compose.yml logs -f'"
   exit 0
@@ -61,11 +65,12 @@ function help {
   echo "-m Set 'mongo' compose profile. Run: satosa, nginx, mongo"
   echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
+  echo "-b Set '--build' option in docker compose for local images generation"
   echo "   if isn't set any of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "   demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
 }
 
-while getopts ":fpimMdsh" opt; do
+while getopts ":fpimMdsbh" opt; do
   case ${opt} in
    f)
      clean_data
@@ -84,6 +89,9 @@ while getopts ":fpimMdsh" opt; do
      ;;
    s)
      SKIP_UPDATE=true
+     ;;
+   b)
+     BUILD=true
      ;;
    h)
      help
