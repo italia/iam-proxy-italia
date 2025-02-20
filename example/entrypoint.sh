@@ -1,28 +1,15 @@
 #!/bin/bash
 . /.venv/bin/activate
 
-MAX_RETRY=10
 REMOTE_DATA_LOCATION="https://registry.spid.gov.it/entities-idp -O ./spid-entities-idps.xml"
 
-# get IDEM MDQ key
-if [[ $GET_IDEM_MDQ_KEY == true ]]; then
-  wget https://mdx.idem.garr.it/idem-mdx-service-crt.pem -O $SATOSA_KEYS_FOLDER/idem-mdx-service-crt.pem
-
-  wget $REMOTE_DATA_LOCATION
-  status=$?
-  while [[ $status != 0 && $MAX_RETRY -gt 0 ]]; do
-    echo "Retrying download from registry.spid.gov.it ..."
-    wget $REMOTE_DATA_LOCATION
-    status=$?
-    MAX_RETRY=$((MAX_RETRY-1))
-  done
-
-  if [ $MAX_RETRY == 0 ]; then
-    echo "Cannot fetch identity providers data from remote registry, aborting..."
-    exit 1
-  fi
-
-  echo "Downloaded IDEM MDQ key"
+# update federation key and metadata
+if [[ $GET_METADATA_AND_KEY == true ]]; then
+  TMP = `mktemp`
+  wget https://mdx.idem.garr.it/idem-mdx-service-crt.pem -nv -t3 -O $TMP && cp $TMP $SATOSA_KEYS_FOLDER/idem-mdx-service-crt.pem
+  wget https://registry.spid.gov.it/entities-idp -nv -t3 -O $TMP && cp $TMP ./metadata/idp/spid-entities-idps.xml 
+  wget https://sp-proxy.eid.gov.it/metadata -nv -t3 -O $TMP && cp $TMP ./metadata/idp/ficep.xml
+  wget https://idserver.servizicie.interno.gov.it/idp/shibboleth?Metadata -nv -t3 -O $TMP && cp $TMP ./metadata/idp/cie-production.xml
 fi
 
 poetry show
