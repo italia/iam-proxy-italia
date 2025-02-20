@@ -21,27 +21,27 @@ USER_ID_HASH_SALT: !ENV SATOSA_SALT
 ERROR_URL: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
 
 CUSTOM_PLUGIN_MODULE_PATHS:
-  #- "plugins/ping"
-  - "plugins/backends"
-  - "plugins/frontends"
-  - "plugins/micro_services"
+  #- "configuration/ping"
+  - "configuration/backends"
+  - "configuration/frontends"
+  - "configuration/micro_services"
 BACKEND_MODULES:
-  - "plugins/backends/saml2_backend.yaml"
-  - "plugins/backends/spidsaml2_backend.yaml"
-  - "plugins/backends/ciesaml2_backend.yaml"
-  - "plugins/backends/pyeudiw_backend.yaml"
+  - "configuration/backends/saml2_backend.yaml"
+  - "configuration/backends/spidsaml2_backend.yaml"
+  - "configuration/backends/ciesaml2_backend.yaml"
+  - "configuration/backends/pyeudiw_backend.yaml"
 FRONTEND_MODULES:
-  - "plugins/frontends/saml2_frontend.yaml"
-  # - "plugins/frontends/oidcop_frontend.yaml"
+  - "configuration/frontends/saml2_frontend.yaml"
+  # - "configuration/frontends/oidcop_frontend.yaml"
 MICRO_SERVICES:
-  # - "plugins/microservices/spid_unical_account_linking.yaml"
-  # - "plugins/microservices/multiple_ldap_attribute_store.yaml"
-  # - "plugins/microservices/ldap_attribute_store.yaml"
+  # - "configuration/microservices/spid_unical_account_linking.yaml"
+  # - "configuration/microservices/multiple_ldap_attribute_store.yaml"
+  # - "configuration/microservices/ldap_attribute_store.yaml"
   # re-process again after new attributes beign pushed (or not) from ldap store
-  # - "plugins/microservices/spid_unical_account_linking.yaml"
-  - "plugins/microservices/idp_hinting.yaml"
-  - "plugins/microservices/disco_to_target_issuer.yaml"
-  - "plugins/microservices/target_based_routing.yaml"
+  # - "configuration/microservices/spid_unical_account_linking.yaml"
+  - "configuration/microservices/idp_hinting.yaml"
+  - "configuration/microservices/disco_to_target_issuer.yaml"
+  - "configuration/microservices/target_based_routing.yaml"
 LOGGING:
   version: 1
   formatters:
@@ -67,22 +67,22 @@ LOGGING:
       level: DEBUG
       formatter: simple
       stream: ext://sys.stdout
-    saml2_debug_file:
-      class: logging.handlers.RotatingFileHandler
-      level: DEBUG
-      formatter: simple
-      filename: logs/saml2_debug.log
-      maxBytes: 104857600 # 100MB
-      backupCount: 20
-      encoding: utf8
-    oidcop_debug_file:
-      class: logging.handlers.RotatingFileHandler
-      level: DEBUG
-      formatter: simple
-      filename: logs/oidcop_debug.log
-      maxBytes: 104857600 # 100MB
-      backupCount: 20
-      encoding: utf8
+    # saml2_debug_file:
+    #   class: logging.handlers.RotatingFileHandler
+    #   level: DEBUG
+    #   formatter: simple
+    #   filename: logs/saml2_debug.log
+    #   maxBytes: 104857600 # 100MB
+    #   backupCount: 20
+    #   encoding: utf8
+    # oidcop_debug_file:
+    #   class: logging.handlers.RotatingFileHandler
+    #   level: DEBUG
+    #   formatter: simple
+    #   filename: logs/oidcop_debug.log
+    #   maxBytes: 104857600 # 100MB
+    #   backupCount: 20
+    #   encoding: utf8
   loggers:
     satosa:
       level: INFO
