@@ -26,11 +26,12 @@ with the  **Italian Digital Identity Systems**.
 
 Backends:
 
-- SPID SP
-- CIE id SP
+- SAML2 SPID SP
+- SAML2 CIE id SP
 - FICEP SP (eIDAS 1.0)
 - SAML2 SP
-- EUDI Wallet (eIDAS 2.0, experimental)
+- SPID/CIE OIDC (Work In Progress)
+- EUDI Wallet (eIDAS 2.0, experimental using [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python))
 
 Frontends:
 
