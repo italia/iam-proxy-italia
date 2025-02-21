@@ -22,9 +22,6 @@ function initialize_satosa {
   if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../example/* ./satosa-project/ ;  rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../example_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../example/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
-
-  chmod -R 777 ./satosa-project
-  echo "WARNING: satosa-project permission folder set recursively to 777"
 }
 
 function update {
