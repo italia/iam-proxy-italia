@@ -58,8 +58,8 @@ jobs:
         cat Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
     - name: Inspect Satosa status
       run: |
-        docker container inspect iam-proxy-italia
-        docker container logs iam-proxy-italia 
+        docker container inspect iam-proxy-italia-satosa-1
+        docker container logs iam-proxy-italia-satosa-1
     - name: Copy Satosa IDP Metadata to djangosaml2 SP
       run: |
         wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml

@@ -1,12 +1,11 @@
+name: iam-proxy-italia
 services:
-
-  satosa-mongo:
+  mongo:
     profiles:
       - demo
       - mongo
       - mongoexpress
     image: mongo
-    container_name: satosa-mongo
     environment:
       MONGO_INITDB_DATABASE: oidcop
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_DBUSER:-satosa}"
@@ -18,19 +17,16 @@ services:
       # - mongodata:/data/db # to be used for external volumes
     ports:
       - '27017-27019:27017-27019'
-    networks:
-      - iam-proxy-italia
 
-  satosa-mongo-express:
+  express:
     profiles:
       - demo
       - mongoexpress
     image: mongo-express
-    container_name: satosa-mongo-express
     ports:
       - 8082:8081
     depends_on:
-      - satosa-mongo
+      - mongo
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "${EXPRESS_USER:-satosauser}"
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
@@ -38,46 +34,33 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@satosa-mongo:27017/
       TZ: "${TZ:-Europe/Rome}"
-    networks:
-      - iam-proxy-italia
 
-  django_sp:
+  sp:
     profiles:
       - demo
       - dev
     build: 
-        context: ../
-        args: 
-            - NODE_ENV=local
-        dockerfile: example_sp/django.Dockerfile
-    container_name: django_sp
+      context: ../
+      dockerfile: example_sp/django.Dockerfile
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
     volumes:
        - ./djangosaml2_sp:/django_sp:rw
     ports:
       - "8000:8000"
-    networks:
-      - iam-proxy-italia
 
-  iam-proxy-italia:
+  satosa:
     image: ghcr.io/italia/iam-proxy-italia:latest
-    # image: iam-proxy-italia:latest
-    # build: 
-        # context: ../      
-        # args: 
-            # - NODE_ENV=local        
-        # dockerfile: Dockerfile
-    container_name: iam-proxy-italia
-    # depends_on:
-    #  - satosa-mongo
+    build: 
+      context: ../      
+      dockerfile: Dockerfile
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
       - TZ=${TZ:-Europe/Rome}
       - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
       - SATOSA_BY_DOCKER=1
-      - GET_IDEM_MDQ_KEY=${GET_IDEM_MDQ_KEY:-true}
+      - GET_METADATA_AND_KEY=${GET_IDEM_MDQ_KEY:-true}
 
       - BASE_DIR=/satosa_proxy
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
@@ -125,22 +108,17 @@ services:
       - ./satosa-project:/satosa_proxy:rwx
       # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
-    working_dir: /satosa_proxy
-    entrypoint: "sh entrypoint.sh"
-    networks:
-      - iam-proxy-italia
     healthcheck:
-      test: wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate || exit 1
+      test: wget -O - https://nginx/Saml2IDP/metadata --no-check-certificate || exit 1
       interval: 30s
       retries: 10
       start_period: 30s
       timeout: 30s
 
-  satosa-nginx:
+  nginx:
     image: nginx:alpine
-    container_name: satosa-nginx
     depends_on:
-      - iam-proxy-italia
+      - satosa
     ports:
       - "443:443"
     volumes:
@@ -148,8 +126,6 @@ services:
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./nginx/certs:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
-    networks:
-      - iam-proxy-italia
     environment:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
@@ -159,14 +135,8 @@ services:
       - demo
       - dev
     image: italia/spid-saml-check
-    container_name: spid-samlcheck
     ports:
       - "8443:8443"
-    networks:
-      - iam-proxy-italia
-networks:
-  iam-proxy-italia:
-    name: iam-proxy-italia
 
 ## External volumes 
 # volumes:
