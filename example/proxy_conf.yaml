@@ -29,7 +29,7 @@ BACKEND_MODULES:
   - "configuration/backends/saml2_backend.yaml"
   - "configuration/backends/spidsaml2_backend.yaml"
   - "configuration/backends/ciesaml2_backend.yaml"
-  - "configuration/backends/pyeudiw_backend.yaml"
+  # - "configuration/backends/pyeudiw_backend.yaml"
 FRONTEND_MODULES:
   - "configuration/frontends/saml2_frontend.yaml"
   # - "configuration/frontends/oidcop_frontend.yaml"
