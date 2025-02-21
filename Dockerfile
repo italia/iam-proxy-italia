@@ -39,3 +39,4 @@ RUN poetry install
 RUN poetry add setuptools
 
 WORKDIR $BASEDIR/
+ENTRYPOINT ["sh", "entrypoint.sh"]

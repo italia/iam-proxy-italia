@@ -50,14 +50,6 @@ LOGGING:
     syslog:
       format: "[SATOSA] [%(name)s] [%(levelname)s]: %(message)s"
   handlers:
-    spid_daily:
-      class: logging.handlers.TimedRotatingFileHandler
-      level: INFO
-      formatter: simple
-      filename: logs/spid.log
-      when: D
-      interval: 1
-      backupCount: 860
     syslog:
       class: logging.handlers.SysLogHandler
       level: INFO
@@ -67,6 +59,14 @@ LOGGING:
       level: DEBUG
       formatter: simple
       stream: ext://sys.stdout
+    # spid_daily:
+    #   class: logging.handlers.TimedRotatingFileHandler
+    #   level: INFO
+    #   formatter: simple
+    #   filename: logs/spid.log
+    #   when: D
+    #   interval: 1
+    #   backupCount: 860
     # saml2_debug_file:
     #   class: logging.handlers.RotatingFileHandler
     #   level: DEBUG
