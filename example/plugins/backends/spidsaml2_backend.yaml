@@ -35,10 +35,10 @@ config:
     attribute_map_dir: 'attributes-map'
 
     organization:
-      display_name: 
+      display_name:
         - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_EN, 'en']
         - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_IT, 'it']
-      name: 
+      name:
         - [ !ENV SATOSA_ORGANIZATION_NAME_EN, 'en']
         - [ !ENV SATOSA_ORGANIZATION_NAME_IT, 'it']
       url:
@@ -53,8 +53,16 @@ config:
         FiscalCode: !ENV SATOSA_CONTACT_PERSON_FISCALCODE
         IPACode: !ENV SATOSA_CONTACT_PERSON_IPA_CODE
         Public: ''
+        # PublicServicesFullAggregator: '' # nel caso di aggregatore di servizi
       # - {'contact_type': 'other', 'telephone_number': '+3984756344785', 'email_address': 'info@example.org', 'VATNumber': 'IT12345678901', 'FiscalCode': 'XYasdasdadasdGGJ000W', 'Private': '' }
       # - {'contact_type': 'billing', 'telephone_number': '+3984756344785', 'email_address': 'info@example.org', 'company': 'example s.p.a.', 'CodiceFiscale': 'NGLMRA80A01D086T', 'IdCodice': '983745349857', 'IdPaese': 'IT', 'Denominazione': 'Destinatario Fatturazione', 'Indirizzo': 'via tante cose', 'NumeroCivico': '12', 'CAP': '87100', 'Comune': 'Cosenza', 'Provincia': 'CS', 'Nazione': 'IT' }
+
+      # nel caso di aggregatore di servizi
+      # - contact_type: 'other'
+      #   Public: ''
+      #   IPACode: 'c_l102'
+      #   company: 'Comune di Demo'
+      #   Aggregated: ''
 
     metadata:
       local: [./metadata/idp/]
@@ -84,7 +92,7 @@ config:
           information_url:
             - lang: en
               text: !ENV SATOSA_UI_INFORMATION_URL_EN
-            - lang: it 
+            - lang: it
               text: !ENV SATOSA_UI_INFORMATION_URL_IT
           privacy_statement_url:
             - lang: en
