@@ -378,6 +378,8 @@ class SpidSAMLBackend(SAMLBackend):
             # Imposta il consuming_service_index in base al default di ficep per le richieste ficep, oppure a '0' per le richieste spid
             if entity_id == self.config["sp_config"]["ficep_entity_id"]:
                 authn_req.attribute_consuming_service_index = str(self.config["sp_config"]["ficep_default_acs_index"])
+            elif "acs_index" in self.config["sp_config"]:
+                authn_req.attribute_consuming_service_index = str(self.config["sp_config"]["acs_index"])
             else:
                 authn_req.attribute_consuming_service_index = "0"
 
