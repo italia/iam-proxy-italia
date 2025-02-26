@@ -96,14 +96,14 @@
         changeQrCodeImg(connectedImg);
         $('#content-qrcode-info').html(`
             <div id="content-function" class="text-center button-container mt-2">
-                <button href="${data.response_url}" 
+                <a href="${data.redirect_uri}" 
                     class="btn btn-primary" 
                     aria-haspopup="false" 
                     aria-expanded="false" 
                     data-focus-mouse="false"
                 >
                 <span>${clickAccessLabel}</span>
-                </button>
+                </a>
             </div>`
         );
     }
@@ -181,18 +181,27 @@
         }
     }, 1000);
 
-    function QRcodeScanCheck() {
-      let endpointSatosa = "{{ status_endpoint }}";
-      let data = {
-        "id": "{{ state }}", 
-      };
+    function statusEndpoint() {
+        let endpointSatosa = "{{ status_endpoint }}";
+        return endpointSatosa; 
+    }
 
+    function sessionIdentifier() {
+        let id = "{{ state }}";
+        return id; 
+    }
+
+
+    function QRcodeScanCheck() {
+      let qrStatusUrl = statusEndpoint();
+      let data = {"id": sessionIdentifier()}
       let ajaxRequest = $.ajax({
         type: 'GET',
-        url: endpointSatosa,
+        url: qrStatusUrl,
         data,
         statusCode: {
           201: StartQRcodeScanCheck,
+          202: StartQRcodeScanCheck,
           200: connectionCompleted,
           400: Forbidden,
           401: Forbidden,

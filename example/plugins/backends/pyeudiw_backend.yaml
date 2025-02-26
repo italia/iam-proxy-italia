@@ -20,7 +20,6 @@ config:
       module: pyeudiw.satosa.default.response_handler
       class: ResponseHandler
       path: '/response-uri'
-    entity_configuration: '/.well-known/openid-federation'
     status: '/status'
     get_response: '/get-response'
 
@@ -61,6 +60,8 @@ config:
         - ES512
     
   authorization:
+    client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>" 
+    auth_iss_id: # this field if not set will be set to client_id in the authz request 
     url_scheme: haip
     scopes:
     - pid-sd-jwt:unique_id+given_name+family_name
@@ -105,7 +106,7 @@ config:
     subject_id_random_value: CHANGEME!
   
   network:
-    httpc_params:
+    httpc_params: &httpc_params
       connection:
         ssl: true
       session:
@@ -129,37 +130,89 @@ config:
       p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
       q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
 
+  #This is the configuration for the relaying party metadata
+  metadata: &metadata
+    application_type: web
+
+    #The following section contains all the algorithms supported for the encryption of response
+    authorization_encrypted_response_alg: *enc_alg_supported
+    authorization_encrypted_response_enc: *enc_enc_supported
+    authorization_signed_response_alg: *sig_alg_supported
+
+    #Various informations of the client
+    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>" 
+    client_name: Name of an example organization
+    contacts:
+      - ops@verifier.example.org
+    default_acr_values:
+      - https://www.spid.gov.it/SpidL2
+      - https://www.spid.gov.it/SpidL3
+
+    #The following section contains all the algorithms supported for the encryption of id token response
+    id_token_encrypted_response_alg: *enc_alg_supported
+    id_token_encrypted_response_enc: *enc_enc_supported
+    id_token_signed_response_alg: *sig_alg_supported
+
+    # loaded in the __init__
+    # jwks:
+
+    redirect_uris: 
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
+    request_uris: 
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
+
+    # not necessary according to openid4vp
+    # default_max_age: 1111
+    # require_auth_time: true
+    # subject_type: pairwise
+
+    vp_formats:
+      vc+sd-jwt:
+        sd-jwt_alg_values:
+          - ES256
+          - ES384
+        kb-jwt_alg_values:
+          - ES256
+          - ES384
+
   trust:
     direct_trust_sd_jwt_vc:
       module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
       class: DirectTrustSdJwtVc
       config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
         jwk_endpoint: /.well-known/jwt-vc-issuer
     direct_trust_jar:
       module: pyeudiw.trust.handler.direct_trust_jar
       class: DirectTrustJar
       config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
         jwk_endpoint: /.well-known/jar-issuer
         jwks: *metadata_jwks
     federation:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
-        metadata_type: "wallet_relying_party"
+        httpc_params: *httpc_params
+        cache_ttl: 0
+        entity_configuration_exp: 600
+        metadata_type: "openid_credential_verifier"
+        metadata: *metadata
         authority_hints:
             - http://127.0.0.1:8000
         trust_anchors:
-            - public_keys: []
-            - http://127.0.0.1:8000
+            - http://127.0.0.1:8000: [] # array of public keys
         default_sig_alg: "RS256"
         trust_marks: [] 
         federation_entity_metadata:
-            organization_name: Developers Italia SATOSA OpenID4VP backend
+            organization_name: IAM Proxy Italia OpenID4VP backend
             homepage_uri: https://developers.italia.it
             policy_uri: https://developers.italia.it
             tos_uri: https://developers.italia.it
             logo_uri: https://developers.italia.it/assets/icons/logo-it.svg
-        federation_jwks:
+        federation_jwks: # !ENV PYEUDIW_FEDERATION_JWKS
           - kty: RSA
             d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
             e: AQAB
@@ -204,49 +257,3 @@ config:
           connection_params:
             username: !ENV MONGODB_USERNAME
             password: !ENV MONGODB_PASSWORD
-
-  #This is the configuration for the relaying party metadata
-  metadata:
-    application_type: web
-
-    #The following section contains all the algorithms supported for the encryption of response
-    authorization_encrypted_response_alg: *enc_alg_supported
-    authorization_encrypted_response_enc: *enc_enc_supported
-    authorization_signed_response_alg: *sig_alg_supported
-
-    #Various informations of the client
-    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>" 
-    client_name: Name of an example organization
-    contacts:
-      - ops@verifier.example.org
-    default_acr_values:
-      - https://www.spid.gov.it/SpidL2
-      - https://www.spid.gov.it/SpidL3
-
-    default_max_age: 1111
-
-    #The following section contains all the algorithms supported for the encryption of id token response
-    id_token_encrypted_response_alg: *enc_alg_supported
-    id_token_encrypted_response_enc: *enc_enc_supported
-    id_token_signed_response_alg: *sig_alg_supported
-
-    # loaded in the __init__
-    # jwks:
-
-
-    redirect_uris: 
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
-    request_uris: 
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
-
-    require_auth_time: true
-    subject_type: pairwise
-
-    vp_formats:
-      vc+sd-jwt:
-        sd-jwt_alg_values:
-          - ES256
-          - ES384
-        kb-jwt_alg_values:
-          - ES256
-          - ES384

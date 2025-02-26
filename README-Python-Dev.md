@@ -18,8 +18,8 @@ Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the
 
 In the file [docker-compose.yml](Docker-example/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
     
-        volumes:
-            - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
+    volumes:
+        - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
 
 Please note that `python3.12/` may vary depending new versions of the project. 
 This will replace the installed dependency package with your own local code.
@@ -42,8 +42,10 @@ The following steps instructs on how to install a new pip dependency to an exist
 1. Enter in the container environment with `docker exec -it iam-proxy-italia bash`. Note that to perform the `docker exec` command, the container MUST be running.
 2. Execute the following commands to install you own dependencies; replace `new_package_name` with the new dependency
 
-        source /.venv/bin/activate
-        pip3 install new_package_name
+````
+    source /.venv/bin/activate
+    pip3 install new_package_name
+````
 
 3. Exit from the container area with Docker escape control sequence, that is, `Ctrl+P` followed by `Ctrl+Q`.
 4. Freeze the changes with the command `docker container commit iam-proxy-italia`.
@@ -59,7 +61,7 @@ you can stop the container, mount the path of your package and restart the conta
 This enables fast updates to your code, that would only require the respawn of the uwsgi process:
 
   - restart iam-proxy-italia container
-  - respawn process by touching the uwsgi respawn file through an attached shell
+  - respawn process by touching the uwsgi respawn file (/satosa_proxy/proxy_conf.yaml) through an attached shell
 
 This can be easily achieved by doing a configuration like the one below,
 in the documer compose section about the container iam-proxy-italia
@@ -97,9 +99,33 @@ The following steps instruct on how to create a new image with the new required 
 
 ## Step 5 (Optional): Insert a breakpoint to check that your setting is working as intended
 
-1. Add the line `breakpoint()` to a file of that package eudi-wallet-it-python that requires investigation.
-2. restart the iam-proxy-italia container (`docker stop iam-proxy-italia && docker start iam-proxy-italia`.) or touch the uwsgi reload file within the running container: `touch /satosa_proxy/proxy_conf.yaml`
+1. set the ENV var SATOSA_DEBUG: `export SATOSA_DEBUG=true`
+2. execute the compose having mounted your package folder as volume (eg: eudi-wallet-it-python)
+3. Add the line `breakpoint()` to a file of your package that requires investigation.
+4. restart the iam-proxy-italia container (`docker stop iam-proxy-italia && docker start iam-proxy-italia`.) or touch the uwsgi reload file within the running container: `touch /satosa_proxy/proxy_conf.yaml`
 
 If everything worked as intended, the program execution should stop at the given `breakpoint()`.
 To further investigate the state of the program at the time it was stopped,
 you can use the command `docker attach iam-proxy-italia` in a new terminal.
+
+
+### SATOSA_DEBUG true
+
+By setting the ENV variable `SATOSA_DEBUG` to `true` you may be able to evaluate the ENV variables in the docker container and check
+that your configuration was succesfully applied, as shown in the picture below.
+
+<img src="docs/images/SATOSA_DEBUG_true.png" width="512">
+
+`SATOSA_DEBUG=true` makes iam-proxy-italia be executed with a debug configuration of uwsgi.
+
+If you don't have configured it in debug mode, you will not be able to attach to the stdin of the executed
+container, as shown in the picture below.
+
+<img src="docs/images/SATOSA_DEBUG_false.png" width="512">
+
+
+### Reload iam-proxy-italia using UWSGI
+
+With the command `touch iam-proxy-italia/Docker-compose/satosa-project/proxy_conf.yaml` you will be able to
+restart iam-proxy-italia internal uwsgi command without restarting the entire container. This will save a lot of time
+for your debug scopes.
