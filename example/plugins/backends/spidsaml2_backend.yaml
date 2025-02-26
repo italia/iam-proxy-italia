@@ -76,6 +76,9 @@ config:
     entityid: '<base_url>/<name>/metadata'
     accepted_time_diff: 10
 
+    # Specify the AttributeConsumingServiceIndex attribute in the request (default 0).
+    # acs_index: 0
+
     service:
       sp:
         ui_info:
