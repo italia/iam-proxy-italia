@@ -124,7 +124,7 @@ services:
       - "10000:10000"
     volumes:
       - ./satosa-project:/satosa_proxy:rwx
-      - /home/wert/DEV/DTD/Wallet/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
