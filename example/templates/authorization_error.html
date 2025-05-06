@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <div class="container-sm">
+    <div class="row mt-2 mt-md-4 justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
+        <div class="card-wrapper">
+          <div class="card border mb-4">
+            <div class="card-body">
+              <div class="categoryicon-top">
+                <svg class="icon icon-danger"><use href="/bootstrap-italia/svg/sprites.svg#it-error"></use></svg>
+                <span class="text">Authentication Failure</span>
+              </div>
+              <h3 class="card-title h5 text-danger">Authentication Failed or Rejected by the Wallet Application</h3>
+              <p class="card-text font-serif">
+                The authentication procedure failed. The most likely cause is that the Wallet rejected your Authentication Request or that you denied to share mandatory attributes required by the service for its full functionalities.
+              </p>
+              <p class="card-text font-serif">
+                This is the error message sent by the Wallet application:
+              </p>
+              <div class="it-list-wrapper">
+                <ul class="it-list">
+                  <li class="list-item">
+                    <div class="it-right-zone">
+                      <span class="card-text">Error: {% if error != None %} {{ error }} {% else %} unknown error {% endif %}</span>
+                    </div>
+                  </li>
+                  <li class="list-item">
+                    <div class="it-right-zone">
+                      <span class="card-text">Error description: {% if error_description != None %} {{ error_description }} {% else %} unknown error description {% endif %}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock body %}

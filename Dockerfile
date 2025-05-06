@@ -27,12 +27,16 @@ RUN addgroup -S satosa && adduser -S satosa -G satosa && chown satosa:satosa $BA
 # "mailcap" package is required to add mimetype support
 RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev py3-pip openssl build-base gcc wget bash pcre-dev
 
-COPY poetry.lock /
-COPY pyproject.toml /
+# Set up Python virtual environment
+ENV VIRTUAL_ENV=/.venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN python3 -m venv .venv && . .venv/bin/activate
 RUN pip3 install --upgrade pip --break-system-packages
 RUN pip3 install flake8 pipx poetry --break-system-packages
+
+# COPY poetry.lock /
+COPY pyproject.toml /
 
 RUN poetry self update
 RUN poetry config virtualenvs.in-project true

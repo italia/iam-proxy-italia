@@ -7,7 +7,11 @@ REMOTE_DATA_LOCATION="https://registry.spid.gov.it/entities-idp -O ./spid-entiti
 # get IDEM MDQ key
 if [[ $GET_IDEM_MDQ_KEY == true ]]; then
   wget https://mdx.idem.garr.it/idem-mdx-service-crt.pem -O $SATOSA_KEYS_FOLDER/idem-mdx-service-crt.pem
+  echo "Downloaded IDEM MDQ key"
+fi
 
+# get SPID IDP Metadata key
+if [[ $GET_SPID_IDP_METADATA == true ]]; then
   wget $REMOTE_DATA_LOCATION
   status=$?
   while [[ $status != 0 && $MAX_RETRY -gt 0 ]]; do
@@ -24,8 +28,6 @@ if [[ $GET_IDEM_MDQ_KEY == true ]]; then
 
   echo "Downloaded IDEM MDQ key"
 fi
-
-poetry show
 
 wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
 wsgi_cmd=""

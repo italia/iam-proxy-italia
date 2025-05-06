@@ -115,6 +115,7 @@ You can override the configuration of the proxy by settings one or more of the f
 | **SATOSA_USER_ID_HASH_SALT**                     | User ID hash salt                                          | CHANGE_ME!                                                 |
 | **SATOSA_REQUESTED_ATTRIBUTES**                  | Requested attributes                                       | []                                                         |
 | **GET_IDEM_MDQ_KEY**                             | Flag for getting idem MDQ key                              | true                                                       |
+| **GET_SPID_IDP_METADATA**                        | Flag for getting SPID IDP metadata                         | true                                                       |
 | **SATOSA_SAML2_REQUESTED_ATTRIBUTES**            | SAML2 required attributes                                  | name, surname                                              |
 | **SATOSA_SPID_REQUESTED_ATTRIBUTES**             | SPID required attributes                                   | spidCode, name, familyName, fiscalNumber, email              |
 
