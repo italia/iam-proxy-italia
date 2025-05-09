@@ -12,7 +12,7 @@ dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.0",
     "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.0",
     "pymongo (>=4.10.1,<5.0.0)",
-    "satosa-oidcop (>=2.0.0)",
+    #"satosa-oidcop (>=2.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
     "jinja2 (>=3.1.5,<4.0.0)",
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python",
@@ -26,6 +26,9 @@ dependencies = [
     "aiohttp (>=3.11.11,<4.0.0)",
     "pymdoccbor @ git+https://github.com/IdentityPython/pyMDOC-CBOR",
     "pydantic (>=2.10.6,<3.0.0)",
+    "idpysdjwt @ git+https://github.com/SUNET/idpy-sdjwt",
+    "satosa_openid4vci @ git+https://github.com/SUNET/satosa-openid4vci",
+    "satosa_idpyop @ git+https://github.com/SUNET/satosa-idpy"
 ]
 
 [tool.poetry]
