@@ -1,0 +1,252 @@
+module: satosa_openid4vci.openid4vci.OpenID4VCIFrontend
+name: OIDC
+
+config:
+  network:
+    httpc_params: &httpc_params
+      connection:
+        ssl: true
+      session:
+        timeout: 6
+      verify: false
+      timeout: 14
+
+  # private jwk
+  metadata_jwks: &metadata_jwks
+    - kty: EC # Please note: this is the first key [0] and it is used for signing the presentation requests
+      d: i0HQiqDPXf-MqC776ztbgOCI9-eARhcUczqJ-7_httc
+      use: sig
+      crv: P-256
+      kid: SQgNjv4yU8sfuafJ2DPWq2tnOlK1JSibd3V5KqYRhOk
+      x: Q46FDkhMjewZIP9qP8ZKZIP-ZEemctvjxeP0l3vWHMI
+      y: IT7lsGxdJewmonk9l1_TAVYx_nixydTtI1Sbn0LkfEA
+      alg: ES256
+    - kty: RSA
+      d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+      e: AQAB
+      use: enc
+      kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+      n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+      p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+      q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+    - kty: RSA
+      use: sig
+      alg: RS256
+      kid: m00NPAelNBnG_wK2R5EpI_k-GWCHEUySamQYubgFjCg
+      d: nMsnqz0lPHNGBgUqyuJ5nXQ0jh-mzs6d2xOY_QhpkRW1kEbexRJDdVV3fqMxj_s0MiF8mn-s8ea3e8cbNDgIy000Wvx05y1rMkB6KaZX2ZL5jwU7i_xP6NlLh8itikqJz7kKQSILgibQFFQDcScpEk8gUKa6fmSJQVwTII6GoJCdiJflv-FI2OQ_TCBQEEVVLpeUiVSP0n3OMUKGBlbaHOQkArUpla_ke_mtdfIrl7uB74Rxrin68KtFHkGDGdJPs-PPO1yJ2paFZI9QR_ettZ22v45c-qIgmCjsEnITDMaO9724PU_umlWsWe36Y9RAAzofKsjKqvA1OIzU03ob9Q
+      n: sP6jt1XwJE0JDKxy4B7r3Jdb8W6bSRoVunyjWMgl5IafqFwHsJlYgCAWPeTrAL-iyjdnWC1csHuTqWjdndDL-oqEarrqoDAycVkfFTUTD81_wVhWUzAwxhQHiT7PTUIsV7m9VGlfC_kdCpQl5CcK1yx2nQ1KbqWOV1_5WnMgnN_EpNmztkZDnJmKedVduOb2dKWwnLS3fcGvUxXc87DjAzC2vfgQSoQfXAZbwItyS6OinFiUnBxRvt9ZY2IapjI1-wwDKKeRrqPC-fV2oWTrMqoYAvIDnf9AjKHAbIw7q301-7-eaUMF1hVtAz1XeXvMp0wK8_uSo9Vgv1vHhBpOwQ
+      e: AQAB
+      p: 0ViKTSyZdLtvbLBpTvVAXTdrhTwGXuh16PadQMAVmkoxOPiExRB5uLiy2ADaVKSglia5aQBUp9v0ygEEOmkiUtn5A26D9ui0dkPR0hx4fwqCOOmA2ZyDUNFJ_qrGSwT1SxGQDHeRteymJG7uN9QekS3XiBDgFJxwl-vVpoSTBJM
+      q: 2HBr9qhVd3zZUQuNb7ro06ErLl4fhL-DiKsNqXB772tDNTJYeog1nOWgS22tcv5WHrSoYF1x5Q74YVoA6yVj6DwFx2Hc2pYZazzhYMRC3NAWkTEdroy9IjtpzKIpQIqw-sq8CbWVBXzho8uQBCdg8h73z11_HPyXT9BqQCmxJ9s
+      dp: WsQ32rQuqNUnv4lRb4GYcZI41SCsZnQFw4dBsTRXaXknlFr0PfkhvXyfVlYwU6i5U8DgfO0-xzTwErGUIrs4vZFyjRFauDA3JlvLWn0rpXFp-sELM87PhLfpjDiBFz_EFtM7kJw7GhTMCFnsgVpAEpQ8sesXLPiTPNts2_D5SW8
+      dq: jWlucLrtFGOjDRuyLjT9l__uWZ4vk6kZRHsWMwWGRBhd0ezx-CT0em1hPMcNE1vvYqKAfG2xU4pjaB_JB9nnG73TvMBI7xwwwWsGihXQ5bqjc_uWPAxCKpKM_qFYuI2lMkaxctqL4gkE1-LRVpVv9uGa4YZh3ct_BSvTr9ZNpA8
+      qi: kn9Etj4a2erCUmoZUQalPjHxCRYm5Q3wAkFIRGSQADA51mkwQHyTYqXbHcmXn2ZgXBVI6XDWJB51Me-NCPfITTlusqxvATF7Q-QJtdK_FbgNtcVRNc1FMq_M7VBHA1i9wJR7T4t57aywfXPmlsA5TToTDRe-ybdw0C3ys4KQATs
+
+  #This is the configuration for the relaying party metadata
+  metadata: &metadata
+    client_id: &client_id # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    credential_issuer: *client_id
+    credential_endpoint: /credential
+    nonce_endpoint: /nonce-endpoint
+    revocation_endpoint: /revoke
+    deferred_credential_endpoint: /deferred-credential
+    status_attestation_endpoint: /status
+    notification_endpoint: /notification
+    status_assertion_endpoint: /assertion-endpoint
+    authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
+      -
+    display:
+      - name: Swedish Provider Example
+        locale: en-US
+      - name: Italian Provider Example
+        locale: it-IT
+    authorization_signing_alg_values_supported: &authorization_signing_alg_values_supported
+      - RS256
+      - RS512
+      - ES256
+      - ES512
+    credential_configurations_supported: &credential_configurations_supported
+      PDA1Credential:
+        format: vc+sd-jwt
+        id: eudiw.pda1.se
+        cryptographic_binding_methods_supported:
+          - jwk
+        credential_signing_alg_values_supported: *authorization_signing_alg_values_supported
+        proof_types_supported:
+          jwt:
+            proof_signing_alg_values_supported: *authorization_signing_alg_values_supported
+        display:
+          name: Swedish PDA1 Provider Example
+          locale: en-US
+        vct:
+          PDA1Credential
+        credential_definition:
+          type:
+            - PDA1Credential
+          credentialSubject:
+            family_name:
+              display:
+                -
+                  locale: en-US
+                  name: Current Family Name
+              mandatory: true
+            given_name:
+              display:
+                -
+                  locale: en-US
+                  name: Current First Name
+              mandatory: true
+            birth_date:
+              display:
+                - locale: en-US
+                  name: Birth date
+      EHICCredential:
+        format: vc+sd-jwt
+        id: eudiw.ehic.se
+        cryptographic_binding_methods_supported:
+          - jwk
+        credential_signing_alg_values_supported: *authorization_signing_alg_values_supported
+        proof_types_supported:
+          jwt:
+            proof_signing_alg_values_supported: *authorization_signing_alg_values_supported
+        display:
+          name: Swedish EHIC Provider Example
+          locale: en-US
+        vct:
+          EHICCredential
+        credential_definition:
+          type:
+            - EHICCredential
+          credentialSubject:
+            family_name:
+              display:
+                - locale: en-US
+                  name: Current Family Name
+              mandatory: true
+            given_name:
+              display:
+                - locale: en-US
+                  name: Current First Name
+              mandatory: true
+            birth_date:
+              display:
+                - locale: en-US
+                  name: Birth date
+    jwks: *metadata_jwks
+    trust_frameworks_supported:
+      - it_cie
+      - it_wallet
+      - eudi_wallet
+    evidence_supported:
+      - vouch
+    credential_hash_alg_supported: *authorization_signing_alg_values_supported
+
+  trust:
+    federation:
+      module: pyeudiw.trust.handler.federation
+      class: FederationHandler
+      config:
+        httpc_params: *httpc_params
+        cache_ttl: 0
+        entity_configuration_exp: 600
+        metadata_type: "openid_credential_verifier"
+        metadata: *metadata
+        authority_hints:
+          - http://127.0.0.1:8000
+        trust_anchors: &trust_anchors
+          - http://127.0.0.1:8000:
+              -
+          - https://trust-anchor.edu:
+              -
+          - https://trust-anchor.example.org:
+              - kty: RSA
+                d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+                e: AQAB
+                kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+                n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+                p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+                q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+        default_sig_alg: "RS256"
+        trust_marks: []
+        federation_entity_metadata:
+          organization_name: IAM Proxy Italia OpenID4VP backend
+          homepage_uri: https://developers.italia.it
+          policy_uri: https://developers.italia.it
+          tos_uri: https://developers.italia.it
+          logo_uri: https://developers.italia.it/assets/icons/logo-it.svg
+        federation_jwks: # !ENV PYEUDIW_FEDERATION_JWKS
+          - kty: RSA
+            d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+            e: AQAB
+            kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+            n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+            p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+            q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+
+  credential_issuer:
+    authority_hints:
+      - https://127.0.0.1:7003
+    trust_marks:
+      - eyJhbGciOiJSUzI1NiIsImtpZCI6IlMycDFiek5GWjNGa09IVnBPV1JsTUVWNGFGWm9SVVZGU0hnelR6ZEVWbEJXVFVvemVqQkRVWGgwT0EifQ.eyJpYXQiOiAxNzMwMzkzNzkwLCAiaWQiOiAiaHR0cDovL2RjNGV1LmV4YW1wbGUuY29tL1BlcnNvbklkZW50aWZpY2F0aW9uRGF0YS9zZSIsICJzdWIiOiAiaHR0cHM6Ly8xMjcuMC4wLjE6ODA4MCIsICJleHAiOiAxNzMyOTg1NzkwLCAiaXNzIjogImh0dHBzOi8vMTI3LjAuMC4xOjYwMDAifQ.Wp2fz9RNjIcjd1JzjjkriLh3rXnGKmIXT7FA37l3p9r0hQSF4vgsnPl9ahr4YQ4ZMR-s5wuQMHfabIlsjwQjFA1XFuISC22B1oVPDlj8FzrLw_1O6U1_EnE5KaQrh_wJVv6MB_V6BQCmkPFtCLJ8WuYWC00l5qsaVijvOe5hrgCtnJ1p8JCwePQfU5mMkIKieQwJHPOxhEaGTvdDdUvA_RO2cfMaXo3UNB64_SsFeJnTlSu4uNn37OiLlQsr_LeVBSFg8CiLgDH3KoQQXznIzV4VCt-ugXE3okgY7UMAZf4XOTmFLCgqIk_-9vHuT9-qOhEfm7HYTfJfZW89AwM1Ig
+      - eyJhbGciOiJSUzI1NiIsImtpZCI6IlMycDFiek5GWjNGa09IVnBPV1JsTUVWNGFGWm9SVVZGU0hnelR6ZEVWbEJXVFVvemVqQkRVWGgwT0EifQ.eyJpYXQiOiAxNzMxNDgzNTU4LCAiaWQiOiAiaHR0cDovL2RjNGV1LmV4YW1wbGUuY29tL0VISUNDcmVkZW50aWFsL3NlIiwgInN1YiI6ICJodHRwczovLzEyNy4wLjAuMTo4MDgwIiwgImV4cCI6IDE3MzQwNzU1NTgsICJpc3MiOiAiaHR0cHM6Ly8xMjcuMC4wLjE6NjAwMCJ9.W6bAp0soLJE8u9zvVSAP_eF9yR6a6lZuQd-ZZMJz6xxUo7QBacWNZlDrFDOBqnZD2ZJ9xoj2EVrK3U7uMhd-nIUE44LWAkSYE1WN3mWvqYSkXapXX_qF07XSk1ByEkqX-bw6ECTmV2o5rBskIP5-TqS7UyxLYQqdiIb-1N__dIMzoNuWrNQDsvrMf5ZLW9ASY5u2D7FZWcvUn0QOBCO12ZgsrC68N62AkHEVT_BL1JKvZ9t-sYlCZpKaWCTu_g5RW-xPe-Dg47RkmbILT4Oxx-1vzhKPD0dEAw10UBoxSL5NkWh_F_nOaLQWbdPv2_QjYm34bO2qL_kXM0lRwyEoXg
+      - eyJhbGciOiJSUzI1NiIsImtpZCI6IlMycDFiek5GWjNGa09IVnBPV1JsTUVWNGFGWm9SVVZGU0hnelR6ZEVWbEJXVFVvemVqQkRVWGgwT0EifQ.eyJpYXQiOiAxNzMxNDgzNjIxLCAiaWQiOiAiaHR0cDovL2RjNGV1LmV4YW1wbGUuY29tL1BEQTFDcmVkZW50aWFsL3NlIiwgInN1YiI6ICJodHRwczovLzEyNy4wLjAuMTo4MDgwIiwgImV4cCI6IDE3MzQwNzU2MjEsICJpc3MiOiAiaHR0cHM6Ly8xMjcuMC4wLjE6NjAwMCJ9.DGBgZJdgvK4ocqZw0YWfn1VLBvEi1XEYJZ6qlDufjNk1CIr6JUAMog4RWXKcdLWXv_F7nH3ngVOJYGhLslpuj3b5wBN3Ynj7juv16D8gp2Zq23k5E0tHkYHjeLfKkzlLawSUe-t2Tie8MH_OV_UiQptne_M5Us_3MZdUHQybZQ9cMTgi4r_I65SzntdkTOFeIuD-armST9wJNjwR0OWRLISf6JUSe6vOGq6to_EgKIZZErUA-anVHgFAZkjIqJwit7f7TUvKIv0spMgx3msqT88aSOx58V7VAewVjpIkHTKbf0bdcZs1wi4oQ_1DRYIVL3fXQmnRi_5i6z7mWYusOg
+    issuer: https://example.com/
+    credential_configurations_supported: *credential_configurations_supported
+    credential_configurations_released:
+      EHICCredential:
+        class: openid4v.openid_credential_issuer.credential_constructor.authentic_source.CredentialConstructor
+        kwargs:
+          url: http://vc-interop-1.sunet.se/api/v1/credential
+          jwks_url: http://vc-interop-1.sunet.se/api/v1/credential/.well-known/jwks
+          body:
+            credential_type: sdjwt
+            document_type: EHIC
+      PDA1Credential:
+        class: openid4v.openid_credential_issuer.credential_constructor.authentic_source.CredentialConstructor
+        kwargs:
+          url: http://vc-interop-1.sunet.se/api/v1/credential
+          jwks_url: http://vc-interop-1.sunet.se/api/v1/credential/.well-known/jwks
+          body:
+            credential_type: sdjwt
+            document_type: PDA1
+    register_endpoints:
+      # as dict with key as method name and value as path
+      #      credential_endpoint: /credential
+      #      nonce_endpoint: /nonce-endpoint
+      #      revocation_endpoint: /revoke
+      #      deferred_credential_endpoint: /deferred-credential
+      #      status_attestation_endpoint: /status
+      #      notification_endpoint: /notification
+      #      status_assertion_endpoint: /assertion-endpoint
+      pushed_authorization_endpoint: /par
+      token_endpoint: /token
+      authorization_endpoint: /authorization
+
+  # Mongodb database configuration
+  storage:
+    mongo_db:
+      cache:
+        module: pyeudiw.storage.mongo_cache
+        class: MongoCache
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eudiw
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
+      storage:
+        module: pyeudiw.storage.mongo_storage
+        class: MongoStorage
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eudiw
+            db_sessions_collection: sessions
+            db_trust_attestations_collection: trust_attestations
+            db_trust_anchors_collection: trust_anchors
+            db_trust_sources_collection: trust_sources
+            data_ttl: 63072000 # 2 years
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
