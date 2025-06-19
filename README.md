@@ -43,26 +43,34 @@ with Metadata, Authn Requests and Responses.
 
 ## Introduction
 
-IAM Proxy Italia is an intermediate between many SAML2/OIDC 
-Service Providers and many SAML2/OIDC Identity Providers or Wallet authentication sytems based on OpenID4VP.
+**IAM Proxy Italia** acts as an intermediary between different digital identity authentication systems, including SAML2/OIDC Providers and eID Wallet authentication systems based on OpenID4VC.
 
-It allows traditional Saml2 Service Providers, or OIDC RP or OAuth2 Clients to communicate with
-**Spid**, **CIE** and **eIDAS** Identity Providers adapting Metadata and AuthnRequest operations.
+It supports three main use cases:
 
-<img src="gallery/spid_proxy.png" width="256">
+**A. Legacy Integration**
+Legacy SAML2 Service Providers or OIDC RPs can communicate with SPID, CIE, and eIDAS Identity Providers through metadata and authentication request adaptation.
 
-**Figure1** : _Traditional SAML2 Service Providers (SPs) proxied through the SATOSA SPID Backend gets compliances on AuthnRequest and Metadata operations_.
+**B. Wallet Authentication**
+Legacy SAML2 Service Providers or OIDC RPs can authenticate users through their eID Wallet Instance using OpenID4VP.
+
+**C. Credential Issuance to Wallet**
+Users requesting Digital Credentials from Credential Issuers (OpenID4VCI) can be authenticated through:
+- Legacy SAML2/OIDC infrastructure (SPID, CIE, eIDAS)
+- Credential Presentations (OpenID4VP)
+
+<img src="gallery/iam-proxy.svg" width="768">
+
+**Figure1** : _The IAM Proxy Italia acts as a centralized intermediary, providing protocol translation and metadata adaptation between legacy SAML2/OIDC Service Providers and various authentication systems including SPID, CIE, eIDAS Identity Providers, and eID Wallet authentication systems based on OpenID4VP._
 
 This solution configures multiple proxy _frontends_ and _backends_
-to get communicating systems that, due to protocol or specific
-limitations, traditionally could not interact each other.
+to get communicating systems facilitating their integrations.
 
 
 ## Demo components
 
 The example project comes with some preconfigured static pages.
 
-<img src="gallery/disco_page.png" width="512">
+<img src="gallery/disco_page.png" width="768">
 
 for other page screenshots, see [here](README-GALLERY.md).
 
