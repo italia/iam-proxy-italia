@@ -47,7 +47,7 @@ poetry env info
 ## Configure the Proxy
 
 - Create certificates for SPID, using [spid-compliant-certificates](https://github.com/italia/spid-compliant-certificates) or [spid-compliant-certificates-python](https://github.com/italia/spid-compliant-certificates-python)
-- Copy `repository/example/*` contents (`cp -R repository/example/* .`) and **edit the files below** 
+- Copy `repository/iam-proxy-italia-project/*` contents (`cp -R repository/iam-proxy-italia-project/* .`) and **edit the files below** 
 
   - `proxy_conf.yaml`
   - `plugins/backends/spidsaml2_backend.yaml`
@@ -137,7 +137,7 @@ wget https://sp.fqdn.org/saml2/metadata -O metadata/sp/my-sp.xml
 ```
 
 Otherwise the best method would be enabling a MDQ server in each frontend and backend configuration file.
-See `example/plugins/{backends,frontends}/$filename` as example.
+See `iam-proxy-italia-project/plugins/{backends,frontends}/$filename` as example.
 
 ### Get SPID backend metadata
 

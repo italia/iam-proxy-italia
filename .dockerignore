@@ -1,6 +1,7 @@
 # By default, ignore everything
 *
 # Add exception for the directories you actually want to include in the context
+!iam-proxy-italia-project
 !example
 !example_sp
 !requirements.txt

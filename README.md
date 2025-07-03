@@ -66,11 +66,11 @@ The example project comes with some preconfigured static pages.
 
 for other page screenshots, see [here](README-GALLERY.md).
 
-These demo pages are static files, available in `example/static`.
+These demo pages are static files, available in `iam-proxy-italia-project/static`.
 To get redirection to these pages, or redirection to third-party services, it is required to configure the files below:
 
-- file: `example/proxy_conf.yml`, example value: `UNKNOW_ERROR_REDIRECT_PAGE: "https://static-contents.example.org/error_page.html"`
-- file: `example/plugins/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
+- file: `iam-proxy-italia-project/proxy_conf.yml`, example value: `UNKNOW_ERROR_REDIRECT_PAGE: "https://static-contents.example.org/error_page.html"`
+- file: `iam-proxy-italia-project/plugins/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
 
 
 ## Usage
@@ -136,7 +136,7 @@ Here something that you should know before start.
 - SATOSA Saml2 backend configuration has a **policy** section that will let us to define specialized behaviours
   and configuration for each SP (each by entityid). In this example I defined a single "default" behaviour with attributes **name_format**
   to **urn:oasis:names:tc:SAML:2.0:attrname-format:uri**, due to my needs to handle many service providers for which it could be painfull do a static definition each time.
-  An additional "hack" have been made in `example/attributes-maps/satosa_spid_uri_hybrid.py`, where I adopted a hybrid mapping that works for
+  An additional "hack" have been made in `iam-proxy-italia-project/attributes-maps/satosa_spid_uri_hybrid.py`, where I adopted a hybrid mapping that works for
   both *URI* and *BASIC* formats. Feel free to customized or decouple these format in different files and per SP.
 
 ## External references
