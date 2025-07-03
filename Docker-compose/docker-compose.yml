@@ -45,16 +45,16 @@ services:
     profiles:
       - demo
       - dev
-    build: 
-        context: ../
-        args: 
-            - NODE_ENV=local
-        dockerfile: example_sp/django.Dockerfile
+    build:
+      context: ../
+      args:
+        - NODE_ENV=local
+      dockerfile: example_sp/django.Dockerfile
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
     volumes:
-       - ./djangosaml2_sp:/django_sp:rw
+      - ./djangosaml2_sp:/django_sp:rw
     ports:
       - "8000:8000"
     networks:
@@ -63,11 +63,11 @@ services:
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
     image: iam-proxy-italia:latest
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
-        dockerfile: Dockerfile
+    build:
+      context: ../
+      args:
+        - NODE_ENV=local
+      dockerfile: Dockerfile
     container_name: iam-proxy-italia
     # depends_on:
     # - satosa-mongo
@@ -169,7 +169,7 @@ networks:
   iam-proxy-italia:
     name: iam-proxy-italia
 
-## External volumes 
+## External volumes
 # volumes:
 #   mongodata:
 #     name: iam-proxy-italia_mongodata

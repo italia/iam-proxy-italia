@@ -50,10 +50,10 @@ poetry env info
 - Copy `repository/iam-proxy-italia-project/*` contents (`cp -R repository/iam-proxy-italia-project/* .`) and **edit the files below** 
 
   - `proxy_conf.yaml`
-  - `plugins/backends/spidsaml2_backend.yaml`
-  - `plugins/backends/saml2_backend.yaml`
-  - `plugins/frontend/saml2_frontend.yaml`
-  - `plugins/frontend/oidc_op_frontend.yaml` (optional to enable OIDC Provider)
+  - `conf/backends/spidsaml2_backend.yaml`
+  - `conf/backends/saml2_backend.yaml`
+  - `conf/frontend/saml2_frontend.yaml`
+  - `conf/frontend/oidc_op_frontend.yaml` (optional to enable OIDC Provider)
 
 Remember to:
 
@@ -137,7 +137,7 @@ wget https://sp.fqdn.org/saml2/metadata -O metadata/sp/my-sp.xml
 ```
 
 Otherwise the best method would be enabling a MDQ server in each frontend and backend configuration file.
-See `iam-proxy-italia-project/plugins/{backends,frontends}/$filename` as example.
+See `iam-proxy-italia-project/conf/{backends,frontends}/$filename` as example.
 
 ### Get SPID backend metadata
 

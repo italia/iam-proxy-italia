@@ -70,7 +70,7 @@ These demo pages are static files, available in `iam-proxy-italia-project/static
 To get redirection to these pages, or redirection to third-party services, it is required to configure the files below:
 
 - file: `iam-proxy-italia-project/proxy_conf.yml`, example value: `UNKNOW_ERROR_REDIRECT_PAGE: "https://static-contents.example.org/error_page.html"`
-- file: `iam-proxy-italia-project/plugins/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
+- file: `iam-proxy-italia-project/conf/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
 
 
 ## Usage
