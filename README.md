@@ -104,7 +104,7 @@ The docker compose uses the enviroment variables as documented [here](README-Set
 This project provides an example SAML2 Service Provider for demo purposes, 
 this Service Provider is executed by default in the Docker Compose.
 
-For any further detail about the configuration, see [example_sp/djangosaml2_sp/README.md](example_sp/djangosaml2_sp/README.md).
+For any further detail about the configuration, see [iam-proxy-italia-project_sp/djangosaml2_sp/README.md](iam-proxy-italia-project_sp/djangosaml2_sp/README.md).
 
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 

@@ -1,7 +1,7 @@
 # How to run the Demo Django template
 
 
- Within the directory `/{your path}/iam-proxy-italia/example_sp` execute the following commands
+ Within the directory `/{your path}/iam-proxy-italia/iam-proxy-italia-project_sp` execute the following commands
 
 ### djangosaml2-sp (SP server)
 ````
