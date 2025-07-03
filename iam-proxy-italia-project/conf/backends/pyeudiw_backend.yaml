@@ -1,4 +1,4 @@
-module: pyeudiw.satosa.backend.OpenID4VPBackend
+module: pyeudiw.satosa.backends.openid4vp.openid4vp.OpenID4VPBackend
 name: OpenID4VP
 
 config:
@@ -10,19 +10,28 @@ config:
     error_template: "error.html"
     error_url: "https://localhost/static/error_page.html"
     authorization_error_template: "authorization_error.html"
-  
+
   endpoints:
-    pre_request: '/pre-request'
-    request:
-      module: pyeudiw.satosa.default.request_handler
-      class: RequestHandler
-      path: '/request-uri'
+    pre_request:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.pre_request_endpoint
+      class: PreRequestHandler
+      path: /pre-request
     response:
-      module: pyeudiw.satosa.default.response_handler
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.response_endpoint
       class: ResponseHandler
-      path: '/response-uri'
-    status: '/status'
-    get_response: '/get-response'
+      path: /response-uri
+    request:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.request_endpoint
+      class: RequestHandler
+      path: /request-uri
+    status:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.status_endpoint
+      class: StatusHandler
+      path: /status
+    get_response:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
+      class: GetResponseHandler
+      path: /get_response
 
   qrcode:
     size: 250 # px
@@ -61,8 +70,8 @@ config:
         - ES512
     
   authorization:
-    client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>" 
-    auth_iss_id: # this field if not set will be set to client_id in the authz request 
+    client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    auth_iss_id: # this field if not set will be set to client_id in the authz request
     url_scheme: haip
     scopes:
     - pid-sd-jwt:unique_id+given_name+family_name
@@ -108,7 +117,7 @@ config:
     - tax_id_code
     - unique_id
     subject_id_random_value: CHANGEME!
-  
+
   network:
     httpc_params: &httpc_params
       connection:
@@ -117,6 +126,7 @@ config:
         timeout: 6
 
   # private jwk
+  # WARNING: change these keys in production env. Keep these keys unchanged can pose a serious security risk.
   metadata_jwks: &metadata_jwks
     - kty: EC # Please note: this is the first key [0] and it is used for signing the presentation requests
       d: i0HQiqDPXf-MqC776ztbgOCI9-eARhcUczqJ-7_httc
@@ -157,7 +167,7 @@ config:
     authorization_signed_response_alg: *sig_alg_supported
 
     #Various informations of the client
-    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>" 
+    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
     client_name: Name of an example organization
     contacts:
       - ops@verifier.example.org
@@ -195,10 +205,10 @@ config:
   credential_presentation_handlers:
     max_submission_size: 4096
     formats:
-      - module: pyeudiw.openid4vp.vp_sd_jwt_vc
+      - module: pyeudiw.satosa.backends.openid4vp.vp_sd_jwt_vc
         class:  VpVcSdJwtParserVerifier
         format: dc+sd-jwt
-      - module: pyeudiw.openid4vp.vp_mdoc_cbor
+      - module: pyeudiw.satosa.backends.openid4vp.vp_mdoc_cbor
         class:  VpMDocCbor
         format: mso_mdoc
       - module: pyeudiw.duckle_ql.handler
@@ -225,9 +235,11 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
+        client_id: 'openid_federation:https://localhost/OpenID4VP' # this MUST be configured with the RP's HTTPS URI where the backed is made available for discovery
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
+        # include_issued_jwt_header_param: true # default false; if true, it will include trust_chain header parameters in the signed presentation request issued by this trust handler
         metadata_type: "openid_credential_verifier"
         metadata: *metadata
         authority_hints:
@@ -265,98 +277,71 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        # client_id: *client_id
-        client_id_scheme: x509_san_dns # this will be prepended in the client id scheme used in the request. 
+        client_id: "x509_san_dns:localhost"
         certificate_authorities:
           ca.example.com: |
+            -----BEGIN CERTIFICATE-----
+            MIICJzCCAc6gAwIBAgIUFqb+aMtaYydHFIh9qXKzZVz7eQYwCgYIKoZIzj0EAwIw
+            UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+            VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
+            MTA2WhcNMjYwNjE2MTY1MTA2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
+            bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
+            VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJOfDFsMn2zgJ1Kb5hXU
+            r/dDyOwRjm2LRiVFjgUSnhy/09FapToxjB7FAGZMJb/Q3JyCUc32WOGfXYA5izT+
+            Ul6jgYEwfzASBgNVHRMBAf8ECDAGAQH/AgECMBkGA1UdEQQSMBCCDmNhLmV4YW1w
+            bGUuY29tMA4GA1UdDwEB/wQEAwIBpjA+BgNVHR8ENzA1MDOgMaAvhi1odHRwczov
+            L2NhLmV4YW1wbGUuY29tL2NybC9jYS5leGFtcGxlLmNvbS5jcmwwCgYIKoZIzj0E
+            AwIDRwAwRAIgafkpE88vVHf1AoNrRvqLNaiRwdw569kUbhwVrbXN7dYCIH0OkXvk
+            tX5+FvfFc70mO+2FvYtOV0U4pruy8e807ATO
+            -----END CERTIFICATE-----
+        leaf_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
+          ca.example.com:
+            - |
               -----BEGIN CERTIFICATE-----
-              MIIDYzCCAkugAwIBAgIUHVMNJD9vqAA4mR+QAJyEQFW4kjQwDQYJKoZIhvcNAQEL
-              BQAwUjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwg
-              Qz1JVDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNDAz
-              MTU0NzU2WhcNMjYwNDA0MTU0NzU2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxl
-              LmNvbSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQsw
-              CQYDVQQGEwJJVDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMf3zvlY
-              zX1DYgv9QjRusMQjSRNdZi72/ydnxO/cAQ1GsgLZ8ewqIL1CnXtIs6i2F8poUOec
-              g957xk1db6sTqEWXRi5h9IfMUFcd5G7gIbJzjXCiLSVz6m9vZlvqR7BDka1VQhuH
-              rW2xEIE6+F2lWxJ+crimea/c5VlMKBCh+gQldFq3lTu6smGUz8xl8rhleBPgTgZz
-              TO4VuVO1dOb/S4lq9twfVYCTznF9vgaNaNh3la7yjzCf+zpSTGQD8TFO8ws1SZRq
-              O0bkabW8/5XsnwFHLT2LMSPkWMgMD8r+7xef93bvbEy7SA4Hw1Iow2xIIcTDYQ7F
-              77HQ3OjkogHmhrMCAwEAAaMxMC8wEgYDVR0TAQH/BAgwBgEB/wIBATAZBgNVHREE
-              EjAQgg5jYS5leGFtcGxlLmNvbTANBgkqhkiG9w0BAQsFAAOCAQEApRUUxw5Dn0wd
-              lFPApjn7n/SZyx5I1XnOHOIk8aWD0KFFa1zsnONlmRDgC8EQ5XKw3nMUwvnCQUR8
-              6FmrqP5gINHdqfvWiitC0eQdDhMhIHvdfUMBicgZ0XDVjDZhD6W9A+IWwR3ySLCf
-              lZHA5JwjYhpAjMYFXwSVZklOre34zJL6CRwgIUKjc9uyGPmlnVRFTUcUqLB9Uq/U
-              dFc7XMPBAbMt1frOJRj6P1OFtubuC0INpEhzivg3+w8bXmpEN6e2hBvIjoNkgnWF
-              O6HVbDnJXTA34/I4snisJfZQ+Z9gln921+2Q27sMvyS7aBqtocDuWB0w3XZ3aCYk
-              DTEzMjUtQA==
+              MIICPTCCAeOgAwIBAgIUHoZHzmND8rCMUj6Rpk8hw1dok+swCgYIKoZIzj0EAwIw
+              TjEpMCcGA1UEAwwgaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5uZXQxFDAS
+              BgNVBAoMC0V4YW1wbGUgSU5UMQswCQYDVQQGEwJJVDAeFw0yNTA2MTUxNjUxMDZa
+              Fw0yNjA2MTYxNjUxMDZaMFgxMjAwBgNVBAMMKUNOPWxlYWYuZXhhbXBsZS5jb20s
+              IE89RXhhbXBsZSBMZWFmLCBDPUlUMRUwEwYDVQQKDAxFeGFtcGxlIExlYWYxCzAJ
+              BgNVBAYTAklUMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ46FDkhMjewZIP9q
+              P8ZKZIP+ZEemctvjxeP0l3vWHMIhPuWwbF0l7CaieT2XX9MBVjH+eLHJ1O0jVJuf
+              QuR8QKOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMCcGA1UdEQQgMB6CCWxvY2Fs
+              aG9zdIYRaHR0cHM6Ly9sb2NhbGhvc3QwDgYDVR0PAQH/BAQDAgGmMEIGA1UdHwQ7
+              MDkwN6A1oDOGMWh0dHBzOi8vbGVhZi5leGFtcGxlLmNvbS9jcmwvbGVhZi5leGFt
+              cGxlLmNvbS5jcmwwCgYIKoZIzj0EAwIDSAAwRQIhAL1kC7cvzWp8T1qx9bB0QL3O
+              1sjHIcKrHttkVrn+DRNgAiAvquUGn5zmpnoNVEzta8W+6po9KP/MfUb7oifqEvR9
+              gQ==
               -----END CERTIFICATE-----
-        relying_party_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
-            ca.example.com:
-              - |
-                -----BEGIN CERTIFICATE-----
-                MIIDfzCCAmegAwIBAgIUN3niXMK8XOjhIvf6EUD4sz80XIkwDQYJKoZIhvcNAQEL
-                BQAwTjEpMCcGA1UEAwwgaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5uZXQx
-                FDASBgNVBAoMC0V4YW1wbGUgSU5UMQswCQYDVQQGEwJJVDAeFw0yNTA0MDMxNTQ3
-                NTZaFw0yNjA0MDQxNTQ3NTZaMFcxMTAvBgNVBAMMKENOPWVhZi5leGFtcGxlLmNv
-                bSwgTz1FeGFtcGxlIExlYWYsIEM9SVQxFTATBgNVBAoMDEV4YW1wbGUgTGVhZjEL
-                MAkGA1UEBhMCSVQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCw/qO3
-                VfAkTQkMrHLgHuvcl1vxbptJGhW6fKNYyCXkhp+oXAewmViAIBY95OsAv6LKN2dY
-                LVywe5OpaN2d0Mv6ioRquuqgMDJxWR8VNRMPzX/BWFZTMDDGFAeJPs9NQixXub1U
-                aV8L+R0KlCXkJwrXLHadDUpupY5XX/lacyCc38Sk2bO2RkOcmYp51V245vZ0pbCc
-                tLd9wa9TFdzzsOMDMLa9+BBKhB9cBlvAi3JLo6KcWJScHFG+31ljYhqmMjX7DAMo
-                p5Guo8L59XahZOsyqhgC8gOd/0CMocBsjDurfTX7v55pQwXWFW0DPVd5e8ynTArz
-                +5Kj1WC/W8eEGk7BAgMBAAGjTDBKMAwGA1UdEwEB/wQCMAAwOgYDVR0RBDMwMYIQ
-                bGVhZi5leGFtcGxlLm9yZ4YdaHR0cHM6Ly9leGFtcGxlLmNvbS9PcGVuSUQ0VlAw
-                DQYJKoZIhvcNAQELBQADggEBACF2aoCODW4tziNQs41C9N363xYPt21uIQy0CQ24
-                1hRZ8Ev6yIQ/WORfzciLHZsWizZdS3D5oDY7K+WAgMpDSR0Ah9dXMfJjOxcUib57
-                Zh+YOi443fjU/5/DBHyHgfEvDy1QXXHJuDbgchzAv9u8uY0ibUb/GHy4OKaj9bOI
-                8g6qgZtT2wkfdHQPX+fpwZueTaHhoXJV+JTuE227fIjLZ5ThbvO0xbE3q4I/v+Gu
-                ZZ713LQaG2RwdJWTimJUi6Sro5s0YR6qRGejHmiS1FbJOOG4AAE4PkhkxVogItVE
-                Z4nqCEfD1RT6iwiWyXIYh3cNpWvcE3t4j7e/Su5IhW/Cv2E=
-                -----END CERTIFICATE-----
-              - |
-                -----BEGIN CERTIFICATE-----
-                MIIDRDCCAiygAwIBAgIUUOBXQmkRjQvfhU1YJbMEOMnPxvQwDQYJKoZIhvcNAQEL
-                BQAwUjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwg
-                Qz1JVDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNDAz
-                MTU0NzU2WhcNMjYwNDA0MTU0NzU2WjBOMSkwJwYDVQQDDCBodHRwczovL2ludGVy
-                bWVkaWF0ZS5leGFtcGxlLm5ldDEUMBIGA1UECgwLRXhhbXBsZSBJTlQxCzAJBgNV
-                BAYTAklUMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsSUAY+mCs1eB
-                /hWKtF0kncwTRn3jgczjZWmUSSBZT3PzqmD9uqlgEBrv2sOGwO4bBDnutCAHhfnl
-                2gXifvg2PJHQWu/g1kVY396K+d91nrqQhUabo2cpEca66t7InPMnXkMR5DG6rNP6
-                l05OLKQIvoTaHzef0rAS4f+5gF7IcRtGq9G8QRnd2lwLmDYRPKY3jp/uvLosOatv
-                Nx5p2XtxETgOSv4GEtjax3jxkMDIIPrHwTJGWwsGvasEI5lQ/G67OjFZjjSaoJ95
-                SSPhXoIydmOmXKDN3GY7ZqT9HntuSzyB3GZ4DMLyOdZdvYvt08hUCJnnY0kGhhtW
-                gW0xb/wyKwIDAQABoxYwFDASBgNVHRMBAf8ECDAGAQH/AgEAMA0GCSqGSIb3DQEB
-                CwUAA4IBAQBAwwumBWSI/guarZsNd8hEOVZ7dWRQDLxfDZB1jKtgqA2jCEbNGwpY
-                41NRRfkTi9EfZXXVdbk9xrjNWVsGdDn/Kh/1/b4uatu2ocRG5R3e2KkZMaK1/Ru2
-                LFP6gvi7i8dvEr8IQqlg+CrEb11CjMXZi36jRZhtSUnUfmUR4hqCN/qzALdiKvHS
-                NpEu0D6x6l7YEhwtpX7bvWdnEzCUrAUltMPO9pZUR1LBSPTCMSd+vUhJw/84EJEg
-                D6Lw8OxzYyzSNOrGTqfplqlHrD/WpI6DB6Yq4Rpefz84AWraGVtZbYAlQMyK1EKS
-                C3Lef0OGQC0anzAXDsGr1As8HdEuSngu
-                -----END CERTIFICATE-----
-              - |
-                -----BEGIN CERTIFICATE-----
-                MIIDYzCCAkugAwIBAgIUHVMNJD9vqAA4mR+QAJyEQFW4kjQwDQYJKoZIhvcNAQEL
-                BQAwUjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwg
-                Qz1JVDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNDAz
-                MTU0NzU2WhcNMjYwNDA0MTU0NzU2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxl
-                LmNvbSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQsw
-                CQYDVQQGEwJJVDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMf3zvlY
-                zX1DYgv9QjRusMQjSRNdZi72/ydnxO/cAQ1GsgLZ8ewqIL1CnXtIs6i2F8poUOec
-                g957xk1db6sTqEWXRi5h9IfMUFcd5G7gIbJzjXCiLSVz6m9vZlvqR7BDka1VQhuH
-                rW2xEIE6+F2lWxJ+crimea/c5VlMKBCh+gQldFq3lTu6smGUz8xl8rhleBPgTgZz
-                TO4VuVO1dOb/S4lq9twfVYCTznF9vgaNaNh3la7yjzCf+zpSTGQD8TFO8ws1SZRq
-                O0bkabW8/5XsnwFHLT2LMSPkWMgMD8r+7xef93bvbEy7SA4Hw1Iow2xIIcTDYQ7F
-                77HQ3OjkogHmhrMCAwEAAaMxMC8wEgYDVR0TAQH/BAgwBgEB/wIBATAZBgNVHREE
-                EjAQgg5jYS5leGFtcGxlLmNvbTANBgkqhkiG9w0BAQsFAAOCAQEApRUUxw5Dn0wd
-                lFPApjn7n/SZyx5I1XnOHOIk8aWD0KFFa1zsnONlmRDgC8EQ5XKw3nMUwvnCQUR8
-                6FmrqP5gINHdqfvWiitC0eQdDhMhIHvdfUMBicgZ0XDVjDZhD6W9A+IWwR3ySLCf
-                lZHA5JwjYhpAjMYFXwSVZklOre34zJL6CRwgIUKjc9uyGPmlnVRFTUcUqLB9Uq/U
-                dFc7XMPBAbMt1frOJRj6P1OFtubuC0INpEhzivg3+w8bXmpEN6e2hBvIjoNkgnWF
-                O6HVbDnJXTA34/I4snisJfZQ+Z9gln921+2Q27sMvyS7aBqtocDuWB0w3XZ3aCYk
-                DTEzMjUtQA==
-                -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICHDCCAcKgAwIBAgIUacxcub/wg7IelStXNkgaiSS6syowCgYIKoZIzj0EAwIw
+              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
+              MTA2WhcNMjYwNjE2MTY1MTA2WjBOMSkwJwYDVQQDDCBodHRwczovL2ludGVybWVk
+              aWF0ZS5leGFtcGxlLm5ldDEUMBIGA1UECgwLRXhhbXBsZSBJTlQxCzAJBgNVBAYT
+              AklUMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEZcOJK9fXANy51BFirWXOCipi
+              qFWFH4TlRwbAj8L4eYNV5oCqMiY8sxhtK3qX6BdUBYBiio7IQBIhmeLXFBi+2aN6
+              MHgwEgYDVR0TAQH/BAgwBgEB/wIBATAOBgNVHQ8BAf8EBAMCAaYwUgYDVR0fBEsw
+              STBHoEWgQ4ZBaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5uZXQvY3JsL2lu
+              dGVybWVkaWF0ZS5leGFtcGxlLm5ldC5jcmwwCgYIKoZIzj0EAwIDSAAwRQIhAJMk
+              C6fSNuhegoI4wQa057vespZDawTeRotGMY/sU3fnAiB3wpPqzLnEIldTJQeztA0f
+              2TqlVlfiUgsTaGDC/rRtbg==
+              -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICJzCCAc6gAwIBAgIUFqb+aMtaYydHFIh9qXKzZVz7eQYwCgYIKoZIzj0EAwIw
+              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
+              MTA2WhcNMjYwNjE2MTY1MTA2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
+              bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
+              VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJOfDFsMn2zgJ1Kb5hXU
+              r/dDyOwRjm2LRiVFjgUSnhy/09FapToxjB7FAGZMJb/Q3JyCUc32WOGfXYA5izT+
+              Ul6jgYEwfzASBgNVHRMBAf8ECDAGAQH/AgECMBkGA1UdEQQSMBCCDmNhLmV4YW1w
+              bGUuY29tMA4GA1UdDwEB/wQEAwIBpjA+BgNVHR8ENzA1MDOgMaAvhi1odHRwczov
+              L2NhLmV4YW1wbGUuY29tL2NybC9jYS5leGFtcGxlLmNvbS5jcmwwCgYIKoZIzj0E
+              AwIDRwAwRAIgafkpE88vVHf1AoNrRvqLNaiRwdw569kUbhwVrbXN7dYCIH0OkXvk
+              tX5+FvfFc70mO+2FvYtOV0U4pruy8e807ATO
+              -----END CERTIFICATE-----
 
         private_keys: *metadata_jwks
 
