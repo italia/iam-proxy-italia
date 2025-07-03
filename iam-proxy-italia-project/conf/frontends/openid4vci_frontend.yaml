@@ -1,0 +1,719 @@
+module: pyeudiw.satosa.frontends.openid4vci.openid4vci.OpenID4VCIFrontend
+name: OpenID4VCI
+
+config:
+
+  endpoints:
+    par:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.pushed_authorization_request_endpoint
+      class: ParHandler
+      path: '/par'
+    credential_offer:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_offer_endpoint
+      class: CredentialOfferHandler
+      path: '/credential'
+    credential_offer_qrcode:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_offer_qrcode_endpoint
+      class: CredentialOfferQrCodeHandler
+      path: '/credential-qrcode'
+    authorization:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.authorization_endpoint
+      class: AuthorizationHandler
+      path: '/authorization'
+    token:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.token_endpoint
+      class: TokenHandler
+      path: '/token'
+    nonce:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.nonce_endpoint
+      class: NonceHandler
+      path: '/nonce-endpoint'
+    credential:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_endpoint
+      class: CredentialHandler
+      path: '/credential'
+    #    deferred_credential:
+    #      module: pyeudiw.satosa.frontends.openid4vci.endpoints.deferred_credential_endpoint
+    #      class: DeferredCredentialHandler
+    #      path: '/deferred-credential'
+    #    notification:
+    #      module: pyeudiw.satosa.frontends.openid4vci.endpoints.notification_endpoint
+    #      class: NotificationHandler
+    #      path: '/notification'
+    metadata:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.metadata_endpoint
+      class: MetadataHandler
+      path: '/.well-known/openid-federation'
+    status_list:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.status_list_endpoint
+      class: StatusListHandler
+      path: &status_list_endpoint_path '/status'
+
+  qrcode:
+    ui:
+      static_storage_url: !ENV SATOSA_BASE_STATIC
+      template_folder: "templates" # project root
+      qrcode_template: "qr_code.html"
+      authorization_error_template: "authorization_error.html"
+    size: 250 # px
+    color: '#000000'  # hex
+    expiration_time: 120 # seconds
+    logo_path: 'wallet-it/wallet-icon-blue.svg' # relative to static_storage_url
+
+  network:
+    httpc_params: &httpc_params
+      connection:
+        ssl: true
+      session:
+        timeout: 6
+
+  jwt:
+    default_sig_alg: ES256  # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+    default_enc_alg: RSA-OAEP
+    default_enc_enc: A256CBC-HS512
+    default_exp: 6         # minutes
+    enc_alg_supported:
+      - RSA-OAEP
+      - RSA-OAEP-256
+      - ECDH-ES
+      - ECDH-ES+A128KW
+      - ECDH-ES+A192KW
+      - ECDH-ES+A256KW
+    enc_enc_supported:
+      - A128CBC-HS256
+      - A192CBC-HS384
+      - A256CBC-HS512
+      - A128GCM
+      - A192GCM
+      - A256GCM
+    sig_alg_supported:
+      - RS256
+      - RS384
+      - RS512
+      - ES256
+      - ES384
+      - ES512
+    access_token_exp: 90 # mandatory expiration time, in minutes, for the JWT access token returned by the `token` endpoint
+    refresh_token_exp: 120 # mandatory expiration time, in minutes, for the JWT refresh token returned by the `token` endpoint
+    par_exp: 90 # mandatory expiration time, in minutes, for the JWT token returned by the `par` endpoint
+
+  # private jwk
+  # WARNING: change these keys in production env. Keep these keys unchanged can pose a serious security risk.
+  metadata_jwks: &metadata_jwks
+    - kty: EC # Please note: this is the first key [0] and it is used for signing the presentation requests as mso_mdoc too
+      d: YbMCJU43_GkbjUlWwTA5LbVvRRmz4788-k4zl2mjwrE
+      use: sig
+      crv: P-256
+      kid: 2uhBmKZqkmLaPdJjvQ6ll6dsWXr9FGlouTnhg3mUec0
+      x: o8I43oRYmVk5x6Zmq2_Ni--cHD5S81qTD_5cQum2Atk
+      y: RrhbyuxVw6ZXEpbb8H_HyvEyL7rX0UeSZqcvulHuyFQ
+      alg: ES256
+
+  #This is the configuration for the relaying party metadata
+  metadata:
+    oauth_authorization_server:
+      issuer: https://eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      pushed_authorization_request_endpoint: /as/par
+      authorization_endpoint: /authorize
+      token_endpoint: /token
+      client_registration_types_supported:
+        - automatic
+      code_challenge_methods_supported:
+        - S256
+      acr_values_supported:
+        - https://trust-registry.eid-wallet.example.it/loa/substantial
+        - https://trust-registry.eid-wallet.example.it/loa/high
+      scopes_supported:
+        - EuropeanDisabilityCard
+        - mDL
+      response_modes_supported:
+        - form_post.jwt
+        - query
+      response_types_supported:
+        - code
+      authorization_signing_alg_values_supported:
+        - ES256
+        - ES384
+        - ES512
+      grant_types_supported:
+        - authorization_code
+      token_endpoint_auth_methods_supported:
+        - attest_jwt_client_auth
+      token_endpoint_auth_signing_alg_values_supported:
+        - ES256
+        - ES384
+        - ES512
+      request_object_signing_alg_values_supported:
+        - ES256
+        - ES384
+        - ES512
+      jwks: *metadata_jwks
+    openid_credential_issuer: &openid_credential_issuer_metadata
+      credential_issuer: https://eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      credential_endpoint: /credential
+      nonce_endpoint: /nonce-endpoint
+      deferred_credential_endpoint: /deferred-credential
+      revocation_endpoint: /revoke
+      status_assertion_endpoint: /status
+      notification_endpoint: /notification
+      credential_hash_alg_supported: sha-256
+      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
+        -
+      display:
+        - name: EAA Provider
+          locale: it-IT
+        - name: EAA Provider
+          locale: en-US
+      credential_configurations_supported:
+        dc_sd_jwt_EuropeanDisabilityCard:
+          format: dc+sd-jwt
+          scope: EuropeanDisabilityCard
+          cryptographic_binding_methods_supported:
+            - jwk
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          display:
+            - name: Carta della disabilità europea
+              locale: it-IT
+            - name: European Disability Card
+              locale: en-US
+          vct: https://trust-registry.eid-wallet.example.it/v1.0/EuropeanDisabilityCard
+          claims:
+            - path:
+                - document_number
+              display:
+                - name: Numero Documento
+                  locale: it-IT
+                - name: Document Number
+                  locale: en-US
+            - path:
+                - given_name
+              display:
+                - name: Nome
+                  locale: it-IT
+                - name: Name
+                  locale: en-US
+            - path:
+                - family_name
+              display:
+                - name: Cognome
+                  locale: it-IT
+                - name: Family Name
+                  locale: en-US
+            - path:
+                - birth_date
+              display:
+                - name: Data di Nascita (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Date of Birth (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - personal_administrative_number
+              display:
+                - name: Codice Fiscale
+                  locale: it-IT
+                - name: Tax Identification Number
+                  locale: en-US
+            - path:
+                - expiry_date
+              display:
+                - name: Data di Scadenza (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Expiration Date (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - constant_attendance_allowance
+              display:
+                - name: Diritto accompagnatore
+                  locale: it-IT
+                - name: Constant attendance allowance
+                  locale: en-US
+            - path:
+                - portrait
+              display:
+                - name: Foto codificata in base64
+                  locale: it-IT
+                - name: Portrait base64 encoded
+                  locale: en-US
+            - path:
+                - link_qr_code
+              display:
+                - name: Link QR Code
+                  locale: it-IT
+                - name: Link QR Code
+                  locale: en-US
+        dc_sd_jwt_mDL:
+          format: dc+sd-jwt
+          scope: mDL
+          cryptographic_binding_methods_supported:
+            - jwk
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          display:
+            - name: Patente di guida
+              locale: it-IT
+            - name: Mobile Driver's License
+              locale: en-US
+          vct: https://trust-registry.eid-wallet.example.it/v1.0/mDL
+          claims:
+            - path:
+                - given_name
+              display:
+                - name: Nome
+                  locale: it-IT
+                - name: Name
+                  locale: en-US
+            - path:
+                - family_name
+              display:
+                - name: Cognome
+                  locale: it-IT
+                - name: Family Name
+                  locale: en-US
+            - path:
+                - birth_date
+              display:
+                - name: Data di Nascita (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Date of Birth (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - place_of_birth
+              display:
+                - name: Luogo di Nascita
+                  locale: it-IT
+                - name: Place of Birth
+                  locale: en-US
+            - path:
+                - issue_date
+              display:
+                - name: Data di rilascio (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Issue Date (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - expiry_date
+              display:
+                - name: Data di Scadenza (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Expiration Date (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - issuing_country
+              display:
+                - name: Paese di rilascio
+                  locale: it-IT
+                - name: Issuing Country
+                  locale: en-US
+            - path:
+                - issuing_authority
+              display:
+                - name: Autorità di rilascio
+                  locale: it-IT
+                - name: Issuing Authority
+                  locale: en-US
+            - path:
+                - document_number
+              display:
+                - name: Numero Documento
+                  locale: it-IT
+                - name: Document Number
+                  locale: en-US
+            - path:
+                - portrait
+              display:
+                - name: Foto codificata in base64
+                  locale: it-IT
+                - name: Portrait base64 encoded
+                  locale: en-US
+            - path:
+                - driving_privileges
+              display:
+                - name: Elenco delle categorie di abilitazione separate da spazio
+                  locale: it-IT
+                - name: Driving Privileges separated by space
+                  locale: en-US
+            - path:
+                - restrictions_conditions
+              display:
+                - name: Annotazioni/Restrizioni valide per tutte le categorie separate da spazio
+                  locale: it-IT
+                - name: Restriction/Condition for all driving privileges separated by space
+                  locale: en-US
+            - path:
+                - driving_privileges_details
+              display:
+                - name: Dettagli delle categorie di abilitazione
+                  locale: it-IT
+                - name: Driving privilege details
+                  locale: en-US
+        mso_mdoc_mDL:
+          format: mso_mdoc
+          scope: mDL
+          doctype: org.iso.18013.5.1.mDL
+          cryptographic_binding_methods_supported:
+            - cose_key
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          display:
+            - name: Patente di guida
+              locale: it-IT
+            - name: Mobile Driver's License
+              locale: en-US
+          claims:
+            - path:
+                - org.iso.18013.5.1
+                - given_name
+              display:
+                - name: Nome
+                  locale: it-IT
+                - name: First Name
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - family_name
+              display:
+                - name: Cognome
+                  locale: it-IT
+                - name: Family Name
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - birth_date
+              display:
+                - name: Data di nascita (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Date of Birth (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - birth_place
+              display:
+                - name: Luogo di Nascita
+                  locale: it-IT
+                - name: Place of Birth
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - issue_date
+              display:
+                - name: Data di rilascio (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Issue Date (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - expiry_date
+              display:
+                - name: Data di scadenza (YYYY-MM-GG)
+                  locale: it-IT
+                - name: Expiry Date (YYYY-MM-GG)
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - issuing_country
+              display:
+                - name: Paese di rilascio
+                  locale: it-IT
+                - name: Issuing Country
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - issuing_authority
+              display:
+                - name: Autorità di rilascio
+                  locale: it-IT
+                - name: Issuing Authority
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - document_number
+              display:
+                - name: Numero di documento
+                  locale: it-IT
+                - name: Document Number
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - portrait
+              display:
+                - name: Foto codificata in base64
+                  locale: it-IT
+                - name: Portrait base64 encoded
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - driving_privileges
+              display:
+                - name: Elenco delle categorie di abilitazione e relativi dettagli su restrizioni/condizioni
+                  locale: it-IT
+                - name: Driving Privileges and related restrictions/conditions details
+                  locale: en-US
+            - path:
+                - org.iso.18013.5.1
+                - un_distinguishing_sign
+              display:
+                - name: Codice identificativo della Nazione
+                  locale: it-IT
+                - name: Distinguishing sign of the issuing country
+                  locale: en-US
+      jwks: *metadata_jwks
+      trust_frameworks_supported:
+        - it_cie
+        - it_wallet
+        - eudi_wallet
+      evidence_supported:
+        - vouch
+    federation_entity: &federation_entity_metadata
+      organization_name: Organization Name
+      homepage_uri: https://eaa-provider.example.org/
+      policy_uri: https://eaa-provider.example.org/public/privacy_policy.html
+      tos_uri: https://eaa-provider.example.org/public/info_policy.html
+      logo_uri: https://eaa-provider.example.org/public/logo.svg
+      contacts:
+        - informazioni@example.it
+        - protocollo@pec.example.it
+
+  # this is the custom configuration for credential management.
+  credential_configurations:
+    lookup_source: openid4vci #this key is the same one found in `internal_attributes.yaml`, used for lookup filter for attributes
+    status_list:
+      path: *status_list_endpoint_path
+      exp: 90 # minutes
+      ttl: 43200
+    credential_specification:
+      mso_mdoc_mDL:
+        expiry_days: 365
+        template: |
+          org.iso.18013.5.1:
+            family_name: "{{surname}}"
+            given_name: "{{name}}"
+            birth_date: "{{dateOfBirth}}"
+            expiry_date: "{{expiryDate}}"
+            issue_date: "{{issueDate}}"
+            issuing_country: "{{issuingCountry}}"
+            issuing_authority: "{{issuingAuthority}}"
+            document_number: "{{documentNumber}}"
+            un_distinguishing_sign: "I"
+            portrait: !!binary "{{portrait_b64}}"
+            driving_privileges: "{{driving_privileges}}"
+          org.iso.18013.5.1.it:
+            verification.evidence:
+              organization_name: "{{verification.organization_name}}"
+              organization_id: "{{verification.organization_id}}"
+              country_code: "{{verification.country_code}}"
+            verification.trust_framework: "{{trust_framework}}"
+            verification.assurance_level: "{{assurance_level}}"
+      dc_sd_jwt_mDL:
+        template: |
+          holder_disclosed_claims:
+            !sd given_name: "{{name}}"
+            !sd family_name: "{{surname}}"
+            !sd place_of_birth:
+              country: "{{countyOfBirth}}"
+              locality: "{{placeOfBirth}}"
+          key_binding: true
+          user_claims:
+            !sd birthdate: "{{dateOfBirth}}"
+            !sd family_name: "{{surname}}"
+            !sd given_name: "{{name}}"
+            !sd place_of_birth:
+              country: "{{countyOfBirth}}"
+              locality: "{{placeOfBirth}}"
+            !sd tax_id_code: "TINIT-{{fiscal_code}}"
+            !sd unique_id: "{{unique_id}}"
+
+
+  trust:
+    federation:
+      module: pyeudiw.trust.handler.federation
+      class: FederationHandler
+      config:
+        httpc_params: *httpc_params
+        cache_ttl: 0
+        entity_configuration_exp: 600
+        metadata_type: "openid_credential_issuer"
+        metadata: *openid_credential_issuer_metadata
+        authority_hints:
+          - http://127.0.0.1:8000
+        trust_anchors:
+          - http://127.0.0.1:8000:
+              -
+          - https://trust-anchor.edu:
+              -
+          - https://trust-anchor.example.org:
+              # WARNING: change these keys in production env. Keep these keys unchanged can pose a serious security risk.
+              - kty: EC,
+                d: WbhdFpNhUTQ7gfh8XUQzMfe8JPVAKAh4qCfHRMqyQE8,
+                use: sig,
+                crv: P-256,
+                kid: 4_6lPScdml0BplAsv8RO0u7B2XnrvusAMpFWNI_QJco,
+                x: aPZam7vAOLAdx3HOAQM3PJgczLS2Od8uIxW755a0T2c,
+                y: cUnLFFz8S_STZmDRYOghxMNJobDCtVQLEyeF_VkJl9Y,
+                alg: ES256
+        default_sig_alg: "RS256"
+        trust_marks: []
+        federation_entity_metadata: *federation_entity_metadata
+        federation_jwks: # !ENV PYEUDIW_FEDERATION_JWKS
+          - kty: RSA
+            d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+            e: AQAB
+            kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+            n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+            p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+            q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+    x509:
+      module: pyeudiw.trust.handler.x509
+      class: X509Handler
+      config:
+        issuer_id: "x509_san_dns:localhost"
+        certificate_authorities:
+          ca.example.com: |
+            -----BEGIN CERTIFICATE-----
+            MIICMTCCAdegAwIBAgIUFz6Jqc1G5/Ykbl6cM5VGZ+LOnRIwCgYIKoZIzj0EAwIw
+            UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+            VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNzAyMTY0
+            NDQwWhcNMjYwNzAzMTY0NDQwWjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
+            bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
+            VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABPomtRSvN+6K9ld74iPp
+            5YWy7Cv2jWcQ7qlx8AnFl9fCEx8qVK0yW0PUp+tDXE7PSELY7YgXnMIyU7xzR0n0
+            fJejgYowgYcwEgYDVR0TAQH/BAgwBgEB/wIBATAuBgNVHR8EJzAlMCOgIaAfhh1o
+            dHRwOi8vY2EuZXhhbXBsZS5jb20vY3JsLnBlbTAOBgNVHQ8BAf8EBAMCAaYwMQYD
+            VR0RBCowKIYWaHR0cHM6Ly9jYS5leGFtcGxlLmNvbYIOY2EuZXhhbXBsZS5jb20w
+            CgYIKoZIzj0EAwIDSAAwRQIhAPpXUeGOprVYUqNZX0gC4dbXSUqeTeaqt3WHyBVl
+            wLulAiA3ZUIZHwa0P+xT1TxnED6udHf9+yyFQQEntrw7NdzveQ==
+            -----END CERTIFICATE-----
+        leaf_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
+          ca.example.com:
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICdzCCAh2gAwIBAgIUVYrg1ljjjT83r6pbjHi2/j5gkY0wCgYIKoZIzj0EAwIw
+              TzEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMR0wGwYDVQQKDBRF
+              eGFtcGxlIEludGVybWVkaWF0ZTELMAkGA1UEBhMCSVQwHhcNMjUwNzAyMTY0NDQw
+              WhcNMjYwNzAzMTY0NDQwWjBYMTIwMAYDVQQDDClDTj1sZWFmLmV4YW1wbGUuY29t
+              LCBPPUV4YW1wbGUgTGVhZiwgQz1JVDEVMBMGA1UECgwMRXhhbXBsZSBMZWFmMQsw
+              CQYDVQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKPCON6EWJlZOcem
+              ZqtvzYvvnBw+UvNakw/+XELptgLZRrhbyuxVw6ZXEpbb8H/HyvEyL7rX0UeSZqcv
+              ulHuyFSjgc0wgcowDAYDVR0TAQH/BAIwADBCBgNVHR8EOzA5MDegNaAzhjFodHRw
+              czovL2xlYWYuZXhhbXBsZS5jb20vY3JsL2xlYWYuZXhhbXBsZS5jb20uY3JsMD4G
+              A1UdHgEB/wQ0MDKgMDAahhhodHRwczovL2xlYWYuZXhhbXBsZS5jb20wEoIQbGVh
+              Zi5leGFtcGxlLmNvbTAOBgNVHQ8BAf8EBAMCAaYwJgYDVR0RBB8wHYYQbGVhZi5l
+              eGFtcGxlLm9yZ4IJbG9jYWxob3N0MAoGCCqGSM49BAMCA0gAMEUCIQDHGzkyoZqw
+              /+fXJOpZ3CfRarm/oYnvFyh/bRbh+AqgrgIgZvS4ThK4NNIs/h2iffGM13xpmIzq
+              6lqkCyBfqz25Sj4=
+              -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICZjCCAgygAwIBAgIUdkS8NW1gb+EpEf4TfGo9gnug22UwCgYIKoZIzj0EAwIw
+              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNzAyMTY0
+              NDQwWhcNMjYwNzAzMTY0NDQwWjBPMSEwHwYDVQQDDBhpbnRlcm1lZGlhdGUuZXhh
+              bXBsZS5jb20xHTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMQswCQYDVQQG
+              EwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKByvNynPuIVdmOmguNHc7mo
+              a/LWrobhDg71tvJNrDS+Jlf4LCZUgdUUF0SR9xx63QoKM1gV8x4Dd+rWMtZH5kmj
+              gcIwgb8wEgYDVR0TAQH/BAgwBgEB/wIBADBSBgNVHR8ESzBJMEegRaBDhkFodHRw
+              czovL2ludGVybWVkaWF0ZS5leGFtcGxlLm5ldC9jcmwvaW50ZXJtZWRpYXRlLmV4
+              YW1wbGUubmV0LmNybDAOBgNVHQ8BAf8EBAMCAaYwRQYDVR0RBD4wPIYgaHR0cHM6
+              Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5jb22CGGludGVybWVkaWF0ZS5leGFtcGxl
+              LmNvbTAKBggqhkjOPQQDAgNIADBFAiEApaJ9yW166NquLjChDYUTjvgV47cWYWoz
+              H0dfJuT0bKACIDJA0vvf7+hIHnUHMX6q3ajvxe38x/SdY/sIB15TQ7PD
+              -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICMTCCAdegAwIBAgIUFz6Jqc1G5/Ykbl6cM5VGZ+LOnRIwCgYIKoZIzj0EAwIw
+              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
+              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNzAyMTY0
+              NDQwWhcNMjYwNzAzMTY0NDQwWjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
+              bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
+              VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABPomtRSvN+6K9ld74iPp
+              5YWy7Cv2jWcQ7qlx8AnFl9fCEx8qVK0yW0PUp+tDXE7PSELY7YgXnMIyU7xzR0n0
+              fJejgYowgYcwEgYDVR0TAQH/BAgwBgEB/wIBATAuBgNVHR8EJzAlMCOgIaAfhh1o
+              dHRwOi8vY2EuZXhhbXBsZS5jb20vY3JsLnBlbTAOBgNVHQ8BAf8EBAMCAaYwMQYD
+              VR0RBCowKIYWaHR0cHM6Ly9jYS5leGFtcGxlLmNvbYIOY2EuZXhhbXBsZS5jb20w
+              CgYIKoZIzj0EAwIDSAAwRQIhAPpXUeGOprVYUqNZX0gC4dbXSUqeTeaqt3WHyBVl
+              wLulAiA3ZUIZHwa0P+xT1TxnED6udHf9+yyFQQEntrw7NdzveQ==
+              -----END CERTIFICATE-----
+
+        private_keys: *metadata_jwks # the keys must be the same because the key at position 0 must correspond to the one from which the certificate at position 0 of the chain `leaf_certificate_chains_by_ca` is derived
+
+  # Mongodb database configuration
+  # Configuration for retrieving user datas, it stores user attributes required to
+  # generate the requested credential with `credential` endpoint.
+  user_storage:
+    mongo_db:
+      storage:
+        module: pyeudiw.storage.user_storage
+        class: UserStorage
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eid_user
+            db_users_collection: users
+            data_ttl: 63072000 # 2 years
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
+  # Configuration for retrieving credentials data, it's a storage system used by both
+  # the `credential` and `status_list` endpoints. It maintains the state of each credential in relation to the corresponding
+  # user, supporting status updates such as issuance and revocation.
+  credential_storage:
+    mongo_db:
+      storage:
+        module: pyeudiw.storage.credential_storage
+        class: CredentialStorage
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eid_credential
+            db_credentials_collection: credentials
+            data_ttl: 63072000 # 2 years
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
+
+  # Mongodb database configuration
+  storage:
+    mongo_db:
+      cache:
+        module: pyeudiw.storage.mongo_cache
+        class: MongoCache
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eudiw
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
+      storage:
+        module: pyeudiw.storage.mongo_storage
+        class: MongoStorage
+        init_params:
+          url: mongodb://satosa-mongo:27017
+          conf:
+            db_name: eudiw
+            db_sessions_collection: sessions
+            db_trust_attestations_collection: trust_attestations
+            db_trust_anchors_collection: trust_anchors
+            db_trust_sources_collection: trust_sources
+            data_ttl: 63072000 # 2 years
+          connection_params:
+            username: !ENV MONGODB_USERNAME
+            password: !ENV MONGODB_PASSWORD
