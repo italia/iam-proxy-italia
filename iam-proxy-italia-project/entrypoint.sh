@@ -1,33 +1,26 @@
 #!/bin/bash
 . /.venv/bin/activate
 
-MAX_RETRY=10
-REMOTE_DATA_LOCATION="https://registry.spid.gov.it/entities-idp -O ./spid-entities-idps.xml"
-
-# get IDEM MDQ key
-if [[ $GET_IDEM_MDQ_KEY == true ]]; then
-  wget https://mdx.idem.garr.it/idem-mdx-service-crt.pem -O $SATOSA_KEYS_FOLDER/idem-mdx-service-crt.pem
-  echo "Downloaded IDEM MDQ key"
-fi
-
-# get SPID IDP Metadata key
-if [[ $GET_SPID_IDP_METADATA == true ]]; then
-  wget $REMOTE_DATA_LOCATION
-  status=$?
-  while [[ $status != 0 && $MAX_RETRY -gt 0 ]]; do
-    echo "Retrying download from registry.spid.gov.it ..."
-    wget $REMOTE_DATA_LOCATION
-    status=$?
-    MAX_RETRY=$((MAX_RETRY-1))
-  done
-
-  if [ $MAX_RETRY == 0 ]; then
-    echo "Cannot fetch identity providers data from remote registry, aborting..."
-    exit 1
+###  function get_data ###
+# try 3 time to get remote http/https data and copy to destination if third param is set "true"
+# each try have 2 second of timeout, on error the destination file it is not written. Require wget. 
+#
+# get_data origin destination param_to_test
+function get_data {
+  if [[ $3 == 'true' ]]; then
+    TMP=`mktemp`
+    wget $1 -nv -t3 -T2 -O $TMP && cp $TMP $2
+    rm $TMP
+    unset $tmp
+    chmod +r $2
   fi
+}
 
-  echo "Downloaded IDEM MDQ key"
-fi
+### Update metadata and keys
+get_data https://mdx.idem.garr.it/idem-mdx-service-crt.pem $SATOSA_KEYS_FOLDER/idem-mdx-service-crt.pem $SATOSA_GET_IDEM_MDQ_KEY
+get_data https://registry.spid.gov.it/entities-idp ./metadata/idp/spid-entities-idps.xml $SATOSA_GET_SPID_IDP_METADATA
+get_data https://sp-proxy.eid.gov.it/metadata ./metadata/idp/ficep.xml $SATOSA_GET_FICEP_IDP_METADATA
+get_data https://idserver.servizicie.interno.gov.it/idp/shibboleth?Metadata ./metadata/idp/cie-production.xml $SATOSA_GET_CIE_IDP_METADATA
 
 wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
 wsgi_cmd=""
