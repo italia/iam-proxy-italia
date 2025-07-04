@@ -2,7 +2,7 @@ attributes:
   address:
     openid: [address.street_address]
     orcid: [addresses.str]
-    saml: [postaladdress, addressS, address]
+    saml: [postaladdress, address]
     openid4vp: [address]
   displayname:
     openid: [nickname]
