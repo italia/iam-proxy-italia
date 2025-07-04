@@ -33,7 +33,7 @@ BACKEND_MODULES:
 FRONTEND_MODULES:
   - "plugins/frontends/saml2_frontend.yaml"
   # - "plugins/frontends/oidcop_frontend.yaml"
-  - "plugins/frontends/openid4vci_frontend.yaml"
+  # - "plugins/frontends/openid4vci_frontend.yaml"
 MICRO_SERVICES:
   # - "plugins/microservices/spid_unical_account_linking.yaml"
   # - "plugins/microservices/multiple_ldap_attribute_store.yaml"
