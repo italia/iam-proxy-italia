@@ -1,6 +1,6 @@
 [project]
 name = "iam-proxy-italia"
-version = "2.2.1"
+version = "3.0"
 description = "IAM Proxy"
 authors = [
     {name = "Giuseppe De Marco",email = "demarcog83@gmail.com"}
@@ -9,8 +9,8 @@ license = {text = "Apache 2.0"}
 readme = "README.md"
 requires-python = ">=3.9,<4.0"
 dependencies = [
-    "pysaml2 @ git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.0",
-    "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.0",
+    "pysaml2 @ git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.2",
+    "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-v8.5.1",
     "pymongo (>=4.10.1,<5.0.0)",
     "satosa-oidcop (>=2.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
