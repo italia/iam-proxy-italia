@@ -52,7 +52,11 @@ jobs:
             echo "Checking if branch '$CURRENT_BRANCH' exists in eudi-wallet-it-python..."
             if git ls-remote --heads https://github.com/italia/eudi-wallet-it-python.git $CURRENT_BRANCH | grep -q $CURRENT_BRANCH; then
               echo "Branch found! Patching pyproject.toml..."
-              sed -i 's|git+https://github.com/italia/eudi-wallet-it-python|git+https://github.com/italia/eudi-wallet-it-python.git@'"$CURRENT_BRANCH"'|' pyproject.toml
+              # PEP 508 style
+              sed -i 's|git+https://github.com/italia/eudi-wallet-it-python|git+https://github.com/italia/eudi-wallet-it-python.git@'"$CURRENT_BRANCH"'|g' pyproject.toml
+              # Table style
+              sed -i 's|git = "https://github.com/italia/eudi-wallet-it-python"|git = "https://github.com/italia/eudi-wallet-it-python.git", rev = "'"$CURRENT_BRANCH"'"|g' pyproject.toml
+              rm -f poetry.lock
             else
               echo "No matching branch found. Using default pyproject.toml."
             fi
