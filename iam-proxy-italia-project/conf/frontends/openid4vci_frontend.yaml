@@ -40,6 +40,10 @@ config:
     #      module: pyeudiw.satosa.frontends.openid4vci.endpoints.notification_endpoint
     #      class: NotificationHandler
     #      path: '/notification'
+    credential_issuer_metadata:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_issuer_metadata_endpoint
+      class: CredentialIssuerMetadataHandler
+      path: '.well-known/openid-credential-issuer'
     metadata:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.metadata_endpoint
       class: MetadataHandler
