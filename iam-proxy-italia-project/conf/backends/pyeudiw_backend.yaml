@@ -68,7 +68,7 @@ config:
         - ES256
         - ES384
         - ES512
-    
+
   authorization:
     client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
     auth_iss_id: # this field if not set will be set to client_id in the authz request
@@ -183,9 +183,9 @@ config:
     # public part loaded in the __init__
     jwks: *metadata_jwks
 
-    redirect_uris: 
+    redirect_uris:
       # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
-    request_uris: 
+    request_uris:
       # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
 
     # not necessary according to openid4vp
@@ -258,7 +258,7 @@ config:
                 p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
                 q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
         default_sig_alg: "RS256"
-        trust_marks: [] 
+        trust_marks: []
         federation_entity_metadata:
             organization_name: IAM Proxy Italia OpenID4VP backend
             homepage_uri: https://developers.italia.it
@@ -354,7 +354,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eudiw
+            db_name: pyeudiw_openid4vp
           connection_params:
             username: !ENV MONGODB_USERNAME
             password: !ENV MONGODB_PASSWORD
@@ -364,7 +364,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eudiw
+            db_name: pyeudiw_openid4vp
             db_sessions_collection: sessions
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
