@@ -155,6 +155,10 @@ config:
         - ES256
         - ES384
         - ES512
+      dpop_signing_alg_values_supported: # Optional supported algorithm for validate DPoP, if missing every value in cnf is admitted.
+        - ES256
+        - ES384
+        - ES512
       jwks: *metadata_jwks
     openid_credential_issuer: &openid_credential_issuer_metadata
       credential_issuer: https://eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
