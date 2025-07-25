@@ -17,6 +17,8 @@ from satosa.exception import SATOSAAuthenticationError
 from satosa.response import Response
 from satosa.saml_util import make_saml_response
 from six import text_type
+import time
+import functools
 
 from .spidsaml2_validator import Saml2ResponseValidator
 
@@ -78,6 +80,7 @@ class SpidSAMLBackend(SAMLBackend):
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
     def __init__(self, *args, **kwargs):
+        logger.info(f"[INFO] Entering method: __init__. Params[ args: {args}, kwargs: {kwargs}]")
         super().__init__(*args, **kwargs)
 
         # error pages handler
@@ -100,6 +103,7 @@ class SpidSAMLBackend(SAMLBackend):
         )
 
     def _metadata_contact_person(self, metadata, conf):
+        logger.info(f"[INFO] Entering method: _metadata_contact_person. Params[ metadata: {metadata}, conf: {conf}]")
         ##############
         # avviso 29 v3
         #
@@ -210,7 +214,9 @@ class SpidSAMLBackend(SAMLBackend):
         # fine avviso 29v3
         ###################
 
+    @functools.cache
     def _metadata_endpoint(self, context):
+        logger.info(f"[INFO] Entering method: _metadata_endpoint. Params[ context: {context}]. Start at: {time.time()}]")
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -222,6 +228,18 @@ class SpidSAMLBackend(SAMLBackend):
         logger.debug("Sending metadata response")
         conf = self.sp.config
 
+        xmldoc = None
+
+        if self.xmldoc is not None:
+            logger.info(f"[INFO] xmldoc is not None: {xmldoc}")
+            xmldoc = self.xmldoc
+        else:
+            logger.info(f"[INFO] xmldoc is None: {xmldoc}")
+            xmldoc = self.create_metadata(conf)
+
+        logger.info(f"[INFO] xmldoc: {xmldoc}")
+
+        '''
         metadata = entity_descriptor(conf)
  
         # creare gli attribute_consuming_service
@@ -282,11 +300,16 @@ class SpidSAMLBackend(SAMLBackend):
             metadata, None, secc, **sign_dig_algs)
 
         valid_instance(eid)
+        
+        '''
+
+        logger.info(f"[INFO] Method: _metadata_endpoint. Finish at: {time.time()}]")
         return Response(
             text_type(xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
 
     def get_kwargs_sign_dig_algs(self):
+        logger.info(f"[INFO] Entering method: get_kwargs_sign_dig_algs. Params[ self]")
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -299,6 +322,7 @@ class SpidSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
+        logger.info(f"[INFO] Entering method: check_blacklist. Params[ context: {context}, entity_id: {entity_id}]")
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -313,6 +337,7 @@ class SpidSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
+        logger.info(f"[INFO] Entering method: authn_request. Params[ context: {context}, entity_id: {entity_id}]")
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -326,7 +351,6 @@ class SpidSAMLBackend(SAMLBackend):
         :return: response to the user agent
         """
         self.check_blacklist(context, entity_id)
-
         kwargs = {}
         # fetch additional kwargs
         kwargs.update(self.get_kwargs_sign_dig_algs())
@@ -463,6 +487,7 @@ class SpidSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
+        logger.info(f"[INFO] Entering method: handle_error. Params[ message: {message}, troubleshoot: {troubleshoot}]")
         """
         Todo: Jinja2 tempalte loader and rendering :)
         """
@@ -479,9 +504,11 @@ class SpidSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
+        logger.info(f"[INFO] Entering method: handle_spid_anomaly. Params[ err_number: {err_number}, err: {err}]")
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
+        logger.info(f"[INFO] Entering method: authn_response. Params[ context: {context}, binding: {binding}]")
         """
         Endpoint for the idp response
         :type context: satosa.context,Context
@@ -636,3 +663,67 @@ class SpidSAMLBackend(SAMLBackend):
         return self.auth_callback_func(
             context, self._translate_response(authn_response, context.state)
         )
+
+    def create_metadata(self, conf):
+        logger.info(f"[INFO] Entering method: create_metadata. Params [conf: {conf}]")
+        metadata = entity_descriptor(conf)
+
+        # creare gli attribute_consuming_service
+        metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
+        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
+        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].text = metadata.entity_id
+        for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
+            reqattr.name_format = None
+            reqattr.friendly_name = None
+
+        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
+        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
+
+        if self.config["sp_config"]["ficep_enable"] is True:
+            # Aggiungere CIE 99
+            metadata.spsso_descriptor.attribute_consuming_service.append(saml2.md.AttributeConsumingService())
+            metadata.spsso_descriptor.attribute_consuming_service[1].index = '99'
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name.append(saml2.md.ServiceName())
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[0].lang = "it"
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[
+                0].text = "eIDAS Natural Person Minimum Attribute Set"
+            metadata.spsso_descriptor.attribute_consuming_service[1].requested_attribute = [
+                saml2.md.RequestedAttribute('true', None, 'spidCode'),
+                saml2.md.RequestedAttribute('true', None, 'name'),
+                saml2.md.RequestedAttribute('true', None, 'familyName'),
+                saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
+            ]
+
+            metadata.spsso_descriptor.assertion_consumer_service[1].index = '99'
+            metadata.spsso_descriptor.assertion_consumer_service[1].is_default = None
+
+            # Aggiungere CIE 100
+            metadata.spsso_descriptor.attribute_consuming_service.append(saml2.md.AttributeConsumingService())
+            metadata.spsso_descriptor.attribute_consuming_service[2].index = '100'
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name.append(saml2.md.ServiceName())
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[0].lang = "it"
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[
+                0].text = "eIDAS Natural Person Full Attribute Set"
+            metadata.spsso_descriptor.attribute_consuming_service[2].requested_attribute = [
+                saml2.md.RequestedAttribute('true', None, 'spidCode'),
+                saml2.md.RequestedAttribute('true', None, 'name'),
+                saml2.md.RequestedAttribute('true', None, 'familyName'),
+                saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
+                saml2.md.RequestedAttribute('true', None, 'placeOfBirth'),
+                saml2.md.RequestedAttribute('true', None, 'address'),
+                saml2.md.RequestedAttribute('true', None, 'gender'),
+            ]
+
+            metadata.spsso_descriptor.assertion_consumer_service[2].index = '100'
+            metadata.spsso_descriptor.assertion_consumer_service[2].is_default = None
+
+        # load ContactPerson Extensions
+        self._metadata_contact_person(metadata, conf)
+
+        # metadata signature
+        secc = security_context(conf)
+        #
+        sign_dig_algs = self.get_kwargs_sign_dig_algs()
+        eid, xmldoc = sign_entity_descriptor(
+            metadata, None, secc, **sign_dig_algs)
+        return xmldoc
