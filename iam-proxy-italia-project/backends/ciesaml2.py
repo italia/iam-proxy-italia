@@ -1,7 +1,6 @@
 import json
 import logging
 import re
-import time
 
 import saml2
 import satosa.util as util
@@ -19,8 +18,8 @@ from satosa.exception import SATOSAAuthenticationError
 from satosa.response import Response
 from satosa.saml_util import make_saml_response
 from six import text_type
-import time
 import functools
+import inspect
 
 from .spidsaml2_validator import Saml2ResponseValidator
 
@@ -82,10 +81,10 @@ class CieSAMLBackend(SAMLBackend):
 
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
-    metadata_singleton = None
+    xmldoc = None
 
     def __init__(self, *args, **kwargs):
-        logger.info(f"[INFO] Entering method: __init__. Params: [args: {args}, kwargs: {kwargs}] ")
+        logger.info(f"[INFO] Entering method: {self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
 
         super().__init__(*args, **kwargs)
 
@@ -108,9 +107,10 @@ class CieSAMLBackend(SAMLBackend):
             self.config["error_template"]
         )
 
+
     def _metadata_contact_person(self, metadata, conf):
 
-        logger.info(f"[INFO] Entering method: _metadata_contact_person. Params [metadata: {metadata}, conf: {conf}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]")
 
         ##############
         # avviso 29 v3
@@ -158,7 +158,7 @@ class CieSAMLBackend(SAMLBackend):
 
     @functools.cache
     def _metadata_endpoint(self, context):
-        logger.info(f"[INFO] Entering method: _metadata_endpoint. Params [context: {context}]. Start at: {time.time()}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}]")
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -173,10 +173,10 @@ class CieSAMLBackend(SAMLBackend):
         xmldoc = None
 
         if self.xmldoc is not None:
-            logger.info(f"[INFO] xmldoc is not None: {xmldoc}")
+            logger.info(f"[INFO] xmldoc is not None: {self.xmldoc}")
             xmldoc = self.xmldoc
         else:
-            logger.info(f"[INFO] xmldoc is None: {xmldoc}")
+            logger.info(f"[INFO] xmldoc is None: {self.xmldoc}")
             xmldoc = self.create_metadata(conf)
 
         logger.info(f"[INFO] xmldoc: {xmldoc}")
@@ -207,13 +207,12 @@ class CieSAMLBackend(SAMLBackend):
 
         valid_instance(eid)
         '''
-        logger.info(f"[INFO] Method: _metadata_endpoint. Finish at: {time.time()}]")
         return Response(
             text_type(xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
 
     def get_kwargs_sign_dig_algs(self):
-        logger.info("[INFO] Entering method: get_kwargs_sign_dig_algs")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}")
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -226,7 +225,7 @@ class CieSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
-        logger.info(f"[INFO] Entering method: check_blacklist. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -241,7 +240,7 @@ class CieSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
-        logger.info(f"[INFO] Entering method: authn_request. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -388,7 +387,7 @@ class CieSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
-        logger.info(f"[INFO] Entering method: handle_error. Params [message: {message}, troubleshoot: {troubleshoot}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [message: {message}, troubleshoot: {troubleshoot}]")
         """
         Todo: Jinja2 tempalte loader and rendering :)
         """
@@ -405,7 +404,7 @@ class CieSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
-        logger.info(f"[INFO] Entering method: handle_spid_anomaly. Params [err_number: {err_number}, err: {err}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]")
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
@@ -551,7 +550,7 @@ class CieSAMLBackend(SAMLBackend):
 
 
     def create_metadata(self, conf):
-        logger.info(f"[INFO] Entering method: create_metadata. Params [conf: {conf}].")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}].")
         metadata = entity_descriptor(conf)
 
         # configurare gli attribute_consuming_service
@@ -578,7 +577,8 @@ class CieSAMLBackend(SAMLBackend):
             metadata, None, secc, **sign_dig_algs)
 
         # Add instance for singleton
-        self.metadata_singleton = metadata
+        self.xmldoc = xmldoc
 
         valid_instance(eid)
+
         return xmldoc
