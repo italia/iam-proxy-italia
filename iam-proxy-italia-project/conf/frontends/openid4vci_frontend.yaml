@@ -677,7 +677,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eid_user
+            db_name: pyeudiw_openid4vci
             db_users_collection: users
             data_ttl: 63072000 # 2 years
           connection_params:
@@ -694,7 +694,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eid_credential
+            db_name: pyeudiw_openid4vci
             db_credentials_collection: credentials
             data_ttl: 63072000 # 2 years
           connection_params:
@@ -710,7 +710,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eudiw
+            db_name: pyeudiw_openid4vci
           connection_params:
             username: !ENV MONGODB_USERNAME
             password: !ENV MONGODB_PASSWORD
@@ -720,7 +720,7 @@ config:
         init_params:
           url: mongodb://satosa-mongo:27017
           conf:
-            db_name: eudiw
+            db_name: pyeudiw_openid4vci
             db_sessions_collection: sessions
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
