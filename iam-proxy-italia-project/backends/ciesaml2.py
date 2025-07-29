@@ -84,7 +84,7 @@ class CieSAMLBackend(SAMLBackend):
     xmldoc = None
 
     def __init__(self, *args, **kwargs):
-        logger.info(f"[INFO] Entering method: {self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
+        logger.debug(f"Initializing: {self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
 
         super().__init__(*args, **kwargs)
 
@@ -107,10 +107,14 @@ class CieSAMLBackend(SAMLBackend):
             self.config["error_template"]
         )
 
+        if not self.xmldoc:
+            logger.debug("inizializing metadata xmldoc")
+            self.xmldoc = self.create_metadata(self.sp.config)
+
 
     def _metadata_contact_person(self, metadata, conf):
 
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]")
 
         ##############
         # avviso 29 v3
@@ -156,9 +160,8 @@ class CieSAMLBackend(SAMLBackend):
         # fine avviso 29v3
         ###################
 
-    @functools.cache
     def _metadata_endpoint(self, context):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}]")
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -168,20 +171,22 @@ class CieSAMLBackend(SAMLBackend):
         :return: response with metadata
         """
         logger.debug("Sending metadata response")
-        conf = self.sp.config
-
-        xmldoc = None
-
-        if self.xmldoc is not None:
-            logger.info(f"[INFO] xmldoc is not None: {self.xmldoc}")
-            xmldoc = self.xmldoc
-        else:
-            logger.info(f"[INFO] xmldoc is None: {self.xmldoc}")
-            xmldoc = self.create_metadata(conf)
-
-        logger.info(f"[INFO] xmldoc: {xmldoc}")
 
         '''
+
+        DEPRECATED: 
+        
+        conf = self.sp.config
+
+
+        if not self.xmldoc:
+            logger.debug(f"inizializing metadata xmldoc")
+            self.xmldoc = self.create_metadata(conf)
+
+        logger.debug(f"Created metadata xmldoc: {self.xmldoc}")
+
+   
+        
         metadata = entity_descriptor(conf)
 
         # configurare gli attribute_consuming_service
@@ -208,11 +213,11 @@ class CieSAMLBackend(SAMLBackend):
         valid_instance(eid)
         '''
         return Response(
-            text_type(xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
+            text_type(self.xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
 
     def get_kwargs_sign_dig_algs(self):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}")
+        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}")
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -225,7 +230,7 @@ class CieSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -240,7 +245,7 @@ class CieSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -404,11 +409,11 @@ class CieSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]")
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
-        logger.info(f"[INFO] Entering method: authn_response. Params [context: {context}, binding: {binding}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, binding: {binding}]")
         """
         Endpoint for the idp response
         :type context: satosa.context,Context
@@ -550,7 +555,7 @@ class CieSAMLBackend(SAMLBackend):
 
 
     def create_metadata(self, conf):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}].")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}].")
         metadata = entity_descriptor(conf)
 
         # configurare gli attribute_consuming_service
@@ -566,8 +571,6 @@ class CieSAMLBackend(SAMLBackend):
 
         # load ContactPerson Extensions
         self._metadata_contact_person(metadata, conf)
-
-
 
         # metadata signature
         secc = security_context(conf)
