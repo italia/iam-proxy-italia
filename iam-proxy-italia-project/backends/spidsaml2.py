@@ -668,7 +668,15 @@ class SpidSAMLBackend(SAMLBackend):
             context, self._translate_response(authn_response, context.state)
         )
 
-    def create_metadata(self, conf):
+    """
+    method __create_metadata private
+    Create metadata for SpidSaml2
+    
+    :param self: Instance for SpidSaml2
+    :param conf: Configuration for SpidSaml2
+    :return: xmldoc 
+    """
+    def __create_metadata(self, conf):
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}]")
         metadata = entity_descriptor(conf)
 
