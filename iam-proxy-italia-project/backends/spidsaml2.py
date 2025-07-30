@@ -104,9 +104,8 @@ class SpidSAMLBackend(SAMLBackend):
             self.config["error_template"]
         )
 
-        if not self.xmldoc:
-            logger.debug("inizializing metadata xmldoc")
-            self.xmldoc = self.create_metadata(self.sp.config)
+        logger.debug("inizializing metadata xmldoc")
+        self.xmldoc = self.create_metadata(self.sp.config)
 
 
 
@@ -732,6 +731,6 @@ class SpidSAMLBackend(SAMLBackend):
         eid, xmldoc = sign_entity_descriptor(
             metadata, None, secc, **sign_dig_algs)
 
-        self.xmldoc = xmldoc
+        valid_instance(eid)
 
         return xmldoc

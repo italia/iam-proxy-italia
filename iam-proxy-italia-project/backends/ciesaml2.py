@@ -81,8 +81,6 @@ class CieSAMLBackend(SAMLBackend):
 
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
-    xmldoc = None
-
     def __init__(self, *args, **kwargs):
         logger.debug(f"Initializing: {self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
 
@@ -107,9 +105,8 @@ class CieSAMLBackend(SAMLBackend):
             self.config["error_template"]
         )
 
-        if not self.xmldoc:
-            logger.debug("inizializing metadata xmldoc")
-            self.xmldoc = self.create_metadata(self.sp.config)
+        logger.debug("inizializing metadata xmldoc")
+        self.xmldoc = self.create_metadata(self.sp.config)
 
 
     def _metadata_contact_person(self, metadata, conf):
@@ -172,46 +169,6 @@ class CieSAMLBackend(SAMLBackend):
         """
         logger.debug("Sending metadata response")
 
-        '''
-
-        DEPRECATED: 
-        
-        conf = self.sp.config
-
-
-        if not self.xmldoc:
-            logger.debug(f"inizializing metadata xmldoc")
-            self.xmldoc = self.create_metadata(conf)
-
-        logger.debug(f"Created metadata xmldoc: {self.xmldoc}")
-
-   
-        
-        metadata = entity_descriptor(conf)
-
-        # configurare gli attribute_consuming_service
-        metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].text = metadata.entity_id
-        for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
-            reqattr.name_format = None
-            reqattr.friendly_name = None
-
-        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
-        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
-
-        # load ContactPerson Extensions
-        self._metadata_contact_person(metadata, conf)
-
-        # metadata signature
-        secc = security_context(conf)
-        #
-        sign_dig_algs = self.get_kwargs_sign_dig_algs()
-        eid, xmldoc = sign_entity_descriptor(
-            metadata, None, secc, **sign_dig_algs)
-
-        valid_instance(eid)
-        '''
         return Response(
             text_type(self.xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
@@ -579,8 +536,6 @@ class CieSAMLBackend(SAMLBackend):
         eid, xmldoc = sign_entity_descriptor(
             metadata, None, secc, **sign_dig_algs)
 
-        # Add instance for singleton
-        self.xmldoc = xmldoc
 
         valid_instance(eid)
 
