@@ -79,8 +79,6 @@ class SpidSAMLBackend(SAMLBackend):
 
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
-    xmldoc = None
-
     def __init__(self, *args, **kwargs):
         logger.debug(f"Initializing: {self.__class__.__name__}. Params[args: {args}, kwargs: {kwargs}]")
         super().__init__(*args, **kwargs)
@@ -232,82 +230,6 @@ class SpidSAMLBackend(SAMLBackend):
         :return: response with metadata
         """
         logger.debug("Sending metadata response")
-        '''
-        
-        DEPRECATED: 
-        
-        
-        conf = self.sp.config
-
-        if not self.xmldoc:
-            logger.debug("inizializing metadata xmldoc")
-            self.xmldoc = self.create_metadata(conf)
-
-        logger.debug(f"Created metadata xmldoc: {self.xmldoc}")
-
-   
-        metadata = entity_descriptor(conf)
- 
-        # creare gli attribute_consuming_service
-        metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].text = metadata.entity_id
-        for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
-            reqattr.name_format = None
-            reqattr.friendly_name = None
-
-        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
-        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
-
-        if self.config["sp_config"]["ficep_enable"] is True:
-            # Aggiungere CIE 99
-            metadata.spsso_descriptor.attribute_consuming_service.append(saml2.md.AttributeConsumingService())
-            metadata.spsso_descriptor.attribute_consuming_service[1].index = '99'
-            metadata.spsso_descriptor.attribute_consuming_service[1].service_name.append(saml2.md.ServiceName())
-            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[0].lang = "it"
-            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[0].text = "eIDAS Natural Person Minimum Attribute Set"
-            metadata.spsso_descriptor.attribute_consuming_service[1].requested_attribute = [
-                    saml2.md.RequestedAttribute('true', None, 'spidCode'),
-                    saml2.md.RequestedAttribute('true', None, 'name'),
-                    saml2.md.RequestedAttribute('true', None, 'familyName'),
-                    saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
-                    ]
-
-            metadata.spsso_descriptor.assertion_consumer_service[1].index = '99'
-            metadata.spsso_descriptor.assertion_consumer_service[1].is_default = None
-
-            # Aggiungere CIE 100
-            metadata.spsso_descriptor.attribute_consuming_service.append(saml2.md.AttributeConsumingService())
-            metadata.spsso_descriptor.attribute_consuming_service[2].index = '100'
-            metadata.spsso_descriptor.attribute_consuming_service[2].service_name.append(saml2.md.ServiceName())
-            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[0].lang = "it"
-            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[0].text = "eIDAS Natural Person Full Attribute Set"
-            metadata.spsso_descriptor.attribute_consuming_service[2].requested_attribute = [
-                    saml2.md.RequestedAttribute('true', None, 'spidCode'),
-                    saml2.md.RequestedAttribute('true', None, 'name'),
-                    saml2.md.RequestedAttribute('true', None, 'familyName'),
-                    saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
-                    saml2.md.RequestedAttribute('true', None, 'placeOfBirth'),
-                    saml2.md.RequestedAttribute('true', None, 'address'),
-                    saml2.md.RequestedAttribute('true', None, 'gender'),
-                    ]
-
-            metadata.spsso_descriptor.assertion_consumer_service[2].index = '100'
-            metadata.spsso_descriptor.assertion_consumer_service[2].is_default = None
-
-        # load ContactPerson Extensions
-        self._metadata_contact_person(metadata, conf)
-
-        # metadata signature
-        secc = security_context(conf)
-        #
-        sign_dig_algs = self.get_kwargs_sign_dig_algs()
-        eid, xmldoc = sign_entity_descriptor(
-            metadata, None, secc, **sign_dig_algs)
-
-        valid_instance(eid)
-        
-        '''
         return Response(
             text_type(self.xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
@@ -668,15 +590,15 @@ class SpidSAMLBackend(SAMLBackend):
             context, self._translate_response(authn_response, context.state)
         )
 
-    """
-    method __create_metadata private
-    Create metadata for SpidSaml2
-    
-    :param self: Instance for SpidSaml2
-    :param conf: Configuration for SpidSaml2
-    :return: xmldoc 
-    """
     def __create_metadata(self, conf):
+        """
+        method __create_metadata private
+        Create metadata for SpidSaml2
+
+        :param self: Instance for SpidSaml2
+        :param conf: Configuration for SpidSaml2
+        :return: xmldoc
+        """
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}]")
         metadata = entity_descriptor(conf)
 

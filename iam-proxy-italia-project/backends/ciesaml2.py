@@ -510,15 +510,16 @@ class CieSAMLBackend(SAMLBackend):
             context, self._translate_response(authn_response, context.state)
         )
 
-    """
-    method __create_metadata private
-    Create metadata for CieSAMLBackend
 
-    :param self: Instance for CieSAMLBackend
-    :param conf: Configuration for CieSAMLBackend
-    :return: xmldoc 
-    """
     def __create_metadata(self, conf):
+        """
+        method __create_metadata private
+        Create metadata for CieSAMLBackend
+
+        :param self: Instance for CieSAMLBackend
+        :param conf: Configuration for CieSAMLBackend
+        :return: xmldoc
+        """
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}].")
         metadata = entity_descriptor(conf)
 
