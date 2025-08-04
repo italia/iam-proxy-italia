@@ -1,16 +1,16 @@
+import inspect
 import json
 import logging
 import re
 
 import saml2
 import satosa.util as util
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from saml2.response import StatusAuthnFailed
 from saml2.authn_context import requested_authn_context
 from saml2.metadata import entity_descriptor, sign_entity_descriptor
+from saml2.response import StatusAuthnFailed
 from saml2.saml import NAMEID_FORMAT_TRANSIENT
-from saml2.sigver import security_context, SignatureError
+from saml2.sigver import SignatureError, security_context
 from saml2.validate import valid_instance
 from satosa.backends.saml2 import SAMLBackend
 from satosa.context import Context
@@ -18,8 +18,6 @@ from satosa.exception import SATOSAAuthenticationError
 from satosa.response import Response
 from satosa.saml_util import make_saml_response
 from six import text_type
-import functools
-import inspect
 
 from .spidsaml2_validator import Saml2ResponseValidator
 
@@ -73,7 +71,6 @@ _TROUBLESHOOT_MSG = (
 )
 
 
-
 class CieSAMLBackend(SAMLBackend):
     """
     A saml2 backend module (acting as a CIE SP).
@@ -82,7 +79,8 @@ class CieSAMLBackend(SAMLBackend):
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
     def __init__(self, *args, **kwargs):
-        logger.debug(f"Initializing: {self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
+        logger.debug(f"Initializing: {
+                     self.__class__.__name__}. Params: [args: {args}, kwargs: {kwargs}] ")
 
         super().__init__(*args, **kwargs)
 
@@ -108,10 +106,10 @@ class CieSAMLBackend(SAMLBackend):
         logger.debug("inizializing metadata xmldoc")
         self.xmldoc = self.create_metadata(self.sp.config)
 
-
     def _metadata_contact_person(self, metadata, conf):
 
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(
+            inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]")
 
         ##############
         # avviso 29 v3
@@ -132,17 +130,16 @@ class CieSAMLBackend(SAMLBackend):
             cie_contact.contact_type = contact["contact_type"]
 
             cie_contact.loadd({
-                    "email_address": contact["email_address"],
-                    "telephone_number": contact["telephone_number"],
-                    "company": contact['company']
-                    })
+                "email_address": contact["email_address"],
+                "telephone_number": contact["telephone_number"],
+                "company": contact['company']
+            })
 
-
-            #contact_kwargs = contact["std_info"]
+            # contact_kwargs = contact["std_info"]
             spid_extensions = saml2.ExtensionElement(
                 "Extensions", namespace="urn:oasis:names:tc:SAML:2.0:metadata"
             )
-            #breakpoint()
+            # breakpoint()
 
             # cie_contact.loadd(contact_kwargs)
             for k, v in contact['cie_info'].items():
@@ -158,7 +155,8 @@ class CieSAMLBackend(SAMLBackend):
         ###################
 
     def _metadata_endpoint(self, context):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(
+            inspect.currentframe()).function}. Params [context: {context}]")
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -174,7 +172,8 @@ class CieSAMLBackend(SAMLBackend):
         )
 
     def get_kwargs_sign_dig_algs(self):
-        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}")
+        logger.info(f"Entering method: {inspect.getframeinfo(
+            inspect.currentframe()).function}")
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -187,7 +186,8 @@ class CieSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
-        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
+        )).function}. Params [context: {context}, entity_id: {entity_id}]")
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -202,7 +202,8 @@ class CieSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
-        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]")
+        logger.info(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
+        )).function}. Params [context: {context}, entity_id: {entity_id}]")
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -225,7 +226,8 @@ class CieSAMLBackend(SAMLBackend):
         req_authn_context = authn_context or requested_authn_context(
             class_ref=self._authn_context
         )
-        req_authn_context.comparison = self.config.get("spid_acr_comparison", "minimum")
+        req_authn_context.comparison = self.config.get(
+            "spid_acr_comparison", "minimum")
 
         # force_auth = true only if SpidL >= 2
         if "SpidL1" in authn_context.authn_context_class_ref[0].text:
@@ -235,7 +237,8 @@ class CieSAMLBackend(SAMLBackend):
 
         try:
             binding = saml2.BINDING_HTTP_POST
-            destination = context.internal_data.get("target_entity_id", entity_id)
+            destination = context.internal_data.get(
+                "target_entity_id", entity_id)
             # SPID CUSTOMIZATION
             # client = saml2.client.Saml2Client(conf)
             client = self.sp
@@ -349,7 +352,8 @@ class CieSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
-        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [message: {message}, troubleshoot: {troubleshoot}]")
+        logger.info(f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe(
+        )).function}. Params [message: {message}, troubleshoot: {troubleshoot}]")
         """
         Todo: Jinja2 tempalte loader and rendering :)
         """
@@ -366,11 +370,13 @@ class CieSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(
+            inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]")
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, binding: {binding}]")
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
+        )).function}. Params [context: {context}, binding: {binding}]")
         """
         Endpoint for the idp response
         :type context: satosa.context,Context
@@ -438,7 +444,8 @@ class CieSAMLBackend(SAMLBackend):
 
         # Context validation
         if not context.state.get(self.name):
-            _msg = f"context.state[self.name] KeyError: where self.name is {self.name}"
+            _msg = f"context.state[self.name] KeyError: where self.name is {
+                self.name}"
             logger.error(_msg)
             return self.handle_error(
                 **{"message": _msg, "troubleshoot": _TROUBLESHOOT_MSG}
@@ -490,7 +497,7 @@ class CieSAMLBackend(SAMLBackend):
             authn_context_class_ref=authn_context_classref,
             return_addrs=authn_response.return_addrs,
             allowed_acrs=self.config["spid_allowed_acrs"],
-            cie_mode = True
+            cie_mode=True
         )
         try:
             validator.run()
@@ -510,7 +517,6 @@ class CieSAMLBackend(SAMLBackend):
             context, self._translate_response(authn_response, context.state)
         )
 
-
     def __create_metadata(self, conf):
         """
         method __create_metadata private
@@ -520,13 +526,15 @@ class CieSAMLBackend(SAMLBackend):
         :param conf: Configuration for CieSAMLBackend
         :return: xmldoc
         """
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}].")
+        logger.debug(f"Entering method: {inspect.getframeinfo(
+            inspect.currentframe()).function}. Params [conf: {conf}].")
         metadata = entity_descriptor(conf)
 
         # configurare gli attribute_consuming_service
         metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
         metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].text = metadata.entity_id
+        metadata.spsso_descriptor.attribute_consuming_service[
+            0].service_name[0].text = metadata.entity_id
         for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
             reqattr.name_format = None
             reqattr.friendly_name = None
@@ -543,7 +551,6 @@ class CieSAMLBackend(SAMLBackend):
         sign_dig_algs = self.get_kwargs_sign_dig_algs()
         eid, xmldoc = sign_entity_descriptor(
             metadata, None, secc, **sign_dig_algs)
-
 
         valid_instance(eid)
 
