@@ -165,6 +165,23 @@ services:
       - "8443:8443"
     networks:
       - iam-proxy-italia
+  certbot:
+    image: certbot/certbot
+    environment:
+      - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
+      - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
+      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost.it}
+      - TZ=${TZ:-Europe/Rome}
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/html:/var/www/certbot
+      - ./nginx/certbot.sh:/opt/certbot/entrypoint.sh
+    networks:
+      - iam-proxy-italia
+    ports:
+      - "80:80"
+    entrypoint: "sh /opt/certbot/entrypoint.sh"
+
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
