@@ -141,7 +141,10 @@ services:
     image: nginx:alpine
     container_name: satosa-nginx
     depends_on:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        condition: service_started
+      satosa-certbot:
+        condition: service_completed_successfully
     ports:
       - "443:443"
     volumes:
@@ -165,12 +168,13 @@ services:
       - "8443:8443"
     networks:
       - iam-proxy-italia
-  certbot:
+  satosa-certbot:
     image: certbot/certbot
+    container_name: satosa-certbot 
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
-      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost.it}
+      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
     volumes:
       - ./nginx/certs:/etc/letsencrypt
