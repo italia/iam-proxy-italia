@@ -150,7 +150,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
       - iam-proxy-italia
@@ -177,14 +177,13 @@ services:
       - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
     volumes:
-      - ./nginx/certs:/etc/letsencrypt
+      - ./certbot:/etc/letsencrypt
       - ./nginx/html:/var/www/certbot
-      - ./nginx/certbot.sh:/opt/certbot/entrypoint.sh
     networks:
       - iam-proxy-italia
     ports:
       - "80:80"
-    entrypoint: "sh /opt/certbot/entrypoint.sh"
+    entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
 networks:
   iam-proxy-italia:
