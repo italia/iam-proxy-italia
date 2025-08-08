@@ -10,8 +10,6 @@ function clean_data {
 }
 
 function initialize_satosa {
-  cp env.example .env
-
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
   mkdir -p ./satosa-project
@@ -19,6 +17,7 @@ function initialize_satosa {
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
 
+  if [ ! -f ./.env ]; then cp env.example .env ; else echo '.env file is already initialized' ; fi
   if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../example/* ./satosa-project/ ;  rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../example_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../example/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
