@@ -150,6 +150,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
+      - ./certbot/archive:/etc/archive:ro
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
