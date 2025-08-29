@@ -79,8 +79,11 @@ class SpidSAMLBackend(SAMLBackend):
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
     def __init__(self, *args, **kwargs):
-        logger.debug(f"Initializing: {
-                     self.__class__.__name__}. Params[args: {args}, kwargs: {kwargs}]")
+
+        logger.debug(
+            f"Initializing: {self.__class__.__name__}. Params[args: {args}, kwargs: {kwargs}]"
+        )
+
         super().__init__(*args, **kwargs)
 
         # error pages handler
@@ -106,8 +109,9 @@ class SpidSAMLBackend(SAMLBackend):
         self.xmldoc = self.create_metadata(self.sp.config)
 
     def _metadata_contact_person(self, metadata, conf):
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params[ metadata: {metadata}, conf: {conf}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ metadata: {metadata}, conf: {conf}]"
+        )
         ##############
         # avviso 29 v3
         #
@@ -219,8 +223,9 @@ class SpidSAMLBackend(SAMLBackend):
         ###################
 
     def _metadata_endpoint(self, context):
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params[ context: {context}].")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}]."
+        )
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -235,8 +240,9 @@ class SpidSAMLBackend(SAMLBackend):
         )
 
     def get_kwargs_sign_dig_algs(self):
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params[ self]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ self]"
+        )
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -249,8 +255,9 @@ class SpidSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
-        )).function}. Params[ context: {context}, entity_id: {entity_id}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+        )
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -265,8 +272,9 @@ class SpidSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
-        )).function}. Params[ context: {context}, entity_id: {entity_id}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+        )
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -418,8 +426,9 @@ class SpidSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
-        )).function}. Params[ message: {message}, troubleshoot: {troubleshoot}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ message: {message}, troubleshoot: {troubleshoot}]"
+        )
         """
         Todo: Jinja2 tempalte loader and rendering :)
         """
@@ -436,13 +445,15 @@ class SpidSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params[ err_number: {err_number}, err: {err}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ err_number: {err_number}, err: {err}]"
+        )
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe(
-        )).function}. Params[ context: {context}, binding: {binding}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, binding: {binding}]"
+        )
         """
         Endpoint for the idp response
         :type context: satosa.context,Context
@@ -608,8 +619,9 @@ class SpidSAMLBackend(SAMLBackend):
         :param conf: Configuration for SpidSaml2
         :return: xmldoc
         """
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params [conf: {conf}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}]"
+        )
         metadata = entity_descriptor(conf)
 
         # creare gli attribute_consuming_service
