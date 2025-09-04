@@ -192,3 +192,5 @@ Here something that you should know before start.
 - Thomas Chiozzi @ Trentino Digitale
 - Identity Python Community (pySAML2 and SATOSA)
 - GARR IDEM Community
+- Pasquale De Rose @ E&Y
+- Sara Longobardi @ Accenture
