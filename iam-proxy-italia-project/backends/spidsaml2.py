@@ -106,7 +106,7 @@ class SpidSAMLBackend(SAMLBackend):
         )
 
         logger.debug("inizializing metadata xmldoc")
-        self.xmldoc = self.create_metadata(self.sp.config)
+        self.xmldoc = self.__create_metadata(self.sp.config)
 
     def _metadata_contact_person(self, metadata, conf):
         logger.debug(
