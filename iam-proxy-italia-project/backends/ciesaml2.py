@@ -111,7 +111,8 @@ class CieSAMLBackend(SAMLBackend):
     def _metadata_contact_person(self, metadata, conf):
 
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [metadata: {metadata}, conf: {conf}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [metadata: {metadata}, conf: {conf}]"
         )
 
         ##############
@@ -158,8 +159,10 @@ class CieSAMLBackend(SAMLBackend):
         ###################
 
     def _metadata_endpoint(self, context):
-        logger.debug(f"Entering method: {inspect.getframeinfo(
-            inspect.currentframe()).function}. Params [context: {context}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [context: {context}]"
+        )
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -191,7 +194,8 @@ class CieSAMLBackend(SAMLBackend):
 
     def check_blacklist(self, context, entity_id):
         logger.info(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [context: {context}, entity_id: {entity_id}]"
         )
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
@@ -208,7 +212,8 @@ class CieSAMLBackend(SAMLBackend):
 
     def authn_request(self, context, entity_id):
         logger.info(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, entity_id: {entity_id}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [context: {context}, entity_id: {entity_id}]"
         )
         """
         Do an authorization request on idp with given entity id.
@@ -359,7 +364,8 @@ class CieSAMLBackend(SAMLBackend):
         error_template="spid_login_error.html",
     ):
         logger.info(
-            f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [message: {message}, troubleshoot: {troubleshoot}]"
+            f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [message: {message}, troubleshoot: {troubleshoot}]"
         )
         """
         Todo: Jinja2 tempalte loader and rendering :)
@@ -378,13 +384,15 @@ class CieSAMLBackend(SAMLBackend):
 
     def handle_spid_anomaly(self, err_number, err):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [err_number: {err_number}, err: {err}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [err_number: {err_number}, err: {err}]"
         )
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context: {context}, binding: {binding}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [context: {context}, binding: {binding}]"
         )
         """
         Endpoint for the idp response
@@ -453,8 +461,7 @@ class CieSAMLBackend(SAMLBackend):
 
         # Context validation
         if not context.state.get(self.name):
-            _msg = f"context.state[self.name] KeyError: where self.name is {
-                self.name}"
+            _msg = f"context.state[self.name] KeyError: where self.name is {self.name}"
             logger.error(_msg)
             return self.handle_error(
                 **{"message": _msg, "troubleshoot": _TROUBLESHOOT_MSG}
