@@ -8,6 +8,18 @@ const LOGIN_LOGO_PREFIX_ELEMENT = {
   "en": "Login with "
 };
 
+const DEFAULT_LANGUAGE = "en";
+
+const TITLE_WALLET_DIGITAL_IDENTITY_ELEMENT = {
+  "ita": "Accedi con un'identità digitale",
+  "en": "Log in with a digital identity"
+}
+
+const TITLE_WALLET_ALTERNATIVE_METHOD_ELEMENT = {
+  "ita": "Accedi con un metodo alternativo",
+  "en": "Log in using an alternative method"
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const langSelect = document.getElementById('lang-select');
   let selectedLang = langSelect.value;
@@ -26,15 +38,44 @@ function loadWallets(lang) {
   .then(wallets => {
     const container = document.getElementById('wallets-container');
     container.innerHTML = '';
-    wallets.forEach(wallet => {
-      const col = document.createElement('div');
-      col.className = 'col-12 col-md-6 mb-3';
-      col.appendChild(createWalletBox(wallet, lang));
-      container.appendChild(col);
-      setUniformWalletBoxHeight();
-    });
+    const digitalWallets = wallets.filter(w => w.digital_id);
+    if (digitalWallets.length > 0) {
+      const digitalSection = document.createElement('div');
+      digitalSection.className = 'mb-4';
+      const title = document.createElement('h3');
+      title.textContent = getTextContent(TITLE_WALLET_DIGITAL_IDENTITY_ELEMENT, lang);
+      title.className = 'text-center mb-3';
+      digitalSection.appendChild(title);
+      createWallet(digitalWallets, digitalSection, lang);
+      container.appendChild(digitalSection);
+    }
+    const alternativeWallets = wallets.filter(w => !w.digital_id);
+    if (alternativeWallets.length > 0) {
+      const altSection = document.createElement('div');
+      altSection.className = 'mb-4';
+      const title = document.createElement('h3');
+      title.textContent = getTextContent(TITLE_WALLET_ALTERNATIVE_METHOD_ELEMENT, lang);
+      title.className = 'text-center mb-3';
+      altSection.appendChild(title);
+      createWallet(alternativeWallets, altSection, lang);
+      container.appendChild(altSection);
+    }
   })
   .catch(err => console.error('Error during wallets.json:', err));
+}
+
+function createWallet(wallets, container, lang) {
+  const row = document.createElement('div');
+  row.className = 'row'; // Bootstrap row for grid layout
+  wallets.forEach(wallet => {
+    const col = document.createElement('div');
+    col.className = 'col-12 col-md-6 mb-3';
+    col.appendChild(createWalletBox(wallet, lang));
+    row.appendChild(col);
+  });
+  container.appendChild(row);
+  setUniformElement('.wallet-box');
+  setUniformElement('.wallet-box .btn');
 }
 
 function createWalletName(name) {
@@ -56,8 +97,7 @@ function createLogoButton(wallet, lang) {
   logoImg.style.height = "24px";
 
   const textSpan = document.createElement('span');
-  textSpan.textContent = (LOGIN_LOGO_PREFIX_ELEMENT[lang] || "Login with ")
-      + wallet.name;
+  textSpan.textContent = getTextContent(LOGIN_LOGO_PREFIX_ELEMENT, lang) + wallet.name;
 
   btn.appendChild(logoImg);
   btn.appendChild(textSpan);
@@ -71,7 +111,7 @@ function createLearnMore(wallet, lang) {
 
     const toggle = document.createElement('a');
     toggle.href = "#";
-    toggle.textContent = LEARN_MORE_ELEMENT[lang] || "Learn more";
+    toggle.textContent = getTextContent(LEARN_MORE_ELEMENT, lang);
     toggle.style.cursor = "pointer";
 
     const text = document.createElement('p');
@@ -87,7 +127,7 @@ function createLearnMore(wallet, lang) {
         text.style.display = "block";
       } else {
         text.style.display = "none";
-        setUniformWalletBoxHeight(); // Reset heights if needed
+        setUniformElement('.wallet-box');
       }
     });
 
@@ -98,7 +138,7 @@ function createLearnMore(wallet, lang) {
     const link = document.createElement('a');
     link.href = wallet.learn_more_link;
     link.target = "_blank";
-    link.textContent = LEARN_MORE_ELEMENT[lang] || "Learn more";
+    link.textContent = getTextContent(LEARN_MORE_ELEMENT, lang);
     link.className = "d-block mt-2";
     return link;
   }
@@ -128,17 +168,19 @@ function createWalletBox(wallet, lang) {
   return box;
 }
 
-function setUniformWalletBoxHeight() {
-  const boxes = document.querySelectorAll('.wallet-box');
-  let maxHeight = 0;
-  boxes.forEach(box => {
-    box.style.height = ''; // Reset any previous height
-    const boxHeight = box.offsetHeight;
-    if (boxHeight > maxHeight) {
-      maxHeight = boxHeight;
-    }
+function setUniformElement(selector) {
+  const nodeElement = document.querySelectorAll(selector);
+  let maxWidth = 0;
+  nodeElement.forEach(btn => {
+    btn.style.width = ''; // Reset any previous width
+    const btnWidth = btn.offsetWidth;
+    if (btnWidth > maxWidth) maxWidth = btnWidth;
   });
-  boxes.forEach(box => {
-    box.style.height = maxHeight + 'px';
+  nodeElement.forEach(btn => {
+    btn.style.width = maxWidth + 'px';
   });
+}
+
+function getTextContent(key, lang) {
+  return key[lang] || key[DEFAULT_LANGUAGE];
 }
