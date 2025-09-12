@@ -16,18 +16,17 @@
 `run-docker-compose.sh` must be executed from `docker-compose` directory. To run the script the user must have access to the docker system.
 
 On startup the script check if the directories required from docker compose are presents:
-* ./satosa-project
+* ./iam-proxy-italia-project
 * ./djangosaml2_sp
 * ./mongo/db
 * ./nginx/html/static
 
 After the script test if the required directories are populated and if isn't copy the default files
-| Directory         | test presence of | default origin                 |
+| Directory | test presence of | default origin |
 | ----------------- | ---------------- | ------------------------------ |
-| satosa-project    | proxy_conf.yaml  | ../iam-proxy-italia-project/*                   |
-| djangosaml2_sp    | run.sh           | ../iam-proxy-italia-project_sp/djangosaml2_sp/* |
-| nginx/html/static | disco.html       | ../iam-proxy-italia-project/static/*            |
-
+| iam-proxy-italia-project | proxy_conf.yaml | ../iam-proxy-italia-project/*                   |
+| djangosaml2_sp | run.sh | ../iam-proxy-italia-project_sp/djangosaml2_sp/* |
+| nginx/html/static | disco.html | ../iam-proxy-italia-project/static/*            |
 
 Unless `-s` options is enabled, on every start the script try to:
 * Download the new versione of each required images
@@ -35,7 +34,7 @@ Unless `-s` options is enabled, on every start the script try to:
 
 If `-c` option is enables, before each, the script remove all data from theese directories:
 * mongo/db/*
-* satosa-project/*
+* iam-proxy-italia-project/*
 * djangosaml2_sp/*
 * nginx/html/static
 

@@ -68,7 +68,7 @@ in the documer compose section about the container iam-proxy-italia
 
 ````
     volumes:
-      - ./satosa-project:/satosa_proxy:rwx
+      - ./iam-proxy-italia-project:/satosa_proxy:rwx
       - /home/User/Dev/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
 ````
 
