@@ -17,6 +17,7 @@ function initialize_satosa {
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
 
+  if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   if [ ! -f ./.env ]; then cp env.example .env ; else echo '.env file is already initialized' ; fi
   if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../example/* ./satosa-project/ ;  rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../example_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
@@ -54,6 +55,7 @@ function help {
   echo ""
   echo "Options"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
+  echo "-e Force update for .env file. A new .enf file is generated from env.example file"
   echo "-h Print this help"
   echo "-s Skip docker image update"
   echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
@@ -64,10 +66,13 @@ function help {
   echo "   demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
 }
 
-while getopts ":fpimMdsh" opt; do
+while getopts ":fepimMdsh" opt; do
   case ${opt} in
    f)
      clean_data
+     ;;
+   e)
+     SATOSA_FORCE_ENV="true"
      ;;
    p)
      unset COMPOSE_PROFILES
