@@ -27,6 +27,10 @@ Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
 Docker-compose/.env
+Docker-compose/wwwallet/wallet-backend-server/*
+Docker-compose/wwwallet/wallet-frontend/*
+Docker-compose/wwwallet/mysql/data/*
+Docker-compose/wwwallet/mysql/init/*
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
