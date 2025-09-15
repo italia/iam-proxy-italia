@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "Apache 2.0"}
 readme = "README.md"
-requires-python = ">=3.9.2,<4.0"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2.git@pplnx-v7.5.2",
     "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-8.5.1",
