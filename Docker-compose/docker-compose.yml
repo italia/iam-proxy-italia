@@ -1,5 +1,56 @@
 services:
 
+  wwwallet-mysql:
+    profiles:
+      - demo
+    container_name: wwwallet-mysql
+    environment:
+      - MYSQL_DATABASE=${MONGO_DBNAME:-wwwalletdb}
+      - MYSQL_ROOT_PASSWORD=${MONGO_DBPASSWORD:-changeme}
+      - MYSQL_USER=${MONGO_DBUSER:-dbuser}
+      - MYSQL_PASSWORD=${MONGO_DBPASSWORD:-dbpassword}
+    command:
+      - --table_definition_cache=100
+      - --performance_schema=0
+      - --innodb_use_native_aio=0
+    volumes:
+      - ./wwwallet/mysql/init/:/docker-entrypoint-initdb.d
+      - ./wwwallet/mysql/data/:/var/lib/mysql
+      - ./wwwallet/mysql/config/:/etc/mysql/conf.d
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    networks:
+      - iam-proxy-italia
+
+  wwwallet-server:
+    profiles:
+      - demo
+    build:
+      context: ./wwwallet/wallet-backend-server
+      dockerfile: Dockerfile
+    container_name: wwwallet-server
+    depends_on:
+      - wwwallet-mysql
+    ports:
+      - "5000:5000"
+    networks:
+      - iam-proxy-italia
+
+  wwwallet-frontend:
+    profiles:
+      - demo
+    build:
+      context: ./wwwallet/wallet-frontend
+      dockerfile: Dockerfile
+    container_name: wwwallet-frontend
+    depends_on:
+      - wwwallet-server
+    ports:
+      - "3000:3000"
+    networks:
+      - iam-proxy-italia
+
   satosa-mongo:
     profiles:
       - demo
@@ -128,6 +179,7 @@ services:
       - ./satosa-project:/satosa_proxy:rwx
       # - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
+      - /Users/pasqualederose/Development/IT/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
@@ -165,7 +217,7 @@ services:
     profiles:
       - demo
       - dev
-    image: italia/spid-saml-check
+    image: italia/spid-saml-check:1.10.6
     container_name: spid-samlcheck
     ports:
       - "8443:8443"
