@@ -23,6 +23,9 @@ RUN mkdir $BASEDIR
 
 RUN addgroup -S satosa && adduser -S satosa -G satosa && chown satosa:satosa $BASEDIR
 
+# Clean cache
+RUN rm -rf /var/cache/apk/*
+
 # "tzdata"  package is required to set timezone with TZ environment
 # "mailcap" package is required to add mimetype support
 RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev py3-pip openssl build-base gcc wget bash pcre-dev
