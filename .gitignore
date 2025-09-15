@@ -4,6 +4,10 @@ example/logs/*.log
 example/metadata/*.md
 example/data/*
 example/private/*
+iam-proxy-italia-project/logs/*.log
+iam-proxy-italia-project/metadata/*.md
+iam-proxy-italia-project/data/*
+iam-proxy-italia-project/private/*
 *.pyc
 *pyFF_example/info.log
 *pyFF_example/error.log
@@ -15,6 +19,7 @@ example/private/*
 *pyFF_example/garr
 *pyFF_example/entities
 example_sp/djangosaml2_sp/sqlite3.db
+iam-proxy-italia-project_sp/djangosaml2_sp/sqlite3.db
 project/*
 docker-example/*
 Docker-compose/satosa-project/*
@@ -22,3 +27,10 @@ Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
 Docker-compose/.env
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+.idea/
+*.iml

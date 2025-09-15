@@ -6,8 +6,8 @@ RUN cp /usr/share/zoneinfo/Europe/Rome /etc/localtime
 RUN echo "Europe/Rome" > /etc/timezone
 RUN apk del tzdata
 
-COPY example_sp/djangosaml2_sp/requirements.txt /
-COPY example_sp/entrypoint.sh /
+COPY iam-proxy-italia-project_sp/djangosaml2_sp/requirements.txt /
+COPY iam-proxy-italia-project_sp/entrypoint.sh /
 
 WORKDIR /djangosaml2_sp
 

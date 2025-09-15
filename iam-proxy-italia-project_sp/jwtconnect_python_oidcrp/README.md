@@ -19,7 +19,7 @@ pip install flask
 # enter in the example folder
 cd example
 
-python3 -m flask_rp.wsgi ../../Satosa-saml2saml/example_sp/jwtconnect_python_oidcrp/satosa.json
+python3 -m flask_rp.wsgi ../../Satosa-saml2saml/iam-proxy-italia-project_sp/jwtconnect_python_oidcrp/satosa.json
 ````
 
 You should see an output like this

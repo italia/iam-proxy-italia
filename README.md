@@ -43,34 +43,42 @@ with Metadata, Authn Requests and Responses.
 
 ## Introduction
 
-IAM Proxy Italia is an intermediate between many SAML2/OIDC 
-Service Providers and many SAML2/OIDC Identity Providers or Wallet authentication sytems based on OpenID4VP.
+**IAM Proxy Italia** acts as an intermediary between different digital identity authentication systems, including SAML2/OIDC Providers and eID Wallet authentication systems based on OpenID4VC.
 
-It allows traditional Saml2 Service Providers, or OIDC RP or OAuth2 Clients to communicate with
-**Spid**, **CIE** and **eIDAS** Identity Providers adapting Metadata and AuthnRequest operations.
+It supports three main use cases:
 
-<img src="gallery/spid_proxy.png" width="256">
+**A. Legacy Integration**
+Legacy SAML2 Service Providers or OIDC RPs can communicate with SPID, CIE, and eIDAS Identity Providers through metadata and authentication request adaptation.
 
-**Figure1** : _Traditional SAML2 Service Providers (SPs) proxied through the SATOSA SPID Backend gets compliances on AuthnRequest and Metadata operations_.
+**B. Wallet Authentication**
+Legacy SAML2 Service Providers or OIDC RPs can authenticate users through their eID Wallet Instance using OpenID4VP.
+
+**C. Credential Issuance to Wallet**
+Users requesting Digital Credentials from Credential Issuers (OpenID4VCI) can be authenticated through:
+- Legacy SAML2/OIDC infrastructure (SPID, CIE, eIDAS)
+- Credential Presentations (OpenID4VP)
+
+<img src="gallery/iam-proxy.svg" width="768">
+
+**Figure1** : _The IAM Proxy Italia acts as a centralized intermediary, providing protocol translation and metadata adaptation between legacy SAML2/OIDC Service Providers and various authentication systems including SPID, CIE, eIDAS Identity Providers, and eID Wallet authentication systems based on OpenID4VP._
 
 This solution configures multiple proxy _frontends_ and _backends_
-to get communicating systems that, due to protocol or specific
-limitations, traditionally could not interact each other.
+to get communicating systems facilitating their integrations.
 
 
 ## Demo components
 
 The example project comes with some preconfigured static pages.
 
-<img src="gallery/disco_page.png" width="512">
+<img src="gallery/disco_page.png" width="768">
 
 for other page screenshots, see [here](README-GALLERY.md).
 
-These demo pages are static files, available in `example/static`.
+These demo pages are static files, available in `iam-proxy-italia-project/static`.
 To get redirection to these pages, or redirection to third-party services, it is required to configure the files below:
 
-- file: `example/proxy_conf.yml`, example value: `UNKNOW_ERROR_REDIRECT_PAGE: "https://static-contents.example.org/error_page.html"`
-- file: `example/plugins/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
+- file: `iam-proxy-italia-project/proxy_conf.yml`, example value: `UNKNOW_ERROR_REDIRECT_PAGE: "https://static-contents.example.org/error_page.html"`
+- file: `iam-proxy-italia-project/conf/{backends,frontends}/$filename`, example value: `disco_srv: "https://static-contents.example.org/static/disco.html"`
 
 
 ## Usage
@@ -104,7 +112,7 @@ The docker compose uses the enviroment variables as documented [here](README-Set
 This project provides an example SAML2 Service Provider for demo purposes, 
 this Service Provider is executed by default in the Docker Compose.
 
-For any further detail about the configuration, see [example_sp/djangosaml2_sp/README.md](example_sp/djangosaml2_sp/README.md).
+For any further detail about the configuration, see [iam-proxy-italia-project_sp/djangosaml2_sp/README.md](iam-proxy-italia-project_sp/djangosaml2_sp/README.md).
 
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
@@ -136,7 +144,7 @@ Here something that you should know before start.
 - SATOSA Saml2 backend configuration has a **policy** section that will let us to define specialized behaviours
   and configuration for each SP (each by entityid). In this example I defined a single "default" behaviour with attributes **name_format**
   to **urn:oasis:names:tc:SAML:2.0:attrname-format:uri**, due to my needs to handle many service providers for which it could be painfull do a static definition each time.
-  An additional "hack" have been made in `example/attributes-maps/satosa_spid_uri_hybrid.py`, where I adopted a hybrid mapping that works for
+  An additional "hack" have been made in `iam-proxy-italia-project/attributes-maps/satosa_spid_uri_hybrid.py`, where I adopted a hybrid mapping that works for
   both *URI* and *BASIC* formats. Feel free to customized or decouple these format in different files and per SP.
 
 ## External references
@@ -184,3 +192,5 @@ Here something that you should know before start.
 - Thomas Chiozzi @ Trentino Digitale
 - Identity Python Community (pySAML2 and SATOSA)
 - GARR IDEM Community
+- Pasquale De Rose @ E&Y
+- Sara Longobardi @ Accenture

@@ -24,9 +24,9 @@ On startup the script check if the directories required from docker compose are 
 After the script test if the required directories are populated and if isn't copy the default files
 | Directory         | test presence of | default origin                 |
 | ----------------- | ---------------- | ------------------------------ |
-| satosa-project    | proxy_conf.yaml  | ../example/*                   |
-| djangosaml2_sp    | run.sh           | ../example_sp/djangosaml2_sp/* |
-| nginx/html/static | disco.html       | ../example/static/*            |
+| satosa-project    | proxy_conf.yaml  | ../iam-proxy-italia-project/*                   |
+| djangosaml2_sp    | run.sh           | ../iam-proxy-italia-project_sp/djangosaml2_sp/* |
+| nginx/html/static | disco.html       | ../iam-proxy-italia-project/static/*            |
 
 
 Unless `-s` options is enabled, on every start the script try to:

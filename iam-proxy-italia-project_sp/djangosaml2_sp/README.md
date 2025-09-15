@@ -1,7 +1,7 @@
 # How to run the Demo Django template
 
 
- Within the directory `/{your path}/iam-proxy-italia/example_sp` execute the following commands
+ Within the directory `/{your path}/iam-proxy-italia/iam-proxy-italia-project_sp` execute the following commands
 
 ### djangosaml2-sp (SP server)
 ````
@@ -33,7 +33,7 @@ and you will be able to view the project's demo page (see below)
 
 
 Now click on "Accedi all'area personale" (at the top right of the page header). 
-You will be redirect to the Saml2 Service Provider page [Service Provider page](../../example/README.md)
+You will be redirect to the Saml2 Service Provider page [Service Provider page](../../iam-proxy-italia-project/README.md)
 
 
 ### Add SP metadata to Satosa server

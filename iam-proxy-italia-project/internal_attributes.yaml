@@ -46,6 +46,7 @@ attributes:
     openid: [email]
     saml: [mail, email]
     openid4vp: [mail, email]
+    openid4vci: [mail, email]
   name:
     facebook: [name]
     orcid: [name.credit-name]
@@ -53,6 +54,7 @@ attributes:
     openid: [name]
     saml: [name, Name]
     openid4vp: [given_name]
+    openid4vci: [given_name]
   surname:
     facebook: [last_name]
     linkedin: [lastName]
@@ -60,6 +62,7 @@ attributes:
     openid: [family_name]
     saml: [sn, surname, familyName, FamilyName]
     openid4vp: [family_name]
+    openid4vci: [family_name]
   # spid related
   spidcode:
     openid: [spidcode]
@@ -93,14 +96,19 @@ attributes:
     saml: [digitalAddress]
   placeOfBirth:
     saml: [placeOfBirth]
+    openid4vci: [placeOfBirth]
   countyOfBirth:
     saml: [countyOfBirth]
+    openid4vci: [countyOfBirth]
   dateOfBirth:
     saml: [dateOfBirth]
+    openid4vci: [dateOfBirth]
   mobilePhone:
     saml: [mobilePhone]
   expirationDate:
     saml: [expirationDate]
+  fiscal_code:
+    openid4vci: [fiscal_code]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

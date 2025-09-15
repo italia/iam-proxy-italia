@@ -1,15 +1,16 @@
+import inspect
 import json
 import logging
 import re
+
 import saml2
 import satosa.util as util
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from saml2.response import StatusAuthnFailed
 from saml2.authn_context import requested_authn_context
 from saml2.metadata import entity_descriptor, sign_entity_descriptor
+from saml2.response import StatusAuthnFailed
 from saml2.saml import NAMEID_FORMAT_TRANSIENT
-from saml2.sigver import security_context, SignatureError
+from saml2.sigver import SignatureError, security_context
 from saml2.validate import valid_instance
 from satosa.backends.saml2 import SAMLBackend
 from satosa.context import Context
@@ -70,14 +71,19 @@ _TROUBLESHOOT_MSG = (
 )
 
 
-class CieSAMLBackend(SAMLBackend):
+class SpidSAMLBackend(SAMLBackend):
     """
-    A saml2 backend module (acting as a CIE SP).
+    A saml2 backend module (acting as a SPID SP).
     """
 
     _authn_context = "https://www.spid.gov.it/SpidL1"
 
     def __init__(self, *args, **kwargs):
+
+        logger.debug(
+            f"Initializing: {self.__class__.__name__}. Params[args: {args}, kwargs: {kwargs}]"
+        )
+
         super().__init__(*args, **kwargs)
 
         # error pages handler
@@ -99,52 +105,127 @@ class CieSAMLBackend(SAMLBackend):
             self.config["error_template"]
         )
 
+        logger.debug("inizializing metadata xmldoc")
+        self.xmldoc = self.__create_metadata(self.sp.config)
+
     def _metadata_contact_person(self, metadata, conf):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ metadata: {metadata}, conf: {conf}]"
+        )
         ##############
         # avviso 29 v3
         #
         # https://www.agid.gov.it/sites/default/files/repository_files/spid-avviso-n29v3-specifiche_sp_pubblici_e_privati_0.pdf
         # Avviso 29v3
         SPID_PREFIXES = dict(
-            cie="https://www.cartaidentita.interno.gov.it/saml-extensions",
             spid="https://spid.gov.it/saml-extensions",
             fpa="https://spid.gov.it/invoicing-extensions",
         )
         saml2.md.SamlBase.register_prefix(SPID_PREFIXES)
         metadata.contact_person = []
         contact_map = conf.contact_person
-
+        metadata.contact_person = []
         for contact in contact_map:
-            cie_contact = saml2.md.ContactPerson()
-            cie_contact.contact_type = contact["contact_type"]
-
-            cie_contact.loadd({
-                    "email_address": contact["email_address"],
-                    "telephone_number": contact["telephone_number"],
-                    "company": contact['company']
-                    })
-
-
-            #contact_kwargs = contact["std_info"]
+            spid_contact = saml2.md.ContactPerson()
+            spid_contact.contact_type = contact["contact_type"]
+            contact_kwargs = {
+                key: contact[key]
+                for key in ["email_address", "telephone_number", "company"]
+                if key in contact
+            }
             spid_extensions = saml2.ExtensionElement(
                 "Extensions", namespace="urn:oasis:names:tc:SAML:2.0:metadata"
             )
-            #breakpoint()
 
-            # cie_contact.loadd(contact_kwargs)
-            for k, v in contact['cie_info'].items():
-                ext = saml2.ExtensionElement(
-                    k, namespace=SPID_PREFIXES["cie"], text=v
+            if contact["contact_type"] == "other":
+                spid_contact.loadd(contact_kwargs)
+                contact_kwargs["contact_type"] = contact["contact_type"]
+                for k, v in contact.items():
+                    if k in contact_kwargs:
+                        continue
+                    ext = saml2.ExtensionElement(
+                        k, namespace=SPID_PREFIXES["spid"], text=v
+                    )
+                    # Avviso SPID n. 19 v.4 per enti AGGREGATORI il tag ContactPerson
+                    # deve avere l’attributo spid:entityType valorizzato come spid:aggregator
+                    if k == "PublicServicesFullAggregator":
+                        spid_contact.extension_attributes = {
+                            "spid:entityType": "spid:aggregator"
+                        }
+                    if k == "Aggregated":
+                        spid_contact.extension_attributes = {
+                            "spid:entityType": "spid:aggregated"
+                        }
+                        continue
+                    spid_extensions.children.append(ext)
+
+                spid_contact.extensions = spid_extensions
+
+            elif contact["contact_type"] == "billing":
+                contact_kwargs["company"] = contact["company"]
+                spid_contact.loadd(contact_kwargs)
+
+                elements = {}
+                for k, v in contact.items():
+                    if k in contact_kwargs:
+                        continue
+                    ext = saml2.ExtensionElement(
+                        k, namespace=SPID_PREFIXES["fpa"], text=v
+                    )
+                    elements[k] = ext
+
+                # DatiAnagrafici
+                IdFiscaleIVA = saml2.ExtensionElement(
+                    "IdFiscaleIVA",
+                    namespace=SPID_PREFIXES["fpa"],
                 )
-                spid_extensions.children.append(ext)
+                Anagrafica = saml2.ExtensionElement(
+                    "Anagrafica",
+                    namespace=SPID_PREFIXES["fpa"],
+                )
+                Anagrafica.children.append(elements["Denominazione"])
 
-            cie_contact.extensions = spid_extensions
-            metadata.contact_person.append(cie_contact)
+                IdFiscaleIVA.children.append(elements["IdPaese"])
+                IdFiscaleIVA.children.append(elements["IdCodice"])
+                DatiAnagrafici = saml2.ExtensionElement(
+                    "DatiAnagrafici",
+                    namespace=SPID_PREFIXES["fpa"],
+                )
+                if elements.get("CodiceFiscale"):
+                    DatiAnagrafici.children.append(elements["CodiceFiscale"])
+                DatiAnagrafici.children.append(IdFiscaleIVA)
+                DatiAnagrafici.children.append(Anagrafica)
+                CessionarioCommittente = saml2.ExtensionElement(
+                    "CessionarioCommittente",
+                    namespace=SPID_PREFIXES["fpa"],
+                )
+                CessionarioCommittente.children.append(DatiAnagrafici)
+
+                # Sede
+                Sede = saml2.ExtensionElement(
+                    "Sede",
+                    namespace=SPID_PREFIXES["fpa"],
+                )
+                Sede.children.append(elements["Indirizzo"])
+                Sede.children.append(elements["NumeroCivico"])
+                Sede.children.append(elements["CAP"])
+                Sede.children.append(elements["Comune"])
+                Sede.children.append(elements["Provincia"])
+                Sede.children.append(elements["Nazione"])
+                CessionarioCommittente.children.append(Sede)
+
+                spid_extensions.children.append(CessionarioCommittente)
+
+            spid_contact.extensions = spid_extensions
+            metadata.contact_person.append(spid_contact)
         #
         # fine avviso 29v3
         ###################
 
     def _metadata_endpoint(self, context):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}]."
+        )
         """
         Endpoint for retrieving the backend metadata
         :type context: satosa.context.Context
@@ -154,37 +235,14 @@ class CieSAMLBackend(SAMLBackend):
         :return: response with metadata
         """
         logger.debug("Sending metadata response")
-        conf = self.sp.config
-
-        metadata = entity_descriptor(conf)
-        
-        # configurare gli attribute_consuming_service
-        metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
-        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].text = metadata.entity_id
-        for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
-            reqattr.name_format = None
-            reqattr.friendly_name = None
-
-        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
-        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
-       
-        # load ContactPerson Extensions
-        self._metadata_contact_person(metadata, conf)
-
-        # metadata signature
-        secc = security_context(conf)
-        #
-        sign_dig_algs = self.get_kwargs_sign_dig_algs()
-        eid, xmldoc = sign_entity_descriptor(
-            metadata, None, secc, **sign_dig_algs)
-
-        valid_instance(eid)
         return Response(
-            text_type(xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
+            text_type(self.xmldoc).encode("utf-8"), content="text/xml; charset=utf8"
         )
 
     def get_kwargs_sign_dig_algs(self):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ self]"
+        )
         kwargs = {}
         # backend support for selectable sign/digest algs
         alg_dict = dict(signing_algorithm="sign_alg",
@@ -197,6 +255,9 @@ class CieSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+        )
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
         if self.idp_blacklist_file:
@@ -211,6 +272,9 @@ class CieSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+        )
         """
         Do an authorization request on idp with given entity id.
         This is the start of the authorization.
@@ -224,7 +288,6 @@ class CieSAMLBackend(SAMLBackend):
         :return: response to the user agent
         """
         self.check_blacklist(context, entity_id)
-
         kwargs = {}
         # fetch additional kwargs
         kwargs.update(self.get_kwargs_sign_dig_algs())
@@ -233,7 +296,8 @@ class CieSAMLBackend(SAMLBackend):
         req_authn_context = authn_context or requested_authn_context(
             class_ref=self._authn_context
         )
-        req_authn_context.comparison = self.config.get("spid_acr_comparison", "minimum")
+        req_authn_context.comparison = self.config.get(
+            "spid_acr_comparison", "minimum")
 
         # force_auth = true only if SpidL >= 2
         if "SpidL1" in authn_context.authn_context_class_ref[0].text:
@@ -243,7 +307,8 @@ class CieSAMLBackend(SAMLBackend):
 
         try:
             binding = saml2.BINDING_HTTP_POST
-            destination = context.internal_data.get("target_entity_id", entity_id)
+            destination = context.internal_data.get(
+                "target_entity_id", entity_id)
             # SPID CUSTOMIZATION
             # client = saml2.client.Saml2Client(conf)
             client = self.sp
@@ -278,8 +343,12 @@ class CieSAMLBackend(SAMLBackend):
             authn_req.destination = location
             # spid-testenv2 preleva l'attribute consumer service dalla authnRequest
             # (anche se questo sta già nei metadati...)
-            authn_req.attribute_consuming_service_index = "0"
-
+            # Imposta il consuming_service_index in base al default di ficep per le richieste ficep, oppure a '0' per le richieste spid
+            authn_req.attribute_consuming_service_index = str(
+                self.config["sp_config"].get("acs_index") or
+                self.config["sp_config"].get("ficep_default_acs_index") or
+                "0"
+            )
             issuer = saml2.saml.Issuer()
             issuer.name_qualifier = client.config.entityid
             issuer.text = client.config.entityid
@@ -357,6 +426,9 @@ class CieSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ message: {message}, troubleshoot: {troubleshoot}]"
+        )
         """
         Todo: Jinja2 tempalte loader and rendering :)
         """
@@ -373,9 +445,15 @@ class CieSAMLBackend(SAMLBackend):
         return Response(result, content="text/html; charset=utf8", status="403")
 
     def handle_spid_anomaly(self, err_number, err):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ err_number: {err_number}, err: {err}]"
+        )
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, binding: {binding}]"
+        )
         """
         Endpoint for the idp response
         :type context: satosa.context,Context
@@ -443,7 +521,8 @@ class CieSAMLBackend(SAMLBackend):
 
         # Context validation
         if not context.state.get(self.name):
-            _msg = f"context.state[self.name] KeyError: where self.name is {self.name}"
+            _msg = f"context.state[self.name] KeyError: where self.name is {
+                self.name}"
             logger.error(_msg)
             return self.handle_error(
                 **{"message": _msg, "troubleshoot": _TROUBLESHOOT_MSG}
@@ -461,9 +540,25 @@ class CieSAMLBackend(SAMLBackend):
         recipient = _sp_config["service"]["sp"]["endpoints"][
             "assertion_consumer_service"
         ][0][0]
-        authn_context_classref = self.config["acr_mapping"][""]
 
-        issuer = authn_response.response.issuer
+        # ACR
+        issuer = authn_response.response.issuer.text.strip()
+        acr_map: dict = {}
+
+        try:
+            acr_map = self.config["acr_mapping"]
+        except Exception:
+            logger.warning(
+                "acr_mapping not defined in the spid backend"
+            )
+            return self.handle_error(
+                **{
+                    "message": "acr_mapping not defined in the spid backend",
+                    "troubleshoot": "Please contact the administrators of the platform and tell them to configure properly the acr_mapping in the SPID/CIE backend"
+                }
+            )
+        acr_default = acr_map.get("", "https://www.spid.gov.it/SpidL2")
+        authn_context_classref = acr_map.get(issuer, acr_default)
 
         # this will get the entity name in state
         if len(context.state.keys()) < 2:
@@ -472,6 +567,7 @@ class CieSAMLBackend(SAMLBackend):
                 **{"message": _msg, "troubleshoot": _TROUBLESHOOT_MSG}
             )
 
+        list(context.state.keys())[1]
         # deprecated
         # if not context.state.get('Saml2IDP'):
         # _msg = "context.state['Saml2IDP'] KeyError"
@@ -495,7 +591,6 @@ class CieSAMLBackend(SAMLBackend):
             authn_context_class_ref=authn_context_classref,
             return_addrs=authn_response.return_addrs,
             allowed_acrs=self.config["spid_allowed_acrs"],
-            cie_mode = True
         )
         try:
             validator.run()
@@ -514,3 +609,85 @@ class CieSAMLBackend(SAMLBackend):
         return self.auth_callback_func(
             context, self._translate_response(authn_response, context.state)
         )
+
+    def __create_metadata(self, conf):
+        """
+        method __create_metadata private
+        Create metadata for SpidSaml2
+
+        :param self: Instance for SpidSaml2
+        :param conf: Configuration for SpidSaml2
+        :return: xmldoc
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [conf: {conf}]"
+        )
+        metadata = entity_descriptor(conf)
+
+        # creare gli attribute_consuming_service
+        metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
+        metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
+        metadata.spsso_descriptor.attribute_consuming_service[
+            0].service_name[0].text = metadata.entity_id
+        for reqattr in metadata.spsso_descriptor.attribute_consuming_service[0].requested_attribute:
+            reqattr.name_format = None
+            reqattr.friendly_name = None
+
+        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
+        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
+
+        if self.config["sp_config"]["ficep_enable"] is True:
+            # Aggiungere CIE 99
+            metadata.spsso_descriptor.attribute_consuming_service.append(
+                saml2.md.AttributeConsumingService())
+            metadata.spsso_descriptor.attribute_consuming_service[1].index = '99'
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name.append(
+                saml2.md.ServiceName())
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[0].lang = "it"
+            metadata.spsso_descriptor.attribute_consuming_service[1].service_name[
+                0].text = "eIDAS Natural Person Minimum Attribute Set"
+            metadata.spsso_descriptor.attribute_consuming_service[1].requested_attribute = [
+                saml2.md.RequestedAttribute('true', None, 'spidCode'),
+                saml2.md.RequestedAttribute('true', None, 'name'),
+                saml2.md.RequestedAttribute('true', None, 'familyName'),
+                saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
+            ]
+
+            metadata.spsso_descriptor.assertion_consumer_service[1].index = '99'
+            metadata.spsso_descriptor.assertion_consumer_service[1].is_default = None
+
+            # Aggiungere CIE 100
+            metadata.spsso_descriptor.attribute_consuming_service.append(
+                saml2.md.AttributeConsumingService())
+            metadata.spsso_descriptor.attribute_consuming_service[2].index = '100'
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name.append(
+                saml2.md.ServiceName())
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[0].lang = "it"
+            metadata.spsso_descriptor.attribute_consuming_service[2].service_name[
+                0].text = "eIDAS Natural Person Full Attribute Set"
+            metadata.spsso_descriptor.attribute_consuming_service[2].requested_attribute = [
+                saml2.md.RequestedAttribute('true', None, 'spidCode'),
+                saml2.md.RequestedAttribute('true', None, 'name'),
+                saml2.md.RequestedAttribute('true', None, 'familyName'),
+                saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
+                saml2.md.RequestedAttribute('true', None, 'placeOfBirth'),
+                saml2.md.RequestedAttribute('true', None, 'address'),
+                saml2.md.RequestedAttribute('true', None, 'gender'),
+            ]
+
+            metadata.spsso_descriptor.assertion_consumer_service[2].index = '100'
+            metadata.spsso_descriptor.assertion_consumer_service[2].is_default = None
+
+        # load ContactPerson Extensions
+        self._metadata_contact_person(metadata, conf)
+
+        # metadata signature
+        secc = security_context(conf)
+        #
+        sign_dig_algs = self.get_kwargs_sign_dig_algs()
+        eid, xmldoc = sign_entity_descriptor(
+            metadata, None, secc, **sign_dig_algs)
+
+        valid_instance(eid)
+
+        return xmldoc

@@ -55,9 +55,9 @@ mkdir -p ./nginx/html/static # static files for nginx
 
 Copy required files
 ```bash
-cp -R ../example/* ./satosa-project
-cp -R ../example_sp/djangosaml2_sp/* ./djangosaml2_sp
-cp -E ../example/static/* ./nginx/html/static
+cp -R ../iam-proxy-italia-project/* ./satosa-project
+cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp
+cp -E ../iam-proxy-italia-project/static/* ./nginx/html/static
 ```
 
 Clean static data from Satosa project

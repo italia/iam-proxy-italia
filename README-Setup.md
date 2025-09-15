@@ -47,13 +47,13 @@ poetry env info
 ## Configure the Proxy
 
 - Create certificates for SPID, using [spid-compliant-certificates](https://github.com/italia/spid-compliant-certificates) or [spid-compliant-certificates-python](https://github.com/italia/spid-compliant-certificates-python)
-- Copy `repository/example/*` contents (`cp -R repository/example/* .`) and **edit the files below** 
+- Copy `repository/iam-proxy-italia-project/*` contents (`cp -R repository/iam-proxy-italia-project/* .`) and **edit the files below** 
 
   - `proxy_conf.yaml`
-  - `plugins/backends/spidsaml2_backend.yaml`
-  - `plugins/backends/saml2_backend.yaml`
-  - `plugins/frontend/saml2_frontend.yaml`
-  - `plugins/frontend/oidc_op_frontend.yaml` (optional to enable OIDC Provider)
+  - `conf/backends/spidsaml2_backend.yaml`
+  - `conf/backends/saml2_backend.yaml`
+  - `conf/frontend/saml2_frontend.yaml`
+  - `conf/frontend/oidc_op_frontend.yaml` (optional to enable OIDC Provider)
 
 Remember to:
 
@@ -74,8 +74,8 @@ Comment/uncomment the following statement in the proxy_configuration to enable i
 
 You can override the configuration of the proxy by settings one or more of the following environment variables:
 
-| **Environment var**                                | **Description**                                           | **Example Value**                                                  |
-|--------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|
+| **Environment var**                              | **Description**                                            | **Example Value**                                                  |
+|--------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|
 | **BASE_DIR**                                     | Base directory for satosa proxy                            | /satosa_proxy                                              |
 | **SATOSA_BY_DOCKER**                             | Satosa configuration when run by Docker                    | 1                                                          |
 | **SATOSA_BASE**                                  | Base URL of Satosa server                                  | https://$HOSTNAME                                          |
@@ -85,37 +85,39 @@ You can override the configuration of the proxy by settings one or more of the f
 | **MONGODB_PASSWORD**                             | MongoDB password for oidc_op frontend                      | ${MONGO_DBPASSWORD}                                       |
 | **MONGODB_USERNAME**                             | MongoDB username for oidc_op frontend                      | ${MONGO_DBUSER}                                           |
 | **SATOSA_CONTACT_PERSON_EMAIL_ADDRESS**          | Metadata Contact person email                              | support.example@organization.org                          |
-| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER**      | Metadata Contact person telephone number for SPID / CIE Backend | +3906123456789                                        |
-| **SATOSA_CONTACT_PERSON_FISCALCODE**            | Metadata Contact person fiscal code for SPID / CIE Backend | 01234567890                                               |
-| **SATOSA_CONTACT_PERSON_GIVEN_NAME**            | Metadata Contact person name                               | Name                                                       |
-| **SATOSA_CONTACT_PERSON_IPA_CODE**              | Metadata Contact person IPA code for SPID / CIE Backend    | ipa00c                                                   |
-| **SATOSA_CONTACT_PERSON_MUNICIPALITY**          | Metadata Contact person municipality code for CIE Backend  | H501                                                       |
+| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER**       | Metadata Contact person telephone number for SPID / CIE Backend | +3906123456789                                        |
+| **SATOSA_CONTACT_PERSON_FISCALCODE**             | Metadata Contact person fiscal code for SPID / CIE Backend | 01234567890                                               |
+| **SATOSA_CONTACT_PERSON_GIVEN_NAME**             | Metadata Contact person name                               | Name                                                       |
+| **SATOSA_CONTACT_PERSON_IPA_CODE**               | Metadata Contact person IPA code for SPID / CIE Backend    | ipa00c                                                   |
+| **SATOSA_CONTACT_PERSON_MUNICIPALITY**           | Metadata Contact person municipality code for CIE Backend  | H501                                                       |
 | **SATOSA_ENCRYPTION_KEY**                        | Encryption key for state                                   | CHANGE_ME!                                                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**         | Metadata English organization display name                | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**         | Metadata Italian organization display name                 | Resource provided by Example Organization                 |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**          | Metadata English organization display name                 | Resource provided by Example Organization                 |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**          | Metadata Italian organization display name                 | Resource provided by Example Organization                 |
 | **SATOSA_ORGANIZATION_NAME_EN**                  | Metadata English full organization name                    | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_NAME_IT**                  | Metadata Italian full organization name                     | Resource provided by Example Organization                 |
+| **SATOSA_ORGANIZATION_NAME_IT**                  | Metadata Italian full organization name                    | Resource provided by Example Organization                 |
 | **SATOSA_ORGANIZATION_URL_EN**                   | Metadata English organization URL                          | https://example_organization.org                           |
-| **SATOSA_ORGANIZATION_URL_IT**                   | Metadata Italian organization URL                           | https://example_organization.org                           |
-| **SATOSA_PRIVATE_KEY**                           | Private key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/privkey.pem                                |
-| **SATOSA_PUBLIC_KEY**                            | Public key for SAML2 / SPID backends                        | ${KEYS_FOLDER}/cert.pem                                   |
-| **SATOSA_SALT**                                  | Encryption salt                                           | CHANGE_ME!                                                 |
+| **SATOSA_ORGANIZATION_URL_IT**                   | Metadata Italian organization URL                          | https://example_organization.org                           |
+| **SATOSA_PRIVATE_KEY**                           | Private key for SAML2 / SPID backends                      | ${KEYS_FOLDER}/privkey.pem                                |
+| **SATOSA_PUBLIC_KEY**                            | Public key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/cert.pem                                   |
+| **SATOSA_SALT**                                  | Encryption salt                                            | CHANGE_ME!                                                 |
 | **SATOSA_STATE_ENCRYPTION_KEY**                  | State encryption key                                       | CHANGE_ME!                                                 |
 | **SATOSA_UI_DESCRIPTION_EN**                     | Metadata English UI description                            | Resource description                                       |
 | **SATOSA_UI_DESCRIPTION_IT**                     | Metadata Italian UI description                            | Resource description                                       |
-| **SATOSA_UI_DISPLAY_NAME_EN**                    | Metadata English UI display name                            | Resource Display Name                                      |
-| **SATOSA_UI_DISPLAY_NAME_IT**                    | Metadata Italian UI display name                            | Resource Display Name                                      |
-| **SATOSA_UI_INFORMATION_URL_EN**                | Metadata English UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_INFORMATION_URL_IT**                | Metadata Italian UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_LOGO_HEIGHT**                         | Metadata logo height                                       | 60                                                         |
-| **SATOSA_UI_LOGO_URL**                            | Metadata Logo URL                                          | https://example_organization.org/logo.png                  |
-| **SATOSA_UI_LOGO_WIDTH**                          | Metadata Logo width                                        | 80                                                         |
+| **SATOSA_UI_DISPLAY_NAME_EN**                    | Metadata English UI display name                           | Resource Display Name                                      |
+| **SATOSA_UI_DISPLAY_NAME_IT**                    | Metadata Italian UI display name                           | Resource Display Name                                      |
+| **SATOSA_UI_INFORMATION_URL_EN**                 | Metadata English UI information URL                        | https://example_organization.org/information_url_en       |
+| **SATOSA_UI_INFORMATION_URL_IT**                 | Metadata Italian UI information URL                        | https://example_organization.org/information_url_en       |
+| **SATOSA_UI_LOGO_HEIGHT**                        | Metadata logo height                                       | 60                                                         |
+| **SATOSA_UI_LOGO_URL**                           | Metadata Logo URL                                          | https://example_organization.org/logo.png                  |
+| **SATOSA_UI_LOGO_WIDTH**                         | Metadata Logo width                                        | 80                                                         |
 | **SATOSA_UI_PRIVACY_URL_EN**                     | Metadata English UI privacy URL                            | https://example_organization.org/privacy_en               |
 | **SATOSA_UI_PRIVACY_URL_IT**                     | Metadata Italian UI privacy URL                            | https://example_organization.org/privacy_en               |
 | **SATOSA_USER_ID_HASH_SALT**                     | User ID hash salt                                          | CHANGE_ME!                                                 |
 | **SATOSA_REQUESTED_ATTRIBUTES**                  | Requested attributes                                       | []                                                         |
-| **GET_IDEM_MDQ_KEY**                             | Flag for getting idem MDQ key                              | true                                                       |
+| **SATOSA_GET_IDEM_MDQ_KEY**                      | Flag for getting idem MDQ key                              | true                                                       |
 | **GET_SPID_IDP_METADATA**                        | Flag for getting SPID IDP metadata                         | true                                                       |
+| **GET_CIE_IDP_METADATA**                         | Flag for getting CIE IDP metadata                          | true                                                       |
+| **GET_FICEP_IDP_METADATA**                       | Flag for getting ficep (eIDAS) IDP metadata                | true                                                       |
 | **SATOSA_SAML2_REQUESTED_ATTRIBUTES**            | SAML2 required attributes                                  | name, surname                                              |
 | **SATOSA_SPID_REQUESTED_ATTRIBUTES**             | SPID required attributes                                   | spidCode, name, familyName, fiscalNumber, email              |
 
@@ -137,7 +139,7 @@ wget https://sp.fqdn.org/saml2/metadata -O metadata/sp/my-sp.xml
 ```
 
 Otherwise the best method would be enabling a MDQ server in each frontend and backend configuration file.
-See `example/plugins/{backends,frontends}/$filename` as example.
+See `iam-proxy-italia-project/conf/{backends,frontends}/$filename` as example.
 
 ### Get SPID backend metadata
 

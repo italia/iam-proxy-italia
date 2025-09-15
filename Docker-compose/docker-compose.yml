@@ -45,11 +45,11 @@ services:
     profiles:
       - demo
       - dev
-    build: 
-        context: ../
-        args: 
-            - NODE_ENV=local
-        dockerfile: example_sp/django.Dockerfile
+    build:
+      context: ../
+      args:
+        - NODE_ENV=local
+      dockerfile: iam-proxy-italia-project_sp/django.Dockerfile
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
@@ -77,8 +77,10 @@ services:
       - TZ=${TZ:-Europe/Rome}
       - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
       - SATOSA_BY_DOCKER=1
-      - GET_IDEM_MDQ_KEY=${GET_IDEM_MDQ_KEY:-true}
-      - GET_SPID_IDP_METADATA=${GET_SPID_IDP_METADATA:-true}
+      - SATOSA_GET_IDEM_MDQ_KEY=${SATOSA_GET_IDEM_MDQ_KEY:-true}
+      - SATOSA_GET_SPID_IDP_METADATA=${SATOSA_GET_SPID_IDP_METADATA:-true}
+      - SATOSA_GET_FICEP_IDP_METADATA=${SATOSA_GET_FICEP_IDP_METADATA:-true}
+      - SATOSA_GET_CIE_IDP_METADATA=${SATOSA_GET_CIE_IDP_METADATA:-true}
 
       - BASE_DIR=/satosa_proxy
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
@@ -141,13 +143,17 @@ services:
     image: nginx:alpine
     container_name: satosa-nginx
     depends_on:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        condition: service_started
+      satosa-certbot:
+        condition: service_completed_successfully
     ports:
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./certbot/archive:/etc/archive:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
       - iam-proxy-italia
@@ -165,11 +171,28 @@ services:
       - "8443:8443"
     networks:
       - iam-proxy-italia
+  satosa-certbot:
+    image: certbot/certbot
+    container_name: satosa-certbot 
+    environment:
+      - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
+      - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
+      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - TZ=${TZ:-Europe/Rome}
+    volumes:
+      - ./certbot:/etc/letsencrypt
+      - ./nginx/html:/var/www/certbot
+    networks:
+      - iam-proxy-italia
+    ports:
+      - "80:80"
+    entrypoint: "sh /etc/letsencrypt/certbot.sh"
+
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
 
-## External volumes 
+## External volumes
 # volumes:
 #   mongodata:
 #     name: iam-proxy-italia_mongodata
