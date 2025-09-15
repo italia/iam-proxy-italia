@@ -55,7 +55,7 @@ function help {
   echo ""
   echo "Options"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
-  echo "-e Force update for .env file. A new .enf file is generated from env.example file"
+  echo "-e Force update for .env file. A new .env file is generated from env.example file"
   echo "-h Print this help"
   echo "-s Skip docker image update"
   echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
