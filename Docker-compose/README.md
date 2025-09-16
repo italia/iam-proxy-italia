@@ -31,6 +31,9 @@ cd Docker-compose
 ```
 The script creates the directories for local mounts and copies all required files to start a full demo with test and SAML2 Service Providers.
 
+The script can be run with different options:
+-`f` cleans the folders; if combined with `-e` (`-e -f`), it also overrides the .env file.
+
 > Warning: The script deletes any previous created directory if found.
 
 The result is represented by the following services:
