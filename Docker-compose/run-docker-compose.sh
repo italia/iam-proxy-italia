@@ -24,7 +24,12 @@ function initialize_satosa {
   if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./satosa-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi ; if [ -d ./satosa-project/conf ]; then mv ./satosa-project/conf ./satosa-project/plugins ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
-  if [[ "$COMPOSE_PROFILES" == "wwwallet" && ! -f ./wwwallet/nginx/conf.d/wwwallet.conf ]]; then cp -R ../iam-proxy-italia-project/wwwallet/* ./wwwallet ; else echo 'wwwallet directory is already initialized' ; fi
+  if [ "$COMPOSE_PROFILES" == "wwwallet"]; 
+      if [ ! -f ./wwwallet/nginx/conf.d/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/* ./wwwallet ; else echo 'wwwallet directory is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/.prod.env ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.prod.env ./wwwallet/wallet-frontend/.prod.env ; else echo 'wwwallet-frontend .prod.env file is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
+  fi
 
   chmod -R 777 ./satosa-project
   echo "WARNING: satosa-project permission folder set recursively to 777"
