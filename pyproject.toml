@@ -26,6 +26,7 @@ dependencies = [
     "aiohttp (>=3.11.11,<4.0.0)",
     "pymdoccbor @ git+https://github.com/IdentityPython/pyMDOC-CBOR",
     "pydantic (>=2.10.6,<3.0.0)",
+    "pyopenssl (<=45.0.0)",
 ]
 
 [tool.poetry]
