@@ -21,28 +21,28 @@ USER_ID_HASH_SALT: !ENV SATOSA_SALT
 ERROR_URL: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
 
 CUSTOM_PLUGIN_MODULE_PATHS:
-  #- "plugins/ping"
-  - "plugins/backends"
-  - "plugins/frontends"
-  - "plugins/micro_services"
+  #- "conf/ping"
+  - "conf/backends"
+  - "conf/frontends"
+  - "conf/micro_services"
 BACKEND_MODULES:
-  - "plugins/backends/saml2_backend.yaml"
-  - "plugins/backends/spidsaml2_backend.yaml"
-  - "plugins/backends/ciesaml2_backend.yaml"
-  - "plugins/backends/pyeudiw_backend.yaml"
+  - "conf/backends/saml2_backend.yaml"
+  - "conf/backends/spidsaml2_backend.yaml"
+  - "conf/backends/ciesaml2_backend.yaml"
+  - "conf/backends/pyeudiw_backend.yaml"
 FRONTEND_MODULES:
-  - "plugins/frontends/saml2_frontend.yaml"
-  # - "plugins/frontends/oidcop_frontend.yaml"
-  - "plugins/frontends/openid4vci_frontend.yaml"
+  - "conf/frontends/saml2_frontend.yaml"
+  # - "conf/frontends/oidcop_frontend.yaml"
+  - "conf/frontends/openid4vci_frontend.yaml"
 MICRO_SERVICES:
-  # - "plugins/microservices/spid_unical_account_linking.yaml"
-  # - "plugins/microservices/multiple_ldap_attribute_store.yaml"
-  # - "plugins/microservices/ldap_attribute_store.yaml"
+  # - "conf/microservices/spid_unical_account_linking.yaml"
+  # - "conf/microservices/multiple_ldap_attribute_store.yaml"
+  # - "conf/microservices/ldap_attribute_store.yaml"
   # re-process again after new attributes beign pushed (or not) from ldap store
-  # - "plugins/microservices/spid_unical_account_linking.yaml"
-  - "plugins/microservices/idp_hinting.yaml"
-  - "plugins/microservices/disco_to_target_issuer.yaml"
-  - "plugins/microservices/target_based_routing.yaml"
+  # - "conf/microservices/spid_unical_account_linking.yaml"
+  - "conf/microservices/idp_hinting.yaml"
+  - "conf/microservices/disco_to_target_issuer.yaml"
+  - "conf/microservices/target_based_routing.yaml"
 LOGGING:
   version: 1
   formatters:
