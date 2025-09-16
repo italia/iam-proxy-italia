@@ -1,4 +1,4 @@
-FROM alpine:3.21.2
+FROM python:3.12-slim
 
 # Metadata params
 ARG BUILD_DATE
@@ -19,32 +19,40 @@ LABEL org.opencontainers.image.authors=$AUTHORS \
       org.opencontainers.image.description="Docker Image di iam-proxy-italia."
 
 ENV BASEDIR="/satosa_proxy"
+
 RUN mkdir $BASEDIR
+RUN addgroup --system satosa && \
+    adduser --system --ingroup satosa satosa && \
+    chown -R satosa:satosa $BASEDIR
 
-RUN addgroup -S satosa && adduser -S satosa -G satosa && chown satosa:satosa $BASEDIR
-
-# Clean cache
-RUN rm -rf /var/cache/apk/*
-
-# "tzdata"  package is required to set timezone with TZ environment
-# "mailcap" package is required to add mimetype support
-RUN apk add --update --no-cache tzdata mailcap xmlsec libffi-dev openssl-dev python3-dev py3-pip openssl build-base gcc wget bash pcre-dev
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    build-essential \
+    libffi-dev \
+    libpcre2-dev \
+    libssl-dev \
+    mailcap \
+    python3-dev \
+    tzdata \
+    wget \
+    xmlsec1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set up Python virtual environment
 ENV VIRTUAL_ENV=/.venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip3 install --upgrade pip --break-system-packages
-RUN pip3 install flake8 pipx poetry --break-system-packages
+RUN pip install --upgrade pip setuptools wheel --break-system-packages
+RUN pip install flake8 pipx poetry --break-system-packages
 
 # COPY poetry.lock /
 COPY pyproject.toml /
 
-RUN poetry self update
-RUN poetry config virtualenvs.in-project true
-RUN poetry install
-RUN poetry add setuptools
-RUN poetry add pdbpp
+RUN poetry self update && \
+    poetry config virtualenvs.in-project true && \
+    poetry install --no-interaction --no-ansi && \
+    poetry add setuptools pdbpp
 
 WORKDIR $BASEDIR/
