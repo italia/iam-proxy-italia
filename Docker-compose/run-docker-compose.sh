@@ -1,5 +1,5 @@
 #!/bin/bash
-export COMPOSE_PROFILES=demo
+export COMPOSE_PROFILES=wwwallet
 export SKIP_UPDATE=
 
 function clean_data {
@@ -7,10 +7,11 @@ function clean_data {
   rm -Rf ./satosa-project/*
   rm -Rf ./djangosaml2_sp/*
   rm -Rf ./nginx/html/static
+  rm -Rf ./wwwallet/*
 }
 
 function initialize_satosa {
-  cp env.example .env
+  #cp env.example .env
 
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
@@ -18,10 +19,12 @@ function initialize_satosa {
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
+  mkdir -p ./wwwallet
 
   if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./satosa-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi ; if [ -d ./satosa-project/conf ]; then mv ./satosa-project/conf ./satosa-project/plugins ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
+  if [[ "$COMPOSE_PROFILES" == "wwwallet" && ! -f ./wwwallet/nginx/conf.d/wwwallet.conf ]]; then cp -R ../iam-proxy-italia-project/wwwallet/* ./wwwallet ; else echo 'wwwallet directory is already initialized' ; fi
 
   chmod -R 777 ./satosa-project
   echo "WARNING: satosa-project permission folder set recursively to 777"
