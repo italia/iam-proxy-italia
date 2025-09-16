@@ -1,5 +1,5 @@
 #!/bin/bash
-export COMPOSE_PROFILES=demo
+export COMPOSE_PROFILES=wwwallet
 export SKIP_UPDATE=
 
 function clean_data {
@@ -24,11 +24,14 @@ function initialize_satosa {
   if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
-  if [ "$COMPOSE_PROFILES" == "wwwallet"]; 
+  if [ "$COMPOSE_PROFILES" == "wwwallet" ]; then
       if [ ! -f ./wwwallet/nginx/conf.d/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/* ./wwwallet ; else echo 'wwwallet directory is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/.prod.env ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.prod.env ./wwwallet/wallet-frontend/.prod.env ; else echo 'wwwallet-frontend .prod.env file is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend ; else echo 'wwwallet-frontend directory is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-backend-server/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server ; else echo 'wwwallet-backend-server directory is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/.env.prod ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod ; else echo 'wwwallet-frontend .env.prod file is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
       cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
   fi
 
   chmod -R 777 ./iam-proxy-italia-project

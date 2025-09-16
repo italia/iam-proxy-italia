@@ -5,10 +5,10 @@ services:
       - wwwallet
     container_name: wwwallet-mysql
     environment:
-      - MYSQL_DATABASE=${MONGO_DBNAME:-wwwalletdb}
-      - MYSQL_ROOT_PASSWORD=${MONGO_DBPASSWORD:-changeme}
-      - MYSQL_USER=${MONGO_DBUSER:-dbuser}
-      - MYSQL_PASSWORD=${MONGO_DBPASSWORD:-dbpassword}
+      MYSQL_DATABASE: ${MYSQL_DBNAME:-wwwalletdb}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DBPASSWORD:-changeme}
+      MYSQL_USER: ${MYSQL_DBUSER:-dbuser}
+      MYSQL_PASSWORD: ${MYSQL_DBPASSWORD:-dbpassword}
     command:
       - --table_definition_cache=100
       - --performance_schema=0
@@ -195,13 +195,13 @@ services:
       timeout: 30s
 
   satosa-nginx:
-    image: nginx:alpine
-    container_name: satosa-nginx
     profiles:
       - demo
       - mongo
       - mongoexpress
       - dev
+    image: nginx:alpine
+    container_name: satosa-nginx
     depends_on:
       iam-proxy-italia:
         condition: service_started
@@ -221,14 +221,31 @@ services:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
 
+
   wwwallet-satosa-nginx:
-    extends:
-      service: satosa-nginx
-    container_name: wwwallet-satosa-nginx
     profiles:
       - wwwallet
+    image: nginx:alpine
+    container_name: satosa-nginx
+    depends_on:
+      iam-proxy-italia:
+        condition: service_started
+      satosa-certbot:
+        condition: service_completed_successfully
+    ports:
+      - "443:443"
     volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html:ro
+      - ./certbot/archive:/etc/archive:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       - ./wwwallet/nginx/conf.d/:/etc/nginx/conf.d/sites-enabled
+      # - static:/usr/share/nginx/html # to be used for external volumes
+    networks:
+      - iam-proxy-italia
+    environment:
+      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
+      - TZ=${TZ:-Europe/Rome}
 
   spid-samlcheck:
     profiles:
