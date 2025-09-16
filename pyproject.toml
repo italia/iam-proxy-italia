@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12,<4.0"
 dependencies = [
     "pysaml2 @ git+https://github.com/saralongobardiacn/pysaml2@feat/upg-python",
-    "satosa @ git+https://github.com/peppelinux/SATOSA.git@pplnx-8.5.1",
+    "satosa @ git+https://github.com/saralongobardiacn/SATOSA@feat/upg-python",
     "pymongo (>=4.10.1,<5.0.0)",
     "satosa-oidcop (>=2.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
