@@ -1,0 +1,3 @@
+[submodule "Docker-compose/iam-proxy-italia-project/wwwallet"]
+	path = Docker-compose/iam-proxy-italia-project/wwwallet
+	url = https://github.com/wwWallet/wallet-frontend.git
