@@ -2,7 +2,7 @@ services:
 
   wwwallet-mysql:
     profiles:
-      - demo
+      - wwwallet
     container_name: wwwallet-mysql
     environment:
       - MYSQL_DATABASE=${MONGO_DBNAME:-wwwalletdb}
@@ -25,7 +25,7 @@ services:
 
   wwwallet-server:
     profiles:
-      - demo
+      - wwwallet
     build:
       context: ./wwwallet/wallet-backend-server
       dockerfile: Dockerfile
@@ -39,7 +39,7 @@ services:
 
   wwwallet-frontend:
     profiles:
-      - demo
+      - wwwallet
     build:
       context: ./wwwallet/wallet-frontend
       dockerfile: Dockerfile
@@ -56,6 +56,7 @@ services:
       - demo
       - mongo
       - mongoexpress
+      - wwwallet
     image: mongo
     container_name: satosa-mongo
     environment:
@@ -76,6 +77,7 @@ services:
     profiles:
       - demo
       - mongoexpress
+      - wwwallet
     image: mongo-express
     container_name: satosa-mongo-express
     ports:
@@ -96,6 +98,7 @@ services:
     profiles:
       - demo
       - dev
+      - wwwallet
     build:
       context: ../
       args:
@@ -194,6 +197,11 @@ services:
   satosa-nginx:
     image: nginx:alpine
     container_name: satosa-nginx
+    profiles:
+      - demo
+      - mongo
+      - mongoexpress
+      - dev
     depends_on:
       iam-proxy-italia:
         condition: service_started
@@ -202,7 +210,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
@@ -213,10 +221,20 @@ services:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
 
+  wwwallet-satosa-nginx:
+    extends:
+      service: satosa-nginx
+    container_name: wwwallet-satosa-nginx
+    profiles:
+      - wwwallet
+    volumes:
+      - ./wwwallet/nginx/conf.d/:/etc/nginx/conf.d/sites-enabled
+
   spid-samlcheck:
     profiles:
       - demo
       - dev
+      - wwwallet
     image: italia/spid-saml-check:1.10.6
     container_name: spid-samlcheck
     ports:
