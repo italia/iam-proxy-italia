@@ -1,5 +1,5 @@
 #!/bin/bash
-export COMPOSE_PROFILES=wwwallet
+export COMPOSE_PROFILES=demo
 export SKIP_UPDATE=
 
 function clean_data {
@@ -11,7 +11,7 @@ function clean_data {
 }
 
 function initialize_satosa {
-  #cp env.example .env
+  cp env.example .env
 
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
