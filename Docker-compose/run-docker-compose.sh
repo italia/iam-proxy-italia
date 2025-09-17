@@ -32,6 +32,7 @@ function initialize_satosa {
       if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
       cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
       cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts
   fi
 
   chmod -R 777 ./iam-proxy-italia-project
