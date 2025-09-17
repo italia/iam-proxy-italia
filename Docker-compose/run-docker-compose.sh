@@ -9,6 +9,10 @@ function clean_data {
   rm -Rf ./nginx/html/static
 }
 
+function init_files () {
+  if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
+}
+
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
@@ -18,10 +22,11 @@ function initialize_satosa {
   mkdir -p ./nginx/html/static
 
   if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
-  if [ ! -f ./.env ]; then cp env.example .env ; else echo '.env file is already initialized' ; fi
-  if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
-  if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
-  if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
+  init_files ./.env ".env" "cp env.example .env"
+  init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
+  init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
+  init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
+  rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
   echo "WARNING: iam-proxy-italia-project permission folder set recursively to 777"
