@@ -22,7 +22,7 @@ example_sp/djangosaml2_sp/sqlite3.db
 iam-proxy-italia-project_sp/djangosaml2_sp/sqlite3.db
 project/*
 docker-example/*
-Docker-compose/satosa-project/*
+Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
@@ -34,3 +34,4 @@ Docker-compose/.env
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 *.iml
+.run/

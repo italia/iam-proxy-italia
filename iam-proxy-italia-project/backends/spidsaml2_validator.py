@@ -67,9 +67,8 @@ class Saml2ResponseValidator(object):
             or self.response.destination not in self.return_addrs
         ):
             _msg = (
-                f'Destination is not valid: {
-                    self.response.destination or ""} not in {self.return_addrs}.'
-                f"{_ERROR_TROUBLESHOOT}"
+                f'Destination is not valid: {self.response.destination or ""} not in {self.return_addrs}.'
+                f'{_ERROR_TROUBLESHOOT}'
             )
             raise SPIDValidatorException(_msg)
 
@@ -80,15 +79,16 @@ class Saml2ResponseValidator(object):
 
         # 30
         # check that this issuer is in the metadata...
-        # L'attributo Format di Issuer della Response deve essere omesso o assumere valore urn:oasis:names:tc:SAML:2.0:nameid-format:entity. In questo test il valore è diverso. Risultato atteso: KO
+        # L'attributo Format di Issuer della Response deve essere omesso
+        # o assumere valore urn:oasis:names:tc:SAML:2.0:nameid-format:entity.
+        # In questo test il valore è diverso. Risultato atteso: KO
         if hasattr(self.response.issuer, "format") and self.response.issuer.format:
             if (
                 self.response.issuer.format
                 != "urn:oasis:names:tc:SAML:2.0:nameid-format:entity"
             ):
                 raise SPIDValidatorException(
-                    f"Issuer NameFormat is invalid: {
-                        self.response.issuer.format} "
+                    f"Issuer NameFormat is invalid: {self.response.issuer.format} "
                     '!= "urn:oasis:names:tc:SAML:2.0:nameid-format:entity"'
                 )
 
@@ -161,13 +161,11 @@ class Saml2ResponseValidator(object):
                 )
             if not i.subject.name_id.format:
                 raise SPIDValidatorException(
-                    "Not a valid subject.name_id.format" f"{
-                        _ERROR_TROUBLESHOOT}"
+                    "Not a valid subject.name_id.format" f"{_ERROR_TROUBLESHOOT}"
                 )
             if i.subject.name_id.format not in self.nameid_formats:
                 msg = (
-                    f"Not a valid subject.name_id.format: {
-                        i.subject.name_id.format}"
+                    f"Not a valid subject.name_id.format: {i.subject.name_id.format}"
                     f"{_ERROR_TROUBLESHOOT}"
                 )
                 raise SPIDValidatorException(msg)
@@ -253,8 +251,7 @@ class Saml2ResponseValidator(object):
             if not hasattr(i, "conditions") or not getattr(i, "conditions", None):
                 # or not i.conditions.text.strip(' ').strip('\n'):
                 raise SPIDValidatorException(
-                    "Assertion conditions not present. " f"{
-                        _ERROR_TROUBLESHOOT}"
+                    "Assertion conditions not present. " f"{_ERROR_TROUBLESHOOT}"
                 )
 
             # 75, 76
@@ -333,8 +330,7 @@ class Saml2ResponseValidator(object):
                 ):
                     _msg = (
                         "Invalid Spid authn_context_class_ref, requested: "
-                        f"{self.authn_context_class_ref}, got {
-                            authns.authn_context.authn_context_class_ref.text}"
+                        f"{self.authn_context_class_ref}, got {authns.authn_context.authn_context_class_ref.text}"
                     )
                     try:
                         level_sp = int(self.authn_context_class_ref[-1])

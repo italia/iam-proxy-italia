@@ -4,7 +4,7 @@ export SKIP_UPDATE=
 
 function clean_data {
   rm -Rf ./mongo/db/*
-  rm -Rf ./satosa-project/*
+  rm -Rf ./iam-proxy-italia-project/*
   rm -Rf ./djangosaml2_sp/*
   rm -Rf ./nginx/html/static
 }
@@ -12,19 +12,19 @@ function clean_data {
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
-  mkdir -p ./satosa-project
+  mkdir -p ./iam-proxy-italia-project
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
 
   if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   if [ ! -f ./.env ]; then cp env.example .env ; else echo '.env file is already initialized' ; fi
-  if [ ! -f ./satosa-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./satosa-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi ; if [ -d ./satosa-project/conf ]; then mv ./satosa-project/conf ./satosa-project/plugins ; fi
+  if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
 
-  chmod -R 777 ./satosa-project
-  echo "WARNING: satosa-project permission folder set recursively to 777"
+  chmod -R 777 ./iam-proxy-italia-project
+  echo "WARNING: iam-proxy-italia-project permission folder set recursively to 777"
 }
 
 function update {

@@ -110,7 +110,8 @@ class SpidSAMLBackend(SAMLBackend):
 
     def _metadata_contact_person(self, metadata, conf):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ metadata: {metadata}, conf: {conf}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ metadata: {metadata}, conf: {conf}]"
         )
         ##############
         # avviso 29 v3
@@ -256,7 +257,8 @@ class SpidSAMLBackend(SAMLBackend):
 
     def check_blacklist(self, context, entity_id):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ context: {context}, entity_id: {entity_id}]"
         )
         # If IDP blacklisting is enabled and the selected IDP is blacklisted,
         # stop here
@@ -273,7 +275,8 @@ class SpidSAMLBackend(SAMLBackend):
 
     def authn_request(self, context, entity_id):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, entity_id: {entity_id}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ context: {context}, entity_id: {entity_id}]"
         )
         """
         Do an authorization request on idp with given entity id.
@@ -343,7 +346,8 @@ class SpidSAMLBackend(SAMLBackend):
             authn_req.destination = location
             # spid-testenv2 preleva l'attribute consumer service dalla authnRequest
             # (anche se questo sta già nei metadati...)
-            # Imposta il consuming_service_index in base al default di ficep per le richieste ficep, oppure a '0' per le richieste spid
+            # Imposta il consuming_service_index in base al default di ficep per le richieste ficep,
+            # oppure a '0' per le richieste spid
             authn_req.attribute_consuming_service_index = str(
                 self.config["sp_config"].get("acs_index") or
                 self.config["sp_config"].get("ficep_default_acs_index") or
@@ -427,7 +431,8 @@ class SpidSAMLBackend(SAMLBackend):
         error_template="spid_login_error.html",
     ):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ message: {message}, troubleshoot: {troubleshoot}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ message: {message}, troubleshoot: {troubleshoot}]"
         )
         """
         Todo: Jinja2 tempalte loader and rendering :)
@@ -446,13 +451,15 @@ class SpidSAMLBackend(SAMLBackend):
 
     def handle_spid_anomaly(self, err_number, err):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ err_number: {err_number}, err: {err}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ err_number: {err_number}, err: {err}]"
         )
         return self.handle_error(**SPID_ANOMALIES[int(err_number)])
 
     def authn_response(self, context, binding):
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params[ context: {context}, binding: {binding}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[ context: {context}, binding: {binding}]"
         )
         """
         Endpoint for the idp response
@@ -521,8 +528,9 @@ class SpidSAMLBackend(SAMLBackend):
 
         # Context validation
         if not context.state.get(self.name):
-            _msg = f"context.state[self.name] KeyError: where self.name is {
-                self.name}"
+            _msg = (
+                f"context.state[self.name] KeyError: where self.name is {self.name}"
+            )
             logger.error(_msg)
             return self.handle_error(
                 **{"message": _msg, "troubleshoot": _TROUBLESHOOT_MSG}
@@ -553,8 +561,11 @@ class SpidSAMLBackend(SAMLBackend):
             )
             return self.handle_error(
                 **{
-                    "message": "acr_mapping not defined in the spid backend",
-                    "troubleshoot": "Please contact the administrators of the platform and tell them to configure properly the acr_mapping in the SPID/CIE backend"
+                    "message": "acr_mapping not defined in the spid backend troubleshoot",
+                    "troubleshoot": (
+                        "Please contact the administrators of the platform and tell them to "
+                        "configure properly the acr_mapping in the SPID/CIE backend"
+                    )
                 }
             )
         acr_default = acr_map.get("", "https://www.spid.gov.it/SpidL2")

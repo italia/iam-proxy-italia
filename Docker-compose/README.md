@@ -51,21 +51,21 @@ Enter in `Docker-compose` directory and make required direcotries for local moun
 ```bash
 cd Docker-compose
 mkdir -p ./mongo/db          # DB Data directory
-mkdir -p ./satosa-project    # iam-proxy-italia data istance
+mkdir -p ./iam-proxy-italia-project   # iam-proxy-italia data instance
 mkdir -p ./djangosaml2_sp    # Service provider directory
 mkdir -p ./nginx/html/static # static files for nginx
 ```
 
 Copy required files
 ```bash
-cp -R ../iam-proxy-italia-project/* ./satosa-project
+cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project
 cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp
 cp -E ../iam-proxy-italia-project/static/* ./nginx/html/static
 ```
 
 Clean static data from Satosa project
 ```bash
-rm -R ./satosa-project/static
+rm -R ./iam-proxy-italia-project/static
 ```
 
 Copy the example env file and edit according to your configuration,
