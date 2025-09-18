@@ -31,7 +31,14 @@ cd Docker-compose
 ```
 The script creates the directories for local mounts and copies all required files to start a full demo with test and SAML2 Service Providers.
 
-> Warning: The script deletes any previous created directory if found.
+The script can be run with different options:
+-`f` cleans the folders;
+-`t` to run tests with `spid_sp_test` in a pipeline-like execution;
+
+> ⚠️ Warning: The script deletes any previous created directory if found.
+
+> ℹ️ **Note:**   
+> To install `spid_sp_test`, run `pip install git+https://github.com/italia/spid-sp-test.git`
 
 The result is represented by the following services:
 
