@@ -38,7 +38,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install flake8
-          pip install "spid-sp-test>=1.2.17"
+          pip install git+https://github.com/saralongobardiacn/spid-sp-test@feat/upg-python
 
       - name: Inspect Python dependencies
         run: |
