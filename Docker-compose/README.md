@@ -38,7 +38,7 @@ The script can be run with different options:
 > ⚠️ Warning: The script deletes any previous created directory if found.
 
 > ℹ️ **Note:**   
-> To install `spid_sp_test`, run `pip install git+https://github.com/italia/spid-sp-test.git`
+> To install `spid_sp_test`, run `pip install git+https://github.com/italia/spid-sp-test.git` or `pip install spid-sp-test`.
 
 The result is represented by the following services:
 
