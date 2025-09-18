@@ -180,7 +180,7 @@ services:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
       # - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
-      - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
+      # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
@@ -198,30 +198,6 @@ services:
       - mongo
       - mongoexpress
       - dev
-    image: nginx:alpine
-    container_name: satosa-nginx
-    depends_on:
-      iam-proxy-italia:
-        condition: service_started
-      satosa-certbot:
-        condition: service_completed_successfully
-    ports:
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/html:/usr/share/nginx/html:ro
-      - ./certbot/archive:/etc/archive:ro
-      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
-      # - static:/usr/share/nginx/html # to be used for external volumes
-    networks:
-      - iam-proxy-italia
-    environment:
-      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
-      - TZ=${TZ:-Europe/Rome}
-
-
-  wwwallet-satosa-nginx:
-    profiles:
       - wwwallet
     image: nginx:alpine
     container_name: satosa-nginx
@@ -237,7 +213,6 @@ services:
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
-      - ./wwwallet/nginx/conf.d/:/etc/nginx/conf.d/sites-enabled
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
       - iam-proxy-italia
