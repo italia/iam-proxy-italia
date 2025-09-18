@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
-    "satosa @ git+https://github.com/pysaml2/SATOSA@feat/pplnx-8.5.2",
+    "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
     "pymongo (>=4.10.1,<5.0.0)",
     "satosa-oidcop (>=2.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
