@@ -18,6 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
+          - '3.10.18'
           - '3.12'
           - '3.13.7'
           - '3.14.0-rc.2'
@@ -115,6 +116,7 @@ jobs:
       - name: Inspect Satosa IDP Metadata
         run: |
           cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
       - name: spid-sp-test SPID metadata, requests and responses
         run: |
           cd Docker-compose/iam-proxy-italia-project

@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "Apache 2.0"}
 readme = "README.md"
-requires-python = ">=3.12,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "pysaml2 @ git+https://github.com/saralongobardiacn/pysaml2@feat/upg-python",
     "satosa @ git+https://github.com/saralongobardiacn/SATOSA@feat/upg-python",
