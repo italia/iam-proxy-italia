@@ -7,6 +7,7 @@ function clean_data {
   rm -Rf ./iam-proxy-italia-project/*
   rm -Rf ./djangosaml2_sp/*
   rm -Rf ./nginx/html/static
+  rm -Rf ./nginx/conf.d/sites-enabled/*
   rm -Rf ./wwwallet/*
 }
 
