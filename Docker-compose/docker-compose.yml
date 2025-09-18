@@ -1,23 +1,21 @@
 services:
 
-  wwwallet-mysql:
+  wwwallet-mariadb:
     profiles:
       - wwwallet
-    container_name: wwwallet-mysql
+    container_name: wwwallet-mariadb
     environment:
-      MYSQL_DATABASE: ${MYSQL_DBNAME:-wwwalletdb}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_DBPASSWORD:-changeme}
-      MYSQL_USER: ${MYSQL_DBUSER:-dbuser}
-      MYSQL_PASSWORD: ${MYSQL_DBPASSWORD:-dbpassword}
+      MARIADB_DATABASE: ${MARIADB_DBNAME:-wwwalletdb}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_DBPASSWORD:-changeme}
+      MARIADB_USER: ${MARIADB_DBUSER:-dbuser}
+      MARIADB_PASSWORD: ${MARIADB_DBPASSWORD:-dbpassword}
     command:
       - --table_definition_cache=100
       - --performance_schema=0
       - --innodb_use_native_aio=0
     volumes:
-      - ./wwwallet/mysql/init/:/docker-entrypoint-initdb.d
-      - ./wwwallet/mysql/data/:/var/lib/mysql
-      - ./wwwallet/mysql/config/:/etc/mysql/conf.d
-    image: mysql:8.0
+      - ./wwwallet/mariadb/data/:/var/lib/mysql
+    image: mariadb:10.6
     ports:
       - "3306:3306"
     networks:
@@ -31,7 +29,7 @@ services:
       dockerfile: Dockerfile
     container_name: wwwallet-server
     depends_on:
-      - wwwallet-mysql
+      - wwwallet-mariadb
     ports:
       - "5000:5000"
     networks:

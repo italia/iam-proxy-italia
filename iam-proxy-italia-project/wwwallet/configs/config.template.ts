@@ -4,7 +4,7 @@ export const config = {
 	appSecret: "SERVICE_SECRET",
 	ssl: false,
 	db: {
-		host: "wwwallet-mysql",
+		host: "wwwallet-mariadb",
 		port: "3306",
 		username: "root",
 		password: "changeme",
