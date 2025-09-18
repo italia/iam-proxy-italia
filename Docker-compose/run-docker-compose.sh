@@ -1,5 +1,5 @@
 #!/bin/bash
-export COMPOSE_PROFILES=wwwallet
+export COMPOSE_PROFILES=demo
 export SKIP_UPDATE=
 
 function clean_data {
