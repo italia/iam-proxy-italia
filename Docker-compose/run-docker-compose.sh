@@ -1,5 +1,5 @@
 #!/bin/bash
-export COMPOSE_PROFILES=demo
+export COMPOSE_PROFILES=wwwallet
 export SKIP_UPDATE=
 
 function clean_data {
@@ -25,7 +25,7 @@ function initialize_satosa {
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
   if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
-      if [ ! -f ./wwwallet/nginx/conf.d/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/* ./wwwallet ; else echo 'wwwallet directory is already initialized' ; fi
+      if [ ! -f ./nginx/conf.d/sites-enabled/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/wwwallet.conf ./nginx/conf.d/sites-enabled/ ; else echo 'nginx wwwallet configuration is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-frontend/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend ; else echo 'wwwallet-frontend directory is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-backend-server/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server ; else echo 'wwwallet-backend-server directory is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-frontend/.env.prod ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod ; else echo 'wwwallet-frontend .env.prod file is already initialized' ; fi
