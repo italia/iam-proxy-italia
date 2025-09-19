@@ -106,6 +106,7 @@ class SpidSAMLBackend(SAMLBackend):
         )
 
         logger.debug("inizializing metadata xmldoc")
+        self.saml_base = saml2.md.SamlBase()
         self.xmldoc = self.__create_metadata(self.sp.config)
 
     def _metadata_contact_person(self, metadata, conf):
@@ -122,7 +123,8 @@ class SpidSAMLBackend(SAMLBackend):
             spid="https://spid.gov.it/saml-extensions",
             fpa="https://spid.gov.it/invoicing-extensions",
         )
-        saml2.md.SamlBase.register_prefix(SPID_PREFIXES)
+
+        self.saml_base.register_prefix(SPID_PREFIXES)
         metadata.contact_person = []
         contact_map = conf.contact_person
         metadata.contact_person = []
