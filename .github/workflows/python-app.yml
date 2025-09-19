@@ -18,7 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.10'
+          - '3.10.18'
+          - '3.11'
+          - '3.12'
+          - '3.13.7'
+          - '3.14.0-rc.2'
 
     steps:
       - uses: actions/checkout@v3
@@ -35,7 +39,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install flake8
-          pip install "spid-sp-test>=1.2.17"
+          pip install spid-sp-test
 
       - name: Inspect Python dependencies
         run: |
@@ -113,6 +117,7 @@ jobs:
       - name: Inspect Satosa IDP Metadata
         run: |
           cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
       - name: spid-sp-test SPID metadata, requests and responses
         run: |
           cd Docker-compose/iam-proxy-italia-project
