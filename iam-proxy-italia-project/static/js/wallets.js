@@ -75,6 +75,12 @@ function createLogoButton(wallet) {
   btn.className = 'btn btn-primary d-flex align-items-center';
   btn.style.gap = "0.5rem";
 
+  btn.style.whiteSpace = "nowrap";
+
+  btn.style.flexShrink = "0";
+  btn.style.width = "auto";
+  btn.style.display = "inline-flex";
+
   const logoImg = document.createElement('img');
   logoImg.src = wallet.logo;
   logoImg.alt = wallet.name;
@@ -88,6 +94,7 @@ function createLogoButton(wallet) {
   btn.appendChild(textSpan);
   return btn;
 }
+
 
 function createLearnMore(resource, wallet) {
   if (!wallet.learn_more_link && wallet.learn_more) {
