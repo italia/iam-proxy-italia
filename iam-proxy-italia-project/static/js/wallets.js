@@ -69,35 +69,38 @@ function createWalletName(name) {
   return nameElem;
 }
 
-function createLogoButton(wallet) {
+function createLogoButton(wallet, hasLearnMore=false) {
   const btn = document.createElement('a');
   btn.href = wallet.login_url;
   btn.className = 'btn btn-primary d-flex align-items-center';
   btn.style.gap = "0.5rem";
-
   btn.style.whiteSpace = "nowrap";
-
   btn.style.flexShrink = "0";
   btn.style.width = "auto";
   btn.style.display = "inline-flex";
+
+  if (hasLearnMore) {
+    btn.style.alignSelf = 'center'; // centra verticalmente nel box
+  }
 
   const logoImg = document.createElement('img');
   logoImg.src = wallet.logo;
   logoImg.alt = wallet.name;
   logoImg.style.width = "24px";
   logoImg.style.height = "24px";
+  logoImg.style.objectFit = "contain";
 
   const textSpan = document.createElement('span');
   textSpan.textContent = wallet.logo_text;
 
   btn.appendChild(logoImg);
   btn.appendChild(textSpan);
+
   return btn;
 }
 
-
 function createLearnMore(resource, wallet) {
-  if (!wallet.learn_more_link && wallet.learn_more) {
+  if (!wallet.learn_more_link && wallet.learn_more_descr) {
     const container = document.createElement('div');
     container.className = 'mt-2';
 
@@ -107,7 +110,7 @@ function createLearnMore(resource, wallet) {
     toggle.style.cursor = "pointer";
 
     const text = document.createElement('p');
-    text.innerHTML = wallet.learn_more;
+    text.innerHTML = wallet.learn_more_descr;
     text.style.display = "none";
     text.className = "mt-2";
 
@@ -115,12 +118,14 @@ function createLearnMore(resource, wallet) {
       e.preventDefault();
       const box = toggle.closest('.wallet-box');
       if (text.style.display === "none") {
-        box.style.height = 'auto'; // Allow box to expand
         text.style.display = "block";
+        box.style.height = "auto";
       } else {
         text.style.display = "none";
+        box.style.height = "";
         setUniformElement('.wallet-box');
       }
+      // setUniformElement('.wallet-box');
     });
 
     container.appendChild(toggle);
@@ -139,7 +144,8 @@ function createLearnMore(resource, wallet) {
 
 function createWalletBox(resource, wallet) {
   const box = document.createElement('div');
-  box.className = 'wallet-box border rounded p-3 shadow-sm bg-white';
+  box.className = 'wallet-box border rounded p-3 shadow-sm bg-white d-flex flex-column justify-content-between';
+  box.style.height = '100%';
 
   const row = document.createElement('div');
   row.className = 'd-flex justify-content-between align-items-center';
@@ -149,11 +155,13 @@ function createWalletBox(resource, wallet) {
   left.appendChild(createWalletName(wallet.name));
 
   row.appendChild(left);
-  row.appendChild(createLogoButton(wallet));
+  const withLearnMore = !!wallet.learn_more_link || !!wallet.learn_more_descr
+  row.appendChild(createLogoButton(wallet, withLearnMore));
   box.appendChild(row);
 
-  const learnMoreElem = createLearnMore(resource, wallet);
-  if (learnMoreElem) {
+  if (withLearnMore) {
+    const learnMoreElem = createLearnMore(resource, wallet);
+    learnMoreElem.style.display = "block";
     box.appendChild(learnMoreElem);
   }
 
@@ -161,20 +169,34 @@ function createWalletBox(resource, wallet) {
 }
 
 function setUniformElement(selector) {
-  const nodeElement = document.querySelectorAll(selector);
+  const elements = document.querySelectorAll(selector);
   let maxWidth = 0;
-  nodeElement.forEach(btn => {
-    btn.style.width = ''; // Reset any previous width
-    const btnWidth = btn.offsetWidth;
-    if (btnWidth > maxWidth) maxWidth = btnWidth;
+  let maxHeight = 0;
+
+  // Reset previous dimensions
+  elements.forEach(el => {
+    el.style.width = '';
+    el.style.height = '';
   });
-  nodeElement.forEach(btn => {
-    btn.style.width = maxWidth + 'px';
+
+  // retrieve max width and height
+  elements.forEach(el => {
+    const width = el.offsetWidth;
+    const height = el.offsetHeight;
+    if (width > maxWidth) maxWidth = width;
+    if (height > maxHeight) maxHeight = height;
+  });
+
+  // apply max width and height
+  elements.forEach(el => {
+    el.style.width = maxWidth + 'px';
+    el.style.height = maxHeight + 'px';
   });
 }
 
+
 function checkId(id) {
-  return id &&
-      typeof id === 'object'
+  return id
+      && typeof id === 'object'
       && Object.keys(id).length > 0
 }
