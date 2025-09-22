@@ -33,8 +33,12 @@ The script creates the directories for local mounts and copies all required file
 
 The script can be run with different options:
 -`f` cleans the folders; if combined with `-e` (`-e -f`), it also overrides the .env file.
+-`t` to run tests with `spid_sp_test` in a pipeline-like execution;
 
-> Warning: The script deletes any previous created directory if found.
+> ⚠️ Warning: The script deletes any previous created directory if found.
+
+> ℹ️ **Note:**   
+> To install `spid_sp_test`, run `pip install git+https://github.com/italia/spid-sp-test.git` or `pip install spid-sp-test`.
 
 The result is represented by the following services:
 

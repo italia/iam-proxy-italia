@@ -1,6 +1,7 @@
 #!/bin/bash
 export COMPOSE_PROFILES=demo
 export SKIP_UPDATE=
+export RUN_SPID_TEST=
 
 function clean_data {
   rm -Rf ./mongo/db/*
@@ -53,6 +54,22 @@ function start {
   fi
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker-compose -f docker-compose.yml logs -f'"
+
+  if [[ -n "${RUN_SPID_TEST}" ]]; then
+    echo -e "\n"
+    echo -e "spid-sp-test SPID metadata, requests and responses. \n"
+    spid_sp_test --idp-metadata > ./iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
+    spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+
+    echo -e "\n"
+    echo -e "spid-sp-test CIE id metadata. \n"
+    spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+
+    echo -e "\n"
+    echo -e "spid-sp-test SPID metadata, requests and responses. \n"
+    spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+  fi
+
   exit 0
 }
 
@@ -74,6 +91,7 @@ function help {
   echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
   echo "-s Skip docker image update"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
+  echo "-t Run spid_sp_test tests after startup"
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
@@ -106,6 +124,9 @@ while getopts ":fepbimMdsh" opt; do
    s)
      SKIP_UPDATE=true
      ;;
+   t)
+     RUN_SPID_TEST=true
+      ;;
    h)
      help
      exit 0
