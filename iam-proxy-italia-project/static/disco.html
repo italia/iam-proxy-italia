@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Accedi</title>
   <meta name="description" content="Accedi">
 
@@ -17,6 +17,22 @@
   <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
 
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+
     .wallet-box a:hover {
       background-color: #f0f8ff;
       text-decoration: none;
@@ -25,6 +41,13 @@
     header svg.icon {
       width: 32px;
       height: 32px;
+    }
+
+    footer {
+      margin: 0;
+      padding: 1rem 0;
+      background-color: #0072CE;
+      color: white;
     }
   </style>
 </head>
@@ -63,10 +86,19 @@
 <!-- SEZIONE LOGIN -->
 <main class="container my-4">
   <div class="row" id="wallets-container">
-    <!-- Wallet boxes inseriti dinamicamente -->
+    <script type="module" src="js/wallets.js"></script>
   </div>
 </main>
 
-<script type="module" src="js/wallets.js"></script>
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+      <div>
+        <a href="" class="text-white me-4" target="_blank" rel="noopener">Legal notes</a>
+        <a href="" class="text-white me-4" target="_blank" rel="noopener">Privacy policy</a>
+        <a href="" class="text-white" target="_blank" rel="noopener">Accessibility statement</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
