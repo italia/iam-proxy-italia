@@ -27,3 +27,4 @@ config:
     "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
     #IT Wallet
     "wallet": "OpenID4VP"
+    "cieOidc": "cieOidcRp"
