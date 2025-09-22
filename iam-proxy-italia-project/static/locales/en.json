@@ -26,19 +26,20 @@
       "logo_text": "Login with SPID",
       "logo": "spid/spid-ico-circle-bb.svg",
       "login_url": "https://localhost/Saml2/disco?entityID=https://spid.teamsystem.com/idp&return=https://localhost/Saml2/disco"
+    }
+  },
+  "alternative_id": {
+    "idem": {
+      "name":"IDEM",
+      "logo_text": "Login with IDEM",
+      "logo": "img/ficep.svg",
+      "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_"
     },
     "eidas": {
       "name": "eIDAS",
       "logo_text": "Login with eIDAS",
       "logo": "cie/cie_white.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco"
-    }
-  },
-  "alternative_id": {
-    "idem": {
-      "name":"IDEM",
-      "logo": "img/ficep.svg",
-      "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_"
     }
   }
 }
