@@ -36,6 +36,28 @@ function loadWallets(resource) {
       digitalSection.appendChild(title);
       createWallet(resource, "digital_id", digitalSection);
       container.appendChild(digitalSection);
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'd-flex flex-column align-items-center mb-4';
+
+      const havenDigitalId = resource.titles.havent_digital_identy;
+      if (havenDigitalId) {
+        const infoTitle = document.createElement('h4');
+        infoTitle.textContent = resource.titles.havent_digital_identy;
+
+        const infoLink = document.createElement('a');
+        infoLink.textContent = resource.titles.find_how_to_get_digital_id;
+        infoLink.target = '_blank';
+        const findHowToGetDigitalIdUrl =  resource.titles.find_how_to_get_digital_id_url;
+        if (findHowToGetDigitalIdUrl) {
+          infoLink.target = '_blank';
+          const newTabIcon = document.createElement('span');
+          newTabIcon.style.marginLeft = '4px';
+          infoLink.appendChild(newTabIcon);
+        }
+        infoDiv.appendChild(infoTitle);
+        infoDiv.appendChild(infoLink);
+        container.appendChild(infoDiv);
+      }
     }
     if (checkId(resource.alternative_id)) {
       const altSection = document.createElement('div');

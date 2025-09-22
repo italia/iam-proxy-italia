@@ -2,6 +2,9 @@
   "titles": {
     "login_digital_identity": "Accedi con un'identità digitale",
     "login_alternative_method" : "Accedi con un metodo alternativo",
+    "havent_digital_identy": "Non hai un'identità digitale?",
+    "find_how_to_get_digital_id": "Scopri come ottenerla",
+    "find_how_to_get_digital_id_url": "",
     "learn_more": "Scopri di più"
   },
   "digital_id": {
