@@ -4,10 +4,15 @@ export SKIP_UPDATE=
 export RUN_SPID_TEST=
 
 function clean_data {
-  rm -Rf ./mongo/db/*
-  rm -Rf ./iam-proxy-italia-project/*
-  rm -Rf ./djangosaml2_sp/*
-  rm -Rf ./nginx/html/static
+  if [ $SATOSA_CLEAN_DATA == "true" ]; then
+    rm -Rf ./mongo/db/*
+    rm -Rf ./iam-proxy-italia-project/*
+    rm -Rf ./djangosaml2_sp/*
+    rm -Rf ./nginx/html/static
+    if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
+  else
+    if [ "$SATOSA_FORCE_ENV" == "true" ]; then echo "'-e' options is skipped. To perform this option is required '-f' too "; fi
+  fi
 }
 
 function init_files () {
@@ -22,7 +27,6 @@ function initialize_satosa {
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
 
-  if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
@@ -81,7 +85,7 @@ function help {
   echo ""
   echo "#### common Options"
   echo "-b Build for iam-proxy-italia image and build django-sp image if required"
-  echo "-e Force update for .env file. A new .env file is generated from env.example file"
+  echo "-e Force update for .env file. A new .env file is generated from env.example file. Require '-f' option otherwise is skipped"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
   echo "-h Print this help"
   echo ""
@@ -101,7 +105,7 @@ function help {
 while getopts ":fepbimMdsh" opt; do
   case ${opt} in
    f)
-     clean_data
+     SATOSA_CLEAN_DATA="true"
      ;;
    e)
      SATOSA_FORCE_ENV="true"
@@ -139,6 +143,7 @@ while getopts ":fepbimMdsh" opt; do
      ;;
   esac
 done
-initialize_satosa
-update
-start
+clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true" 
+initialize_satosa  # check and initialize docker compose directories 
+update             # try to update the images unless $SKIP_UPDATE is present
+start              # run docker compose
