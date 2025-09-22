@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptojwt.jwk.rsa import RSAKey
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+
 def create_jwk(key = None, hash_func="SHA-256"):
     key = key or new_rsa_key()
     thumbprint = key.thumbprint(hash_function=hash_func)

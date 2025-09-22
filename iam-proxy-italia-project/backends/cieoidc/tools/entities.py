@@ -132,3 +132,4 @@ class FederationEntityConfiguration:
             value = getattr(self, i)
             if not isinstance(value, list):
                 setattr(self, i, [value])
+
