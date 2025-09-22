@@ -1,76 +1,61 @@
-const LEARN_MORE_ELEMENT = {
-  "ita": "Scopri di più",
-  "en": "Learn more"
-};
-
-const LOGIN_LOGO_PREFIX_ELEMENT = {
-  "ita": "Entra con ",
-  "en": "Login with "
-};
-
-const DEFAULT_LANGUAGE = "en";
-
-const TITLE_WALLET_DIGITAL_IDENTITY_ELEMENT = {
-  "ita": "Accedi con un'identità digitale",
-  "en": "Log in with a digital identity"
+function loadWalletsi18next() {
+  const lang = i18next.language
+  console.debug("i18next initialized, language:", lang);
+  const wallets = i18next.getResourceBundle(lang, "translation")
+  loadWallets(wallets)
 }
 
-const TITLE_WALLET_ALTERNATIVE_METHOD_ELEMENT = {
-  "ita": "Accedi con un metodo alternativo",
-  "en": "Log in using an alternative method"
-}
+i18next
+.use(i18nextHttpBackend)
+.init({
+  lng: 'en',
+  fallbackLng: 'en',
+  debug: true,
+  backend: {
+    loadPath: 'locales/{{lng}}.json'
+  }
+})
+.then(loadWalletsi18next)
+.catch(err => console.error('Error during wallets.json:', err));
 
-document.addEventListener("DOMContentLoaded", () => {
-  const langSelect = document.getElementById('lang-select');
-  let selectedLang = langSelect.value;
-  // load wallets
-  loadWallets(selectedLang);
-  // reload wallets on language change
-  langSelect.addEventListener('change', (e) => {
-    selectedLang = e.target.value;
-    loadWallets(selectedLang);
-  });
+document.getElementById("lang-select")?.addEventListener('change', (e) => {
+  const selectedLang = e.target.value;
+  i18next.changeLanguage(selectedLang).then(loadWalletsi18next);
 });
 
-function loadWallets(lang) {
-  fetch(`/static/model/wallets-${lang}.json`)
-  .then(res => res.json())
-  .then(wallets => {
+function loadWallets(resource) {
     const container = document.getElementById('wallets-container');
     container.innerHTML = '';
-    const digitalWallets = wallets.filter(w => w.digital_id);
-    if (digitalWallets.length > 0) {
+
+    if (checkId(resource.digital_id)) {
       const digitalSection = document.createElement('div');
       digitalSection.className = 'mb-4';
       const title = document.createElement('h3');
-      title.textContent = getTextContent(TITLE_WALLET_DIGITAL_IDENTITY_ELEMENT, lang);
+      title.textContent = resource.titles.login_digital_identity;
       title.className = 'text-center mb-3';
       digitalSection.appendChild(title);
-      createWallet(digitalWallets, digitalSection, lang);
+      createWallet(resource, "digital_id", digitalSection);
       container.appendChild(digitalSection);
     }
-    const alternativeWallets = wallets.filter(w => !w.digital_id);
-    if (alternativeWallets.length > 0) {
+    if (checkId(resource.alternative_id)) {
       const altSection = document.createElement('div');
       altSection.className = 'mb-4';
       const title = document.createElement('h3');
-      title.textContent = getTextContent(TITLE_WALLET_ALTERNATIVE_METHOD_ELEMENT, lang);
+      title.textContent  = resource.titles.login_alternative_method;
       title.className = 'text-center mb-3';
       altSection.appendChild(title);
-      createWallet(alternativeWallets, altSection, lang);
+      createWallet(resource, "alternative_id", altSection);
       container.appendChild(altSection);
     }
-  })
-  .catch(err => console.error('Error during wallets.json:', err));
 }
 
-function createWallet(wallets, container, lang) {
+function createWallet(resource, id_key, container) {
   const row = document.createElement('div');
   row.className = 'row'; // Bootstrap row for grid layout
-  wallets.forEach(wallet => {
+  Object.entries(resource[id_key]).forEach(([key, wallet]) => {
     const col = document.createElement('div');
     col.className = 'col-12 col-md-6 mb-3';
-    col.appendChild(createWalletBox(wallet, lang));
+    col.appendChild(createWalletBox(resource, wallet));
     row.appendChild(col);
   });
   container.appendChild(row);
@@ -84,7 +69,7 @@ function createWalletName(name) {
   return nameElem;
 }
 
-function createLogoButton(wallet, lang) {
+function createLogoButton(wallet) {
   const btn = document.createElement('a');
   btn.href = wallet.login_url;
   btn.className = 'btn btn-primary d-flex align-items-center';
@@ -97,21 +82,21 @@ function createLogoButton(wallet, lang) {
   logoImg.style.height = "24px";
 
   const textSpan = document.createElement('span');
-  textSpan.textContent = getTextContent(LOGIN_LOGO_PREFIX_ELEMENT, lang) + wallet.name;
+  textSpan.textContent = wallet.logo_text;
 
   btn.appendChild(logoImg);
   btn.appendChild(textSpan);
   return btn;
 }
 
-function createLearnMore(wallet, lang) {
+function createLearnMore(resource, wallet) {
   if (!wallet.learn_more_link && wallet.learn_more) {
     const container = document.createElement('div');
     container.className = 'mt-2';
 
     const toggle = document.createElement('a');
     toggle.href = "#";
-    toggle.textContent = getTextContent(LEARN_MORE_ELEMENT, lang);
+    toggle.textContent = resource.titles.learn_more;
     toggle.style.cursor = "pointer";
 
     const text = document.createElement('p');
@@ -138,14 +123,14 @@ function createLearnMore(wallet, lang) {
     const link = document.createElement('a');
     link.href = wallet.learn_more_link;
     link.target = "_blank";
-    link.textContent = getTextContent(LEARN_MORE_ELEMENT, lang);
+    toggle.textContent = resource.titles.learn_more;
     link.className = "d-block mt-2";
     return link;
   }
   return null;
 }
 
-function createWalletBox(wallet, lang) {
+function createWalletBox(resource, wallet) {
   const box = document.createElement('div');
   box.className = 'wallet-box border rounded p-3 shadow-sm bg-white';
 
@@ -157,10 +142,10 @@ function createWalletBox(wallet, lang) {
   left.appendChild(createWalletName(wallet.name));
 
   row.appendChild(left);
-  row.appendChild(createLogoButton(wallet, lang));
+  row.appendChild(createLogoButton(wallet));
   box.appendChild(row);
 
-  const learnMoreElem = createLearnMore(wallet, lang);
+  const learnMoreElem = createLearnMore(resource, wallet);
   if (learnMoreElem) {
     box.appendChild(learnMoreElem);
   }
@@ -181,6 +166,8 @@ function setUniformElement(selector) {
   });
 }
 
-function getTextContent(key, lang) {
-  return key[lang] || key[DEFAULT_LANGUAGE];
+function checkId(id) {
+  return id &&
+      typeof id === 'object'
+      && Object.keys(id).length > 0
 }
