@@ -145,45 +145,7 @@ function createWalletName(name) {
 }
 
 // ----------------------- Logo Button -----------------------
-function createSpidButton(wallet) {
-  const container = document.createElement('div');
-  container.className = 'ita ita-dropdown ita-l ita-fixed mb-3';
-
-  const button = document.createElement('a');
-  button.href = '#';
-  button.className = 'btn btn-primary btn-lg btn-me w-100';
-  button.setAttribute('spid-idp-button', wallet.login_url);
-  button.setAttribute('aria-haspopup', 'true');
-  button.setAttribute('aria-expanded', 'false');
-
-  const logoSpan = document.createElement('span');
-  const logoImg = document.createElement('img');
-  logoImg.className = 'icon buttonicon';
-  logoImg.src = wallet.logo;
-  logoImg.alt = wallet.name;
-  logoSpan.appendChild(logoImg);
-
-  const textSpan = document.createElement('span');
-  textSpan.textContent = wallet.logo_text;
-
-  button.appendChild(logoSpan);
-  button.appendChild(textSpan);
-
-  const dropdown = document.createElement("div");
-  dropdown.className = "ita-menu";
-  dropdown.setAttribute("role", "menu");
-  dropdown.setAttribute("data-spid-remote", "");
-
-  container.appendChild(dropdown);
-  container.appendChild(button);
-
-  return container;
-}
-
 function createLogoButton(wallet, hasLearnMore = false) {
-  if (wallet.login_url && wallet.login_url.startsWith("#spid-")) {
-    return createSpidButton(wallet);
-  }
 
   const btn = document.createElement('a');
   btn.href = wallet.login_url;
@@ -193,7 +155,9 @@ function createLogoButton(wallet, hasLearnMore = false) {
   btn.style.flexShrink = '0';
   btn.style.width = 'auto';
   btn.style.display = 'inline-flex';
-  if (hasLearnMore) btn.style.alignSelf = 'center';
+  if (hasLearnMore) {
+    btn.style.alignSelf = 'center';
+  }
 
   const logoImg = document.createElement('img');
   logoImg.src = wallet.logo;
