@@ -5,8 +5,10 @@ function loadWalletsi18next() {
   const wallets = i18next.getResourceBundle(lang, "translation");
   loadWallets(wallets);
   initSpidButton();
+  uniformWalletsAfterImages();
 }
 
+// Inizializza i18next
 i18next
 .use(i18nextHttpBackend)
 .init({
@@ -20,6 +22,7 @@ i18next
 .then(loadWalletsi18next)
 .catch(err => console.error('Error loading wallets.json:', err));
 
+// Change language
 document.getElementById("lang-select")?.addEventListener('change', (e) => {
   const selectedLang = e.target.value;
   i18next.changeLanguage(selectedLang).then(loadWalletsi18next);
@@ -40,24 +43,21 @@ function loadWallets(resource) {
 
     createWallet(resource, "digital_id", digitalSection);
     container.appendChild(digitalSection);
-      const infoDiv = document.createElement('div');
-      infoDiv.className = 'd-flex flex-column align-items-center mb-4';
 
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'd-flex flex-column align-items-center mb-4';
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
       const infoTitle = document.createElement('h4');
-      infoTitle.textContent = resource.titles.havent_digital_identy;
+      infoTitle.textContent = havenDigitalId;
 
       const infoLink = document.createElement('a');
       infoLink.textContent = resource.titles.find_how_to_get_digital_id;
-      infoLink.target = '_blank';
-        const findHowToGetDigitalIdUrl =  resource.titles.find_how_to_get_digital_id_url;
-        if (findHowToGetDigitalIdUrl) {
-          infoLink.target = '_blank';
-          const newTabIcon = document.createElement('span');
-          newTabIcon.style.marginLeft = '4px';
-          infoLink.appendChild(newTabIcon);
-        }
+      const findUrl = resource.titles.find_how_to_get_digital_id_url;
+      if (findUrl) {
+        infoLink.href = findUrl;
+        infoLink.target = '_blank';
+      }
       infoDiv.appendChild(infoTitle);
       infoDiv.appendChild(infoLink);
       container.appendChild(infoDiv);
@@ -68,7 +68,7 @@ function loadWallets(resource) {
     const altSection = document.createElement('div');
     altSection.className = 'mb-4';
     const title = document.createElement('h3');
-    title.textContent  = resource.titles.login_alternative_method;
+    title.textContent = resource.titles.login_alternative_method;
     title.className = 'text-center mb-3';
     altSection.appendChild(title);
 
@@ -77,20 +77,18 @@ function loadWallets(resource) {
   }
 }
 
-// ----------------------- Init SPID ad hoc -----------------------
+// ----------------------- Init SPID -----------------------
 function initSpidButton() {
   if (!window.SpidButton || typeof window.SpidButton.init !== "function") {
     console.warn("SpidButton non disponibile");
     return;
   }
 
-  // Seleziona tutti i container SPID dinamici appena creati
   const spidContainers = document.querySelectorAll('.ita.ita-dropdown [spid-idp-button]');
   if (!spidContainers.length) return;
 
   spidContainers.forEach(container => {
     try {
-      // Chiama init per ciascun pulsante SPID
       window.SpidButton.init(container);
     } catch (e) {
       console.error("Errore inizializzazione SPID:", e);
@@ -98,21 +96,17 @@ function initSpidButton() {
   });
 }
 
-
 // ----------------------- Create Wallet -----------------------
 function createWallet(resource, id_key, container) {
   const row = document.createElement('div');
-  row.className = 'row'; // Bootstrap row for grid layout
+  row.className = 'row';
   Object.entries(resource[id_key]).forEach(([key, wallet]) => {
     const col = document.createElement('div');
     col.className = 'col-12 col-md-6 mb-3';
     col.appendChild(createWalletBox(resource, wallet));
     row.appendChild(col);
   });
-
   container.appendChild(row);
-  setUniformElement('.wallet-box');
-  setUniformElement('.wallet-box .btn');
 }
 
 // ----------------------- Wallet Box -----------------------
@@ -135,8 +129,10 @@ function createWalletBox(resource, wallet) {
 
   if (withLearnMore) {
     const learnMoreElem = createLearnMore(resource, wallet);
-    learnMoreElem.style.display = "block";
-    box.appendChild(learnMoreElem);
+    if (learnMoreElem) {
+      learnMoreElem.style.display = "block";
+      box.appendChild(learnMoreElem);
+    }
   }
 
   return box;
@@ -189,7 +185,6 @@ function createLogoButton(wallet, hasLearnMore = false) {
     return createSpidButton(wallet);
   }
 
-  // 🔹 Default behavior
   const btn = document.createElement('a');
   btn.href = wallet.login_url;
   btn.className = 'btn btn-primary d-flex align-items-center';
@@ -198,7 +193,6 @@ function createLogoButton(wallet, hasLearnMore = false) {
   btn.style.flexShrink = '0';
   btn.style.width = 'auto';
   btn.style.display = 'inline-flex';
-
   if (hasLearnMore) btn.style.alignSelf = 'center';
 
   const logoImg = document.createElement('img');
@@ -242,7 +236,7 @@ function createLearnMore(resource, wallet) {
       } else {
         text.style.display = 'none';
         box.style.height = '';
-        setUniformElement('.wallet-box');
+        uniformAll();
       }
     });
 
@@ -261,33 +255,51 @@ function createLearnMore(resource, wallet) {
 }
 
 // ----------------------- Helpers -----------------------
-function setUniformElement(selector) {
+function setUniformSize(selector, dimension = "height") {
   const elements = document.querySelectorAll(selector);
-  let maxWidth = 0;
-  let maxHeight = 0;
+  let max = 0;
+
+  elements.forEach(el => el.style[dimension] = "");
 
   elements.forEach(el => {
-    el.style.width = '';
-    el.style.height = '';
+    const value = (dimension === "width") ? el.offsetWidth : el.offsetHeight;
+    if (value > max) max = value;
   });
 
-  // retrieve max width and height
-  elements.forEach(el => {
-    const width = el.offsetWidth;
-    const height = el.offsetHeight;
-    if (width > maxWidth) maxWidth = width;
-    if (height > maxHeight) maxHeight = height;
-  });
-
-  // apply max width and height
-  elements.forEach(el => {
-    el.style.width = maxWidth + 'px';
-    el.style.height = maxHeight + 'px';
-  });
+  elements.forEach(el => el.style[dimension] = max + "px");
 }
 
 function checkId(id) {
-  return id
-      && typeof id === 'object'
-      && Object.keys(id).length > 0
+  return id && typeof id === 'object' && Object.keys(id).length > 0;
 }
+
+function uniformAll() {
+  setUniformSize(".wallet-box", "height");
+  setUniformSize(".wallet-box .btn", "height");
+  setUniformSize(".wallet-box .btn", "width");
+}
+
+function uniformWalletsAfterImages() {
+  const imgs = document.querySelectorAll(".wallet-box img");
+  let loaded = 0;
+
+  if (!imgs.length) {
+    uniformAll();
+    return;
+  }
+
+  imgs.forEach(img => {
+    if (img.complete) {
+      loaded++;
+    } else {
+      img.addEventListener("load", () => {
+        loaded++;
+        if (loaded === imgs.length) uniformAll();
+      });
+    }
+  });
+
+  if (loaded === imgs.length) uniformAll();
+}
+
+window.addEventListener('resize', uniformAll);
