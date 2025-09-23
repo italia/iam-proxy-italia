@@ -24,8 +24,8 @@
     "spid": {
       "name": "SPID",
       "logo_text": "Login with SPID",
-      "logo": "spid/spid-ico-circle-bb.svg",
-      "login_url": "https://localhost/Saml2/disco?entityID=https://spid.teamsystem.com/idp&return=https://localhost/Saml2/disco"
+      "logo": "spid/spid_icon.svg",
+      "login_url": "#spid-idp-button-xlarge-post"
     }
   },
   "alternative_id": {
