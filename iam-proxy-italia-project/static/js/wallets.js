@@ -16,7 +16,7 @@ i18next
   fallbackLng: 'en',
   debug: true,
   backend: {
-    loadPath: 'locales/{{lng}}.json'
+    loadPath: 'locales/wallets-{{lng}}.json'
   }
 })
 .then(loadWalletsi18next)
