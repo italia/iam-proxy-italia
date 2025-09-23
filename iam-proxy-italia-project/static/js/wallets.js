@@ -4,7 +4,6 @@ function loadWalletsi18next() {
   console.debug("i18next initialized, language:", lang);
   const wallets = i18next.getResourceBundle(lang, "translation");
   loadWallets(wallets);
-  initSpidButton();
   uniformWalletsAfterImages();
 }
 
@@ -75,25 +74,6 @@ function loadWallets(resource) {
     createWallet(resource, "alternative_id", altSection);
     container.appendChild(altSection);
   }
-}
-
-// ----------------------- Init SPID -----------------------
-function initSpidButton() {
-  if (!window.SpidButton || typeof window.SpidButton.init !== "function") {
-    console.warn("SpidButton non disponibile");
-    return;
-  }
-
-  const spidContainers = document.querySelectorAll('.ita.ita-dropdown [spid-idp-button]');
-  if (!spidContainers.length) return;
-
-  spidContainers.forEach(container => {
-    try {
-      window.SpidButton.init(container);
-    } catch (e) {
-      console.error("Errore inizializzazione SPID:", e);
-    }
-  });
 }
 
 // ----------------------- Create Wallet -----------------------
