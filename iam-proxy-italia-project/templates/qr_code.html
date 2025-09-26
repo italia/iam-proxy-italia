@@ -63,7 +63,7 @@
           lng: initialLang,
           fallbackLng: 'en',
           backend: {
-            loadPath: '{% raw %}locales/qr-{{lng}}.json{% endraw %}'
+            loadPath: '{% raw %}/static/locales/qr-{{lng}}.json{% endraw %}'
           }
         }, function (err, t) {
           if (err) {

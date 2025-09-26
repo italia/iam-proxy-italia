@@ -1,7 +1,7 @@
 {
-  "contentTitle": "<b>Scan the QR code</b>",
-  "qrCodeValidInfo": "The QR code is valid for <b>__seconds__</b> seconds",
-  "supportText": "Use the <b>IT-Wallet</b> app feature or your smartphone camera",
+  "contentTitle": "Scan the QR code",
+  "qrCodeValidInfo": "The QR code is valid for __seconds__ seconds",
+  "supportText": "Use the IT-Wallet app feature or your smartphone camera",
   "backLabel": "Cancel",
   "qrCodeExpiredInfo": "Il codice QR è scaduto, ricarica la pagina per generarne uno nuovo.",
   "qrCodeReloadLabel": "Ricarica",
