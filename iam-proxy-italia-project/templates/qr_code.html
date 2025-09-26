@@ -49,8 +49,9 @@
     </div>
 
     <script>
-      let crossImg = "{{ static }}" + "img/cross.svg";
-      let connectedImg = "{{ static }}" + "img/check.svg";
+      let crossImg = "{{ static }}" + "img/new_cross.svg";
+      let connectedImg = "{{ static }}" + "img/new_check.svg";
+      let appImg = "{{ static }}" + "img/app.svg";
       let expirationTime = "{{ qrcode_expiration_time }}";
       let pollingInterval;
       let countdown;
@@ -118,7 +119,7 @@
         changeQrCodeInfo(i18next.t('connectedText'));
         changeText('');
         $('#content-function').html(`
-          <a href="${data.redirect_uri}" class="btn btn-primary">
+          <a href="${data.redirect_uri}" class="btn btn-primary" style="background-color: #0072CE; color: white;">
             ${i18next.t('clickAccessLabel')}
           </a>
         `);
@@ -127,9 +128,10 @@
       function redirectToApp() {
         clearInterval(countdown);
         changeTitle(i18next.t('appTitle'));
-        changeQrCodeImg(connectedImg);
+        changeQrCodeImg(appImg);
         changeQrCodeInfo(i18next.t('appText'));
         changeText('');
+        $('#content-function').addClass('d-none');
       }
 
       function QRcodeExpired(t) {
@@ -153,7 +155,7 @@
         changeQrCodeInfo(i18next.t('failureText'));
         changeText('');
         $('#content-function').html(`
-          <button class="btn btn-outline-primary" onclick="window.location.reload(true)">
+          <button class="btn btn-outline-primary" style="background-color: #0072CE; color: white;" onclick="window.location.reload(true)">
             ${t('retryLabel')}
           </button>
         `);
