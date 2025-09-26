@@ -56,7 +56,7 @@
       let countdown;
 
       function initI18n() {
-        const initialLang = $('#lang-select').val() || 'en';
+        const initialLang = localStorage.getItem('lang') || $('#lang-select').val() || 'en';
 
         i18next
         .use(i18nextHttpBackend)
@@ -70,7 +70,7 @@
           if (err) {
             console.error("Error i18next:", err);
           }
-          console.debug("i18next initialized with language:", initialLang);
+          $('#lang-select').val(initialLang);
           StartQRcodeScanCheck(t);
           updateTexts(t);
         });
@@ -82,6 +82,7 @@
             if (err) {
               return console.error('Error during change language:', err);
             }
+            localStorage.setItem('lang', newLang);
             updateTexts(t);
           });
         });
