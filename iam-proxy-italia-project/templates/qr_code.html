@@ -89,7 +89,7 @@
       }
 
       function updateTexts(t) {
-        $('#content-title').html(t('contentTitle'));
+        $('#content-title').html('<b>' + t('contentTitle') + '</b>');
         $('#content-qrcode-info-text').html(
             t('qrCodeValidInfo', {seconds: `${expirationTime}`})
         );

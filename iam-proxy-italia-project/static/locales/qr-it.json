@@ -1,14 +1,14 @@
 {
-  "contentTitle": "<b>Inquadra il codice QR</b>",
-  "qrCodeValidInfo": "Il codice è valido per <b>{{seconds}}</b> secondi",
-  "supportText": "Usa la funzionalità <b>\"Inquadra\"</b> dell’app IO per accedere con IT Wallet al servizio.",
+  "contentTitle": "Inquadra il codice QR",
+  "qrCodeValidInfo": "Il codice QR è valido per <b>{{seconds}}</b> secondi",
+  "supportText": "Usa la funzionalità dell'app <b>IT-Wallet</b> o la fotocamera del tuo smartphone",
   "backLabel": "Indietro",
   "qrCodeExpiredInfo": "Il codice QR è scaduto, ricarica la pagina per generarne uno nuovo.",
   "qrCodeReloadLabel": "Ricarica",
-  "connectedTitle": "Connessione completata",
-  "connectedText": "Ora puoi accedere al servizio.",
+  "connectedTitle": "Continua sull'app IT-Wallet",
+  "connectedText": "Per proseguire, segui le istruzioni sull'app e autorizza l'accesso",
   "clickAccessLabel": "Accedi al servizio",
-  "failureTitle": "Qualcosa è andato storto",
-  "failureText": "Non è stato possibile completare la connessione.",
+  "failureTitle": "Non siamo riusciti a recuperare i dati della tua identità digitale",
+  "failureText": "Ricorda che per effettuare l'accesso con IT-Wallet devi acconsentire alla lettura dei tuoi dati. Se il problema si ripete, contatta l'assistenza.",
   "retryLabel": "Riprova"
 }

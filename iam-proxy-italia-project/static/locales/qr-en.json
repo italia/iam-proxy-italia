@@ -1,14 +1,14 @@
 {
-  "contentTitle": "<b>Scan the QR code</b>",
+  "contentTitle": "Scan the QR code",
   "qrCodeValidInfo": "The QR code is valid for <b>{{seconds}}</b> seconds",
   "supportText": "Use the <b>IT-Wallet</b> app feature or your smartphone camera",
   "backLabel": "Cancel",
   "qrCodeExpiredInfo": "The QR code has expired, reload the page to generate a new one.",
   "qrCodeReloadLabel": "Reload",
-  "connectedTitle": "Connessione completata",
-  "connectedText": "Ora puoi accedere al servizio.",
-  "clickAccessLabel": "Accedi al servizio",
-  "failureTitle": "Qualcosa è andato storto",
-  "failureText": "Non è stato possibile completare la connessione.",
-  "retryLabel": "Riprova"
+  "connectedTitle": "Authentication completed!",
+  "connectedText": "Continue on the website",
+  "clickAccessLabel": "Continue",
+  "failureTitle": "We were unable to retrieve your data",
+  "failureText": "Remember that to log in with IT-Wallet, you must consent to the reading of your information. If the problem persist, please contact the support service.",
+  "retryLabel": "Try again"
 }
