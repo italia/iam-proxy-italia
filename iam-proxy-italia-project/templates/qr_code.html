@@ -148,9 +148,10 @@
 
       function errorPage(t) {
         clearInterval(countdown);
-        changeTitle(t('failureTitle'));
-        changeText(t('failureText'));
+        changeTitle(i18next.t('failureTitle'));
         changeQrCodeImg(crossImg);
+        changeQrCodeInfo(i18next.t('failureText'));
+        changeText('');
         $('#content-function').html(`
           <button class="btn btn-outline-primary" onclick="window.location.reload(true)">
             ${t('retryLabel')}
