@@ -75,7 +75,7 @@
           updateTexts(t);
         });
 
-        // cambio lingua dall’header
+        // change language on select change in header
         $('#lang-select').on('change', function () {
           const newLang = $(this).val();
           i18next.changeLanguage(newLang, function (err, t) {
@@ -121,6 +121,14 @@
             ${i18next.t('clickAccessLabel')}
           </a>
         `);
+      }
+
+      function redirectToApp() {
+        clearInterval(countdown);
+        changeTitle(i18next.t('appTitle'));
+        changeQrCodeImg(connectedImg);
+        changeQrCodeInfo(i18next.t('appText'));
+        changeText('');
       }
 
       function QRcodeExpired(t) {
@@ -190,6 +198,7 @@
             202: function () {
               StartQRcodeScanCheck(t);
             },
+            //200: redirectToApp,
             200: connectionCompleted,
             400: function () {
               errorPage(i18next.t);

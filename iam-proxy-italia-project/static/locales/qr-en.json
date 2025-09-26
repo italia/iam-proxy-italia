@@ -5,6 +5,8 @@
   "backLabel": "Cancel",
   "qrCodeExpiredInfo": "The QR code has expired, reload the page to generate a new one.",
   "qrCodeReloadLabel": "Reload",
+  "appTitle": "Continua on the IT-Wallet app",
+  "appText": "To continue, follow the instructions on the app and authorize access",
   "connectedTitle": "Authentication completed!",
   "connectedText": "Continue on the website",
   "clickAccessLabel": "Continue",
