@@ -114,8 +114,9 @@
       function connectionCompleted(data) {
         clearInterval(countdown);
         changeTitle(i18next.t('connectedTitle'));
-        changeText(i18next.t('connectedText'));
         changeQrCodeImg(connectedImg);
+        changeQrCodeInfo(i18next.t('connectedText'));
+        changeText('');
         $('#content-function').html(`
           <a href="${data.redirect_uri}" class="btn btn-primary">
             ${i18next.t('clickAccessLabel')}
