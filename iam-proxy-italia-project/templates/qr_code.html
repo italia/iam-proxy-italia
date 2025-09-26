@@ -3,10 +3,15 @@
 {% block content %}
   <div class="container py-5 text-center">
 
-    <!-- Titolo principale -->
+    <!-- Main title -->
     <h2 id="content-title" class="mb-4">
       <!-- i18next -->
     </h2>
+
+    <!-- How to, support-text -->
+    <p id="content-text" class="text-secondary small mb-4">
+      <!-- i18next -->
+    </p>
 
     <!-- QR Code box -->
     <div id="content-qrcode" class="d-flex justify-content-center mb-4">
@@ -30,11 +35,6 @@
 
     <!-- Timer -->
     <p id="content-qrcode-info-text" class="text-muted mb-3">
-      <!-- i18next -->
-    </p>
-
-    <!-- Testo di supporto -->
-    <p id="content-text" class="text-secondary small mb-4">
       <!-- i18next -->
     </p>
 
@@ -70,8 +70,8 @@
             console.error("Error i18next:", err);
           }
           console.debug("i18next initialized with language:", initialLang);
-          updateTexts(t);
           StartQRcodeScanCheck(t);
+          updateTexts(t);
         });
 
         // cambio lingua dall’header
@@ -87,18 +87,19 @@
       }
 
       function updateTexts(t) {
+        $('#content-title').html(t('contentTitle'));
         $('#content-qrcode-info-text').html(
-            t('qrCodeValidInfo', {seconds: `<b id="timer">${expirationTime}</b>`})
+            t('qrCodeValidInfo', {seconds: `${expirationTime}`})
         );
         $('#content-text').html(t('supportText'));
         $('#btn-back').text(t('backLabel'));
       }
 
       function StartQRcodeScanCheck(t) {
-        $('#timer').text(expirationTime);
+        updateTexts(t); // Ensure initial value is set
         countdown = setInterval(function () {
-          $('#timer').text(expirationTime);
           expirationTime--;
+          $('#timer').text(expirationTime); // Update only the timer value
           if (expirationTime < 0) {
             clearInterval(countdown);
             clearTimeout(pollingInterval);
@@ -125,10 +126,13 @@
         clearInterval(countdown);
         changeQrCodeInfo(t('qrCodeExpiredInfo'));
         $('#content-function').html(`
-          <button class="btn btn-primary" onclick="window.location.reload(true)">
+          <button id="qr-reload-btn" class="btn btn-primary">
             ${t('qrCodeReloadLabel')}
           </button>
         `);
+        $('#qr-reload-btn').on('click', function () {
+          window.location.reload(true);
+        });
       }
 
       function errorPage(t) {

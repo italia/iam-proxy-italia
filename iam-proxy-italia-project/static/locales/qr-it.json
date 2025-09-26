@@ -1,6 +1,6 @@
 {
   "contentTitle": "<b>Inquadra il codice QR</b>",
-  "qrCodeValidInfo": "Il codice è valido per <b>__seconds__</b> secondi",
+  "qrCodeValidInfo": "Il codice è valido per <b>{{seconds}}</b> secondi",
   "supportText": "Usa la funzionalità <b>\"Inquadra\"</b> dell’app IO per accedere con IT Wallet al servizio.",
   "backLabel": "Indietro",
   "qrCodeExpiredInfo": "Il codice QR è scaduto, ricarica la pagina per generarne uno nuovo.",
