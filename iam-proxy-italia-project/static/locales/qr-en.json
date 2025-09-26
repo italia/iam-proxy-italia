@@ -12,5 +12,6 @@
   "clickAccessLabel": "Continue",
   "failureTitle": "We were unable to retrieve your data",
   "failureText": "Remember that to log in with IT-Wallet, you must consent to the reading of your information. If the problem persist, please contact the support service.",
-  "retryLabel": "Try again"
+  "retryLabel": "Try again",
+  "contactSupportLabel": "Contact support"
 }

@@ -12,5 +12,6 @@
   "clickAccessLabel": "Accedi al servizio",
   "failureTitle": "Non siamo riusciti a recuperare i dati della tua identità digitale",
   "failureText": "Ricorda che per effettuare l'accesso con IT-Wallet devi acconsentire alla lettura dei tuoi dati. Se il problema si ripete, contatta l'assistenza.",
-  "retryLabel": "Riprova"
+  "retryLabel": "Riprova",
+  "contactSupportLabel": "Contatta l'assistenza"
 }
