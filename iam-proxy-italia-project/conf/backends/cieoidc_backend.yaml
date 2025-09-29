@@ -4,7 +4,6 @@ config:
   static_storage_url: !ENV SATOSA_BASE_STATIC
   error_template: "cie_login_error.html"
   template_folder: "templates" # project root
-
   security_operations:
     hash:
       default:
@@ -81,7 +80,7 @@ config:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      client_id:  # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
@@ -106,6 +105,21 @@ config:
       userinfo_encrypted_response_alg: *default_enc_alg #RSA-OAEP
       userinfo_encrypted_response_enc: *default_enc_enc #A128CBC-HS256
       token_endpoint_auth_method: private_key_jwt
+      scope: "openid"
+      code_challenge:
+        length: 64
+        method: "S256"
+      claim:
+        id_token:
+          family_name:
+            essential: true
+          given_name:
+            essential: true
+        userinfo:
+          given_name: null
+          family_name: null
+          email: null
+          https://attributes.eid.gov.it/fiscal_number: null
 
   endpoints:
     entity_config_endpoint:
@@ -139,6 +153,7 @@ config:
         metadata: *metadata
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
+        prompt: "consent login"
     callback_endpoint:
       module: backends.cieoidc.endpoints.callback_endpoint
       class: CallBackHandler

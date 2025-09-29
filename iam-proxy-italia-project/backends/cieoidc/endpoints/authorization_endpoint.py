@@ -2,7 +2,7 @@ import logging
 import inspect
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Callable
 from copy import deepcopy
 from ..tools.base_endpoint import BaseEndpoint
@@ -24,24 +24,11 @@ from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
 
-
-
 logger = logging.getLogger(__name__)
 
 
-CIE_REQUESTED_CLAIMS ={
-        "id_token": {"family_name": {"essential": True}, "given_name": {"essential": True}},
-        "userinfo": {
-            "given_name": None,
-            "family_name": None,
-            "email": None,
-            "https://attributes.eid.gov.it/fiscal_number": None
-        },
-    }
 
 class AuthorizationHandler(BaseEndpoint):
-    _SUPPORTED_RESPONSE_METHOD = "post"
-    _OIDC_AUTHORIZATION_URL = "authorization"
 
     def __init__(
             self,
@@ -58,8 +45,7 @@ class AuthorizationHandler(BaseEndpoint):
         )
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
         self._entity_type = self.config.get("entity_type")
-        self._jwks_core= self.config.get("jwks_core")
-
+        self._jwks_core = self.config.get("jwks_core")
 
     @property
     def _jwks(self) -> dict:
@@ -89,13 +75,14 @@ class AuthorizationHandler(BaseEndpoint):
         self._require_config_field(
             ["endpoints", "authorization_endpoint", "config", "metadata"], "Metadata")
         self._require_config_field(
-            ["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party"],"OpenId Relying Party")
+            ["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party"],
+            "OpenId Relying Party")
         self._require_config_field(
-            ["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party","client_id"],"Client ID")
+            ["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party", "client_id"],
+            "Client ID")
         self._require_config_field(
             ["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party", "redirect_uris"],
             "Redirect URI")
-
 
     def endpoint(self, context, *args):
         """
@@ -112,44 +99,18 @@ class AuthorizationHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context {context}]"
         )
 
-        authz_endpoint = "http://cie-provider.org:8002/oidc/op/authorization" # TODO Insert this property into config file?
+        authz_endpoint = "http://cie-provider.org:8002/oidc/op/authorization"  # TODO Insert this property into config file?
 
-        _timestamp_now = int(datetime.now().timestamp())
+        # generate the authorization dict
+        authz_data = self.__authorization_data()
 
-        try:
-            authz_data = dict(
-                iss=self.config["metadata"]["openid_relying_party"]["client_id"],
-                scope="openid", # TODO Insert this property into config file?
-                redirect_uri=self.config["metadata"]["openid_relying_party"]["redirect_uris"][0],
-                response_type="code",# TODO Insert this property into config file?
-                nonce=random_string(32),
-                state=random_string(32),
-                client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
-                endpoint="http://cie-provider.org:8002/oidc/op/authorization", # TODO Insert this property into config file?
-                acr_values="https://www.spid.gov.it/SpidL2", # TODO Ask this to Giuseppe because into Django this variable is empty or not? OIDCFED_ACR_PROFILES = getattr(settings,"OIDCFED_ACR_PROFILES",AcrValues.l2.value)
-                iat=_timestamp_now,
-                exp=_timestamp_now + 60, # TODO Ask this to Giuseppe because into Django this variable is empty or not? getattr(settings, "RP_REQUEST_EXP", 60)
-                jti=str(uuid.uuid4()),
-                aud="http://cie-provider.org:8002/oidc/op/authorization", # TODO Ask this to Giuseppe because into Django this variable is initialized from aud=[tc.sub, authz_endpoint],
-                claims=CIE_REQUESTED_CLAIMS,
-            )
-        except Exception as exception:
-            logger.error("Exception from authz_data: {}".format(exception))
-            raise exception
+        # Add key prompt
+        authz_data["prompt"] = self.config["prompt"]
 
+        # generation pkce value
+        self.__pkce_generation(authz_data)
 
-        # @TODO ????
-        authz_data["prompt"] = "consent login"
-
-        code_challenge_length: int = 64 # TODO insert into config file?
-        code_challenge_method: str = "S256" # TODO insert into config file?
-
-        # PKCE
-
-        pkce_values = get_pkce(code_challenge_method, code_challenge_length)
-        authz_data.update(pkce_values)
-
-        #@TODO Talking with Giuseppe for this authz_entry
+        # @TODO Talking with Giuseppe for this authz_entry
         # authz_entry = dict(
         #     client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
         #     state=authz_data["state"],
@@ -159,28 +120,152 @@ class AuthorizationHandler(BaseEndpoint):
         #     provider_configuration="http://cie-provider.org:8002/",  #@TODO Talking with GIuseppe
         # )
 
-        authz_data.pop("code_verifier") #@TODO Asking Giuseppe if i can remove code_verifier
+        self.__create_jws(authz_data)
+
+        uri_path = AuthorizationHandler.generate_uri(authz_data)
+
+        if "?" in authz_endpoint:
+            qstring = "&"
+        else:
+            qstring = "?"
+        url = qstring.join((authz_endpoint, uri_path))
+
+        resp = Redirect(url)
+
+        return resp
+
+    def __authorization_data(self) -> dict:
+        """
+        method private authorization_data:
+        This method generate the authorization data for the authorization endpoint.
+
+        :type self: object
+        :rtype: dict
+
+        :param self: object
+        :return: dict
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}.]"
+        )
+
+        _timestamp_now = int(datetime.now(timezone.utc).timestamp())
+
+        scope = self.config["metadata"]["openid_relying_party"]["scope"]
+
+        claim = self.config["metadata"]["openid_relying_party"]["claim"]
+
+        response_type: str = self.config["metadata"]["openid_relying_party"]["response_types"][0]
+
+        try:
+            authz_data = dict(
+                iss=self.config["metadata"]["openid_relying_party"]["client_id"],
+                scope=scope,
+                redirect_uri=self.config["metadata"]["openid_relying_party"]["redirect_uris"][0],
+                response_type=response_type,
+                nonce=random_string(32),
+                state=random_string(32),
+                client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
+                endpoint="http://cie-provider.org:8002/oidc/op/authorization",
+                # TODO Insert this property into config file?
+                acr_values="https://www.spid.gov.it/SpidL2",
+                # TODO Ask this to Giuseppe because into Django this variable is empty or not? OIDCFED_ACR_PROFILES = getattr(settings,"OIDCFED_ACR_PROFILES",AcrValues.l2.value)
+                iat=_timestamp_now,
+                exp=_timestamp_now + 60,
+                jti=str(uuid.uuid4()),
+                aud="http://cie-provider.org:8002/oidc/op/authorization",
+                # TODO Ask this to Giuseppe because into Django this variable is initialized from aud=[tc.sub, authz_endpoint],
+                claims=claim,
+            )
+        except Exception as exception:
+            logger.error("Exception where generate the authz_data: {}".format(exception))
+            raise exception
+
+        return authz_data
+
+    def __pkce_generation(self, authz_data: dict):
+        """
+        method private pkce_generation:
+        Get method and length from configuration and generate, with utils module, the pkce values.
+        Add this value into authorization data and return the dictionary updated
+        :type self: object
+        :type authz_data: dict
+
+        :param self: object
+        :param authz_data: dict
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authz_data {authz_data}]"
+        )
+        if not self.config["metadata"]["openid_relying_party"]["code_challenge"]["length"]:
+            raise ValueError(f"code_challenge length in configuration is empty")
+
+        if not self.config["metadata"]["openid_relying_party"]["code_challenge"]["method"]:
+            raise ValueError(f"code_challenge method in configuration is empty")
+
+        code_challenge_length: int = self.config["metadata"]["openid_relying_party"]["code_challenge"]["length"]
+
+        code_challenge_method: str = self.config["metadata"]["openid_relying_party"]["code_challenge"]["method"]
+
+        pkce_values = get_pkce(code_challenge_method, code_challenge_length)
+
+        authz_data.update(pkce_values)
+
+    def __create_jws(self, authz_data: dict):
+
+        """
+        method private __create_jws:
+        This method get key and generate the JWS.
+        Add the object into authorization data and return the dictionary updated
+
+        :type self: object
+        :type authz_data: dict
+
+        :param self: object
+        :param authz_data: dict
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authz_data {authz_data}]"
+        )
+
         authz_data_obj = deepcopy(authz_data)
+
         authz_data_obj["iss"] = self.config["metadata"]["openid_relying_party"]["client_id"]
 
         jwk_core_sig = get_key(self._jwks_core, KeyUsage.signature)
+
         request_obj = create_jws(authz_data_obj, jwk_core_sig)
+
         authz_data["request"] = request_obj
+
+    @staticmethod
+    def generate_uri(authz_data: dict) -> str:
+
+        """
+        method __generate_uri:
+        This method generate the URI from authorization data.
+
+        :type self: object
+        :type authz_data: dict
+        :rtype: dict
+
+        :param self: object
+        :param authz_data: dict
+        :return: dict
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authz_data {authz_data}]"
+        )
+
         uri_path = http_dict_to_redirect_uri_path(
             {
                 "client_id": authz_data["client_id"],
-                "scope" : authz_data["scope"],
+                "scope": authz_data["scope"],
                 "response_type": authz_data["response_type"],
                 "code_challenge": authz_data["code_challenge"],
                 "code_challenge_method": authz_data["code_challenge_method"],
                 "request": authz_data["request"]
             }
         )
-        if "?" in authz_endpoint:
-            qstring = "&"
-        else:
-            qstring = "?"
-        url = qstring.join((authz_endpoint, uri_path))
-        resp = Redirect(url)
 
-        return resp
+        return uri_path
