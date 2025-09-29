@@ -114,7 +114,7 @@ services:
 
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:latest
+    image: iam-proxy-italia:3.0
     build: 
         context: ../      
         args: 
@@ -178,9 +178,8 @@ services:
       - "10000:10000"
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
-      # - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      #- ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
-      # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
