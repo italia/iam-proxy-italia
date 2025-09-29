@@ -1,5 +1,31 @@
 
-## Setup Instructions
+# Setup Instructions
+
+## Prerequisites
+Before you begin, ensure you have the following installed:
+- Docker
+- Docker Compose
+- Git
+
+### WWWAllet Backend Setup
+Every aspect of backend configuration is managed through `iam-proxy-italia-project/wwwallet/configs/config.template.ts` file and if you need to customize it, like changing the database connection details or enabling/disabling certain features, you can do so by editing this file.
+Note that you will need to set: 
+- the host and port where the backend will be running.
+- the database connection details to connect to your Mysql instance.
+- and the notification system need to be disabled if no firebase subscription is available.
+
+### WWWAllet Frontend Setup
+The frontend configuration is managed through the `iam-proxy-italia-project/wwwallet/configs/.env.prod` file.
+You can customize it by editing this file.
+Note that you will need to set:
+- the backend url to connect to the backend instance.
+- the firebase configuration if you want to enable the notification system.
+
+### Nginx Custom Configuration
+The Nginx configuration for wwwallet is managed through the `iam-proxy-italia-project/wwwallet/configs/wwwallet.conf` file.
+If you change the backend or frontend host and port, you will need to update this file accordingly.
+
+## Installation Steps
 
 ### Automated Setup with Docker-Compose
 The installation process is completely automated by the script `run-docker-compose.sh` located in the `Docker-compose` folder.
