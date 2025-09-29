@@ -1,5 +1,6 @@
 {
   "titles": {
+    "login_logo": "Log in with your digital wallet",
     "login_digital_identity": "Log in with a digital identity",
     "login_alternative_method" : "Log in using an alternative method",
     "havent_digital_identy": "Don't have a digital identity?",

@@ -3,6 +3,7 @@ function loadWalletsi18next() {
   const lang = i18next.language;
   console.debug("i18next initialized, language:", lang);
   const wallets = i18next.getResourceBundle(lang, "translation");
+  loadDocument(wallets);
   loadWallets(wallets);
   uniformWalletsAfterImages();
 }
@@ -13,7 +14,6 @@ i18next
 .init({
   lng: 'en',
   fallbackLng: 'en',
-  debug: true,
   backend: {
     loadPath: 'locales/wallets-{{lng}}.json'
   }
@@ -26,6 +26,12 @@ document.getElementById("lang-select")?.addEventListener('change', (e) => {
   const selectedLang = e.target.value;
   i18next.changeLanguage(selectedLang).then(loadWalletsi18next);
 });
+
+// ----------------------- Document Loader -----------------------
+function loadDocument(resource) {
+  // header
+  document.getElementById('wallet-title').textContent = resource.titles.login_logo;
+}
 
 // ----------------------- Wallets Loader -----------------------
 function loadWallets(resource) {

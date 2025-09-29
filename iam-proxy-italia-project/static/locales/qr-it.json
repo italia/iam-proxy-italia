@@ -1,4 +1,5 @@
 {
+  "login_logo": "Accedi con il tuo wallet digitale",
   "contentTitle": "Inquadra il codice QR",
   "qrCodeValidInfo": "Il codice QR è valido per <b>{{seconds}}</b> secondi",
   "supportText": "Usa la funzionalità dell'app <b>IT-Wallet</b> o la fotocamera del tuo smartphone",

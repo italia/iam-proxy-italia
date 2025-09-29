@@ -90,6 +90,9 @@
       }
 
       function updateTexts(t) {
+        // headers
+        $('#wallet-title').html(t('login_logo'));
+        // content
         $('#content-title').html('<b>' + t('contentTitle') + '</b>');
         $('#content-qrcode-info-text').html(
             t('qrCodeValidInfo', {seconds: `${expirationTime}`})

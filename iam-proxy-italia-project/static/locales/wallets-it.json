@@ -1,5 +1,6 @@
 {
   "titles": {
+    "login_logo": "Accedi con il tuo wallet digitale",
     "login_digital_identity": "Accedi con un'identità digitale",
     "login_alternative_method" : "Accedi con un metodo alternativo",
     "havent_digital_identy": "Non hai un'identità digitale?",
