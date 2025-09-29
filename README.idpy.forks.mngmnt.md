@@ -6,11 +6,11 @@ cd pysaml2/
 
 # create current pplnx branch
 git remote add ppl nx https://github.com/peppelinux/pysaml2.git
-# git checkout --orphan pplnx-v7.5.2
+# git checkout --orphan pplnx-v7.5.3
 # git reset --hard
 # git pull origin master
 
-git checkout -b pplnx-v7.5.2
+git checkout -b pplnx-v7.5.3
 
 # pplnx's patches
 
@@ -32,10 +32,10 @@ python3 -m pytest tests/ -x
 git clone https://github.com/identitypython/satosa -o satosa
 cd satosa
 git remote add pplnx https://github.com/peppelinux/SATOSA.git
-# git checkout --orphan pplnx-v8.5.1
+# git checkout --orphan pplnx-v8.5.2
 # git reset --hard
 # git pull origin master
-git checkout -b pplnx-v8.5.1
+git checkout -b pplnx-v8.5.2
 
 pip install -r tests/test_requirements.txt
 pip install pymongo

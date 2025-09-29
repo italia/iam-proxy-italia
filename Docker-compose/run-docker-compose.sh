@@ -1,6 +1,7 @@
 #!/bin/bash
 export COMPOSE_PROFILES=wwwallet
 export SKIP_UPDATE=
+export RUN_SPID_TEST=
 
 function clean_data {
   rm -Rf ./mongo/db/*
@@ -22,7 +23,7 @@ function initialize_satosa {
   mkdir -p ./nginx/html/static
   mkdir -p ./wwwallet
 
-  if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'satosa-project directory is already initialized' ; fi
+  if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'iam-proxy-italia-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
   if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
@@ -57,6 +58,22 @@ function start {
   docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker-compose -f docker-compose.yml logs -f'"
+
+  if [[ -n "${RUN_SPID_TEST}" ]]; then
+    echo -e "\n"
+    echo -e "spid-sp-test SPID metadata, requests and responses. \n"
+    spid_sp_test --idp-metadata > ./iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
+    spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+
+    echo -e "\n"
+    echo -e "spid-sp-test CIE id metadata. \n"
+    spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+
+    echo -e "\n"
+    echo -e "spid-sp-test SPID metadata, requests and responses. \n"
+    spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+  fi
+
   exit 0
 }
 
@@ -74,11 +91,12 @@ function help {
   echo "-m Set 'mongo' compose profile. Run: satosa, nginx, mongo"
   echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
+  echo "-t Run spid_sp_test tests after startup"
   echo "   if isn't set any of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "   demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
 }
 
-while getopts ":fpimMdsh" opt; do
+while getopts ":fpmMdsth" opt; do
   case ${opt} in
    f)
      clean_data
@@ -98,6 +116,9 @@ while getopts ":fpimMdsh" opt; do
    s)
      SKIP_UPDATE=true
      ;;
+   t)
+     RUN_SPID_TEST=true
+      ;;
    h)
      help
      exit 0

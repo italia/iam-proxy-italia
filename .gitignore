@@ -30,6 +30,7 @@ Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
 Docker-compose/.env
 Docker-compose/wwwallet/*
+Docker-compose/eudi-wallet-it-python
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
