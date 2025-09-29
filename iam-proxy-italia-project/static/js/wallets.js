@@ -151,11 +151,11 @@ function createLogoButton(wallet, hasLearnMore = false) {
 
   const createTextSpan = () => {
     const span = document.createElement('span');
-    span.textContent = wallet.logo_text || "entra con spid";
+    span.textContent = wallet.logo_text;
     return span;
   };
 
-  if (wallet.login_url && wallet.login_url.includes("#spid-idp-button")) {
+if (wallet.login_url?.includes("#spid-idp-button")) {
     const wrapper = document.createElement('div');
     wrapper.className = 'ita ita-dropdown ita-l ita-fixed mb-3';
 
