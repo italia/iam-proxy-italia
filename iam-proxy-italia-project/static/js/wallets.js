@@ -6,6 +6,9 @@ function loadWalletsi18next() {
   loadDocument(wallets);
   loadWallets(wallets);
   uniformWalletsAfterImages();
+  if (typeof Ita !== "undefined") {
+    new Ita();
+  }
 }
 
 // Inizializza i18next
@@ -136,6 +139,47 @@ function createWalletName(name) {
 
 // ----------------------- Logo Button -----------------------
 function createLogoButton(wallet, hasLearnMore = false) {
+  const createLogoImg = () => {
+    const img = document.createElement('img');
+    img.src = wallet.logo;
+    img.alt = wallet.name;
+    img.style.width = '24px';
+    img.style.height = '24px';
+    img.style.objectFit = 'contain';
+    return img;
+  };
+
+  const createTextSpan = () => {
+    const span = document.createElement('span');
+    span.textContent = wallet.logo_text || "entra con spid";
+    return span;
+  };
+
+  if (wallet.login_url && wallet.login_url.includes("#spid-idp-button")) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ita ita-dropdown ita-l ita-fixed mb-3';
+
+    const btn = document.createElement('a');
+    btn.href = "#";
+    btn.className = 'btn btn-primary d-flex align-items-center';
+    btn.style.gap = '0.5rem';
+    btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    btn.appendChild(createLogoImg());
+    btn.appendChild(createTextSpan());
+
+    const menu = document.createElement('div');
+    menu.className = 'ita-menu';
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('data-spid-remote', '');
+
+    wrapper.appendChild(btn);
+    wrapper.appendChild(menu);
+
+    return wrapper;
+  }
 
   const btn = document.createElement('a');
   btn.href = wallet.login_url;
@@ -149,18 +193,8 @@ function createLogoButton(wallet, hasLearnMore = false) {
     btn.style.alignSelf = 'center';
   }
 
-  const logoImg = document.createElement('img');
-  logoImg.src = wallet.logo;
-  logoImg.alt = wallet.name;
-  logoImg.style.width = '24px';
-  logoImg.style.height = '24px';
-  logoImg.style.objectFit = 'contain';
-
-  const textSpan = document.createElement('span');
-  textSpan.textContent = wallet.logo_text;
-
-  btn.appendChild(logoImg);
-  btn.appendChild(textSpan);
+  btn.appendChild(createLogoImg());
+  btn.appendChild(createTextSpan());
 
   return btn;
 }
