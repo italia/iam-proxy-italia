@@ -1,6 +1,48 @@
 {% extends "frame.html" %}
 
 {% block content %}
+  <style>
+    :root {
+      --qr-size: {{ qrcode_size }}px;
+      --brand-blue: #0072CE;
+    }
+
+    .qr-box {
+      padding: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+    }
+
+    .qr-code {
+      display: block;
+      margin: auto;
+      background-color: #fff;
+      width: var(--qr-size);
+      height: var(--qr-size);
+    }
+
+    .qr-code-img {
+      width: 10em;
+      height: 10em;
+    }
+
+    .qr-faded {
+      opacity: 0.2;
+    }
+
+    .btn-custom {
+      background-color: var(--brand-blue);
+      color: white;
+    }
+
+    .support-link {
+      margin-top: 0.5rem;
+      display: block;
+      color: var(--brand-blue);
+    }
+  </style>
+
   <div class="container py-5 text-center">
 
     <!-- Main title -->
@@ -14,20 +56,15 @@
     </p>
 
     <!-- QR Code box -->
-    <script src="{{static}}/js/qrcode/qr-code.js"></script>
+    <script src="{{ static }}/js/qrcode/qr-code.js"></script>
     <div id="content-qrcode" class="d-flex justify-content-center mb-4">
-      <div id="content-qrcode-payload" class="p-4 bg-white shadow-sm rounded">
+      <div id="content-qrcode-payload" class="qr-box">
         <qr-code
             contents="{{ qrcode_text }}"
             module-color="{{ qrcode_color }}"
             position-ring-color="{{ qrcode_color }}"
             position-center-color="{{ qrcode_color }}"
-            style="
-                width: {{ qrcode_size }}px;
-                height: {{ qrcode_size }}px;
-                margin: auto;
-                background-color: #fff;
-                "
+            class="qr-code"
         >
           <img class="icon-qr-code" src="{{ static+qrcode_logo_path }}" slot="icon"/>
         </qr-code>
@@ -126,7 +163,7 @@
         changeQrCodeInfo(i18next.t('connectedText'));
         changeText('');
         $('#content-function').html(`
-          <a href="${data.redirect_uri}" class="btn btn-primary" style="background-color: #0072CE; color: white;">
+          <a href="${data.redirect_uri}" class="btn btn-primary btn-custom">
             ${i18next.t('clickAccessLabel')}
           </a>
         `);
@@ -162,16 +199,16 @@
         changeQrCodeInfo(i18next.t('failureText'));
         changeText('');
         $('#content-function').html(`
-          <button class="btn btn-outline-primary" style="background-color: #0072CE; color: white;" onclick="window.location.reload(true)">
+          <button class="btn btn-outline-primary btn-custom" onclick="window.location.reload(true)">
             ${t('retryLabel')}
           </button>
-          <br>
-          <br>
-          <a href="#" onclick="return false;" class="mt-2 d-block" style="color: #0072CE;">
+          <br><br>
+          <a href="#" onclick="return false;" class="support-link">
             ${t('contactSupportLabel')}
           </a>
         `);
       }
+
       function changeTitle(str) {
         $('#content-title').html(str);
       }
@@ -185,12 +222,11 @@
       }
 
       function changeQrCodeImg(str) {
-        $('#content-qrcode-payload').html(
-            `<img src="${str}" alt="qr-code" style="width: 10em; height: 10em;">`);
+        $('#content-qrcode-payload').html(`<img src="${str}" alt="qr-code" class="qr-code-img">`);
       }
 
       function blankQRcode() {
-        $('#content-qrcode-payload').css({'opacity': '0.2'});
+        $('#content-qrcode-payload').addClass('qr-faded');
       }
 
       function statusEndpoint() {
@@ -213,7 +249,6 @@
             202: function () {
               StartQRcodeScanCheck(t);
             },
-            //200: redirectToApp,
             200: connectionCompleted,
             400: function () {
               errorPage(i18next.t);
