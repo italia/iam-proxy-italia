@@ -14,5 +14,10 @@
   "failureTitle": "We were unable to retrieve your data",
   "failureText": "Remember that to log in with IT-Wallet, you must consent to the reading of your information. If the problem persist, please contact the support service.",
   "retryLabel": "Try again",
-  "contactSupportLabel": "Contact support"
+  "contactSupportLabel": "Contact support",
+  "footer": {
+    "legal_notice": "Legal notes",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Accessibility statement"
+  }
 }

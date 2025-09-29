@@ -42,5 +42,10 @@
       "logo": "cie/cie_white.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco"
     }
+  },
+  "footer": {
+    "legal_notice": "Legal notes",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Accessibility statement"
   }
 }

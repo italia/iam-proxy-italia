@@ -31,6 +31,10 @@ document.getElementById("lang-select")?.addEventListener('change', (e) => {
 function loadDocument(resource) {
   // header
   document.getElementById('wallet-title').textContent = resource.titles.login_logo;
+  // footer
+  document.getElementById('footer-legal').textContent = resource.footer.legal_notice;
+  document.getElementById('footer-privacy').textContent = resource.footer.privacy_policy;
+  document.getElementById('footer-accessibility').textContent = resource.footer.accessibility_statement;
 }
 
 // ----------------------- Wallets Loader -----------------------
