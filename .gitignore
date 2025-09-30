@@ -26,6 +26,7 @@ Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
+Docker-compose/certbot/live/localhost
 Docker-compose/.env
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

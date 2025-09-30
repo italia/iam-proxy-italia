@@ -26,6 +26,13 @@ function add_localhost_cert () {
   -subj '/CN=localhost' -extensions EXT -config <( \
    printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 }
+
+function add_iam_cert () {
+  cd ./iam-proxy-italia-project/pki
+  bash build_spid_certs.sh
+  cd ../..
+}
+
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
@@ -40,6 +47,7 @@ function initialize_satosa {
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
+  init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
 
   rm -Rf ./iam-proxy-italia-project/static
 
