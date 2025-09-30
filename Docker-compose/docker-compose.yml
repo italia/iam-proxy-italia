@@ -137,7 +137,7 @@ services:
       interval: 30s
       retries: 10
       start_period: 30s
-      timeout: 30s
+      timeout: 10s
 
   satosa-nginx:
     image: nginx:alpine
