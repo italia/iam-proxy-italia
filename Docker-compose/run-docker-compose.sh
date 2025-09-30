@@ -9,6 +9,7 @@ function clean_data {
     rm -Rf ./iam-proxy-italia-project/*
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
+    rm -Rf ./certbot/live/localhost/*
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   else
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then echo "'-e' options is skipped. To perform this option is required '-f' too "; fi
@@ -19,6 +20,12 @@ function init_files () {
   if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
 }
 
+function add_localhost_cert () {
+  openssl req -x509 -out ./certbot/live/localhost/fullchain.pem -keyout certbot/live/localhost/privkey.pem \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+}
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
   
@@ -26,11 +33,14 @@ function initialize_satosa {
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
+  mkdir -p ./certbot/live/localhost
 
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
+  init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
+
   rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
