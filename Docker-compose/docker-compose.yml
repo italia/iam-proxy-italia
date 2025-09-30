@@ -133,7 +133,14 @@ services:
     networks:
       - iam-proxy-italia
     healthcheck:
-      test: wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate || exit 1
+      test: >
+        wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VCI/.well-known/openid-federation --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VCI/.well-known/oauth-authorization-server --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VCI/.well-known/openid-credential-issuer --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VP/.well-known/jwt-vc-issuer --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VP/.well-known/jar-issuer --no-check-certificate &&
+        wget -O - https://satosa-nginx/OpenID4VP/.well-known/openid-federation --no-check-certificate || exit 1
       interval: 30s
       retries: 10
       start_period: 30s
