@@ -19,7 +19,6 @@ dependencies = [
     "pillow (>=11.1.0,<12.0.0)",
     "device-detector (>=5.0,<6)",
     "satosa (>=8.4,<8.6)",
-    "jinja2 (>=3.0,<4)",
     "pymongo (>=4.10.1,<5.0.0)",
     "requests (>=2.32.3,<3.0.0)",
     "asyncio (>=3.4.3,<4.0.0)",
