@@ -4,6 +4,12 @@ config:
   static_storage_url: !ENV SATOSA_BASE_STATIC
   error_template: "cie_login_error.html"
   template_folder: "templates" # project root
+  network:
+    httpc_params: &httpc_params
+      connection:
+        ssl: true
+      session:
+        timeout: 6
   security_operations:
     hash:
       default:
@@ -120,6 +126,12 @@ config:
           family_name: null
           email: null
           https://attributes.eid.gov.it/fiscal_number: null
+  trust_chain:
+      config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
+        trust_anchor:
+          - http://trust-anchor.org:8000
 
   endpoints:
     entity_config_endpoint:
