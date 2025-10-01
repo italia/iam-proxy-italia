@@ -1,0 +1,24 @@
+{
+  "page_title": "Login",
+  "login_logo": "Log in with your digital wallet",
+  "contentTitle": "Scan the QR code",
+  "qrCodeValidInfo": "The QR code is valid for <b>{{seconds}}</b> seconds",
+  "supportText": "Use the <b>IT-Wallet</b> app feature or your smartphone camera",
+  "backLabel": "Cancel",
+  "qrCodeExpiredInfo": "The QR code has expired, reload the page to generate a new one.",
+  "qrCodeReloadLabel": "Reload",
+  "appTitle": "Continua on the IT-Wallet app",
+  "appText": "To continue, follow the instructions on the app and authorize access",
+  "connectedTitle": "Authentication completed!",
+  "connectedText": "Continue on the website",
+  "clickAccessLabel": "Continue",
+  "failureTitle": "We were unable to retrieve your data",
+  "failureText": "Remember that to log in with IT-Wallet, you must consent to the reading of your information. If the problem persist, please contact the support service.",
+  "retryLabel": "Try again",
+  "contactSupportLabel": "Contact support",
+  "footer": {
+    "legal_notice": "Legal notes",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Accessibility statement"
+  }
+}

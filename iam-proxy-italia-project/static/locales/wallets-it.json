@@ -1,0 +1,52 @@
+{
+  "titles": {
+    "page_title": "Accedi",
+    "login_logo": "Accedi con il tuo wallet digitale",
+    "login_digital_identity": "Accedi con un'identità digitale",
+    "login_alternative_method" : "Accedi con un metodo alternativo",
+    "havent_digital_identy": "Non hai un'identità digitale?",
+    "find_how_to_get_digital_id": "Scopri come ottenerla",
+    "find_how_to_get_digital_id_url": "",
+    "learn_more": "Scopri di più"
+  },
+  "digital_id": {
+    "cie": {
+      "name": "CIE",
+      "logo_text": "Entra con CIE",
+      "logo": "cie/cie_white.svg",
+      "login_url": "/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco"
+    },
+    "it_wallet": {
+      "name": "IT-Wallet",
+      "logo_text": "Entra con IT-Wallet",
+      "logo": "wallet-it/wallet_icon.svg",
+      "login_url": "https://localhost/Saml2/disco?entityID=wallet",
+      "learn_more_descr": "IT-Wallet è il Sistema di portafoglio digitale italiano che ti dà il pieno controllo sulle tue informazioni, senza che l'ente che le ha rilasciate venga a conoscenza di quando e come vengono usate."
+    },
+    "spid": {
+      "name": "SPID",
+      "logo_text": "Entra con SPID",
+      "logo": "spid/spid_icon.svg",
+      "login_url": "#spid-idp-button-xlarge-post"
+    }
+  },
+  "alternative_id": {
+    "idem": {
+      "name":"IDEM",
+      "logo_text": "Entra con IDEM",
+      "logo": "img/ficep.svg",
+      "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_"
+    },
+    "eidas": {
+      "name": "eIDAS",
+      "logo_text": "Entra con eIDAS",
+      "logo": "cie/cie_white.svg",
+      "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco"
+    }
+  },
+  "footer": {
+    "legal_notice": "Note legali",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Dichiarazione Accessibilità"
+  }
+}
