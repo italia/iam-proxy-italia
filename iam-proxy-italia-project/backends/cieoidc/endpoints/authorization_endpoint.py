@@ -46,6 +46,9 @@ class AuthorizationHandler(BaseEndpoint):
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
         self._entity_type = self.config.get("entity_type")
         self._jwks_core = self.config.get("jwks_core")
+        self.trust_chain = trust
+        self.authorization_endpoint = trust.subject_configuration.payload["metadata"]["openid_provider"]["authorization_endpoint"]
+
 
     @property
     def _jwks(self) -> dict:
@@ -99,8 +102,6 @@ class AuthorizationHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context {context}]"
         )
 
-        authz_endpoint = "http://cie-provider.org:8002/oidc/op/authorization"  # TODO Insert this property into config file?
-
         # generate the authorization dict
         authz_data = self.__authorization_data()
 
@@ -124,11 +125,11 @@ class AuthorizationHandler(BaseEndpoint):
 
         uri_path = AuthorizationHandler.generate_uri(authz_data)
 
-        if "?" in authz_endpoint:
+        if "?" in self.authorization_endpoint:
             qstring = "&"
         else:
             qstring = "?"
-        url = qstring.join((authz_endpoint, uri_path))
+        url = qstring.join((self.authorization_endpoint, uri_path))
 
         resp = Redirect(url)
 
@@ -166,15 +167,13 @@ class AuthorizationHandler(BaseEndpoint):
                 nonce=random_string(32),
                 state=random_string(32),
                 client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
-                endpoint="http://cie-provider.org:8002/oidc/op/authorization",
-                # TODO Insert this property into config file?
+                endpoint=self.authorization_endpoint,
                 acr_values="https://www.spid.gov.it/SpidL2",
                 # TODO Ask this to Giuseppe because into Django this variable is empty or not? OIDCFED_ACR_PROFILES = getattr(settings,"OIDCFED_ACR_PROFILES",AcrValues.l2.value)
                 iat=_timestamp_now,
                 exp=_timestamp_now + 60,
                 jti=str(uuid.uuid4()),
-                aud="http://cie-provider.org:8002/oidc/op/authorization",
-                # TODO Ask this to Giuseppe because into Django this variable is initialized from aud=[tc.sub, authz_endpoint],
+                aud=self.authorization_endpoint,
                 claims=claim,
             )
         except Exception as exception:
