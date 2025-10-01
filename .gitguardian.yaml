@@ -10,7 +10,3 @@ rules:
     paths:
       - '**/*.yaml'
       - '**/*.yml'
-  - pattern: '-----BEGIN .*PRIVATE KEY-----'
-    reason: 'Ignore all private keys'
-    paths:
-      - '**/*.pem'
