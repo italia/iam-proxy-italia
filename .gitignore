@@ -26,6 +26,7 @@ Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
+Docker-compose/certbot/live/localhost
 Docker-compose/.env
 Docker-compose/eudi-wallet-it-python
 # PyCharm

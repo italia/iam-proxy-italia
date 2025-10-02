@@ -6,19 +6,19 @@ openssl_conf=$(mktemp)
 
 # check input parameters
 
-COMMON_NAME=${COMMON_NAME:=""}
+COMMON_NAME=${COMMON_NAME:="A.C.M.E"}
 if [ "X${COMMON_NAME}" == "X" ]; then
     echo "[E] COMMON_NAME must be set"
     exit 1
 fi
 
-LOCALITY_NAME=${LOCALITY_NAME:=""}
+LOCALITY_NAME=${LOCALITY_NAME:="Roma"}
 if [ "X${LOCALITY_NAME}" == "X" ]; then
     echo "[E] LOCALITY_NAME must be set"
     exit 1
 fi
 
-ORGANIZATION_IDENTIFIER=${ORGANIZATION_IDENTIFIER:=""}
+ORGANIZATION_IDENTIFIER=${ORGANIZATION_IDENTIFIER:="PA:IT-c_h501"}
 if [ "X${ORGANIZATION_IDENTIFIER}" == "X" ]; then
     echo "[E] ORGANIZATION_IDENTIFIER must be set"
     exit 1
@@ -29,25 +29,25 @@ if [ $(echo ${ORGANIZATION_IDENTIFIER} | grep -c '^PA:IT-') -ne 1 ]; then
     exit 1
 fi
 
-ORGANIZATION_NAME=${ORGANIZATION_NAME:=""}
+ORGANIZATION_NAME=${ORGANIZATION_NAME:="A Company Making Everything"}
 if [ "X${ORGANIZATION_NAME}" == "X" ]; then
     echo "[E] ORGANIZATION_NAME must be set"
     exit 1
 fi
 
-SERIAL_NUMBER=${SERIAL_NUMBER:=""}
+SERIAL_NUMBER=${SERIAL_NUMBER:="1"}
 if [ "X${SERIAL_NUMBER}" == "X" ]; then
     echo "[E] SERIAL_NUMBER must be set"
     exit 1
 fi
 
-URI=${URI:=""}
+URI=${URI:="https://spid.acme.it"}
 if [ "X${URI}" == "X" ]; then
     echo "[E] URI must be set"
     exit 1
 fi
 
-SPID_SECTOR=${SPID_SECTOR:=""}
+SPID_SECTOR=${SPID_SECTOR:="public"}
 if [ "X${SPID_SECTOR}" == "X" ]; then
     echo "[E] SPID_SECTOR must be set"
     exit 1
