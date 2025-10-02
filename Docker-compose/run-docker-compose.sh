@@ -9,8 +9,8 @@ function clean_data {
     rm -Rf ./iam-proxy-italia-project/*
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
-    rm -Rf ./nginx/conf.d/sites-enabled/*
     rm -Rf ./certbot/live/localhost/*
+    rm -Rf ./nginx/conf.d/sites-enabled/*
     rm -Rf ./wwwallet/*
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   else
@@ -37,37 +37,65 @@ function add_iam_cert () {
 
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
-  
+
   mkdir -p ./iam-proxy-italia-project
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/localhost
   mkdir -p ./nginx/conf.d/sites-enabled
-  mkdir -p ./wwwallet
-  
+
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
- 
+
+  rm -Rf ./iam-proxy-italia-project/static
+
   if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
-      echo "Initializing wwwallet profile"
-      if [ ! -f ./nginx/conf.d/sites-enabled/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/wwwallet.conf ./nginx/conf.d/sites-enabled/ ; else echo 'nginx wwwallet configuration is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend ; else echo 'wwwallet-frontend directory is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-backend-server/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server ; else echo 'wwwallet-backend-server directory is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/.env.prod ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod ; else echo 'wwwallet-frontend .env.prod file is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-backend-server/config/config.template.ts ]; then mkdir -p ./wwwallet/wallet-backend-server/config/ && cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts; else echo 'wwwallet-backend-server config template is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-frontend/vite.config.ts ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts ; else echo 'wwwallet-frontend vite.config.ts file is already initialized' ; fi
-      if [ ! -f ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts ]; then mkdir -p ./wwwallet/wallet-backend-server/src/routers/ && cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts ; else echo 'wwwallet-backend-server proxy.router.ts file is already initialized' ; fi
-      if [ ! -f ./wwwallet/mysql/config/my.cnf ]; then mkdir -p ./wwwallet/mysql/config/ && cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf ; else echo 'wwwallet mysql config is already initialized' ; fi
+      mkdir -p ./wwwallet
+
+      init_files "./nginx/conf.d/sites-enabled/wwwallet.conf" \
+        "nginx wwwallet configuration is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/wwwallet.conf ./nginx/conf.d/sites-enabled/"
+
+      init_files "./wwwallet/wallet-frontend/package.json" \
+        "wwwallet-frontend directory is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend"
+
+      init_files "./wwwallet/wallet-backend-server/package.json" \
+        "wwwallet-backend-server directory is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server"
+
+      init_files "./wwwallet/wallet-frontend/.env.prod" \
+        "wwwallet-frontend .env.prod file is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod"
+
+      init_files "./wwwallet/wallet-frontend/lib/wallet-common/package.json" \
+        "wwwallet-frontend wallet-common directory is already initialized" \
+        "mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common/* ./wwwallet/wallet-frontend/lib/wallet-common/"
+
+      init_files "./wwwallet/wallet-backend-server/config/config.template.ts" \
+        "wwwallet-backend-server config template is already initialized" \
+        "mkdir -p ./wwwallet/wallet-backend-server/config && cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts"
+
+      init_files "./wwwallet/wallet-frontend/vite.config.ts" \
+        "wwwallet-frontend vite.config.ts file is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts"
+
+      init_files "./wwwallet/wallet-backend-server/src/routers/proxy.router.ts" \
+        "wwwallet-backend-server proxy.router.ts file is already initialized" \
+        "mkdir -p ./wwwallet/wallet-backend-server/src/routers && cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts"
+
+      init_files "./wwwallet/mysql/config/my.cnf" \
+        "wwwallet mysql config is already initialized" \
+        "mkdir -p ./wwwallet/mysql/config && cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf"
 
       mkdir -p ./wwwallet/mariadb/data
-
       chmod -R 777 ./wwwallet
+
       echo "WARNING: wwwallet permission folder set recursively to 777"
   fi
 
@@ -134,13 +162,14 @@ function help {
   echo "-s Skip docker image update"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
   echo "-t Run spid_sp_test tests after startup"
+  echo "-w Set 'wwwallet' compose profile. Run: wwwallet-mariadb, wwwallet-server, wwwallet-frontend"
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
   echo ""
 }
 
-while getopts ":fepbimMdsh" opt; do
+while getopts ":fepbimMdswh" opt; do
   case ${opt} in
    f)
      SATOSA_CLEAN_DATA="true"

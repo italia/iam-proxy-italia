@@ -33,9 +33,9 @@ The script creates the directories for local mounts and copies all required file
 
 The script can be run with different options:
 
--`f` cleans the folders; if combined with `-e` (`-e -f`), it also overrides the .env file.
--`t` to run tests with `spid_sp_test` in a pipeline-like execution;
-- `w` to run the wwwallet profile, view [wwwallet_setup](../docs/readme.wwwallet_setup.md) for more details.;
+-`f` cleans the folders; if combined with `-e` (`-e -f`), it also overrides the .env file.  
+-`t` to run tests with `spid_sp_test` in a pipeline-like execution;  
+-`w` to run the wwwallet profile, view [wwwallet_setup](../docs/readme.wwwallet_setup.md) for more details.
 
 > ⚠️ Warning: The script deletes any previous created directory if found.
 
