@@ -32,8 +32,9 @@ cd Docker-compose
 The script creates the directories for local mounts and copies all required files to start a full demo with test and SAML2 Service Providers.
 
 The script can be run with different options:
--`f` cleans the folders;
--`t` to run tests with `spid_sp_test` in a pipeline-like execution;
+- `f` cleans the folders;  
+- `t` to run tests with `spid_sp_test` in a pipeline-like execution;  
+- `w` to run the wwwallet profile, view [wwwallet_setup](../docs/readme.wwwallet_setup.md) for more details.;
 
 > ⚠️ Warning: The script deletes any previous created directory if found.
 

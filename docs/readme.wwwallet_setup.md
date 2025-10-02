@@ -31,7 +31,7 @@ If you change the backend or frontend host and port, you will need to update thi
 The installation process is completely automated by the script `run-docker-compose.sh` located in the `Docker-compose` folder.
 You can set the variable `COMPOSE_PROFILES` to the value `wwwallet` into the script and run it with the command:
 ```bash
-./run-docker-compose.sh
+./run-docker-compose.sh -w
 ```
 
 ### Trusted Issuer Configuration

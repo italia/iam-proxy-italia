@@ -21,20 +21,28 @@ function initialize_satosa {
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
+  mkdir -p ./nginx/conf.d/sites-enabled
   mkdir -p ./wwwallet
 
   if [ ! -f ./iam-proxy-italia-project/proxy_conf.yaml ]; then cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project/ && rm -R ./satosa/static/ ; else echo 'iam-proxy-italia-project directory is already initialized' ; fi
   if [ ! -f ./djangosaml2_sp/run.sh ]; then cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp ; else echo 'djangosaml2_sp directory is already initialided' ; fi
   if [ ! -f ./nginx/html/static/disco.html ]; then cp -R ../iam-proxy-italia-project/static/* ./nginx/html/static ; else echo 'nginx directory is already initialized' ; fi
   if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
+      echo "Initializing wwwallet profile"
       if [ ! -f ./nginx/conf.d/sites-enabled/wwwallet.conf ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/wwwallet.conf ./nginx/conf.d/sites-enabled/ ; else echo 'nginx wwwallet configuration is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-frontend/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend ; else echo 'wwwallet-frontend directory is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-backend-server/package.json ]; then cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server ; else echo 'wwwallet-backend-server directory is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-frontend/.env.prod ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod ; else echo 'wwwallet-frontend .env.prod file is already initialized' ; fi
       if [ ! -f ./wwwallet/wallet-frontend/lib/wallet-common/package.json ]; then mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common ./wwwallet/wallet-frontend/lib/wallet-common ; else echo 'wwwallet-frontend wallet-common directory is already initialized' ; fi
-      cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
-      cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
-      cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts
+      if [ ! -f ./wwwallet/wallet-backend-server/config/config.template.ts ]; then mkdir -p ./wwwallet/wallet-backend-server/config/ && cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts; else echo 'wwwallet-backend-server config template is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-frontend/vite.config.ts ]; then cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts ; else echo 'wwwallet-frontend vite.config.ts file is already initialized' ; fi
+      if [ ! -f ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts ]; then mkdir -p ./wwwallet/wallet-backend-server/src/routers/ && cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts ; else echo 'wwwallet-backend-server proxy.router.ts file is already initialized' ; fi
+      if [ ! -f ./wwwallet/mysql/config/my.cnf ]; then mkdir -p ./wwwallet/mysql/config/ && cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf ; else echo 'wwwallet mysql config is already initialized' ; fi
+
+      mkdir -p ./wwwallet/mariadb/data
+
+      chmod -R 777 ./wwwallet
+      echo "WARNING: wwwallet permission folder set recursively to 777"
   fi
 
   chmod -R 777 ./iam-proxy-italia-project
@@ -96,7 +104,7 @@ function help {
   echo "   demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
 }
 
-while getopts ":fpmMdsth" opt; do
+while getopts ":fpmMdstwh" opt; do
   case ${opt} in
    f)
      clean_data
@@ -119,6 +127,9 @@ while getopts ":fpmMdsth" opt; do
    t)
      RUN_SPID_TEST=true
       ;;
+   w)
+     COMPOSE_PROFILES="wwwallet"
+     ;;
    h)
      help
      exit 0
