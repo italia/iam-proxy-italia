@@ -28,6 +28,7 @@ Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
+Docker-compose/nginx/conf.d/sites-enabled/wwwallet.conf
 Docker-compose/.env
 Docker-compose/wwwallet/*
 Docker-compose/eudi-wallet-it-python
