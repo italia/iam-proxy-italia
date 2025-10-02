@@ -133,11 +133,11 @@ services:
     networks:
       - iam-proxy-italia
     healthcheck:
-      test: wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate || exit 1
+      test: ["CMD", "sh", "pyeudiw-healthcheck.sh"]
       interval: 30s
       retries: 10
       start_period: 30s
-      timeout: 30s
+      timeout: 10s
 
   satosa-nginx:
     image: nginx:alpine
