@@ -112,7 +112,6 @@ class AuthorizationHandler(BaseEndpoint):
         # generation pkce value
         self.__pkce_generation(authz_data)
 
-
         authorization_entity = dict(
             client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
             state=authz_data["state"],
@@ -121,6 +120,10 @@ class AuthorizationHandler(BaseEndpoint):
             data=json.dumps(authz_data),
             provider_configuration=self.provider_metadata,
         )
+
+        # Add method for DB insert
+        # @TODO Insert the DB repository
+        self.__insert(authorization_entity)
 
         self.__create_jws(authz_data)
 
@@ -269,3 +272,26 @@ class AuthorizationHandler(BaseEndpoint):
         )
 
         return uri_path
+
+    def __insert(self, input: dict):
+
+        """
+        method __insert:
+        This method insert the input dictionary into DB layer.
+
+        :type self: object
+        :type input: dict
+
+        :param self: object
+        :param input: dict
+
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [input {input}]"
+        )
+
+        # @TODO insert DB layer
+
+        logger.debug(
+            f"Registration success for input: {input}"
+        )
