@@ -91,6 +91,7 @@ config:
     unique_identifiers:
       - tax_id_code
       - unique_id
+      - personal_administrative_number
     subject_id_random_value: CHANGEME!
 
   network:
