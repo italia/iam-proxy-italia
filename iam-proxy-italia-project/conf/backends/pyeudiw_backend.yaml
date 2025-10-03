@@ -83,35 +83,6 @@ config:
     expiration_time: 5 # minutes
     aud: https://self-issued.me/v2
     response_mode: direct_post
-    presentation_definition:
-      id: global-presentation-definition-id
-      input_descriptors:
-        - id: input-specific-id
-          purpose: Request presentation holding Power of Representation attestation
-          format:
-            dc+sd-jwt: {}
-          constraints:
-            fields:
-              - path:
-                  - "$.vct"
-                filter:
-                  const: urn:eu.europa.ec.eudi:por:1
-        - id: another-input-specific-id
-          purpose: Request first name and last name claims from PID attestation
-          format:
-            dc+sd-jwt: {}
-          constraints:
-            limit_disclosure: required
-            fields:
-              - path:
-                  - "$.vct"
-                filter:
-                  type: string
-                  pattern: urn:eu.europa.ec.eudi:por:1
-              - path:
-                  - "$.family_name"
-              - path:
-                  - "$.given_name"
 
   duckle:
     dcql_query: '{"credentials":[{"id":"personal id data","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_name"]}]}]}'
