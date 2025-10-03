@@ -37,3 +37,6 @@ Docker-compose/eudi-wallet-it-python
 .idea/
 *.iml
 .run/
+# Ignore Mac system files
+**/.DS_Store
+.DS_Store
