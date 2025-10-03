@@ -48,6 +48,7 @@ class AuthorizationHandler(BaseEndpoint):
         self._jwks_core = self.config.get("jwks_core")
         self.trust_chain = trust
         self.authorization_endpoint = trust.subject_configuration.payload["metadata"]["openid_provider"]["authorization_endpoint"]
+        self.provider_metadata = trust.subject_configuration.payload["metadata"]
 
 
     @property
@@ -111,15 +112,15 @@ class AuthorizationHandler(BaseEndpoint):
         # generation pkce value
         self.__pkce_generation(authz_data)
 
-        # @TODO Talking with Giuseppe for this authz_entry
-        # authz_entry = dict(
-        #     client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
-        #     state=authz_data["state"],
-        #     endpoint="http://cie-provider.org:8002/oidc/op/authorization", # TODO Insert this property into config file?
-        #     provider_id="http://cie-provider.org:8002/",  # TODO Insert this property into config file?
-        #     data=json.dumps(authz_data), #@TODO Talking with GIuseppe
-        #     provider_configuration="http://cie-provider.org:8002/",  #@TODO Talking with GIuseppe
-        # )
+
+        authorization_entity = dict(
+            client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
+            state=authz_data["state"],
+            endpoint=self.authorization_endpoint,
+            provider_id=self.trust_chain.subject,
+            data=json.dumps(authz_data),
+            provider_configuration=self.provider_metadata,
+        )
 
         self.__create_jws(authz_data)
 
