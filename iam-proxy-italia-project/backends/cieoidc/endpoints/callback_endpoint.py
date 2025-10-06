@@ -1,20 +1,32 @@
 import logging
 import json
 import inspect
+import uuid
+import requests
 from typing import Callable
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
+from ..tools import KeyUsage
 from pyeudiw.tools.base_endpoint import BaseEndpoint
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator
+from ..tools.utils import (
+    get_jwks,
+    get_jwk_from_jwt,
+    get_key,
+    process_user_attributes, iat_now, exp_from_now
+)
+from ..utils.jwtse import (
+    verify_jws,
+    unpad_jwt_payload,
+    verify_at_hash, create_jws
+)
+
 
 logger = logging.getLogger(__name__)
 
 class CallBackHandler(BaseEndpoint):
-
-    _SUPPORTED_RESPONSE_METHOD = "post"
-    _OIDC_CALLBACK_URL = "callback"
 
     def __init__(
             self,
@@ -31,6 +43,17 @@ class CallBackHandler(BaseEndpoint):
             f"Initializing: {self.__class__.__name__}."
         )
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
+
+        self.httpc_params = config.get("httpc_params", {})
+
+        self.claims = config.get("claims", {})
+
+        self.client_assertion_type = config.get("client_assertion_type")
+
+        self.grant_type = config.get("grant_type")
+
+        self.jws_core = config.get("jwks_core")
+
 
 
     def endpoint(self, context, *args):
@@ -63,6 +86,7 @@ class CallBackHandler(BaseEndpoint):
             logger.debug("Authorization empty")
             #@TODO Talking with Giuseppe for rendering raise exception?
 
+        logger.debug(f"authorization: {authorization}")
 
         # try:
         #     self.validate_json_schema(
@@ -84,11 +108,11 @@ class CallBackHandler(BaseEndpoint):
 
         iss: str = context.qs_params.get("iss")
 
-        if iss != authorization.get("provider_id"):
+        if not self.__check_provider(authorization.get("provider_id"), iss):
             logger.debug("Provider ID and iss don't match")
             #@TODO Talking with Giuseppe for rendering raise exception?
 
-        self.__insert_token(authorization, code)
+        self.__create_token(authorization, code)
 
         # @TODO Talking with Giuseppe for this logic
         # self.rp_conf = FederationEntityConfiguration.objects.filter(
@@ -103,14 +127,13 @@ class CallBackHandler(BaseEndpoint):
         #
 
         authorization_data = json.loads(authorization.get("data"))
-        token_response = self.access_token_request(
+
+        token_response = self.__access_token_request(
             redirect_uri=authorization_data["redirect_uri"],
             state=authorization.get("state"),
             code=code,
-            issuer_id=authorization.get("provider_id"),
-            client_conf=self.rp_conf,
-            token_endpoint_url=authorization.get("provider_configuration"),
-            audience=[authorization.get("provider_id")],
+            client_id=authorization.get("client_id"),
+            token_endpoint_url=authorization["provider_configuration"]["openid_provider"].get("token_endpoint"),
             code_verifier=authorization_data.get("code_verifier"),
         )
 
@@ -135,106 +158,78 @@ class CallBackHandler(BaseEndpoint):
         #             status=400
         #         )
 
-        # jwks = get_jwks(authorization.get("provider_configuration"))  @TODO Fix from Django
+        jwks = get_jwks(authorization.get("provider_configuration"), self.httpc_params)
 
         access_token = token_response["access_token"]
 
         id_token = token_response["id_token"]
 
-        # op_ac_jwk = get_jwk_from_jwt(access_token, jwks)  @TODO Fix from Django
+        op_ac_jwk = get_jwk_from_jwt(access_token, jwks)
 
-        # op_id_jwk = get_jwk_from_jwt(id_token, jwks) @TODO Fix from Django
+        op_id_jwk = get_jwk_from_jwt(id_token, jwks)
 
-        # @TODO Fix from DJANGO
-        # if not op_ac_jwk or not op_id_jwk:
-        #     logger.debug("AC JWK or ID JWK is empty")
-        #     # @TODO Talking with Giuseppe for rendering raise exception?
+        if not op_ac_jwk or not op_id_jwk:
+            logger.debug("AC JWK or ID JWK is empty")
+            # @TODO Talking with Giuseppe for rendering raise exception?
 
-        #
-        # try:
-        #     verify_jws(access_token, op_ac_jwk)
-        # except Exception as e:
-        #     logger.warning(
-        #         f"Access Token signature validation error: {e} "
-        #     )
-        #     context = {
-        #         "error": "token verification failed",
-        #         "error_description": _("Authentication token validation error."),
-        #     }
-        #     return render(request, self.error_template, context, status=403)
-        #
-        # try:
-        #     verify_jws(id_token, op_id_jwk)
-        # except Exception as e:
-        #     logger.warning(
-        #         f"ID Token signature validation error: {e} "
-        #     )
-        #     context = {
-        #         "error": "token verification failed",
-        #         "error_description": _("ID token validation error."),
-        #     }
-        #     return render(request, self.error_template, context, status=403)
-        #
-        # decoded_id_token = unpad_jwt_payload(id_token)
-        # logger.debug(decoded_id_token)
-        #
-        # try:
-        #     verify_at_hash(decoded_id_token, access_token)
-        # except Exception as e:
-        #     logger.warning(
-        #         f"at_hash validation error: {e} "
-        #     )
-        #     context = {
-        #         "error": "at_hash verification failed",
-        #         "error_description": _("at_hash validation error."),
-        #     }
-        #     return render(request, self.error_template, context, status=403)
-        #
-        # decoded_access_token = unpad_jwt_payload(access_token)
-        # logger.debug(decoded_access_token)
-        #
-        # authz_token.access_token = access_token
-        # authz_token.id_token = id_token
-        # authz_token.scope = token_response.get("scope")
-        # authz_token.token_type = token_response["token_type"]
-        # authz_token.expires_in = token_response["expires_in"]
-        # authz_token.save()
-        #
-        # userinfo = self.get_userinfo(
-        #     authz.state,
-        #     authz_token.access_token,
-        #     authz.provider_configuration,
-        #     verify=HTTPC_PARAMS.get("connection", {}).get("ssl", True)
-        # )
-        # if not userinfo:
-        #     logger.warning(
-        #         "Userinfo request failed for state: "
-        #         f"{authz.state} to {authz.provider_id}"
-        #     )
-        #     context = {
-        #         "error": "invalid userinfo response",
-        #         "error_description": _("UserInfo response seems not to be valid"),
-        #     }
-        #     return render(request, self.error_template, context, status=400)
-        #
-        # # here django user attr mapping
-        # user_attrs = process_user_attributes(userinfo, RP_ATTR_MAP, authz.__dict__)
-        # if not user_attrs:
-        #     _msg = "No user attributes have been processed"
-        #     logger.warning(f"{_msg}: {userinfo}")
-        #     # TODO: verify error message and status
-        #     context = {
-        #         "error": "missing user attributes",
-        #         "error_description": _(f"{_msg}: {userinfo}"),
-        #     }
-        #     return render(request, self.error_template, context, status=403)
-        #
-        # user = self.user_reunification(user_attrs)
-        # if not user:
-        #     # TODO: verify error message and status
-        #     context = {"error": _("No user found"), "error_description": _("")}
-        #     return render(request, self.error_template, context, status=403)
-        #
+
+        try:
+            verify_jws(access_token, op_ac_jwk)
+        except Exception as exception:
+            logger.error(f"Exception from verify_jws, detail: {exception}")
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        try:
+            verify_jws(id_token, op_id_jwk)
+        except Exception as exception:
+            logger.error(f"Exception from verify_jws, detail: {exception}")
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        decoded_id_token = unpad_jwt_payload(id_token)
+
+        logger.debug(f"Token decoded:  {decoded_id_token}")
+
+        try:
+            verify_at_hash(decoded_id_token, access_token)
+        except Exception as exception:
+            logger.error(f"Exception from verify_at_hash, detail: {exception}")
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        decoded_access_token = unpad_jwt_payload(access_token)
+        logger.debug(f"unpad_jwt_payload: {decoded_access_token}")
+
+        self.__update_authentication_token(authorization, access_token, id_token, token_response)
+
+        user_info = self.get_userinfo(
+            authorization.get("state"),
+            authorization.get("access_token"),
+            authorization.get("provider_configuration"),
+            verify=self.httpc_params
+        )
+        if not user_info:
+            logger.error(
+                "User_info request failed for state: "
+                f"{authorization.get("state")} to {authorization.get("provider_id")}"
+            )
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        user_attrs = process_user_attributes(user_info, self.claims, authorization)
+
+        if not user_attrs:
+            logger.error(
+                "No user attributes have been processed: "
+                f"user_info: {user_info} claims: {self.claims} authorization: {authorization}"
+            )
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        user = self.user_reunification(user_attrs)
+
+        if not user:
+            logger.error("User is empty")
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+
+
         # request.session["rt_expiration"] = 0
         #
         # if token_response.get('refresh_token', None):
@@ -284,11 +279,11 @@ class CallBackHandler(BaseEndpoint):
 
         return output
 
-    def __insert_token(self, authorization_input: dict, code: str):
+    def __create_token(self, authorization_input: dict, code: str):
 
         """
-        method __insert_token:
-        This method insert the input dictionary into DB layer.
+        method __create_token:
+        This method create an instance for Authorization Token Object.
 
         :type self: object
         :type input: dict
@@ -306,3 +301,137 @@ class CallBackHandler(BaseEndpoint):
         logger.debug(
             f"Registration success for input: {input}"
         )
+
+    def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict, token_response: dict):
+        """
+        method __update_authentication_token:
+        This method update the authentication token. Add this properties:
+            - access_token
+            - id_token
+            - scope
+            - token_type
+            - expiration
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [authorization {authorization}, access_token: {access_token}, id_token:{id_token}, token_response:{token_response}]"
+        )
+        authorization.access_token = access_token
+
+        authorization.id_token = id_token
+
+        authorization.scope = token_response.get("scope")
+
+        authorization.token_type = token_response["token_type"]
+
+        authorization.expires_in = token_response["expires_in"]
+
+        self.__insert_token(authorization)
+
+    def __insert_token(self, authorization_input: dict):
+
+        """
+        method __insert_token:
+        This method create the instance for authorization input.
+
+        :type self: object
+        :type authorization_input: dict
+
+        :param self: object
+        :param authorization_input: dict
+
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authorization_input {authorization_input}]"
+        )
+
+        # @TODO insert DB layer
+
+        logger.debug(
+            f"Registration success for input: {input}"
+        )
+
+    def __check_provider(self, provider_is: str, iss: str) -> bool:
+
+        """
+        method __check_issuer:
+        This method check if provider is equal to iss.
+
+
+        :type self: object
+        :type provider_is: dict
+        :type iss: dict
+
+        :param self: object
+        :param provider_is: dict
+        :param iss: dict
+
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [provider_is {provider_is}, iss: {iss} ]"
+        )
+
+        if provider_is.endswith("/") and not iss.endswith("/"):
+            iss += "/"
+        elif not provider_is.endswith("/") and iss.endswith("/"):
+            iss = iss[:-1]
+
+        return provider_is == iss
+
+    def __access_token_request(
+        self,
+        redirect_uri: str,
+        state: str,
+        code: str,
+        client_id: str,
+        token_endpoint_url: str,
+        code_verifier: str = None,
+    ):
+        """
+        Access Token Request
+        https://tools.ietf.org/html/rfc6749#section-4.1.3
+        """
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
+                     f"Params[redirect_uri: {redirect_uri}, state: {state}, code: {code}, client_id: {client_id}, token_endpoint: {token_endpoint_url}, code_verifier: {code_verifier}]")
+
+        logger.debug(f"self.client_assertion_type {self.client_assertion_type}: self.jws_core: {self.jws_core} ")
+        grant_data = dict(
+            grant_type=self.grant_type,
+            redirect_uri=redirect_uri,
+            client_id=client_id,
+            state=state,
+            code=code,
+            code_verifier=code_verifier,
+            # here private_key_jwt
+            client_assertion_type=self.client_assertion_type,
+            client_assertion=create_jws(
+                {
+                    "iss": client_id,
+                    "sub": client_id,
+                    "aud": [token_endpoint_url],
+                    "iat": iat_now(),
+                    "exp": exp_from_now(),
+                    "jti": str(uuid.uuid4()),
+                },
+                jwk_dict=get_key(self.jws_core, KeyUsage.signature),
+            ),
+        )
+
+        logger.debug(f"Access Token Request for {state}: {grant_data} ")
+        token_request = requests.post(
+            token_endpoint_url,
+            data=grant_data,
+            verify=self.httpc_params["connection"].get("ssl"),
+            timeout=self.httpc_params["session"].get("timeout"),
+        )
+
+        if token_request.status_code != 200: # pragma: no cover
+            logger.error(
+                f"Something went wrong with {state}: {token_request.status_code}"
+            )
+        else:
+            try:
+                token_request = json.loads(token_request.content.decode())
+            except Exception as e:  # pragma: no cover
+                logger.error(f"Something went wrong with {state}: {e}")
+        return token_request

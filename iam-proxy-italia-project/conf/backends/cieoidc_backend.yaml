@@ -86,7 +86,7 @@ config:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      client_id:  http://relying-party.org:8001 # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
@@ -100,7 +100,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - http://relying-party.org:8001/oidc/rp/callback
+        - https://relying-party.org/cieOidcRp/callback
       response_types:
         - code
       subject_type: pairwise
@@ -178,3 +178,25 @@ config:
         metadata: *metadata
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
+        httpc_params: *httpc_params
+        client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+        grant_type: "authorization_code"
+        claims:
+          sub:
+            - sub
+          username:
+            - func: iam-proxy-italia-project.backends.cieoidc.tools.utils.issuer_prefixed_sub
+              kwargs:
+                sep: "__"
+          first_name:
+            - given_name
+            - given_name
+          last_name:
+            - family_name
+            - last_name
+          email:
+            - email
+            - email
+          fiscal_number:
+            - https://attributes.eid.gov.it/fiscal_number
+            - fiscal_number

@@ -84,3 +84,4 @@ def public_jwk_from_pem(content:str, password:str = None):
     content = content.encode() if isinstance(content, str) else content
     key = serialization.load_pem_public_key(content)
     return serialize_rsa_key(key, kind='public')
+
