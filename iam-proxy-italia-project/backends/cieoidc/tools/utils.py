@@ -10,6 +10,7 @@ import hashlib
 import base64
 import secrets
 import urllib
+import json
 from . import KeyUsage
 from functools import lru_cache
 from secrets import token_hex
@@ -286,3 +287,83 @@ def _lru_cached_get_http_url(
     resp: list[requests.Response] = get_http_url([url], httpc_params, http_async)
     return resp[0]
 
+def get_jwks(metadata: dict, httpc_params) -> dict:
+    """
+    This method is ported from spid-cie-oidc-django because we used into callback method
+    get jwks or jwks_uri or signed_jwks_uri
+
+    """
+    jwks_list = []
+    if metadata.get('jwks'):
+        jwks_list = metadata["jwks"]["keys"]
+    elif metadata.get('jwks_uri'):
+        try:
+            jwks_uri = metadata["jwks_uri"]
+            jwks_list = get_http_url(
+                [jwks_uri], httpc_params=httpc_params
+            )
+            jwks_list = json.loads(jwks_list[0])
+        except Exception as e:
+            logger.error(f"Failed to download jwks from {jwks_uri}: {e}")
+    elif metadata.get('signed_jwks_uri'):
+        try:
+            signed_jwks_uri = metadata["signed_jwks_uri"]
+            jwks_list = get_http_url(
+                [signed_jwks_uri], httpc_params=httpc_params
+            )[0]
+        except Exception as e:
+            logger.error(f"Failed to download jwks from {signed_jwks_uri}: {e}")
+    return jwks_list
+
+def get_jwk_from_jwt(jwt: str, provider_jwks: dict) -> dict:
+    """
+        docs here
+        This method is ported from spid-cie-oidc-django because we used into callback method
+    """
+    head = unpad_jwt_head(jwt)
+    kid = head["kid"]
+    if isinstance(provider_jwks, dict) and provider_jwks.get('keys'):
+        provider_jwks = provider_jwks['keys']
+    for jwk in provider_jwks:
+        if jwk["kid"] == kid:
+            return jwk
+    return {}
+
+def unpad_jwt_head(jwt: str) -> dict:
+    """
+        docs here
+        see get_jwk_from_jwt
+    """
+    return unpad_jwt_element(jwt, position=0)
+
+def unpad_jwt_element(jwt: str, position: int) -> dict:
+    """
+        docs here
+        see unpad_jwt_head
+    """
+    b = jwt.split(".")[position]
+    padded = f"{b}{'=' * divmod(len(b), 4)[1]}"
+    data = json.loads(base64.urlsafe_b64decode(padded))
+    return data
+
+def issuer_prefixed_sub(
+    user_info: dict, client_conf: dict, data: dict = None, kwargs: dict = {}
+):
+    return f"{client_conf['provider_id']}{data.get('sep', '__')}{user_info['sub']}"
+
+def process_user_attributes(userinfo: dict, user_map: dict, authz: dict):
+    data = dict()
+    for k, v in user_map.items():
+        for i in v:
+            if isinstance(i, str):
+                if i in userinfo:
+                    data[k] = userinfo[i]
+                    break
+
+            elif isinstance(i, dict):
+                args = (userinfo, authz, i["kwargs"])
+                value = import_string(i["func"])(*args)
+                if value:
+                    data[k] = value
+                    break
+    return data
