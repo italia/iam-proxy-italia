@@ -11,6 +11,8 @@ from satosa.response import Response
 from ..tools import KeyUsage
 from pyeudiw.tools.base_endpoint import BaseEndpoint
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator
+from ..oauth2 import OAuth2AuthorizationCodeGrant
+from ..oidc import OidcUserInfo
 from ..tools.utils import (
     get_jwks,
     get_jwk_from_jwt,
@@ -128,14 +130,18 @@ class CallBackHandler(BaseEndpoint):
 
         authorization_data = json.loads(authorization.get("data"))
 
-        token_response = self.__access_token_request(
-            redirect_uri=authorization_data["redirect_uri"],
+        oAuth2_authorization = OAuth2AuthorizationCodeGrant(grant_type = self.grant_type,
+                                                            client_assertion_type = self.client_assertion_type,
+                                                            jws_core = self.jws_core,
+                                                            httpc_params = self.httpc_params)
+
+        token_response = oAuth2_authorization.access_token_request(redirect_uri=authorization_data["redirect_uri"],
             state=authorization.get("state"),
             code=code,
             client_id=authorization.get("client_id"),
             token_endpoint_url=authorization["provider_configuration"]["openid_provider"].get("token_endpoint"),
-            code_verifier=authorization_data.get("code_verifier"),
-        )
+            code_verifier=authorization_data.get("code_verifier")
+         )
 
         if not token_response:
             logger.debug("Token response is empty")
@@ -172,7 +178,6 @@ class CallBackHandler(BaseEndpoint):
             logger.debug("AC JWK or ID JWK is empty")
             # @TODO Talking with Giuseppe for rendering raise exception?
 
-
         try:
             verify_jws(access_token, op_ac_jwk)
         except Exception as exception:
@@ -200,12 +205,16 @@ class CallBackHandler(BaseEndpoint):
 
         self.__update_authentication_token(authorization, access_token, id_token, token_response)
 
-        user_info = self.get_userinfo(
+        oidc_user = OidcUserInfo(authorization.get("provider_configuration"), self.jwks_core)
+
+        user_info = oidc_user.get_userinfo(
             authorization.get("state"),
             authorization.get("access_token"),
-            authorization.get("provider_configuration"),
-            verify=self.httpc_params
+            verify=self.httpc_params["connection"].get("ssl"),
+            timeout=self.httpc_params["session"].get("timeout")
         )
+
+
         if not user_info:
             logger.error(
                 "User_info request failed for state: "
@@ -377,61 +386,3 @@ class CallBackHandler(BaseEndpoint):
             iss = iss[:-1]
 
         return provider_is == iss
-
-    def __access_token_request(
-        self,
-        redirect_uri: str,
-        state: str,
-        code: str,
-        client_id: str,
-        token_endpoint_url: str,
-        code_verifier: str = None,
-    ):
-        """
-        Access Token Request
-        https://tools.ietf.org/html/rfc6749#section-4.1.3
-        """
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
-                     f"Params[redirect_uri: {redirect_uri}, state: {state}, code: {code}, client_id: {client_id}, token_endpoint: {token_endpoint_url}, code_verifier: {code_verifier}]")
-
-        logger.debug(f"self.client_assertion_type {self.client_assertion_type}: self.jws_core: {self.jws_core} ")
-        grant_data = dict(
-            grant_type=self.grant_type,
-            redirect_uri=redirect_uri,
-            client_id=client_id,
-            state=state,
-            code=code,
-            code_verifier=code_verifier,
-            # here private_key_jwt
-            client_assertion_type=self.client_assertion_type,
-            client_assertion=create_jws(
-                {
-                    "iss": client_id,
-                    "sub": client_id,
-                    "aud": [token_endpoint_url],
-                    "iat": iat_now(),
-                    "exp": exp_from_now(),
-                    "jti": str(uuid.uuid4()),
-                },
-                jwk_dict=get_key(self.jws_core, KeyUsage.signature),
-            ),
-        )
-
-        logger.debug(f"Access Token Request for {state}: {grant_data} ")
-        token_request = requests.post(
-            token_endpoint_url,
-            data=grant_data,
-            verify=self.httpc_params["connection"].get("ssl"),
-            timeout=self.httpc_params["session"].get("timeout"),
-        )
-
-        if token_request.status_code != 200: # pragma: no cover
-            logger.error(
-                f"Something went wrong with {state}: {token_request.status_code}"
-            )
-        else:
-            try:
-                token_request = json.loads(token_request.content.decode())
-            except Exception as e:  # pragma: no cover
-                logger.error(f"Something went wrong with {state}: {e}")
-        return token_request

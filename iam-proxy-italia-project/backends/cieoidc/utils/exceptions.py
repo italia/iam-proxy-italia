@@ -58,3 +58,9 @@ class AuthorizeUnmatchedResponse(Exception):
     Raised when an authorization response cannot be matched to an authentication request
     """
     pass
+
+class UnknownKid(Exception):
+    """
+    Raised when not found kid from JWK
+    """
+    pass
