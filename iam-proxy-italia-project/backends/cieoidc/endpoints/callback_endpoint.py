@@ -238,6 +238,10 @@ class CallBackHandler(BaseEndpoint):
             # @TODO Talking with Giuseppe for rendering raise exception?
 
 
+        #  add header
+        # @TODO Talking with Manuel and Giuseppe
+        context.http_headers["authorization_token"] = token_response
+        context.http_headers["refresh_token"] = token_response["refresh_token"]
 
         # request.session["rt_expiration"] = 0
         #
