@@ -200,3 +200,13 @@ config:
           fiscal_number:
             - https://attributes.eid.gov.it/fiscal_number
             - fiscal_number
+    extends_session_endpoint:
+      module: backends.cieoidc.endpoints.extend_session_endpoint
+      class: ExtendSessionHandler
+      routes:
+        - /extend_session
+      config:
+        entity_type: openid_relying_party
+        entity_configuration_exp: 2800
+        default_sig_alg: RS256
+        metadata: *metadata

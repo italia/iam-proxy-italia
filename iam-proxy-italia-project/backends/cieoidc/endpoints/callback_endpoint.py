@@ -114,7 +114,7 @@ class CallBackHandler(BaseEndpoint):
             logger.debug("Provider ID and iss don't match")
             #@TODO Talking with Giuseppe for rendering raise exception?
 
-        self.__create_token(authorization, code)
+        authorization_token =  self.__create_token(authorization, code)
 
         # @TODO Talking with Giuseppe for this logic
         # self.rp_conf = FederationEntityConfiguration.objects.filter(
@@ -203,13 +203,13 @@ class CallBackHandler(BaseEndpoint):
         decoded_access_token = unpad_jwt_payload(access_token)
         logger.debug(f"unpad_jwt_payload: {decoded_access_token}")
 
-        self.__update_authentication_token(authorization, access_token, id_token, token_response)
+        self.__update_authentication_token(authorization_token, access_token, id_token, token_response)
 
         oidc_user = OidcUserInfo(authorization.get("provider_configuration"), self.jwks_core)
 
         user_info = oidc_user.get_userinfo(
             authorization.get("state"),
-            authorization.get("access_token"),
+            authorization_token.get("access_token"),
             verify=self.httpc_params["connection"].get("ssl"),
             timeout=self.httpc_params["session"].get("timeout")
         )
@@ -240,7 +240,7 @@ class CallBackHandler(BaseEndpoint):
 
         #  add header
         # @TODO Talking with Manuel and Giuseppe
-        context.http_headers["authorization_token"] = token_response
+        context.http_headers["authorization_token"] = authorization_token
         context.http_headers["refresh_token"] = token_response["refresh_token"]
 
         # request.session["rt_expiration"] = 0
@@ -292,7 +292,7 @@ class CallBackHandler(BaseEndpoint):
 
         return output
 
-    def __create_token(self, authorization_input: dict, code: str):
+    def __create_token(self, authorization_input: dict, code: str) -> dict:
 
         """
         method __create_token:
@@ -314,6 +314,8 @@ class CallBackHandler(BaseEndpoint):
         logger.debug(
             f"Registration success for input: {input}"
         )
+
+        return {}
 
     def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict, token_response: dict):
         """
