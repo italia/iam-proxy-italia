@@ -43,7 +43,7 @@ config:
     sym_key: "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" # hex string of 64 characters
 
   security:
-    wallet_attestation_required: true # this is the flag to enable the wallet attestation interoperability, if missing it will be set to true by default
+    wallet_attestation_required: false # this is the flag to enable the wallet attestation interoperability, if missing it will be set to true by default
 
   jwt:
     default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
