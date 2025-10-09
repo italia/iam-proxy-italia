@@ -55,25 +55,56 @@ jobs:
         env:
           CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
           TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+          DEPTH_COMMITS: 50
         run: |
           echo "Current branch: '$CURRENT_BRANCH'"
           echo "Target branch: '$TARGET_BRANCH'"
       
+          REPO_URL="https://github.com/italia/eudi-wallet-it-python.git"    
           if [ "$CURRENT_BRANCH" = "master" ]; then
             echo "Current branch is master → no patch needed."
           else
-            # Determine candidate branches as current branch, pr target branch and master as default
+            TMP_DIR=$(mktemp -d)
+            git clone --quiet --no-checkout "$REPO_URL" "$TMP_DIR"
+            cd "$TMP_DIR"
+          
+            BRANCH_MERGED=false
+            if git ls-remote --exit-code --heads "$REPO_URL" "$CURRENT_BRANCH" >/dev/null 2>&1; then
+              echo "Branch '$CURRENT_BRANCH' exists in eudi-wallet-it-python → checking if it's merged..."
+          
+              # Fetch branches for comparison
+              git fetch origin "$CURRENT_BRANCH" --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+              git fetch origin "$TARGET_BRANCH" --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+              git fetch origin master --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+          
+              # Check merge status in target branch
+              if git merge-base --is-ancestor "origin/$CURRENT_BRANCH" "origin/$TARGET_BRANCH" 2>/dev/null; then
+                echo "Branch '$CURRENT_BRANCH' has already been merged into '$TARGET_BRANCH' → will use '$TARGET_BRANCH'."
+                CURRENT_BRANCH="$TARGET_BRANCH"
+                BRANCH_MERGED=true
+              elif git merge-base --is-ancestor "origin/$CURRENT_BRANCH" "origin/master" 2>/dev/null; then
+                echo "Branch '$CURRENT_BRANCH' has already been merged into 'master' → will use 'master'."
+                CURRENT_BRANCH="master"
+                BRANCH_MERGED=true
+              fi
+            else
+              echo "Branch '$CURRENT_BRANCH' does not exist in eudi-wallet-it-python → skipping merge check."
+            fi
+          
+            cd - >/dev/null
+          
+            # Build candidate list
             BRANCH_CANDIDATES=()
             [ -n "$CURRENT_BRANCH" ] && BRANCH_CANDIDATES+=("$CURRENT_BRANCH")
             [ -n "$TARGET_BRANCH" ] && [[ "$TARGET_BRANCH" != "$CURRENT_BRANCH" ]] && BRANCH_CANDIDATES+=("$TARGET_BRANCH")
             BRANCH_CANDIDATES+=("master")
       
-            echo "Branch candidates for check build: ${BRANCH_CANDIDATES[*]}"
+            echo "Branch candidates for patch: ${BRANCH_CANDIDATES[*]}"
       
             PATCHED=false
             for BRANCH in "${BRANCH_CANDIDATES[@]}"; do
               echo "Checking if branch '$BRANCH' exists in eudi-wallet-it-python..."
-              if git ls-remote --heads https://github.com/italia/eudi-wallet-it-python.git "$BRANCH" | grep -q "$BRANCH"; then
+              if git ls-remote --heads "$REPO_URL" "$BRANCH" | grep -q "$BRANCH"; then
                 echo "Branch '$BRANCH' found! Patching pyproject.toml..."
                 # PEP 508 style
                 sed -i 's|git+https://github.com/italia/eudi-wallet-it-python|git+https://github.com/italia/eudi-wallet-it-python.git@'"$BRANCH"'|g' pyproject.toml
@@ -86,7 +117,7 @@ jobs:
                 echo "Branch '$BRANCH' does not exist → trying next candidate."
               fi
             done
-      
+          
             if [ "$PATCHED" = false ]; then
               echo "No matching branch found. Using default pyproject.toml."
             fi

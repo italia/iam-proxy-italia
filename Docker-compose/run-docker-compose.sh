@@ -1,5 +1,6 @@
 #!/bin/bash
 export COMPOSE_PROFILES=demo
+export SATOSA_CLEAN_DATA="false"
 export SKIP_UPDATE=
 export RUN_SPID_TEST=
 
