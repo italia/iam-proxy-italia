@@ -351,6 +351,21 @@ def issuer_prefixed_sub(
 ):
     return f"{client_conf['provider_id']}{data.get('sep', '__')}{user_info['sub']}"
 
+def import_string(dotted_path):
+
+    try:
+        module_path, attr_name = dotted_path.rsplit('.', 1)
+    except ValueError as err:
+        raise ImportError(f"{dotted_path} path not found") from err
+
+    module = importlib.import_module(module_path)
+
+    try:
+        return getattr(module, attr_name)
+    except AttributeError as err:
+        raise ImportError(f"Module '{module_path}' dont have the '{attr_name}'.") from err
+
+
 def process_user_attributes(userinfo: dict, user_map: dict, authz: dict):
     data = dict()
     for k, v in user_map.items():
@@ -361,8 +376,16 @@ def process_user_attributes(userinfo: dict, user_map: dict, authz: dict):
                     break
 
             elif isinstance(i, dict):
-                args = (userinfo, authz, i["kwargs"])
-                value = import_string(i["func"])(*args)
+                # Assumiamo che il dizionario contenga almeno "func" e "kwargs"
+                func_path = i["func"]
+                kwargs = i.get("kwargs", {})  # Safe default in caso manchi
+
+                # Import dinamico della funzione
+                func = import_string(func_path)
+
+                # Chiama la funzione passando userinfo, authz e kwargs
+                value = func(userinfo, authz, kwargs)
+
                 if value:
                     data[k] = value
                     break

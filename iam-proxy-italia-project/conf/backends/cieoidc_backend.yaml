@@ -210,3 +210,8 @@ config:
         entity_configuration_exp: 2800
         default_sig_alg: RS256
         metadata: *metadata
+        jwks_federation: *jwks_federation
+        jwks_core: *jwks_core
+        httpc_params: *httpc_params
+        client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+        grant_type: "refresh_token"

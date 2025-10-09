@@ -1,5 +1,6 @@
 import logging
 import inspect
+import random
 
 from .tools.endpoints_loader import EndpointsLoader
 from satosa.backends.base import BackendModule
@@ -45,6 +46,8 @@ class CieOidcBackend(BackendModule):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [metadata: {context}, conf: {internal_request}]"
         )
+
+
 
         authorization_endpoint = self.endpoints.get("authorization")
         if not authorization_endpoint:

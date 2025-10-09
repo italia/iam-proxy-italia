@@ -237,6 +237,8 @@ class CallBackHandler(BaseEndpoint):
             logger.error("User is empty")
             # @TODO Talking with Giuseppe for rendering raise exception?
 
+        authorization_token["user"] = user
+        # @TODO Update the authorization_token
 
         #  add header
         # @TODO Talking with Manuel and Giuseppe
@@ -315,7 +317,7 @@ class CallBackHandler(BaseEndpoint):
             f"Registration success for input: {input}"
         )
 
-        return {}
+        return { "authz_request": authorization_input, "code": code}
 
     def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict, token_response: dict):
         """
@@ -333,13 +335,15 @@ class CallBackHandler(BaseEndpoint):
         )
         authorization.access_token = access_token
 
-        authorization.id_token = id_token
+        authorization["id_token"] = id_token
 
-        authorization.scope = token_response.get("scope")
+        authorization["scope"] = token_response.get("scope")
 
-        authorization.token_type = token_response["token_type"]
+        authorization["token_type"] = token_response["token_type"]
 
-        authorization.expires_in = token_response["expires_in"]
+        authorization["expires_in"] = token_response["expires_in"]
+
+        authorization["refresh_token"] = token_response["refresh_token"]
 
         self.__insert_token(authorization)
 

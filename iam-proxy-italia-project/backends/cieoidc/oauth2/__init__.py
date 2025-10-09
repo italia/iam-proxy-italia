@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuth2AuthorizationCodeGrant(object):
+
     """
     https://tools.ietf.org/html/rfc6749
     """
@@ -49,7 +50,6 @@ class OAuth2AuthorizationCodeGrant(object):
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
                      f"Params[redirect_uri: {redirect_uri}, state: {state}, code: {code}, client_id: {client_id}, token_endpoint: {token_endpoint_url}, code_verifier: {code_verifier}]")
 
-        logger.debug(f"self.client_assertion_type {self.client_assertion_type}: self.jws_core: {self.jws_core} ")
         grant_data = dict(
             grant_type=self.grant_type,
             redirect_uri=redirect_uri,
@@ -90,3 +90,68 @@ class OAuth2AuthorizationCodeGrant(object):
             except Exception as e:  # pragma: no cover
                 logger.error(f"Something went wrong with {state}: {e}")
         return token_request
+
+    def refresh_token(self, authorization: dict, client_id: str):
+
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
+                     f"Params[Client_id: {client_id}]")
+
+
+        token_request_data = dict(
+            client_id=client_id,
+            client_assertion_type=self.client_assertion_type
+        )
+
+        token_request_data["grant_type"] = self.grant_type
+
+        token_request_data["refresh_token"] = authorization.get("refresh_token")
+
+        audience = authorization["provider_configuration"].get("token_endpoint")
+
+        if not audience:
+            logger.warning(
+                "Provider doesn't expose the token endpoint."
+            )
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+        rp_conf = self.__get_rp_conf(client_id)
+
+        client_assertion = create_jws(
+            {
+                "iss": authorization.get("client_id"),
+                "sub": authorization.get("client_id"),
+                "aud": [audience],
+                "iat": iat_now(),
+                "exp": exp_from_now(),
+                "jti": str(uuid.uuid4())
+            },
+            jwk_dict = get_key(rp_conf.get("jwks_core")) #@TODO get RP from DB
+        )
+        token_request_data["client_assertion"] = client_assertion
+
+        try:
+            token_request = requests.post(
+                audience,
+                data=token_request_data,
+                timeout=self.httpc_params["session"].get("timeout")
+            )  # nosec - B113
+
+            if token_request.status_code != 200:  # pragma: no cover
+                logger.error(
+                    f"Something went wrong with refresh token request: {token_request.status_code}"
+                )
+
+            return token_request
+
+        except Exception as e:  # pragma: no cover
+            logger.error(f"Error in token request: {e}")
+
+    def __get_rp_conf(self, client_id: str) -> dict:
+        """
+        Get Relaying Party configuration from client ID
+        """
+        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
+                     f"Params[client_id: {client_id}]")
+        rf_conf = {}
+        #  @TODO Get RP from DB
+        return rf_conf

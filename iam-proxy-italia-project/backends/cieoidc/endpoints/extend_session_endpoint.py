@@ -46,6 +46,16 @@ class ExtendSessionHandler(BaseEndpoint):
         )
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
 
+        self.httpc_params = config.get("httpc_params", {})
+
+        self.claims = config.get("claims", {})
+
+        self.client_assertion_type = config.get("client_assertion_type")
+
+        self.grant_type = config.get("grant_type")
+
+        self.jws_core = config.get("jwks_core")
+
 
     def endpoint(self, context, *args):
         """
@@ -62,44 +72,99 @@ class ExtendSessionHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [qs_params {context.qs_params}]"
         )
 
+        authorization_token = self.__get_authorization_token(context.request.get("user"))
+
+        if not authorization_token:
+            logger.warning("Token request failer: not found any authentication session")
+
+        try:
+
+            oAuth2_authorization = OAuth2AuthorizationCodeGrant(grant_type=self.grant_type,
+                                                                client_assertion_type=self.client_assertion_type,
+                                                                jws_core=self.jws_core,
+                                                                httpc_params=self.httpc_params)
+
+            token_response = oAuth2_authorization.refresh_token(authorization_token, authorization_token.get("client_id"))
+
+            if token_response.status_code == 400:
+                logger.warning(
+                    "Get 400 from token response service"
+                )
+            # @TODO Talking with Giuseppe for rendering raise exception?
+
+            refresh_token_response = json.loads(token_response.content.decode())
+
+            # @TODO Verify with Giuseppe
+            decoded_access_token = unpad_jwt_payload(refresh_token_response["access_token"])
+
+            # @TODO Verify with Giuseppe
+            decoded_refresh_token = unpad_jwt_payload(refresh_token_response["refresh_token"])
+
+            self.__save_refresh_token(authorization_token, refresh_token_response)
+
+            context.http_headers["authorization_token"] = authorization_token
+
+            context.http_headers["refresh_token"] = refresh_token_response["refresh_token"]
+
+        except Exception as exception:  # pragma: no cover
+            logger.warning(f"Refresh Token request failed: {exception}")
 
 
-        # auth_tokens = OidcAuthenticationToken.objects.filter(
-        #     user=request.user
-        # ).filter(revoked__isnull=True)
-        #
-        # if not auth_tokens:
-        #     logger.warning(
-        #         "Token request failed: not found any authentication session"
-        #     )
-        #
-        # auth_token = auth_tokens.last()
-        #
-        # try:
-        #     token_response = self.get_token_request(auth_token, request, TokenRequestType.refresh)  # "refresh")
-        #     if token_response.status_code == 400:
-        #         return HttpResponseRedirect(reverse("spid_cie_rp_landing"))
-        #
-        #     refresh_token_response = json.loads(token_response.content.decode())
-        #
-        #     auth_token.refresh_token = refresh_token_response["refresh_token"]
-        #     auth_token.access_token = refresh_token_response["access_token"]
-        #     auth_token.save()
-        #
-        #     decoded_access_token = unpad_jwt_payload(refresh_token_response["access_token"])
-        #     decoded_refresh_token = unpad_jwt_payload(refresh_token_response["refresh_token"])
-        #
-        #     request.session["rt_expiration"] = decoded_refresh_token['exp'] - iat_now()
-        #     request.session["rt_jti"] = decoded_refresh_token['jti']
-        #     request.session["oidc_rp_user_attrs"] = request.user.attributes
-        #
-        #     request.session["at_expiration"] = decoded_access_token['exp'] - iat_now()
-        #     request.session["at_jti"] = decoded_access_token['jti']
-        #
-        #     return HttpResponseRedirect(
-        #         getattr(
-        #             settings, "LOGIN_REDIRECT_URL", None
-        #         ) or reverse("spid_cie_rp_echo_attributes")
-        #     )
-        # except Exception as e:  # pragma: no cover
-        #     logger.warning(f"Refresh Token request failed: {e}")
+
+    def __get_authorization_token(self, user: dict) -> dict:
+        """
+        method __get_authorization_token:
+        Get token from user
+
+        :type self: object
+        :type user: dict
+
+        :param self: object
+        :param user: dict
+
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user {user}]"
+        )
+
+        # @TODO get form DB layer
+        # Replace with repository
+        authorization_token = {}
+
+        logger.debug(
+            f"authorization_token: {authorization_token}"
+        )
+
+        return authorization_token
+
+    def __save_refresh_token(self, authorization_token: dict, refresh_token_response: dict) -> dict:
+        """
+        method __save_refresh_token:
+        Save the refresh token into DB Layer
+
+        :type self: object
+        :type authorization_token: dict
+        :type refresh_token_response: dict
+
+        :param self: object
+        :type authorization_token: dict
+        :type refresh_token_response: dict
+
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [authorization_token: {authorization_token}, refresh_token_response: {refresh_token_response}]"
+        )
+
+        # @TODO insert into DB layer
+
+        authorization_token["refresh_token"] = refresh_token_response["refresh_token"]
+
+        authorization_token["access_token"] = refresh_token_response["access_token"]
+
+
+        logger.debug(
+            f"authorization_token: {authorization_token}"
+        )
+
+        return authorization_token
