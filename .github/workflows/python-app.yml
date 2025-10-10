@@ -59,18 +59,23 @@ jobs:
         run: |
           echo "Current branch: '$CURRENT_BRANCH'"
           echo "Target branch: '$TARGET_BRANCH'"
-      
-          REPO_URL="https://github.com/italia/eudi-wallet-it-python.git"    
+
+          PYEUDIW_REPO_NAME="eudi-wallet-it-python"
+          PYEUDIW_REPO_URL="https://github.com/italia/${PYEUDIW_REPO_NAME}"
+          PYEUDIW_REPO_GIT="${PYEUDIW_REPO_URL}.git"
+          
+          echo "pyeudiw git repo: '$PYEUDIW_REPO_GIT'"
+          
           if [ "$CURRENT_BRANCH" = "master" ]; then
             echo "Current branch is master → no patch needed."
           else
             TMP_DIR=$(mktemp -d)
-            git clone --quiet --no-checkout "$REPO_URL" "$TMP_DIR"
+            git clone --quiet --no-checkout "$PYEUDIW_REPO_GIT" "$TMP_DIR"
             cd "$TMP_DIR"
           
             BRANCH_MERGED=false
-            if git ls-remote --exit-code --heads "$REPO_URL" "$CURRENT_BRANCH" >/dev/null 2>&1; then
-              echo "Branch '$CURRENT_BRANCH' exists in eudi-wallet-it-python → checking if it's merged..."
+            if git ls-remote --exit-code --heads "$PYEUDIW_REPO_GIT" "$CURRENT_BRANCH" >/dev/null 2>&1; then
+              echo "Branch '$CURRENT_BRANCH' exists in '$PYEUDIW_REPO_NAME' → checking if it's merged..."
           
               # Fetch branches for comparison
               git fetch origin "$CURRENT_BRANCH" --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
@@ -88,7 +93,7 @@ jobs:
                 BRANCH_MERGED=true
               fi
             else
-              echo "Branch '$CURRENT_BRANCH' does not exist in eudi-wallet-it-python → skipping merge check."
+              echo "Branch '$CURRENT_BRANCH' does not exist in '$PYEUDIW_REPO_NAME' → skipping merge check."
             fi
           
             cd - >/dev/null
@@ -98,18 +103,18 @@ jobs:
             [ -n "$CURRENT_BRANCH" ] && BRANCH_CANDIDATES+=("$CURRENT_BRANCH")
             [ -n "$TARGET_BRANCH" ] && [[ "$TARGET_BRANCH" != "$CURRENT_BRANCH" ]] && BRANCH_CANDIDATES+=("$TARGET_BRANCH")
             BRANCH_CANDIDATES+=("master")
-      
+          
             echo "Branch candidates for patch: ${BRANCH_CANDIDATES[*]}"
-      
+          
             PATCHED=false
             for BRANCH in "${BRANCH_CANDIDATES[@]}"; do
-              echo "Checking if branch '$BRANCH' exists in eudi-wallet-it-python..."
-              if git ls-remote --heads "$REPO_URL" "$BRANCH" | grep -q "$BRANCH"; then
+              echo "Checking if branch '$BRANCH' exists in '$PYEUDIW_REPO_NAME'..."
+              if git ls-remote --heads "$PYEUDIW_REPO_GIT" "$BRANCH" | grep -q "$BRANCH"; then
                 echo "Branch '$BRANCH' found! Patching pyproject.toml..."
                 # PEP 508 style
-                sed -i 's|git+https://github.com/italia/eudi-wallet-it-python|git+https://github.com/italia/eudi-wallet-it-python.git@'"$BRANCH"'|g' pyproject.toml
+                sed -i "s|git+${PYEUDIW_REPO_URL}|git+${PYEUDIW_REPO_GIT}@${BRANCH}|g" pyproject.toml
                 # Table style
-                sed -i 's|git = "https://github.com/italia/eudi-wallet-it-python"|git = "https://github.com/italia/eudi-wallet-it-python.git", rev = "'"$BRANCH"'"|g' pyproject.toml
+                sed -i "s|git = \"${PYEUDIW_REPO_URL}\"|git = \"${PYEUDIW_REPO_GIT}\", rev = \"${BRANCH}\"|g"  pyproject.toml
                 rm -f poetry.lock
                 PATCHED=true
                 break
