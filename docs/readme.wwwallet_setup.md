@@ -41,6 +41,6 @@ You can do this with any MariaDB client or using the MariaDB command line.
 Note that the url must point to the OpenID4VCI Frontend to work properly.
 An example of the SQL command to be executed is the following:
 ```sql
-INSERT INTO wwwalletdb.credential_issuer (credentialIssuerIdentifier,clientId,visible)
-	VALUES ('Satosa OpenID4VCI','https://localhost/OpenID4VCI',1);
+INSERT INTO wwwalletdb.credential_issuer (clientId,credentialIssuerIdentifier,visible)
+	VALUES ('Satosa OpenID4VCI','https://satosa-nginx/OpenID4VCI',1);
 ```

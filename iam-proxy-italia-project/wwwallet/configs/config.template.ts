@@ -8,7 +8,7 @@ export const config = {
 		port: "3306",
 		username: "root",
 		password: "changeme",
-		dbname: "wwwalletdb",
+		dbname: "wwwalletdb"
 	},
 	walletClientUrl: "WALLET_CLIENT_URL",
 	webauthn: {
