@@ -28,7 +28,7 @@ from ..utils.jwtse import (
 
 logger = logging.getLogger(__name__)
 
-class CallBackHandler(BaseEndpoint):
+class AuthorizationCallBackHandler(BaseEndpoint):
 
     def __init__(
             self,

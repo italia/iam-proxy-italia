@@ -1,5 +1,5 @@
 module: backends.cieoidc.CieOidcBackend
-name: cieOidcRp
+name: CieOidcRp
 config:
   static_storage_url: !ENV SATOSA_BASE_STATIC
   error_template: "cie_login_error.html"
@@ -10,6 +10,10 @@ config:
         ssl: true
       session:
         timeout: 6
+  providers:
+    - http://cie-provider.org:8002/oidc/op/
+    - http://ipzs-col-provider.org:8002/oidc/op/
+    - http://ipsz-prod-provider.org:8002/oidc/op/
   security_operations:
     hash:
       default:
@@ -100,7 +104,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - https://relying-party.org/cieOidcRp/callback
+        - https://relying-party.org/cieOidcRp/oidc/callback
       response_types:
         - code
       subject_type: pairwise
@@ -133,6 +137,7 @@ config:
         trust_anchor:
           - http://trust-anchor.org:8000
 
+
   endpoints:
     entity_config_endpoint:
       module: backends.cieoidc.endpoints.entity_configuration
@@ -157,7 +162,7 @@ config:
       module: backends.cieoidc.endpoints.authorization_endpoint
       class: AuthorizationHandler
       routes:
-        - /authorization
+        - /oidc/authorization
       config:
         entity_type: openid_relying_party
         entity_configuration_exp: 2800
@@ -166,11 +171,11 @@ config:
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
         prompt: "consent login"
-    callback_endpoint:
-      module: backends.cieoidc.endpoints.callback_endpoint
-      class: CallBackHandler
+    authorization_callback_endpoint:
+      module: backends.cieoidc.endpoints.authorization_callback_endpoint
+      class: AuthorizationCallBackHandler
       routes:
-        - /callback
+        - /oidc/callback
       config:
         entity_type: openid_relying_party
         entity_configuration_exp: 2800

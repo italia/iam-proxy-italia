@@ -23,6 +23,7 @@ from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
+from pyeudiw.federation.trust_chain_builder import TrustChainBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class AuthorizationHandler(BaseEndpoint):
             name: str,
             auth_callback_func: Callable[[Context, InternalData], Response],
             converter: AttributeMapper,
-            trust
+            trust_chains
     ) -> None:
         logger.debug(
             f"Initializing: {self.__class__.__name__}."
@@ -46,9 +47,8 @@ class AuthorizationHandler(BaseEndpoint):
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
         self._entity_type = self.config.get("entity_type")
         self._jwks_core = self.config.get("jwks_core")
-        self.trust_chain = trust
-        self.authorization_endpoint = trust.subject_configuration.payload["metadata"]["openid_provider"]["authorization_endpoint"]
-        self.provider_metadata = trust.subject_configuration.payload["metadata"]
+        self.trust_chains = trust_chains
+
 
 
     @property
@@ -103,8 +103,18 @@ class AuthorizationHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [context {context}]"
         )
 
+        provider_url = context.internal_data.get("target_entity_id")
+
+        logger.debug(
+            f"provider_url: {provider_url}."
+        )
+
+        trust_chain = self.__get_trust_chain(provider_url)
+
+        authorization_endpoint = trust_chain.subject_configuration.payload["metadata"]["openid_provider"]["authorization_endpoint"]
+
         # generate the authorization dict
-        authz_data = self.__authorization_data()
+        authz_data = self.__authorization_data(authorization_endpoint)
 
         # Add key prompt
         authz_data["prompt"] = self.config["prompt"]
@@ -115,10 +125,10 @@ class AuthorizationHandler(BaseEndpoint):
         authorization_entity = dict(
             client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
             state=authz_data["state"],
-            endpoint=self.authorization_endpoint,
-            provider_id=self.trust_chain.subject,
+            endpoint=authorization_endpoint,
+            provider_id=trust_chain.subject,
             data=json.dumps(authz_data),
-            provider_configuration=self.provider_metadata,
+            provider_configuration=trust_chain.subject_configuration.payload["metadata"]
         )
 
         # Add method for DB insert
@@ -129,17 +139,37 @@ class AuthorizationHandler(BaseEndpoint):
 
         uri_path = AuthorizationHandler.generate_uri(authz_data)
 
-        if "?" in self.authorization_endpoint:
+        if "?" in authorization_endpoint:
             qstring = "&"
         else:
             qstring = "?"
-        url = qstring.join((self.authorization_endpoint, uri_path))
+        url = qstring.join((authorization_endpoint, uri_path))
 
         resp = Redirect(url)
 
         return resp
 
-    def __authorization_data(self) -> dict:
+    def __get_trust_chain(self, provider: str) -> TrustChainBuilder:
+        """
+        Private method __get_trust_chain:
+        This method get Trust chain from provider url from Trust Chains dictionary.
+        @TODO method for validate trust chain
+
+        :type self: object
+        :rtype: TrustChainBuilder
+
+        :param self: object
+        :param provider: Trust chain provider
+        :return: TrustChainBuilder
+        """
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
+            f"Params[provider: {provider}]"
+        )
+        return self.trust_chains[provider]
+
+
+    def __authorization_data(self, provider_authorization_endpoint: str) -> dict:
         """
         method private authorization_data:
         This method generate the authorization data for the authorization endpoint.
@@ -171,13 +201,13 @@ class AuthorizationHandler(BaseEndpoint):
                 nonce=random_string(32),
                 state=random_string(32),
                 client_id=self.config["metadata"]["openid_relying_party"]["client_id"],
-                endpoint=self.authorization_endpoint,
+                endpoint=provider_authorization_endpoint,
                 acr_values="https://www.spid.gov.it/SpidL2",
                 # TODO Ask this to Giuseppe because into Django this variable is empty or not? OIDCFED_ACR_PROFILES = getattr(settings,"OIDCFED_ACR_PROFILES",AcrValues.l2.value)
                 iat=_timestamp_now,
                 exp=_timestamp_now + 60,
                 jti=str(uuid.uuid4()),
-                aud=self.authorization_endpoint,
+                aud=provider_authorization_endpoint,
                 claims=claim,
             )
         except Exception as exception:

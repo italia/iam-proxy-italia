@@ -22,7 +22,7 @@ class CieOidcBackend(BackendModule):
         super().__init__(callback, internal_attributes, base_url, name)
         self.config = module_config
         self.endpoints = {}
-        self.trust_chain = self._generate_trust_chain()
+        self.trust_chain = self._generate_trust_chains()
         # self.auth_callback_func = auth_callback_func
         # self.internal_attributes = internal_attributes
         # self.converter = AttributeMapper(internal_attributes)
@@ -46,8 +46,6 @@ class CieOidcBackend(BackendModule):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [metadata: {context}, conf: {internal_request}]"
         )
-
-
 
         authorization_endpoint = self.endpoints.get("authorization")
         if not authorization_endpoint:
@@ -75,7 +73,7 @@ class CieOidcBackend(BackendModule):
         for path, inst in url_map:
             self.endpoints[f"{path.split('/')[-1].replace('-', '_').replace('$', '')}"] = inst
 
-        logger.debug(f"Loaded CIE oidc endpoints: {url_map}")
+        logger.debug(f"Loaded CIE OIDC endpoints: {url_map}")
         return url_map
 
 
@@ -87,7 +85,13 @@ class CieOidcBackend(BackendModule):
         meta = get_metadata_desc_for_oauth_backend(self.config["provider_metadata"]["issuer"], self.config)
         return meta
 
-    def _generate_trust_chain(self):
+    def _generate_trust_chains(self) -> dict:
+        '''
+        private method _generate_trust_chains:
+        This method generate a list of trust-chain. After create a entity statement for Trust Anchor, validate itself, and call the generate_trust_chain
+        for all providers into configuration.
+        Add all providers into dictionary.
+        '''
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
         )
@@ -100,8 +104,33 @@ class CieOidcBackend(BackendModule):
 
         trust_anchor_ec.validate_by_itself()
 
+        providers = self.config["providers"]
+
+        trust_chains = dict()
+
+        for provider_url in providers:
+            try:
+                trust_chains[provider_url] = CieOidcBackend.generate_trust_chain(trust_anchor_ec, provider_url, httpc_params)
+            except Exception as exception:
+                logger.error(f"Exception {exception} generated from this provider {provider_url}")
+
+
+        return trust_chains
+
+    @staticmethod
+    def generate_trust_chain(trust_anchor_ec: EntityStatement, provider_endpoint: str, httpc_params) -> TrustChainBuilder:
+        '''
+        method _generate_trust_chain:
+        This method generate a TrustChain Object from provider endpoint and Trust Anchor.
+        After the creation, start and validate the Trust Chain.
+
+        '''
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+        )
+
         trust_chain = TrustChainBuilder(
-            subject="http://cie-provider.org:8002/oidc/op/", # @TODO Talking with Giuseppe: This properties is static or i can get from Trust Anchor?
+            subject=provider_endpoint,
             trust_anchor=trust_anchor_ec.sub,
             trust_anchor_configuration=trust_anchor_ec,
             httpc_params=httpc_params,
