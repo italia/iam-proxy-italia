@@ -20,7 +20,35 @@ function clean_data {
 }
 
 function init_files () {
-  if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
+  if [ -f "$1" ]; then echo "$2 file is already initialized" ; else eval "$3" ; fi
+}
+
+function merge_env() {
+  local env_source="$1"
+  local template_file="$2"
+  local target_file="$3"
+
+  local vars=()
+  while IFS='=' read -r key _; do
+    [[ -z "$key" || "$key" =~ ^# ]] && continue
+    vars+=("$key")
+  done < "$env_source"
+
+  set -a
+  source "$env_source"
+  set +a
+
+  env_interpolate() {
+    while IFS= read -r line; do
+      eval "echo \"$line\""
+    done
+  }
+
+  env_interpolate < "$template_file" > "$target_file"
+
+  for var in "${vars[@]}"; do
+    unset "$var"
+  done
 }
 
 function add_localhost_cert () {
@@ -50,10 +78,11 @@ function initialize_satosa {
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
-  init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
+  init_files ./certbot/live/localhost/privkey.pem "Localhost cert" "add_localhost_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
 
   rm -Rf ./iam-proxy-italia-project/static
+  rm -Rf ./iam-proxy-italia-project/wwwallet
 
   if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
       mkdir -p ./wwwallet
@@ -70,29 +99,19 @@ function initialize_satosa {
         "wwwallet-backend-server directory is already initialized" \
         "cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server"
 
-      init_files "./wwwallet/wallet-frontend/.env.prod" \
-        "wwwallet-frontend .env.prod file is already initialized" \
-        "cp -R ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod"
-
       init_files "./wwwallet/wallet-frontend/lib/wallet-common/package.json" \
         "wwwallet-frontend wallet-common directory is already initialized" \
         "mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common/* ./wwwallet/wallet-frontend/lib/wallet-common/"
 
-      init_files "./wwwallet/wallet-backend-server/config/config.template.ts" \
-        "wwwallet-backend-server config template is already initialized" \
-        "mkdir -p ./wwwallet/wallet-backend-server/config && cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts"
+      merge_env ./.env ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
 
-      init_files "./wwwallet/wallet-frontend/vite.config.ts" \
-        "wwwallet-frontend vite.config.ts file is already initialized" \
-        "cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts"
+      mkdir -p ./wwwallet/wallet-backend-server/src/routers &&
+        cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts
 
-      init_files "./wwwallet/wallet-backend-server/src/routers/proxy.router.ts" \
-        "wwwallet-backend-server proxy.router.ts file is already initialized" \
-        "mkdir -p ./wwwallet/wallet-backend-server/src/routers && cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts"
-
-      init_files "./wwwallet/mysql/config/my.cnf" \
-        "wwwallet mysql config is already initialized" \
-        "mkdir -p ./wwwallet/mysql/config && cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf"
+      mkdir -p ./wwwallet/mysql/config &&
+        cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf
 
       mkdir -p ./wwwallet/mariadb/data
       chmod -R 777 ./wwwallet

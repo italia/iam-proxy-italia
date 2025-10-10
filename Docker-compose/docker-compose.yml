@@ -24,6 +24,7 @@ services:
   wwwallet-server:
     profiles:
       - wwwallet
+    image: wwwallet-server:latest
     build:
       context: ./wwwallet/wallet-backend-server
       dockerfile: Dockerfile
@@ -38,6 +39,7 @@ services:
   wwwallet-frontend:
     profiles:
       - wwwallet
+    image: wwwallet-frontend:latest
     build:
       context: ./wwwallet/wallet-frontend
       dockerfile: Dockerfile
