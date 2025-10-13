@@ -1,7 +1,7 @@
 module: satosa.micro_services.custom_routing.DecideBackendByTargetIssuer
 name: TargetRouter
 config:
-  default_backend: Saml2
+  default_backend: "spidSaml2"
 
   target_mapping:
     # test platforms
@@ -26,4 +26,4 @@ config:
     "https://idp.intesigroup.com": "spidSaml2"
     "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
     #IT Wallet
-    "wallet": "OpenID4VP"
+    "openid4vp": "OpenID4VP"

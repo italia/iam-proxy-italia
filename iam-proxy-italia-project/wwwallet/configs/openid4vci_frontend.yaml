@@ -3,6 +3,8 @@ name: OpenID4VCI
 
 config:
 
+  default_target_authentication_backend: spidSaml2
+
   endpoints:
     par:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.pushed_authorization_request_endpoint
@@ -122,8 +124,8 @@ config:
     oauth_authorization_server:
       issuer: https://satosa-nginx/OpenID4VCI # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       pushed_authorization_request_endpoint: https://satosa-nginx/OpenID4VCI/par
-      authorization_endpoint: /authorize
-      token_endpoint: /token
+      authorization_endpoint: https://localhost/OpenID4VCI/authorization
+      token_endpoint: https://satosa-nginx/OpenID4VCI/token
       client_registration_types_supported:
         - automatic
       code_challenge_methods_supported:
@@ -504,7 +506,7 @@ config:
 
   security:
     wallet_attestation_required: false # this is the flag to enable the wallet attestation interoperability, if missing it will be set to true by default
-    signed_par_requests: false # this is the flag to enable the PAR request signing, if missing it will be set to true by default
+    signed_par_request: 'false' # this is the flag to enable the PAR request signing, if missing it will be set to true by default
 
   # this is the custom configuration for credential management.
   credential_configurations:
