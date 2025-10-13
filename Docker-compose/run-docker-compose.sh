@@ -113,6 +113,8 @@ function initialize_satosa {
       mkdir -p ./wwwallet/mysql/config &&
         cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf
 
+      cp ../iam-proxy-italia-project/wwwallet/configs/openid4vci_frontend.yaml ./iam-proxy-italia-project/conf/frontends/openid4vci_frontend.yaml
+
       mkdir -p ./wwwallet/mariadb/data
       chmod -R 777 ./wwwallet
 
