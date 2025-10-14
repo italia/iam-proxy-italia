@@ -56,17 +56,17 @@ services:
     volumes:
        - ./djangosaml2_sp:/django_sp:rw
     ports:
-      - "8000:8000"
+      - "8009:8000"
     networks:
       - iam-proxy-italia
 
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
     image: iam-proxy-italia:latest
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
+    build:
+        context: ../
+        args:
+            - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
     # depends_on:
@@ -89,7 +89,7 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      
+
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -124,10 +124,12 @@ services:
       - 10000
     ports:
       - "10000:10000"
+    depends_on:
+      - cie-provider.org
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
-      # - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
-      # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
+      - /home/mciofo/project/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      - /home/mciofo/project/SATOSA/src/satosa:/.venv/lib/python3.12/site-packages/satosa:rwx
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
@@ -165,7 +167,7 @@ services:
     profiles:
       - demo
       - dev
-    image: italia/spid-saml-check
+    image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
     ports:
       - "8443:8443"
@@ -173,7 +175,7 @@ services:
       - iam-proxy-italia
   satosa-certbot:
     image: certbot/certbot
-    container_name: satosa-certbot 
+    container_name: satosa-certbot
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
@@ -188,10 +190,85 @@ services:
       - "80:80"
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
+  trust-anchor.org:
+    image: ghcr.io/italia/spid-cie-oidc-django:latest
+      # build:
+    # context: .
+    # dockerfile: ./Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./examples-docker/federation_authority:/django-project
+    networks:
+      - iam-proxy-italia
+    command: |
+      bash -c "cd /django-project/ &&
+      python3 manage.py migrate &&
+      python3 manage.py loaddata dumps/example.json &&
+      python3 manage.py runserver 0.0.0.0:8000"
+
+  cie-provider.org:
+    image: ghcr.io/italia/spid-cie-oidc-django:latest
+      # build:
+    # context: .
+    # dockerfile: ./Dockerfile
+    expose:
+      - 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./examples-docker/provider:/django-project
+    networks:
+      - iam-proxy-italia
+    depends_on:
+      - trust-anchor.org
+    command: |
+      bash -c "cd /django-project/ &&
+      python3 manage.py migrate &&
+      python3 manage.py loaddata dumps/example.json &&
+      python3 manage.py runserver 0.0.0.0:8002"
+
+  relying-party.org:
+    image: ghcr.io/italia/spid-cie-oidc-django:latest
+      # build:
+    # context: .
+    # dockerfile: ./Dockerfile
+    expose:
+      - 8001
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./examples-docker/relying_party:/django-project
+    networks:
+      - iam-proxy-italia
+    depends_on:
+      - trust-anchor.org
+    command: |
+      bash -c "cd /django-project/ &&
+      python3 manage.py migrate &&
+      python3 manage.py loaddata dumps/example.json &&
+      python3 manage.py runserver 0.0.0.0:8001"
+
+  wallet.trust-anchor.org:
+    image: ghcr.io/italia/spid-cie-oidc-django:latest
+      # build:
+    # context: .
+    # dockerfile: ./Dockerfile
+    ports:
+      - "8006:8006"
+    volumes:
+      - ./examples-docker/wallet_trust_anchor:/django-project
+    networks:
+      - iam-proxy-italia
+    command: |
+      bash -c "cd /django-project/ &&
+      python3 manage.py migrate &&
+      python3 manage.py loaddata dumps/ta-ec.json &&
+      python3 manage.py runserver 0.0.0.0:8006"
+
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
-
 ## External volumes
 # volumes:
 #   mongodata:
