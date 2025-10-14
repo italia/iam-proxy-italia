@@ -11,6 +11,7 @@ function clean_data {
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
     rm -Rf ./certbot/live/localhost/*
+    rm -Rf ./spid_cie_oidc_django/wallet_trust_anchor/*
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   else
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then echo "'-e' options is skipped. To perform this option is required '-f' too "; fi
@@ -42,6 +43,7 @@ function initialize_satosa {
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/localhost
+  mkdir -p ./spid_cie_oidc_django/wallet_trust_anchor
 
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -49,6 +51,7 @@ function initialize_satosa {
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
+  init_files ./spid_cie_oidc_django/wallet_trust_anchor/manage.py "Wallet Trust Anchor" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/wallet_trust_anchor ./spid_cie_oidc_django/"
 
   rm -Rf ./iam-proxy-italia-project/static
 

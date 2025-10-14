@@ -194,7 +194,7 @@ services:
     ports:
       - "8005:8005"
     volumes:
-      - ./iam-proxy-italia-project/spid_cie_oidc_django/wallet_trust_anchor:/django-project
+      - ./spid_cie_oidc_django/wallet_trust_anchor:/django-project
     networks:
       - iam-proxy-italia
     command: |
