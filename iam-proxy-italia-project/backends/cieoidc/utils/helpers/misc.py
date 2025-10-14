@@ -11,15 +11,15 @@ import base64
 import secrets
 import urllib
 import json
-from . import KeyUsage
+import requests
+
 from functools import lru_cache
 from secrets import token_hex
 from typing import NamedTuple
-
-import requests
-
-from pyeudiw.tools.http import http_get_async, http_get_sync
 from typing import Type
+
+from .. import KeyUsage
+from ..helpers.http import http_get_async, http_get_sync
 
 logger = logging.getLogger(__name__)
 

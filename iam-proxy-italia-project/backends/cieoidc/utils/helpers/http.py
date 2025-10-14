@@ -3,7 +3,7 @@ import asyncio
 import aiohttp
 import requests
 
-from exceptions import HttpError
+from ..exceptions import HttpError
 
 DEFAULT_HTTPC_PARAMS = {
     "connection": {

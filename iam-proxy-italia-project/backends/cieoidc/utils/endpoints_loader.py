@@ -1,11 +1,12 @@
 from typing import Callable, Any
+
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.attribute_mapping import AttributeMapper
 
 # from pyeudiw.trust.dynamic import CombinedTrustEvaluator
-from .utils import get_dynamic_class
+from .helpers.misc import get_dynamic_class
 
 
 

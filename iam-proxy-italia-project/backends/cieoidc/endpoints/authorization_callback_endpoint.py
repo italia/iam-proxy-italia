@@ -1,29 +1,29 @@
 import logging
 import json
 import inspect
-import uuid
-import requests
+
 from typing import Callable
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
-from ..tools import KeyUsage
-from pyeudiw.tools.base_endpoint import BaseEndpoint
-from pyeudiw.trust.dynamic import CombinedTrustEvaluator
+
 from ..oauth2 import OAuth2AuthorizationCodeGrant
 from ..oidc import OidcUserInfo
-from ..tools.utils import (
+from ..utils.helpers.misc import (
     get_jwks,
     get_jwk_from_jwt,
     get_key,
     process_user_attributes, iat_now, exp_from_now
 )
-from ..utils.jwtse import (
+from ..utils.handlers.base_endpoint import BaseEndpoint
+from ..utils.helpers.jwtse import (
     verify_jws,
     unpad_jwt_payload,
     verify_at_hash, create_jws
 )
+
+from pyeudiw.trust.dynamic import CombinedTrustEvaluator
 
 
 logger = logging.getLogger(__name__)

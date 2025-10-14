@@ -1,2 +1,0 @@
-class HttpError(Exception):
-    pass

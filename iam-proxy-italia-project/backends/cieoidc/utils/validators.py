@@ -1,9 +1,9 @@
 import json
-from typing import Union
 
+from typing import Union
 from cryptojwt.jwk.jwk import key_from_jwk_dict
 
-from .jwks import serialize_rsa_key
+from .helpers.jwks import serialize_rsa_key
 
 SIGNING_ALG_VALUES_SUPPORTED=["RS256", "RS384", "RS512", "ES256", "ES384", "ES512"]
 ENCRYPTION_ENC_SUPPORTED = [
@@ -80,15 +80,16 @@ def validate_metadata_algs(metadata: dict):
 
 
 def validate_entity_metadata(value):
-    status = False
-    for i in ENTITY_TYPES:
-        if i in value:
-            status = True
-    if not status:
-        raise ValidationError(
-            f'Need to specify one of {", ".join(ENTITY_TYPES)}'
-        )
-    #todo
+    ...
+    # status = False
+    # for i in ENTITY_TYPES:
+    #     if i in value:
+    #         status = True
+    # if not status:
+    #     raise ValidationError(
+    #         f'Need to specify one of {", ".join(ENTITY_TYPES)}'
+    #     )
+    # # todo
     # if "openid_provider" in value:
     #     schema = OIDCFED_PROVIDER_PROFILES[OIDCFED_DEFAULT_PROVIDER_PROFILE]
     #     try:
@@ -105,8 +106,8 @@ def validate_entity_metadata(value):
     #         raise ValidationError(
     #             f"RP metadata fail {e}. "
     #         )
-
-    # TODO - add wallet_provider and wallet_relying_party once standardized
+    #
+    # # TODO - add wallet_provider and wallet_relying_party once standardized
 
 
 def validate_private_jwks(values: Union[dict, list]):

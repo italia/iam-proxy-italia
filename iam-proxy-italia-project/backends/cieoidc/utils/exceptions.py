@@ -1,3 +1,7 @@
+class HttpError(Exception):
+    pass
+
+
 class BadRequestError(Exception):
     """
     Bad Request error.

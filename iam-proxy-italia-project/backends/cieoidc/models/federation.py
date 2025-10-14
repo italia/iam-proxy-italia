@@ -1,12 +1,13 @@
 import json
 import logging
+from pydantic import BaseModel
 
 from typing import Union
 from cryptojwt.jwk.jwk import key_from_jwk_dict
 
-from ..tools.utils import exp_from_now, iat_now
-from ..utils.jwks import serialize_rsa_key, private_pem_from_jwk, public_pem_from_jwk
-from ..utils.jwtse import create_jws
+from ..utils.helpers.misc import exp_from_now, iat_now
+from ..utils.helpers.jwks import serialize_rsa_key, private_pem_from_jwk, public_pem_from_jwk
+from ..utils.helpers.jwtse import create_jws
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +26,24 @@ def is_leaf(statement_metadata):
             return True # pragma: no cover
 
 
-class FederationEntityConfiguration:
-    """
-    Federation Authority configuration.
-    """
+# class FederationEntityConfiguration(BaseModel):
+#     """
+#     Federation Authority configuration.
+#     """
+#
+#     sub: str
+#     default_exp: int
+#     default_signature_alg: str
+#     jwks_fed: list
+#     jwks_core: list
+#     entity_type: str
+#     metadata: dict
+#     authority_hints: list = None
+#     trust_marks:list = None
+#     trust_mark_issuers:dict = None
+#     constraints:  = None
 
+class FederationEntityConfiguration:
     def __init__(self, sub, exp, default_signature_alg, jwks_core, jwks_fed, entity_type, metadata,
                  authority_hints= None, trust_marks=None, trust_mark_issuers=None, constraints=None):
         self.sub = sub
@@ -132,4 +146,3 @@ class FederationEntityConfiguration:
             value = getattr(self, i)
             if not isinstance(value, list):
                 setattr(self, i, [value])
-

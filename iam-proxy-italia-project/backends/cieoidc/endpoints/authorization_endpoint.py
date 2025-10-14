@@ -2,31 +2,32 @@ import logging
 import inspect
 import json
 import uuid
+
 from datetime import datetime, timezone
 from typing import Callable
 from copy import deepcopy
-from ..tools.base_endpoint import BaseEndpoint
-from ..tools import KeyUsage
-from ..utils.jwtse import create_jws
-from ..utils.jwks import (
-    create_jwk,
-    public_jwk_from_private_jwk
-)
-from ..tools.utils import (
-    random_string,
-    get_pkce,
-    get_key,
-    http_dict_to_redirect_uri_path
-)
+
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
+
+from ..utils import KeyUsage
+from ..utils.handlers.base_endpoint import BaseEndpoint
+from ..utils.helpers.jwtse import create_jws
+from ..utils.helpers.jwks import  create_jwk, public_jwk_from_private_jwk
+from ..utils.helpers.misc import (
+    random_string,
+    get_pkce,
+    get_key,
+    http_dict_to_redirect_uri_path
+)
+
 from pyeudiw.federation.trust_chain_builder import TrustChainBuilder
 
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 
 
 class AuthorizationHandler(BaseEndpoint):
@@ -48,7 +49,6 @@ class AuthorizationHandler(BaseEndpoint):
         self._entity_type = self.config.get("entity_type")
         self._jwks_core = self.config.get("jwks_core")
         self.trust_chains = trust_chains
-
 
 
     @property

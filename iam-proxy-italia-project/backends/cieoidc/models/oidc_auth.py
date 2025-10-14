@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class OidcAuthentication(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     name: str = None
     client_id : str
     state : str

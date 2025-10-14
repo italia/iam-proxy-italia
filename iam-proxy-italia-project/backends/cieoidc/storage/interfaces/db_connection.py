@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from backends.cieoidc.storage.entities import DbConnectionConfig
+from . import DbConnectionConfig
 
 
 class DatabaseConnection(ABC):

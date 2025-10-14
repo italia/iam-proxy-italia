@@ -7,8 +7,9 @@ from satosa.response import (
     Response
 )
 
-from ..utils.base_http_response_handler import BaseHTTPResponseHandler
-from .base_logger import BaseLogger
+from ..base_logger import BaseLogger
+from ..handlers.base_http_response_handler import BaseHTTPResponseHandler
+
 
 
 class BaseEndpoint(BaseHTTPResponseHandler, BaseLogger):

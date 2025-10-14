@@ -3,8 +3,8 @@ from typing import Any, Type, List, Optional, TypeVar
 from bson import ObjectId
 from pydantic import BaseModel
 
-from backends.cieoidc.storage.interfaces.repository import IBaseRepository
-from backends.cieoidc.storage.mongo_db.connection import MongoConnection
+from ..interfaces.repository import IBaseRepository
+from ..mongo_db.connection import MongoConnection
 
 E = TypeVar("E", bound=BaseModel)
 
@@ -36,7 +36,7 @@ class MongoBaseRepository(IBaseRepository[E]):
         try:
             oid = ObjectId(entity_id)
         except Exception:
-            oid = entity_id
+            return False
 
         result = self._collection.delete_one({"_id": oid})
         return result.deleted_count > 0

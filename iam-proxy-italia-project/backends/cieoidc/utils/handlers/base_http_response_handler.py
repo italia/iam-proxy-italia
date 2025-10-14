@@ -1,8 +1,9 @@
 from satosa.context import Context
 
-from .exceptions import EmptyHTTPError
+
 from .response import JsonResponse
-from ..tools.base_logger import BaseLogger
+from ..base_logger import BaseLogger
+from ..exceptions import EmptyHTTPError
 
 
 class BaseHTTPResponseHandler(BaseLogger):

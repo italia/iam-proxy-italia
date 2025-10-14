@@ -3,8 +3,8 @@ from urllib.parse import quote_plus
 
 from pymongo import MongoClient
 
-from backends.cieoidc.storage.entities import DbConnectionConfig
-from backends.cieoidc.storage.interfaces.db_connection import DatabaseConnection
+from ..interfaces import DbConnectionConfig
+from ..interfaces.db_connection import DatabaseConnection
 
 
 class MongoConnection(DatabaseConnection):

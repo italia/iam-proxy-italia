@@ -9,11 +9,11 @@ from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response, Redirect
 
-from ..tools.base_endpoint import BaseEndpoint
-from ..utils.jwks import public_jwk_from_private_jwk
+from ..models.federation import FederationEntityConfiguration
 from ..utils.validators import validate_private_jwks, validate_entity_metadata
-from ..tools.entities import FederationEntityConfiguration
-from ..utils.jwtse import create_jws
+from ..utils.helpers.jwks import public_jwk_from_private_jwk
+from ..utils.handlers.base_endpoint import BaseEndpoint
+from ..utils.helpers.jwtse import create_jws
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +52,7 @@ class EntityConfigHandler(BaseEndpoint):
     def _validate_configs(self):
         validate_private_jwks(self._jwks_core)
         validate_private_jwks(self._jwks_federation)
-        # validate_entity_metadata(self._metadata)
-
+        validate_entity_metadata(self._metadata)
 
     def get_entity_configuration(self, jws=False) -> str:
         _entity = FederationEntityConfiguration(self._client_id,
@@ -76,21 +75,14 @@ class EntityConfigHandler(BaseEndpoint):
 
     def endpoint(self, context: Context) -> Redirect | Response:
         """
-        Handle the incoming request and return either a Redirect or Response.
-
-        This method must be implemented by subclasses to process the given context
-        and return an appropriate HTTP response, such as a redirect to another
-        URL or a standard HTTP response.
+        Handle the incoming request and return a Response related to metadata.
 
         Args:
             context (Context): The SATOSA context object containing the request and environment information.
-
         Returns:
-            Redirect | Response: A Redirect or Response object depending on the logic implemented.
-
-        Raises:
-            NotImplementedError: If the method is not overridden by a subclass.
+            Redirect | Response: A Response object.
         """
+
         status_code = "404"
         content_type = "text/plain"
         data = ""
