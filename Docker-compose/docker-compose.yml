@@ -189,6 +189,20 @@ services:
       - "80:80"
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
+  wallet.trust-anchor.org:
+    image: ghcr.io/italia/spid-cie-oidc-django:latest
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./iam-proxy-italia-project/spid_cie_oidc_django/wallet_trust_anchor:/django-project
+    networks:
+      - iam-proxy-italia
+    command: |
+        bash -c "cd /django-project/ &&
+        python3 manage.py migrate &&
+        python3 manage.py loaddata dumps/ta-ec.json &&
+        python3 manage.py runserver 0.0.0.0:8005"
+
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia

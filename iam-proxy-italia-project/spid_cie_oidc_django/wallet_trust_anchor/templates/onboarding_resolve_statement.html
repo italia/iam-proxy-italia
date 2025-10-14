@@ -1,0 +1,58 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+
+<div class="col-12 pl-lg-4">
+
+    <h4 class="text-left">
+        {% trans "Resolve Entity Statement" %}
+    </h4>
+
+    <p class="card-title">
+        {% trans "By inserting the sub of an entity and the trust anchor you can resolve the statement of the entity" %}
+    </p>
+
+    <form method="get" action="">
+        {% csrf_token %}
+        {% for form_field in form %}
+
+        {% if form_field.field.widget.input_type == 'select'%}
+        <div class="bootstrap-select-wrapper my-4">
+            <select name="{{ form_field.name }}" id="id_{{ form_field.html_name }}">
+                {% for value, label in form_field.field.choices %}
+                <option value="{{ value }}" {% if form_field.value == value %} selected {% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% else %}
+        <div class="form-row">
+            <div class="col-12 form-group my-2">
+                <label for="id_{{ form_field.html_name }}">
+                    <span class="form-label-content">
+                        {{ form_field.label }}
+                    </span>
+                </label>
+                <input type="{{ form_field.field.widget.input_type }}" class="form-control"
+                    id="id_{{ form_field.html_name }}" name="{{ form_field.name }}" value="{{form_field.value}}">
+            </div>
+            <span for="id_{{ form_field.html_name }}" class="text-danger">{{ form_field.errors }}</span>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+
+        <div class="form-row">
+            <div class="col-12 form-group">
+                <textarea id="resolved_statement" rows="13" name="resolved_statement"
+                    disabled>{{ resolved_statement }}</textarea>
+            </div>
+        </div>
+        <input type="submit" name="confirm" class="btn btn-lg btn-success btn-block" value="{% trans 'resolve' %}" />
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+
+<div class="col-12 pl-lg-4">
+
+    <h4 class="text-left">
+        {% trans "Apply policy" %}
+    </h4>
+
+    <p class="card-title">
+        {% trans "Adheres a metadata policy to a metadata statement" %}
+    </p>
+    <form method="get" action="">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="form-row">
+                    <div class="col-12 form-group my-3">
+                        <label for="id_md">
+                            <span class="form-label-content">
+                                metadata statement
+                            </span>
+                        </label>
+                        <textarea id="id_md" rows="9"
+                            name="md">{{ md }}</textarea>
+                        
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 form-group my-3">
+                        <label for="id_policy">
+                            <span class="form-label-content">
+                                metadata policy
+                            </span>
+                        </label>
+                        <textarea id="id_policy" rows="5"
+                            name="policy">{{ policy }}</textarea>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="form-row">
+                    <div class="col-12 form-group my-3">
+                        <label for="id_result">
+                            <span class="form-label-content">
+                                result
+                            </span>
+                        </label>
+                        <textarea id="id_result" rows="16" disabled
+                            name="result">{{ result }}</textarea>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="submit" name="decode" class="btn btn-lg btn-primary btn-block"
+                    value="{% trans 'apply' %}" />
+    </form>
+    
+</div>
+{% endblock %}

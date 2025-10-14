@@ -1,0 +1,47 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+
+<div class="col-12 pl-lg-4">
+
+    <h4 class="text-left">
+        {% trans "Convert jwk to pem" %}
+    </h4>
+
+    <p class="card-title">
+        {% trans "Enter a jwk in the field below to encode it in PEM format." %}
+    </p>
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-12 form-group my-3">
+                <label for="id_jwk">
+                    <span class="form-label-content">
+                        Jwk
+                    </span>
+                </label>
+                <textarea id="id_jwk" rows="12" name="jwk">{{ jwk }}</textarea>
+            </div>
+        </div>
+        {% if pem %}
+        <h4 class="text-left">
+            {% if jwk_type == 'private' %}
+                {% trans "Private key" %}
+            {% else %}
+                {% trans "Public key" %}
+            {% endif %}
+        </h4>
+        <div class="form-row">
+            <div class="col-12 form-group my-3">
+                <textarea id="private_pem" rows="13" name="private_pem">{{ pem }}</textarea>
+            </div>
+        </div>
+        {% endif %}
+        <input type="submit" name="confirm" class="btn btn-lg btn-success btn-block"
+            value="{% trans 'Convert to pem' %}" />
+    </form>
+
+</div>
+{% endblock %}

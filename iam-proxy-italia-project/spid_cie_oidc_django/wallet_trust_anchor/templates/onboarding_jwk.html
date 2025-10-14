@@ -1,0 +1,31 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+<div class="col-12 pl-lg-4">
+    <h4 class="text-left">
+        {% trans "Create a JWK" %}
+    </h4>
+
+    <p class="pt-4 mb-0">
+        {% trans "In this page you have a brand new JWK. Refresh the page to gent another one." %}
+    </p>
+
+    <div class="form-row">
+        <div class="col-12 form-group my-3">
+            <textarea id="jwk" rows="14" name="jwk">{{ private_jwk }}</textarea>
+        </div>
+    </div>
+
+    <p class="pt-4 mb-0">
+        {% trans "Here the public version of the previous private JWK." %}
+    </p>
+    <div class="form-row">
+        <div class="col-12 form-group my-3">
+            <textarea id="jwk" rows="14" name="jwk">{{ public_jwk }}</textarea>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

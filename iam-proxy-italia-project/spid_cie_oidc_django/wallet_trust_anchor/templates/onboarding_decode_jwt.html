@@ -1,0 +1,75 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+
+<div class="col-12 pl-lg-4">
+
+    <h4 class="text-left">
+        {% trans "JWT decode and verification" %}
+    </h4>
+
+    <p class="card-title">
+        {% trans "Submit a jwt to decode it, if you submit also a jwk you'll decrypt or verify it." %}
+    </p>
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-lg-7">
+                {% csrf_token %}
+                {% for form_field in form %}
+                <div class="form-row">
+                    {% if form_field.name == 'jwt' %}
+                    <div class="col-12 form-group my-3">
+                        <label for="id_{{ form_field.html_name }}">
+                            <span class="form-label-content">
+                            {{ form_field.label }}
+                            </span>
+                        </label>
+                        <textarea id="id_{{ form_field.html_name }}" rows="14" 
+                        name="{{ form_field.name }}">{{ form.jwt.value}}</textarea>
+                    </div>
+                    {% else %}
+                    <div class="col-12 form-group my-3">
+                        <label for="id_{{ form_field.html_name }}">
+                            <span class="form-label-content mt-4">
+                            {{ form_field.label }}
+                            </span>
+                        </label>
+                        <textarea id="id_{{ form_field.html_name }}" rows="6" 
+                        name="{{ form_field.name }}">{{ form.jwk.value }}</textarea>
+                    </div>
+                    
+                    {% endif %}
+                    <span for="id_{{ form_field.html_name }}" class="text-danger">{{ form_field.errors }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="form-row">
+                    <div class="col-12 form-group my-3">
+                        <label for="id_head">
+                            <span class="form-label-content">
+                                Head
+                            </span>
+                        </label>
+                        <textarea id="id_head" rows="6" name="head">{{ head }}</textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 form-group my-2">
+                        <label for="id_payload">
+                            Payload
+                        </label>
+                        <textarea id="id_payload" rows="12" name="payload">{{ payload }}</textarea>
+                    </div>
+                </div>
+                <input type="submit" name="decode" class="btn btn-lg btn-success btn-block"
+                    value="{% trans 'decode or verify' %}" />
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

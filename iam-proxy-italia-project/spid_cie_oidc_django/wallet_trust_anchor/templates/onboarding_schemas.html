@@ -1,0 +1,34 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block centered_container %}
+
+<div class="col-12 col-lg-12">
+    <div class="ml-4 mb-4">
+        <h4 class="text-left">
+            {% trans title %}
+        </h4>
+    </div>
+    <div class="pl-lg-3">
+    <div id="collapseDiv-sc" class="collapse-div collapse-background-active" role="tablist">
+        {% for k, v in schemas.items %}
+        <div class="collapse-header" id="heading1-sc{{ forloop.counter }}">
+            <button data-toggle="collapse" data-target="#collapse{{ forloop.counter }}-sc{{ forloop.counter }}" 
+                aria-expanded="false" aria-controls="collapse{{ forloop.counter }}-sc{{ forloop.counter }}">
+                {% trans k %}
+            </button>
+        </div>
+        <div id="collapse{{ forloop.counter }}-sc{{ forloop.counter }}" class="collapse" 
+        role="tabpanel" aria-labelledby="heading{{ forloop.counter }}-sc{{ forloop.counter }}">
+            <div class="collapse-body">
+                <pre>{{ v | linebreaks}}</pre>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+{% endblock %}

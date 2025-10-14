@@ -1,0 +1,41 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+
+<div class="col-12 pl-lg-4">
+   <h4 class="text-left">
+      {% trans 'Validating Trust Mark' %}
+   </h4>
+
+   <p class="card-title">
+      {% trans "To validate a trust mark insert the entity's sub and the id or directly the trust mark" %}
+   </p>
+
+   <form method="get" action="">
+      {% csrf_token %}
+      {% for form_field in form %}
+      <div class="form-row">
+         <div class="col-12 form-group my-3">
+            <label for="id_{{ form_field.html_name }}">
+               <span class="form-label-content">
+                  {{ form_field.label }}
+               </span>
+            </label>
+            {% if form_field.name == 'trust_mark'%}
+            <textarea id="id_{{ form_field.html_name }}" rows="4"
+               name="{{ form_field.name }}">{{ form.trust_mark.value}}</textarea>
+            {% else%}
+            <input type="{{ form_field.field.widget.input_type }}" class="form-control"
+               id="id_{{ form_field.html_name }}" name="{{ form_field.name }}" value="{{form_field.value}}">
+            {% endif %}
+         </div>
+         <span for="id_{{ form_field.html_name }}" class="text-danger">{{ form_field.errors }}</span>
+      </div>
+
+      {% endfor %}
+      <input type="submit" name="confirm" class="btn btn-lg btn-success btn-block" value="{% trans 'validate' %}" />
+
+</div>
+{% endblock %}
