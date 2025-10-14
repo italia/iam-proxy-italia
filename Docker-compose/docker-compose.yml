@@ -189,7 +189,7 @@ services:
       - "80:80"
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
-  wallet.trust-anchor.org:
+  wallet-trust-anchor:
     image: ghcr.io/italia/spid-cie-oidc-django:latest
     ports:
       - "8005:8005"
