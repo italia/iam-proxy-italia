@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Accedi</title>
     <meta name="description" content="Accedi">
-        
+
     <link rel="stylesheet" href="/static/css/style.css">
-    
+
     <!-- Bootstrap Italia CSS -->
     <link href="css/bootstrap-italia.min.css" rel="stylesheet">
     <!-- ita-buyyon CSS -->
@@ -27,71 +27,36 @@
             <div class="card card-bg no-after">
               <div class="card-body">
                 <div class="row">
-                  <div class="col-lg-6 text-center border-md-right border-md-bottom">
-                    <!-- Wallet it button section -->
+                  <div class="col-lg-6 text-center border-md-right">
                     <div class="row">
-                      <h2>IT Wallet</h2>
-                      <p>IT Wallet è il tuo portafoglio nazionale di identità digitale che ti consente di accedere ai servizi in modo <b>semplice e sicuro</b>, mantenendo il <b>controllo sui tuoi dati</b></p>
-                    </div>
-                    <br>
-                    <div class="row">
-                      <div class="col-lg-12 text-center button-container column-buttons">
+                      <div class="col-12 mb-3 border-md-bottom" style="min-height: 50vh;">
+                        <!-- Wallet it button section -->
+                        <div class="mb-0">
+                          <h2>IT Wallet</h2>
+                          <p>IT Wallet è il tuo portafoglio nazionale di identità digitale che ti consente di accedere ai servizi in modo <b>semplice e sicuro</b>, mantenendo il <b>controllo sui tuoi dati</b></p>
+                        </div>
+                        <div class="mb-0 text-center button-container">
                           <!-- IT Wallet IDP BUTTON SMALL "ENTRA CON WALLET ID" * begin * -->
                           <a href="https://localhost/Saml2/disco?entityID=wallet"
-                            class="btn btn-primary btn-lg btn-me w-100" 
-                            eidas-idp-button="#eidas-idp-button-xlarge-post" 
-                            aria-haspopup="false" 
-                            aria-expanded="false" 
+                            class="btn btn-primary btn-lg btn-me w-100"
+                            eidas-idp-button="#eidas-idp-button-xlarge-post"
+                            aria-haspopup="false"
+                            aria-expanded="false"
                             style="font-size: 21px;">
                             <span><img class="icon buttonicon" src="/static/wallet-it/wallet_icon.svg" alt="Logo IT Wallet" /></span>
                             <span>Accedi con IT Wallet</span>
                           </a>
                           <!-- IT Wallet IDP BUTTON SMALL "ENTRA CON WALLET ID" * end * -->
-                      </div>
-                    </div>
-                    <div class="row">
-                      <a href="#">Non hai IT Wallet? <svg class="icon icon-sm linkicon" ><use style="stroke: #0065cc;" href="./bootstrap-italia/svg/sprites.svg#it-external-link"></use></svg></a>
-                    </div>
-                  </div>
-                  <!-- OTHER  -->
-                  <div class="col-lg-6 text-center column-buttons">
-                    <div class="border-md-bottom">
-                      <div class="row">
-                        <h2>SPID o CIE</h2>
-                        <p>Accedi in qualunque momento anche con le identità digitali CIE, se hai la Carta di identità elettronica, o SPID, se hai attivato le credenziali con un gestore accreditato.</p>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-12 text-center button-container">
-                          <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON CIE" * begin * -->
-                          <a href="/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco" class="btn btn-outline-primary btn-lg btn-me w-100" eidas-idp-button="#eidas-idp-button-xlarge-post" aria-haspopup="false" aria-expanded="false">
-                            <span><img class="icon buttonicon" src="/static/cie/cie_blue.svg" alt="Logo CIE" /></span>
-                            <span>Entra con CIE</span>
-                          </a>
-                          <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON CIE" * end * -->
                         </div>
+                        <a href="#">Non hai IT Wallet? <svg class="icon icon-sm linkicon" ><use style="stroke: #0065cc;" href="./bootstrap-italia/svg/sprites.svg#it-external-link"></use></svg></a>
+                        <div class="mt-auto"></div>
                       </div>
-                      <div class="row">
-                        <div class="col-lg-12 text-center button-container ">
-                          <div class='ita ita-dropdown ita-l ita-fixed mb-3'>
-                          <a href="#" class="btn btn-outline-primary btn-lg btn-me w-100" spid-idp-button="#spid-idp-button-xlarge-post" aria-haspopup="true" aria-expanded="false">
-                            <span><img class="icon buttonicon" src="/static/spid/spid_icon.svg" onerror="this.src='img/spid-ico-circle-bb.png'; this.onerror=null;" alt=""></span>
-                            <span>Entra con SPID</span>
-                          </a>
-                          <div class='ita-menu' role='menu' data-spid-remote></div>
-                          </div>
-                                                  </div>
-                      </div>
-                      <div class="row">
-                        <a href="#">Scopri di più su identitadigitale.gov.it <svg class="icon icon-sm linkicon" ><use style="stroke: #0065cc;" href="./bootstrap-italia/svg/sprites.svg#it-external-link"></use></svg></a>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="row space-up">
-                        <h3>Altre identità digitali</h3>
-                        <p>Puoi anche accedere con i seguenti metodi alternativi</p>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-12 text-center button-container">
+                      <div class="col-12 border-md-bottom" style="min-height: 50vh;">
+                        <div class="mb-0">
+                          <h2>Altre identità digitali</h2>
+                          <p>Puoi anche accedere con i seguenti metodi alternativi</p>
+                        </div>
+                        <div class="mb-0 text-center button-container">
                           <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON EIDAS" * begin * -->
                           <a href="/Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco" class="btn btn-outline-primary btn-lg btn-me w-100" eidas-idp-button="#eidas-idp-button-xlarge-post" aria-haspopup="false" aria-expanded="false">
                             <span><img class="icon buttonicon" src="/static/img/ficep.svg" onerror="this.src='eidas/img/ficep-it-eidas-lb.png'; this.onerror=null;" alt="" /></span>
@@ -100,9 +65,7 @@
                           </a>
                           <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON eIDAS" * end * -->
                         </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-12 text-center button-container">
+                        <div class="mb-0 text-center button-container">
                           <!-- IDEM IDP BUTTON SMALL "ENTRA CON IDEM" * begin * -->
                           <a href="https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_" class="btn btn-outline-primary btn-lg btn-me w-100" eidas-idp-button="#eidas-idp-button-xlarge-post" aria-haspopup="false" aria-expanded="false">
                             <span><img class="icon buttonicon" src="/static/idem/img/IDEM_icona_blu.svg" alt="Logo IDEM" /></span>
@@ -111,6 +74,56 @@
                           </a>
                           <!-- IDEM IDP BUTTON SMALL "ENTRA CON IDEM" * end * -->
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- OTHER  -->
+                  <div class="col-lg-6 text-center">
+                    <div class="row">
+                      <div class="col-12  mb-3 border-md-bottom" style="min-height: 50vh;">
+                          <div class="mb-0">
+                            <h2>SPID o CIE (SAML2)</h2>
+                            <p>Accedi in qualunque momento anche con le identità digitali CIE, se hai la Carta di identità elettronica, o SPID, se hai attivato le credenziali con un gestore accreditato.</p>
+                          </div>
+                          <div class="mb-0">
+                            <div class="text-center button-container">
+                              <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON CIE" * begin * -->
+                              <a href="/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco" class="btn btn-outline-primary btn-lg btn-me w-100" eidas-idp-button="#eidas-idp-button-xlarge-post" aria-haspopup="false" aria-expanded="false">
+                                <span><img class="icon buttonicon" src="/static/cie/cie_blue.svg" alt="Logo CIE" /></span>
+                                <span>Entra con CIE</span>
+                              </a>
+                              <!-- AGID - eIDAS IDP BUTTON SMALL "ENTRA CON CIE" * end * -->
+                            </div>
+                          </div>
+                          <div class="mb-0">
+                            <div class="text-center button-container">
+                              <div class='ita ita-dropdown ita-l ita-fixed mb-3'>
+                                <a href="#" onclick="event.preventDefault()" class="btn btn-outline-primary btn-lg btn-me w-100" spid-idp-button="#spid-idp-button-xlarge-post" aria-haspopup="true" aria-expanded="false">
+                                  <span><img class="icon buttonicon" src="/static/spid/spid_icon.svg" onerror="this.src='img/spid-ico-circle-bb.png'; this.onerror=null;" alt=""></span>
+                                  <span>Entra con SPID</span>
+                                </a>
+                                <div class='ita-menu' role='menu' data-spid-remote></div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="col-12 mb-3" style="min-height: 50vh;">
+                        <div class="mb-0">
+                          <h2>CIE (OIDC)</h2>
+                          <p>Accedi in qualunque momento con la Carta di identità elettronica CIE.</p>
+                        </div>
+                        <div class="mb-0">
+                          <div class="text-center button-container ">
+                            <div class='ita ita-dropdown ita-l ita-fixed mb-3'>
+                            <a href="#" onclick="event.preventDefault()" class="btn btn-outline-primary btn-lg btn-me w-100" spid-idp-button="#spid-idp-button-xlarge-post" aria-haspopup="false" aria-expanded="false">
+                              <span><img class="icon buttonicon" src="/static/cie/cie_blue.svg" onerror="this.src='cie/cie_blue.png'; this.onerror=null;" alt="Logo CIE" /></span>
+                              <span>Entra con CIE</span>
+                            </a>
+                            <div class='ita-menu' role='menu' data-cie-remote></div>
+                            </div>
+                          </div>
+                        </div>
+                        <a href="#">Scopri di più su identitadigitale.gov.it <svg class="icon icon-sm linkicon" ><use style="stroke: #0065cc;" href="./bootstrap-italia/svg/sprites.svg#it-external-link"></use></svg></a>
                       </div>
                     </div>
                   </div>
@@ -269,9 +282,10 @@
     </footer> -->
     <script src="js/ita.min.js"></script>
     <script src="js/bootstrap-italia.bundle.min.js"></script>
-    
+
     <script>
     var spid_idps = new Ita;
+    var cie_idps = new Cie;
     </script>
 
   </body>
