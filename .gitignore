@@ -20,7 +20,7 @@ iam-proxy-italia-project/wwwallet/mysql/data/
 *pyFF_example/garr
 *pyFF_example/entities
 example_sp/djangosaml2_sp/sqlite3.db
-iam-proxy-italia-project_sp/djangosaml2_sp/sqlite3.db
+iam-proxy-italia-project-demo-examples/djangosaml2_sp/sqlite3.db
 project/*
 docker-example/*
 Docker-compose/iam-proxy-italia-project/*

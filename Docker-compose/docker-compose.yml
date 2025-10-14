@@ -49,7 +49,7 @@ services:
       context: ../
       args:
         - NODE_ENV=local
-      dockerfile: iam-proxy-italia-project_sp/django.Dockerfile
+      dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"

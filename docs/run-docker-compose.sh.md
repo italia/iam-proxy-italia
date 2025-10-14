@@ -25,7 +25,7 @@ After the script test if the required directories are populated and if isn't cop
 | Directory | test presence of | default origin |
 | ----------------- | ---------------- | ------------------------------ |
 | iam-proxy-italia-project | proxy_conf.yaml | ../iam-proxy-italia-project/*                   |
-| djangosaml2_sp | run.sh | ../iam-proxy-italia-project_sp/djangosaml2_sp/* |
+| djangosaml2_sp | run.sh | ../iam-proxy-italia-project-demo-examples/djangosaml2_sp/* |
 | nginx/html/static | disco.html | ../iam-proxy-italia-project/static/*            |
 
 Unless `-s` options is enabled, on every start the script try to:
