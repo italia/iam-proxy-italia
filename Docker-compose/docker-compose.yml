@@ -35,6 +35,19 @@ services:
       - "5000:5000"
     networks:
       - iam-proxy-italia
+    volumes:
+      - ./nginx/conf.d/wwwallet.default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
+    environment:
+      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
+      - TZ=${TZ:-Europe/Rome}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y nginx && \
+        nginx -g 'daemon off;' &
+        node ./dist/src/app.js
+      "
 
   wwwallet-frontend:
     profiles:
@@ -212,7 +225,9 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/conf.d/sites-enabled:/etc/nginx/conf.d/sites-enabled:ro
+      - ./nginx/html:/etc/nginx/html:ro
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro

@@ -103,6 +103,10 @@ function initialize_satosa {
         "wwwallet-frontend wallet-common directory is already initialized" \
         "mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common/* ./wwwallet/wallet-frontend/lib/wallet-common/"
 
+      init_files "./nginx/conf.d/wwwallet.default.conf" \
+        "wwwallet nginx config is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/nginx/wwwallet.default.conf ./nginx/conf.d/wwwallet.default.conf"
+
       merge_env ./.env ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod
       cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
       cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
