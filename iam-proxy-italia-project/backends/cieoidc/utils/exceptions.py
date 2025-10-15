@@ -1,3 +1,24 @@
+
+class StorageError(Exception):
+    def __init__(self, message="Generic error while interaction with the storage Layer"):
+        self.message = message
+        super().__init__(self.message)
+
+class UnsupportedStorageEngine(StorageError):
+    def __init__(self, message="The specified engine is not yet supported."):
+        self.message = message
+        super().__init__(self.message)
+
+class RepositoryNotFound(StorageError):
+    def __init__(self, message="Repository doesn't exist for the given engine"):
+        super().__init__(message)
+
+class StorageUnreachable(Exception):
+    def __init__(self, message="Connection to database failed. The server is not reachable."):
+        self.message = message
+        super().__init__(self.message)
+
+
 class HttpError(Exception):
     pass
 

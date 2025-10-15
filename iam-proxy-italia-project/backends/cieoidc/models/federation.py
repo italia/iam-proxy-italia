@@ -25,7 +25,7 @@ def is_leaf(statement_metadata):
         if _typ in statement_metadata:
             return True # pragma: no cover
 
-
+#todo
 # class FederationEntityConfiguration(BaseModel):
 #     """
 #     Federation Authority configuration.

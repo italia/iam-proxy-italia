@@ -1,33 +1,46 @@
+from typing import Optional
+
+from pydantic import BaseModel
+
+from backends.cieoidc.models.oidc_auth import OidcAuthentication
+
+from .interfaces.db_connection import DatabaseConnection
+from .interfaces.repository import IBaseRepository
+from .mongo_db.connection import MongoConnection
+from .mongo_db.repository import MongoBaseRepository
 
 
+class StorageFactory:
+
+    @classmethod
+    def get_repository_by_conn(cls, db_conn: DatabaseConnection, entity_type: type[BaseModel]) -> Optional[IBaseRepository]:
+        """
+        Factory method to obtain the repository based on the connection type and entity_type provided input.
+        @param connection: database connection
+        @param entity_type: type of entity to be managed
+        @return: repository object
+        """
+        if isinstance(db_conn, MongoConnection):
+            if entity_type is OidcAuthentication:
+                collection = "oidc_authentication"
+            else:
+                return None
+            return MongoBaseRepository(db_conn, collection, entity_type)
+        return None
 
 
+    @classmethod
+    def get_connection_by_config(cls, db_config: dict) -> Optional[DatabaseConnection]:
+        if not db_config: return None
 
-from backends.cieoidc.storage.entities.oidc_auth import OidcAuthentication
-from backends.cieoidc.storage.mongo_db.connection import MongoConnection
-from backends.cieoidc.storage.mongo_db.repository import MongoBaseRepository
+        engine = db_config.get("engine")
+        extra_params = {}
+        if engine == "mongodb":
+            _cls = MongoConnection
+            extra_params.update(db_config.get("params") or {})
+        else:
+            return None
 
-
-
-if __name__ == "__main__":
-
-    conn=MongoConnection("mongodb://satosa:thatpassword@localhost:27017/")
-    repo = MongoBaseRepository(conn, "iam", "testiamo", OidcAuthentication)
-    oid= OidcAuthentication(
-                            id="2",
-                            name="state",
-                            client_id ="endpoint",
-                            state= "data",
-                            endpoint="False",
-                            data = "provider_id",
-                            successful=False,
-                            provider_id =       "created",
-
-        provider_configuration=       {},
-        created=       "",
-        modified=       ""
-    )
-    repo.add(oid)
-
-    p=repo.find_all({})
-    ...
+        return _cls(host=db_config.get("host"), port=db_config.get("port"), driver=db_config.get("driver"),
+                    username=db_config.get("username"), password=db_config.get("password"),
+                    database=db_config.get("database"), tls= db_config.get("tls"), **extra_params)

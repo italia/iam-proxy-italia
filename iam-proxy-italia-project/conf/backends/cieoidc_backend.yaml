@@ -10,10 +10,23 @@ config:
         ssl: true
       session:
         timeout: 6
+
+  storage: &db_config
+    engine: mongodb
+    host: satosa-mongo
+    port: 27017
+    driver: #optional
+    username: !ENV MONGODB_USERNAME
+    password: !ENV MONGODB_PASSWORD
+    database: cie_oidc
+    tls: false
+    params: #optiona extra params (key:value)
+
   providers:
     - http://cie-provider.org:8002/oidc/op/
     - http://ipzs-col-provider.org:8002/oidc/op/
     - http://ipsz-prod-provider.org:8002/oidc/op/
+    -
   security_operations:
     hash:
       default:
@@ -135,7 +148,7 @@ config:
         cache_ttl: 0
         httpc_params: *httpc_params
         trust_anchor:
-          - http://trust-anchor.org:8000
+          - http://trust-anchor.org:5002
 
 
   endpoints:
@@ -164,6 +177,7 @@ config:
       routes:
         - /oidc/authorization
       config:
+        db_config: *db_config
         entity_type: openid_relying_party
         entity_configuration_exp: 2800
         default_sig_alg: RS256

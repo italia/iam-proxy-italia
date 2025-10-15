@@ -3,65 +3,58 @@ from urllib.parse import quote_plus
 
 from pymongo import MongoClient
 
-from ..interfaces import DbConnectionConfig
 from ..interfaces.db_connection import DatabaseConnection
 
 
 class MongoConnection(DatabaseConnection):
 
+    def __init__(self, host: str, port: Optional[int], driver: Optional[str], username: Optional[str],
+                 password: Optional[str], database: Optional[str], tls: bool = False, **kwargs):
+        super().__init__(host, port, driver, username, password, database, tls)
+        self._extra_params = kwargs
+        self.__client = None
 
-    def __init__(self, uri: str):
-        """
-        Constructor to be considered as private one
-        """
-        self._client = None
-        self._uri = uri
-
-    @classmethod
-    def from_config(cls, db_config: DbConnectionConfig) -> Optional["MongoConnection"]:
-        if db_config is None:
-            return None
-        _uri = cls._uri_from_config(db_config)
-        return cls(_uri)
+    def get_database_name(self) -> str:
+        return self._database
 
     def get_handle(self) -> MongoClient:
-        if self._client is None:
+        if self.__client is None:
             self.connect()
-        return self._client
+        return self.__client
 
     def connect(self) -> None:
-        if self._client is None:
-            self._client = MongoClient(self._uri)
+        if self.__client is None:
+            self.__client = MongoClient(self.__get_connection_uri())
 
     def close(self) -> None:
-        if self._client is not None:
-            self._client.close()
-            self._client = None
+        if self.__client is not None:
+            self.__client.close()
+            self.__client = None
 
-    def is_connected(self) -> bool:
+    def is_alive(self) -> bool:
         try:
-            self._client.admin.command('ping')
+            self.__client.admin.command('ping')
             return True
         except Exception as e:
             return False
 
-    @classmethod
-    def _uri_from_config(cls, db_config: DbConnectionConfig) -> str:
+
+    def __get_connection_uri(self) -> str:
         """ Build connection URI from DbConnectionConfig """
         uri = "mongodb://"
-        if db_config.username and db_config.password:
-            uri += f"{quote_plus(db_config.username)}:{quote_plus(db_config.password)}@"
+        if self._username and self._password:
+            uri += f"{quote_plus(self._username)}:{quote_plus(self._password)}@"
 
-        uri += db_config.host
-        if db_config.port:
-            uri += f":{db_config.port}"
+        uri += self._host
+        if self._port:
+            uri += f":{self._port}"
 
-        uri += "/"
-        if db_config.database:
-            uri += db_config.database
+        # uri += "/"
+        # if self._database:
+        #     uri += self._database
 
-        uri += f"?tls={str(db_config.tls).lower()}"
-        extra_params = db_config.params.copy()
+        uri += f"?tls={str(self._tls).lower()}"
+        extra_params = self._extra_params.copy()
         if extra_params:
             param_str = "&".join(f"{quote_plus(str(k))}={quote_plus(str(v))}" for k, v in extra_params.items())
             uri += f"&{param_str}"

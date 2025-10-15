@@ -4,8 +4,11 @@ import json
 import uuid
 
 from datetime import datetime, timezone
-from typing import Callable
+from pydantic import ValidationError
+from typing import Callable, Optional
 from copy import deepcopy
+
+from typing import NoReturn
 
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
@@ -13,7 +16,10 @@ from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
 
+from ..models.oidc_auth import OidcAuthentication
+from ..storage import StorageFactory, IBaseRepository
 from ..utils import KeyUsage
+from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import create_jws
 from ..utils.helpers.jwks import  create_jwk, public_jwk_from_private_jwk
@@ -23,7 +29,6 @@ from ..utils.helpers.misc import (
     get_key,
     http_dict_to_redirect_uri_path
 )
-
 from pyeudiw.federation.trust_chain_builder import TrustChainBuilder
 
 
@@ -50,6 +55,19 @@ class AuthorizationHandler(BaseEndpoint):
         self._jwks_core = self.config.get("jwks_core")
         self.trust_chains = trust_chains
 
+        self._repo_auth: Optional[IBaseRepository] = None
+        self.__init_storage(config.get("db_config", {}))
+
+
+    def __init_storage(self, config: dict) -> NoReturn:
+        if not config:
+            raise StorageError
+        db_conn = StorageFactory.get_connection_by_config(config)
+        if not db_conn:
+            raise UnsupportedStorageEngine
+        self._repo_auth = StorageFactory.get_repository_by_conn(db_conn, OidcAuthentication)
+        if not self._repo_auth:
+            raise RepositoryNotFound
 
     @property
     def _jwks(self) -> dict:
@@ -303,7 +321,7 @@ class AuthorizationHandler(BaseEndpoint):
 
         return uri_path
 
-    def __insert(self, input: dict):
+    def __insert(self, obj: dict):
 
         """
         method __insert:
@@ -320,8 +338,16 @@ class AuthorizationHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [input {input}]"
         )
 
-        # @TODO insert DB layer
 
         logger.debug(
             f"Registration success for input: {input}"
         )
+
+        try:
+            auth = OidcAuthentication(**obj)
+            if not self._repo_auth.add(auth):
+                logger.error("Unable to insert the Authentication object")
+        except ValidationError as e:
+            logger.debug(e)
+            ...
+        #todo manage result
