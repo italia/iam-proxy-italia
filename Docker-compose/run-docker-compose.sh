@@ -11,6 +11,8 @@ function clean_data {
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
     rm -Rf ./certbot/live/localhost/*
+    rm -Rf ./nginx/conf.d/sites-enabled/*
+    rm -Rf ./wwwallet/*
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   else
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then echo "'-e' options is skipped. To perform this option is required '-f' too "; fi
@@ -18,7 +20,35 @@ function clean_data {
 }
 
 function init_files () {
-  if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
+  if [ -f "$1" ]; then echo "$2 file is already initialized" ; else eval "$3" ; fi
+}
+
+function merge_env() {
+  local env_source="$1"
+  local template_file="$2"
+  local target_file="$3"
+
+  local vars=()
+  while IFS='=' read -r key _; do
+    [[ -z "$key" || "$key" =~ ^# ]] && continue
+    vars+=("$key")
+  done < "$env_source"
+
+  set -a
+  source "$env_source"
+  set +a
+
+  env_interpolate() {
+    while IFS= read -r line; do
+      eval "echo \"$line\""
+    done
+  }
+
+  env_interpolate < "$template_file" > "$target_file"
+
+  for var in "${vars[@]}"; do
+    unset "$var"
+  done
 }
 
 function add_localhost_cert () {
@@ -36,21 +66,64 @@ function add_iam_cert () {
 
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
-  
+
   mkdir -p ./iam-proxy-italia-project
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/localhost
+  mkdir -p ./nginx/conf.d/sites-enabled
 
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
-  init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
+  init_files ./certbot/live/localhost/privkey.pem "Localhost cert" "add_localhost_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
 
   rm -Rf ./iam-proxy-italia-project/static
+  rm -Rf ./iam-proxy-italia-project/wwwallet
+
+  if [ "$COMPOSE_PROFILES" == *"wwwallet"* ]; then
+      mkdir -p ./wwwallet
+
+      init_files "./nginx/conf.d/sites-enabled/wwwallet.conf" \
+        "nginx wwwallet configuration is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/wwwallet.conf ./nginx/conf.d/sites-enabled/"
+
+      init_files "./wwwallet/wallet-frontend/package.json" \
+        "wwwallet-frontend directory is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/wallet-frontend ./wwwallet/wallet-frontend"
+
+      init_files "./wwwallet/wallet-backend-server/package.json" \
+        "wwwallet-backend-server directory is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/wallet-backend-server ./wwwallet/wallet-backend-server"
+
+      init_files "./wwwallet/wallet-frontend/lib/wallet-common/package.json" \
+        "wwwallet-frontend wallet-common directory is already initialized" \
+        "mkdir -p ./wwwallet/wallet-frontend/lib/wallet-common && cp -R ../iam-proxy-italia-project/wwwallet/wallet-common/* ./wwwallet/wallet-frontend/lib/wallet-common/"
+
+      init_files "./nginx/conf.d/wwwallet.default.conf" \
+        "wwwallet nginx config is already initialized" \
+        "cp -R ../iam-proxy-italia-project/wwwallet/configs/nginx/wwwallet.default.conf ./nginx/conf.d/wwwallet.default.conf"
+
+      merge_env ./.env ../iam-proxy-italia-project/wwwallet/configs/.env.prod ./wwwallet/wallet-frontend/.env.prod
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/config.template.ts ./wwwallet/wallet-backend-server/config/config.template.ts
+      cp -R ../iam-proxy-italia-project/wwwallet/configs/vite.config.ts ./wwwallet/wallet-frontend/vite.config.ts
+
+      mkdir -p ./wwwallet/wallet-backend-server/src/routers &&
+        cp -R ../iam-proxy-italia-project/wwwallet/configs/proxy.router.ts ./wwwallet/wallet-backend-server/src/routers/proxy.router.ts
+
+      mkdir -p ./wwwallet/mysql/config &&
+        cp -R ../iam-proxy-italia-project/wwwallet/mysql/config/my.cnf ./wwwallet/mysql/config/my.cnf
+
+      cp ../iam-proxy-italia-project/wwwallet/configs/openid4vci_frontend.yaml ./iam-proxy-italia-project/conf/frontends/openid4vci_frontend.yaml
+
+      mkdir -p ./wwwallet/mariadb/data
+      chmod -R 777 ./wwwallet
+
+      echo "WARNING: wwwallet permission folder set recursively to 777"
+  fi
 
   chmod -R 777 ./iam-proxy-italia-project
   echo "WARNING: iam-proxy-italia-project permission folder set recursively to 777"
@@ -115,13 +188,14 @@ function help {
   echo "-s Skip docker image update"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
   echo "-t Run spid_sp_test tests after startup"
+  echo "-w Set 'wwwallet' compose profile. Run: wwwallet-mariadb, wwwallet-server, wwwallet-frontend"
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
   echo ""
 }
 
-while getopts ":fepbimMdsh" opt; do
+while getopts ":fepbimMdswh" opt; do
   case ${opt} in
    f)
      SATOSA_CLEAN_DATA="true"
@@ -150,6 +224,9 @@ while getopts ":fepbimMdsh" opt; do
    t)
      RUN_SPID_TEST=true
       ;;
+   w)
+     COMPOSE_PROFILES="wwwallet"
+     ;;
    h)
      help
      exit 0

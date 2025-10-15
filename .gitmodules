@@ -1,0 +1,9 @@
+[submodule "iam-proxy-italia-project/wwwallet/wallet-frontend"]
+	path = iam-proxy-italia-project/wwwallet/wallet-frontend
+	url = https://github.com/wwWallet/wallet-frontend.git
+[submodule "iam-proxy-italia-project/wwwallet/wallet-backend-server"]
+	path = iam-proxy-italia-project/wwwallet/wallet-backend-server
+	url = https://github.com/wwWallet/wallet-backend-server
+[submodule "iam-proxy-italia-project/wwwallet/wallet-common"]
+	path = iam-proxy-italia-project/wwwallet/wallet-common
+	url = https://github.com/wwWallet/wallet-common

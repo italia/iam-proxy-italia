@@ -1,10 +1,75 @@
 services:
 
+  wwwallet-mariadb:
+    profiles:
+      - wwwallet
+    container_name: wwwallet-mariadb
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DBNAME:-wwwalletdb}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_DBPASSWORD:-changeme}
+      MARIADB_USER: ${MARIADB_DBUSER:-dbuser}
+      MARIADB_PASSWORD: ${MARIADB_DBPASSWORD:-dbpassword}
+    command:
+      - --table_definition_cache=100
+      - --performance_schema=0
+      - --innodb_use_native_aio=0
+    volumes:
+      - ./wwwallet/mariadb/data/:/var/lib/mysql
+    image: mariadb:10.6
+    ports:
+      - "3306:3306"
+    networks:
+      - iam-proxy-italia
+
+  wwwallet-server:
+    profiles:
+      - wwwallet
+    image: wwwallet-server:latest
+    build:
+      context: ./wwwallet/wallet-backend-server
+      dockerfile: Dockerfile
+    container_name: wwwallet-server
+    depends_on:
+      - wwwallet-mariadb
+    ports:
+      - "5000:5000"
+    networks:
+      - iam-proxy-italia
+    volumes:
+      - ./nginx/conf.d/wwwallet.default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
+    environment:
+      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
+      - TZ=${TZ:-Europe/Rome}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y nginx && \
+        nginx -g 'daemon off;' &
+        node ./dist/src/app.js
+      "
+
+  wwwallet-frontend:
+    profiles:
+      - wwwallet
+    image: wwwallet-frontend:latest
+    build:
+      context: ./wwwallet/wallet-frontend
+      dockerfile: Dockerfile
+    container_name: wwwallet-frontend
+    depends_on:
+      - wwwallet-server
+    ports:
+      - "3000:3000"
+    networks:
+      - iam-proxy-italia
+
   satosa-mongo:
     profiles:
       - demo
       - mongo
       - mongoexpress
+      - wwwallet
     image: mongo
     container_name: satosa-mongo
     environment:
@@ -25,6 +90,7 @@ services:
     profiles:
       - demo
       - mongoexpress
+      - wwwallet
     image: mongo-express
     container_name: satosa-mongo-express
     ports:
@@ -45,6 +111,7 @@ services:
     profiles:
       - demo
       - dev
+      - wwwallet
     build:
       context: ../
       args:
@@ -54,7 +121,7 @@ services:
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
     volumes:
-       - ./djangosaml2_sp:/django_sp:rw
+      - ./djangosaml2_sp:/django_sp:rw
     ports:
       - "8000:8000"
     networks:
@@ -63,11 +130,11 @@ services:
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
     image: iam-proxy-italia:3.0
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
-        dockerfile: Dockerfile
+    build:
+      context: ../
+      args:
+        - NODE_ENV=local
+      dockerfile: Dockerfile
     container_name: iam-proxy-italia
     # depends_on:
     # - satosa-mongo
@@ -87,9 +154,10 @@ services:
       - SATOSA_PUBLIC_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PUBLIC_KEY_FILENAME:-cert.pem}
       - SATOSA_BASE=https://${SATOSA_HOSTNAME:-localhost}
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
+      - SATOSA_BASE_OPENID4VCI=${SATOSA_BASE}/OpenID4VCI
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      
+
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -141,6 +209,12 @@ services:
       timeout: 10s
 
   satosa-nginx:
+    profiles:
+      - demo
+      - mongo
+      - mongoexpress
+      - dev
+      - wwwallet
     image: nginx:alpine
     container_name: satosa-nginx
     depends_on:
@@ -151,7 +225,9 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/conf.d/sites-enabled:/etc/nginx/conf.d/sites-enabled:ro
+      - ./nginx/html:/etc/nginx/html:ro
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
@@ -166,7 +242,8 @@ services:
     profiles:
       - demo
       - dev
-    image: italia/spid-saml-check
+      - wwwallet
+    image: italia/spid-saml-check:1.10.6
     container_name: spid-samlcheck
     ports:
       - "8443:8443"
@@ -174,7 +251,7 @@ services:
       - iam-proxy-italia
   satosa-certbot:
     image: certbot/certbot
-    container_name: satosa-certbot 
+    container_name: satosa-certbot
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}

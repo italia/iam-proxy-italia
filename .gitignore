@@ -8,6 +8,8 @@ iam-proxy-italia-project/logs/*.log
 iam-proxy-italia-project/metadata/*.md
 iam-proxy-italia-project/data/*
 iam-proxy-italia-project/private/*
+iam-proxy-italia-project/wwwallet/mysql/data/
+iam-proxy-italia-project/wwwallet/mysql/init/
 *.pyc
 *pyFF_example/info.log
 *pyFF_example/error.log
@@ -26,8 +28,11 @@ Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
+Docker-compose/nginx/conf.d/sites-enabled/wwwallet.conf
+Docker-compose/nginx/conf.d/wwwallet.default.conf
 Docker-compose/certbot/live/localhost
 Docker-compose/.env
+Docker-compose/wwwallet/*
 Docker-compose/eudi-wallet-it-python
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
