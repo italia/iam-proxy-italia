@@ -122,10 +122,10 @@ config:
   #This is the configuration for the relaying party metadata
   metadata:
     oauth_authorization_server:
-      issuer: https://satosa-nginx/OpenID4VCI # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
-      pushed_authorization_request_endpoint: https://satosa-nginx/OpenID4VCI/par
-      authorization_endpoint: https://localhost/OpenID4VCI/authorization
-      token_endpoint: https://satosa-nginx/OpenID4VCI/token
+      issuer: ${SATOSA_BASE_OPENID4VCI} # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      pushed_authorization_request_endpoint: ${SATOSA_BASE_OPENID4VCI}/par
+      authorization_endpoint: ${SATOSA_BASE_OPENID4VCI}/OpenID4VCI/authorization
+      token_endpoint: ${SATOSA_BASE_OPENID4VCI}/token
       client_registration_types_supported:
         - automatic
       code_challenge_methods_supported:
@@ -163,7 +163,7 @@ config:
         - ES512
       jwks: *metadata_jwks
     openid_credential_issuer: &openid_credential_issuer_metadata
-      credential_issuer: https://satosa-nginx/OpenID4VCI # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      credential_issuer: ${SATOSA_BASE_OPENID4VCI} # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       credential_endpoint: /credential
       nonce_endpoint: /nonce-endpoint
       deferred_credential_endpoint: /deferred-credential
@@ -496,10 +496,10 @@ config:
         - vouch
     federation_entity: &federation_entity_metadata
       organization_name: Organization Name
-      homepage_uri: https://satosa-nginx/OpenID4VCI/
-      policy_uri: https://satosa-nginx/OpenID4VCI/public/privacy_policy.html
-      tos_uri: https://satosa-nginx/OpenID4VCI/public/info_policy.html
-      logo_uri: https://satosa-nginx/OpenID4VCI/public/logo.svg
+      homepage_uri: ${SATOSA_BASE_OPENID4VCI}/
+      policy_uri: ${SATOSA_BASE_OPENID4VCI}/public/privacy_policy.html
+      tos_uri: ${SATOSA_BASE_OPENID4VCI}/public/info_policy.html
+      logo_uri: ${SATOSA_BASE_OPENID4VCI}/public/logo.svg
       contacts:
         - informazioni@example.it
         - protocollo@pec.example.it
