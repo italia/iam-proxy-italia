@@ -108,8 +108,8 @@ config:
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: https://localhost/cieOidcRp/openid_relying_party/jwks.json
-      signed_jwks_uri: https://localhost/cieOidcRp/openid_relying_party/jwks.jose
+      jwks_uri: https://localhost/CieOidcRp/openid_relying_party/jwks.json
+      signed_jwks_uri: https://localhost/CieOidcRp/openid_relying_party/jwks.jose
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it
@@ -117,7 +117,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - https://relying-party.org/cieOidcRp/oidc/callback
+        - https://relying-party.org/CieOidcRp/oidc/callback
       response_types:
         - code
       subject_type: pairwise
@@ -148,7 +148,7 @@ config:
         cache_ttl: 0
         httpc_params: *httpc_params
         trust_anchor:
-          - http://trust-anchor.org:5002
+          - http://trust-anchor.org:8000
 
 
   endpoints:
@@ -167,7 +167,7 @@ config:
         entity_configuration_exp: 2800
         default_sig_alg: *default_sign_alg #RS256
         authority_hints:
-          - http://trust-anchor.org:5002
+          - http://trust-anchor.org:8000
         trust_marks:
           - id: https://registry.agid.gov.it/openid_relying_party/public/
             trust_mark: eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig
@@ -194,6 +194,7 @@ config:
         entity_type: openid_relying_party
         entity_configuration_exp: 2800
         default_sig_alg: RS256
+        db_config: *db_config
         metadata: *metadata
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core

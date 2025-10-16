@@ -2,27 +2,23 @@ import logging
 import inspect
 import json
 import uuid
-
 from datetime import datetime, timezone
 from pydantic import ValidationError
 from typing import Callable, Optional
 from copy import deepcopy
-
 from typing import NoReturn
-
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
-
 from ..models.oidc_auth import OidcAuthentication
 from ..storage import StorageFactory, IBaseRepository
 from ..utils import KeyUsage
 from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import create_jws
-from ..utils.helpers.jwks import  create_jwk, public_jwk_from_private_jwk
+from ..utils.helpers.jwks import  public_jwk_from_private_jwk
 from ..utils.helpers.misc import (
     random_string,
     get_pkce,
@@ -335,12 +331,7 @@ class AuthorizationHandler(BaseEndpoint):
 
         """
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [input {input}]"
-        )
-
-
-        logger.debug(
-            f"Registration success for input: {input}"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [input {obj}]"
         )
 
         try:
@@ -349,5 +340,8 @@ class AuthorizationHandler(BaseEndpoint):
                 logger.error("Unable to insert the Authentication object")
         except ValidationError as e:
             logger.debug(e)
-            ...
         #todo manage result
+
+        logger.debug(
+            f"Registration success for input: {obj}"
+        )
