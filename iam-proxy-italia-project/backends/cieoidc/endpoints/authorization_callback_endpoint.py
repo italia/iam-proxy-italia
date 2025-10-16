@@ -11,7 +11,10 @@ from pydantic import ValidationError
 from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from backends.cieoidc.utils.clients.oidc import OidcUserInfo
 from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
-from ..models.oidc_auth import OidcAuthentication
+from ..models.oidc_auth import (
+    OidcAuthentication,
+    OidcAuthenticationToken
+)
 from ..storage import StorageFactory
 from ..utils.helpers.misc import (
     get_jwks,
@@ -69,6 +72,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         if not db_conn:
             raise UnsupportedStorageEngine
         self._repo_auth_callback = StorageFactory.get_repository_by_conn(db_conn, OidcAuthentication)
+        self._repo_auth_callback_token = StorageFactory.get_repository_by_conn(db_conn, OidcAuthenticationToken)
         if not self._repo_auth_callback:
             raise RepositoryNotFound
 
@@ -245,7 +249,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             )
             # @TODO Talking with Giuseppe for rendering raise exception?
 
-        user = self.user_reunification(user_attrs)
+        user = self.__update_user(user_attrs)
 
         if not user:
             logger.error("User is empty")
@@ -286,6 +290,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         return self.auth_callback_func(context, "")
 
 
+
+
     def __get_authorization(self, state: str) -> dict:
 
         """
@@ -308,6 +314,43 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug(e)
         return {}
 
+    def __update_user(self, user_attrs: dict) -> dict:
+
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user_attrs {user_attrs}]"
+        )
+
+        # user_model = get_user_model()
+        #
+        # if user_attrs.get(RP_USER_LOOKUP_FIELD, None):
+        #     lookup = {
+        #         f"attributes__{RP_USER_LOOKUP_FIELD}": user_attrs.get(RP_USER_LOOKUP_FIELD)
+        #     }
+        # else:
+        #     logger.warning("User attribute not found for reunification, try sub")
+        #     lookup = {
+        #         "username": user_attrs["username"]
+        #     }
+        # user = user_model.objects.filter(**lookup).first()
+        # if user:
+        #     user.attributes.update(user_attrs)
+        #     user.save()
+        #     logger.info(f"{RP_USER_LOOKUP_FIELD} matched on user {user}")
+        #     return user
+        # elif RP_USER_CREATE:
+        #     user = user_model.objects.create(
+        #         username=user_attrs.get("username", user_attrs["sub"]),
+        #         first_name=user_attrs.get("given_name", user_attrs["sub"]),
+        #         last_name=user_attrs.get("family_name", user_attrs["sub"]),
+        #         email=user_attrs.get("email", ""),
+        #         attributes=user_attrs,
+        #     )
+        #     logger.info(f"Created new user {user}")
+        #     return user
+
+
+
+
     def __create_token(self, authorization_input: dict, code: str) -> dict:
 
         """
@@ -324,13 +367,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authorization_input {authorization_input}, code: {code}]"
         )
-
-        # @TODO insert DB layer
-
-        logger.debug(
-            f"Registration success for input: {input}"
-        )
-
         return { "authz_request": authorization_input, "code": code}
 
     def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict, token_response: dict):
@@ -376,10 +412,15 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authorization_input {authorization_input}]"
         )
 
-        # @TODO insert DB layer
+        try:
+            auth_token = OidcAuthenticationToken(**authorization_input)
+            if not self._repo_auth_callback_token.add(auth_token):
+                logger.error("Unable to insert the AuthenticationToken object")
+        except ValidationError as e:
+            logger.debug(e)
 
         logger.debug(
-            f"Registration success for input: {input}"
+            f"Registration success for input: {authorization_input}"
         )
 
     def __check_provider(self, provider_is: str, iss: str) -> bool:

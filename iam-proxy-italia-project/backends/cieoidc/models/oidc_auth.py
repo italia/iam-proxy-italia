@@ -18,14 +18,16 @@ class OidcAuthentication(BaseModel):
 
 
 class OidcAuthenticationToken(BaseModel):
-    user : str
-    authz_request : str
+    user : Optional[str] = None
+    authz_request : dict
     access_token : str
+    code: str
     id_token : str
-    refresh_token : str
+    refresh_token : Optional[str] = None
     scope : str
     token_type : str
     expires_in : int
-    created : str
-    modified : str
-    revoked : str
+    created : Optional[str] = None
+    modified : Optional[str] = None
+    revoked : Optional[str] = None
+

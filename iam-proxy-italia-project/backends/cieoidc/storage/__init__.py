@@ -2,7 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from backends.cieoidc.models.oidc_auth import OidcAuthentication
+from backends.cieoidc.models.oidc_auth import (
+                        OidcAuthentication,
+                        OidcAuthenticationToken
+)
 
 from .interfaces.db_connection import DatabaseConnection
 from .interfaces.repository import IBaseRepository
@@ -23,6 +26,8 @@ class StorageFactory:
         if isinstance(db_conn, MongoConnection):
             if entity_type is OidcAuthentication:
                 collection = "oidc_authentication"
+            elif entity_type is OidcAuthenticationToken:
+                collection = "oidc_authentication_token"
             else:
                 return None
             return MongoBaseRepository(db_conn, collection, entity_type)
