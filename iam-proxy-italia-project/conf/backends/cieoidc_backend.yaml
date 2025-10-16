@@ -205,7 +205,7 @@ config:
           sub:
             - sub
           username:
-            - func: iam-proxy-italia-project.backends.cieoidc.tools.utils.issuer_prefixed_sub
+            - func: backends.cieoidc.utils.helpers.misc.issuer_prefixed_sub
               kwargs:
                 sep: "__"
           first_name:

@@ -17,9 +17,10 @@ class OidcUserInfo(object):
     https://openid.net/specs/openid-connect-core-1_0.html#UserInfo
     """
 
-    def __init__(self,provider_configuration: dict, jwks_core: dict):
+    def __init__(self,provider_configuration: dict, jwks_core: dict, httpc_params: dict):
         self.provider_configuration = provider_configuration
         self.jwks_core = jwks_core
+        self.httpc_params = httpc_params
 
     def __get_jwk(self, kid, jwks):
         for jwk in jwks:
@@ -59,14 +60,14 @@ class OidcUserInfo(object):
 
                 header = unpad_jwt_head(jwe)
                 # header["kid"] kid di rp
-                rp_jwk = self.get_jwk(header["kid"], self.jwks_core)
+                rp_jwk = self.__get_jwk(header["kid"], self.jwks_core)
                 jws = decrypt_jwe(jwe, rp_jwk)
 
                 if isinstance(jws, bytes):
                     jws = jws.decode()
 
                 header = unpad_jwt_head(jws)
-                idp_jwks = get_jwks(self.provider_configuration)
+                idp_jwks = get_jwks(self.provider_configuration,self.httpc_params)
                 idp_jwk = self.__get_jwk(header["kid"], idp_jwks)
 
                 decoded_jwt = verify_jws(jws, idp_jwk)

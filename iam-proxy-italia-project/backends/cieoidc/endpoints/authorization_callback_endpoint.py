@@ -178,7 +178,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         #             status=400
         #         )
 
-        jwks = get_jwks(authorization.get("provider_configuration"), self.httpc_params)
+        jwks = get_jwks(authorization["provider_configuration"].get("openid_provider"), self.httpc_params)
 
         access_token = token_response["access_token"]
 
@@ -219,7 +219,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         self.__update_authentication_token(authorization_token, access_token, id_token, token_response)
 
-        oidc_user = OidcUserInfo(authorization.get("provider_configuration"), self.jwks_core)
+        oidc_user = OidcUserInfo(authorization["provider_configuration"].get("openid_provider"), self.jws_core, self.httpc_params)
 
         user_info = oidc_user.get_userinfo(
             authorization.get("state"),
@@ -347,7 +347,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [authorization {authorization}, access_token: {access_token}, id_token:{id_token}, token_response:{token_response}]"
         )
-        authorization.access_token = access_token
+        authorization["access_token"] = access_token
 
         authorization["id_token"] = id_token
 
@@ -356,8 +356,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         authorization["token_type"] = token_response["token_type"]
 
         authorization["expires_in"] = token_response["expires_in"]
-
-        authorization["refresh_token"] = token_response["refresh_token"]
 
         self.__insert_token(authorization)
 
