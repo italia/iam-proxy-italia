@@ -6,7 +6,7 @@ from backends.cieoidc.models.oidc_auth import (
                         OidcAuthentication,
                         OidcAuthenticationToken
 )
-
+from ..models.user import OidcUser
 from .interfaces.db_connection import DatabaseConnection
 from .interfaces.repository import IBaseRepository
 from .mongo_db.connection import MongoConnection
@@ -28,6 +28,8 @@ class StorageFactory:
                 collection = "oidc_authentication"
             elif entity_type is OidcAuthenticationToken:
                 collection = "oidc_authentication_token"
+            elif entity_type is OidcUser:
+                collection = "oidc_users"
             else:
                 return None
             return MongoBaseRepository(db_conn, collection, entity_type)

@@ -13,8 +13,10 @@ from backends.cieoidc.utils.clients.oidc import OidcUserInfo
 from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
 from ..models.oidc_auth import (
     OidcAuthentication,
-    OidcAuthenticationToken
+    OidcAuthenticationToken,
 )
+from ..models.user import OidcUser
+
 from ..storage import StorageFactory
 from ..utils.helpers.misc import (
     get_jwks,
@@ -73,6 +75,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             raise UnsupportedStorageEngine
         self._repo_auth_callback = StorageFactory.get_repository_by_conn(db_conn, OidcAuthentication)
         self._repo_auth_callback_token = StorageFactory.get_repository_by_conn(db_conn, OidcAuthenticationToken)
+        self._repo_auth_callback_user = StorageFactory.get_repository_by_conn(db_conn, OidcUser)
         if not self._repo_auth_callback:
             raise RepositoryNotFound
 
@@ -260,8 +263,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         #  add header
         # @TODO Talking with Manuel and Giuseppe
-        context.http_headers["authorization_token"] = authorization_token
-        context.http_headers["refresh_token"] = token_response["refresh_token"]
+        # context.http_headers["authorization_token"] = authorization_token
+        # context.http_headers["refresh_token"] = token_response["refresh_token"]
 
         # request.session["rt_expiration"] = 0
         #
@@ -314,41 +317,21 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug(e)
         return {}
 
-    def __update_user(self, user_attrs: dict) -> dict:
+    def __update_user(self, user_attrs: dict) -> OidcUser | None:
 
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user_attrs {user_attrs}]"
         )
-
-        # user_model = get_user_model()
-        #
-        # if user_attrs.get(RP_USER_LOOKUP_FIELD, None):
-        #     lookup = {
-        #         f"attributes__{RP_USER_LOOKUP_FIELD}": user_attrs.get(RP_USER_LOOKUP_FIELD)
-        #     }
-        # else:
-        #     logger.warning("User attribute not found for reunification, try sub")
-        #     lookup = {
-        #         "username": user_attrs["username"]
-        #     }
-        # user = user_model.objects.filter(**lookup).first()
-        # if user:
-        #     user.attributes.update(user_attrs)
-        #     user.save()
-        #     logger.info(f"{RP_USER_LOOKUP_FIELD} matched on user {user}")
-        #     return user
-        # elif RP_USER_CREATE:
-        #     user = user_model.objects.create(
-        #         username=user_attrs.get("username", user_attrs["sub"]),
-        #         first_name=user_attrs.get("given_name", user_attrs["sub"]),
-        #         last_name=user_attrs.get("family_name", user_attrs["sub"]),
-        #         email=user_attrs.get("email", ""),
-        #         attributes=user_attrs,
-        #     )
-        #     logger.info(f"Created new user {user}")
-        #     return user
-
-
+        try:
+            user_token = OidcUser(**user_attrs)
+            user_token.attributes = user_attrs
+            if not self._repo_auth_callback_user.add(user_token):
+                logger.error("Unable to insert the AuthenticationToken object")
+            logger.debug(f"Insert result: {user_token}")
+            return user_token
+        except ValidationError as e:
+            logger.debug(e)
+            return None
 
 
     def __create_token(self, authorization_input: dict, code: str) -> dict:
