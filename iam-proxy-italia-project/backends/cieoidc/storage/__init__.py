@@ -19,9 +19,9 @@ class StorageFactory:
     def get_repository_by_conn(cls, db_conn: DatabaseConnection, entity_type: type[BaseModel]) -> Optional[IBaseRepository]:
         """
         Factory method to obtain the repository based on the connection type and entity_type provided input.
-        @param connection: database connection
-        @param entity_type: type of entity to be managed
-        @return: repository object
+        :param connection: database connection
+        :param entity_type: type of entity to be managed
+        :return: repository object
         """
         if isinstance(db_conn, MongoConnection):
             if entity_type is OidcAuthentication:

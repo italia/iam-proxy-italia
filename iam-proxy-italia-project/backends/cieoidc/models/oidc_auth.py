@@ -4,29 +4,35 @@ from pydantic import BaseModel
 
 
 class OidcAuthentication(BaseModel):
+    """
+    Fields marked as Optional and without a default value must be entered (even if they are null).
+    """
     id: Optional[str] = None
-    name: Optional[str] = None#todo check if can be optional
-    client_id : str
-    state : str
-    endpoint : str
-    data : str
-    successful : Optional[bool] = None #todo check if can be optional
-    provider_id : Optional[str] = None #todo check if can be optional
+    name: Optional[str] = None
+    client_id : Optional[str]
+    state : Optional[str]
+    endpoint : Optional[str]
+    data : Optional[str]
+    successful : Optional[bool] = None
+    provider_id : Optional[str] = None
     provider_configuration : dict
-    created : Optional[str] = None #todo check if can be optional
-    modified : Optional[str] = None  #todo check if can be optional
+    created : Optional[str] = None
+    modified : Optional[str] = None
 
 
 class OidcAuthenticationToken(BaseModel):
+    """
+    Fields marked as Optional and without a default value must be entered (even if they are null).
+    """
     user : Optional[str] = None
-    authz_request : dict
-    access_token : str
-    code: str
-    id_token : str
+    authz_request : Optional[dict]
+    access_token : Optional[str]
+    code: Optional[str]
+    id_token : Optional[str]
     refresh_token : Optional[str] = None
-    scope : str
-    token_type : str
-    expires_in : int
+    scope : Optional[str]
+    token_type : Optional[str]
+    expires_in : Optional[int]
     created : Optional[str] = None
     modified : Optional[str] = None
     revoked : Optional[str] = None
