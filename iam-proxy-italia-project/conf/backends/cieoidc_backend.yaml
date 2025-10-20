@@ -10,6 +10,15 @@ config:
         ssl: true
       session:
         timeout: 6
+  ui: &user_interface
+    static_storage_url: !ENV SATOSA_BASE_STATIC
+    template_folder: "templates" # project root
+    html_template: "echo_attributes.html"
+    error_template: "error.html"
+    error_url: "https://localhost/static/error_page.html"
+    html_error_template: "authorization_error.html"
+    size: 250 # px
+    color: '#000000'  # hex
 
   storage: &db_config
     engine: mongodb
@@ -199,6 +208,7 @@ config:
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
         httpc_params: *httpc_params
+        ui: *user_interface
         client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
         grant_type: "authorization_code"
         claims:

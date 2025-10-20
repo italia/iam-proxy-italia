@@ -10,6 +10,7 @@ from typing import NoReturn
 from pydantic import ValidationError
 from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from backends.cieoidc.utils.clients.oidc import OidcUserInfo
+
 from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
 from ..models.oidc_auth import (
     OidcAuthentication,
@@ -30,6 +31,7 @@ from ..utils.helpers.jwtse import (
     verify_at_hash
 )
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator
+from ..utils.html_template import Jinja2TemplateHandler
 
 
 logger = logging.getLogger(__name__)
@@ -62,7 +64,12 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         self.jws_core = config.get("jwks_core")
 
+        self.template = Jinja2TemplateHandler(self.config["ui"])
+
         self.__init_storage(config.get("db_config", {}))
+
+
+
 
     def __init_storage(self, config: dict) -> NoReturn:
         logger.debug(
@@ -259,6 +266,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             # @TODO Talking with Giuseppe for rendering raise exception?
 
         authorization_token["user"] = user
+
+
         # @TODO Update the authorization_token
 
         #  add header
@@ -290,7 +299,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         #         settings, "LOGIN_REDIRECT_URL", None
         #     ) or reverse("spid_cie_rp_echo_attributes")
         # )
-        return self.auth_callback_func(context, "")
+        return self._cross_device_http_response(user)
 
 
 
@@ -432,3 +441,19 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             iss = iss[:-1]
 
         return provider_is == iss
+
+    def _cross_device_http_response(self, user: OidcUser) -> Response:
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user {user}]"
+        )
+        result = self.template.qrcode_page.render(
+            {
+                "sub": user.sub,
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "fiscal_number": user.fiscal_number
+            }
+        )
+        return Response(result, content="text/html; charset=utf8", status="200")
