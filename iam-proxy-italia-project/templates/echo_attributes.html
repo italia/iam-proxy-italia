@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+<div class="py-md-5 bd-content">
+    <div class="card-wrapper card-space">
+       <div class="card card-bg no-after">
+          <div class="card-body">
+             <div class="row">
+                <p id="content-title" class="qr-code-title text-center">User attributes</p>
+             </div>
+             <div id="content" class="text-center">
+                <br>
+                <div id="content-qrcode" class="row">
+                   <div id = "content-qrcode-payload">
+                    sub: {{ sub }}
+                    username: {{ username }}
+                    first_name: {{ first_name }}
+                    last_name: {{ last_name }}
+                    email: {{ email }}
+                    fiscal_number: {{ fiscal_number }}
+                   </div>
+                   <div id="content-qrcode-info">
+                      <div id="content-function" class="text-center button-container mt-2">
+                         <button class="btn btn-outline-primary"
+                            action="action"
+                            onclick="window.history.go(-1); return false;"
+                            >
+                         <span>Indietro</span>
+                         </button>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+
+<script>
+    let failureTitle = "Autenticazione fallita.";
+    let failureText = "Qualcosa non ha funzionato. Premi “Riprova” per autenticarti nuovamente oppure segui le istruzioni visibili sull’app IO.";
+    let crossImg = "{{ static }}"+"img/cross.svg";
+
+    let startingConnectionTitle = "Continua sul tuo smartphone";
+    let startingConnectionText = "Per proseguire, segui le istruzioni sull'app IO e autorizza l'accesso";
+    let startingConnectionQRInfo = "<b>Non hai ricevuto la notifica?</b>";
+
+    let clickAccessLabel = "Vai al servizio";
+    let connectedTitle = "Autenticazione completata";
+    let connectedText = "Da questo momento puoi iniziare a utilizzare il servizio";
+    let connectedImg = "{{ static }}"+"img/check.svg";
+    let qrCodeExpiredInfo = "Il QR code non è più valido.";
+    let qrCodeReloadLabel = "Aggiorna codice QR";
+    let retryLabel = "Riprova";
+
+
+    let pollingInterval;
+
+    function Forbidden(data, textStatus, jqXHR){
+        console.log('403: Forbidden');
+        errorPage();
+    }
+
+    function connectionCompleted(data, textStatus, jqXHR) {
+        console.log('authenticated');
+
+        clearInterval(countdown);
+        changeTitle(connectedTitle);
+        changeText(connectedText);
+        changeQrCodeImg(connectedImg);
+        $('#content-qrcode-info').html(`
+            <div id="content-function" class="text-center button-container mt-2">
+                <a href="${data.redirect_uri}" 
+                    class="btn btn-primary" 
+                    aria-haspopup="false" 
+                    aria-expanded="false" 
+                    data-focus-mouse="false"
+                >
+                <span>${clickAccessLabel}</span>
+                </a>
+            </div>`
+        );
+    }
+
+    function serverError(data, textStatus, jqXHR){
+        console.log('500: Server Error');
+        errorPage()
+    }
+
+    function errorPage(){
+        clearInterval(countdown);
+        changeTitle(failureTitle);
+        changeText(failureText);
+        changeQrCodeImg(crossImg);
+        $('#content-qrcode-info').html(`
+            <div id="content-function" class="text-center button-container mt-2">
+                <button href="" 
+                    class="btn btn-outline-primary" 
+                    aria-haspopup="false" 
+                    aria-expanded="false" 
+                    data-focus-mouse="false"
+                >
+                <span>${retryLabel}</span>
+                </button>
+            </div>`
+        );
+    }
+
+    function changeTitle(str){
+        $('#content-title').html(str);
+    }
+
+    function changeText(str){
+        $('#content-text').html(str);
+    }
+
+
+
+</script>
+
+{% endblock body %}
