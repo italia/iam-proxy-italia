@@ -64,7 +64,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         self.template = Jinja2TemplateHandler(self.config["ui"])
 
-        self.__init_storage(config.get("db_config", {}))
         self._db_engine = OidcDbEngine(config.get("db_config", {}))
         self._db_engine.connect()
 
