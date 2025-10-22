@@ -12,15 +12,20 @@ config:
         timeout: 6
 
   storage: &db_config
-    engine: mongodb
-    host: satosa-mongo
-    port: 27017
-    driver: #optional
-    username: !ENV MONGODB_USERNAME
-    password: !ENV MONGODB_PASSWORD
-    database: cie_oidc
-    tls: false
-    params: #optiona extra params (key:value)
+    mongo_db:
+      module: backends.cieoidc.storage.impl.mongo_storage
+      class: MongoStorage
+      init_params:
+        url: mongodb://satosa-mongo:27017
+        conf:
+          db_name: cie_oidc
+          db_auth_collection: authentication
+          db_token_collection: authentication_token
+          db_user_collection: users
+          data_ttl: 63072000 # 2 years
+        connection_params:
+          username: !ENV MONGODB_USERNAME
+          password: !ENV MONGODB_PASSWORD
 
   providers:
     - http://cie-provider.org:8002/oidc/op/

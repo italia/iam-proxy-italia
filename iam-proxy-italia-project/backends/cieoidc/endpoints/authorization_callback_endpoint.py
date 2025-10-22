@@ -10,14 +10,13 @@ from typing import NoReturn
 from pydantic import ValidationError
 from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from backends.cieoidc.utils.clients.oidc import OidcUserInfo
-from ..utils.exceptions import UnsupportedStorageEngine, RepositoryNotFound, StorageError
+from ..storage.db_engine import OidcDbEngine
 from ..models.oidc_auth import (
     OidcAuthentication,
     OidcAuthenticationToken,
 )
 from ..models.user import OidcUser
 
-from ..storage import StorageFactory
 from ..utils.helpers.misc import (
     get_jwks,
     get_jwk_from_jwt,
@@ -62,22 +61,9 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         self.jws_core = config.get("jwks_core")
 
-        self.__init_storage(config.get("db_config", {}))
+        self._db_engine = OidcDbEngine(config.get("db_config", {}))
+        self._db_engine.connect()
 
-    def __init_storage(self, config: dict) -> NoReturn:
-        logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [config {config}]"
-        )
-        if not config:
-            raise StorageError
-        db_conn = StorageFactory.get_connection_by_config(config)
-        if not db_conn:
-            raise UnsupportedStorageEngine
-        self._repo_auth_callback = StorageFactory.get_repository_by_conn(db_conn, OidcAuthentication)
-        self._repo_auth_callback_token = StorageFactory.get_repository_by_conn(db_conn, OidcAuthenticationToken)
-        self._repo_auth_callback_user = StorageFactory.get_repository_by_conn(db_conn, OidcUser)
-        if not self._repo_auth_callback:
-            raise RepositoryNotFound
 
     def endpoint(self, context, *args):
         """
@@ -310,7 +296,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         """
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [state {state}]")
         try:
-            output = self._repo_auth_callback.find_all({"state": state})
+            output = self._db_engine.get_authentications(state)
             if output:
                 return output[0].model_dump(mode="json")
         except ValidationError as e:
@@ -325,7 +311,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         try:
             user_token = OidcUser(**user_attrs)
             user_token.attributes = user_attrs
-            if not self._repo_auth_callback_user.add(user_token):
+            if not self._db_engine.add_oidc_user(user_token) > 0:
                 logger.error("Unable to insert the AuthenticationToken object")
             logger.debug(f"Insert result: {user_token}")
             return user_token
@@ -397,7 +383,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         try:
             auth_token = OidcAuthenticationToken(**authorization_input)
-            if not self._repo_auth_callback_token.add(auth_token):
+            if not self._db_engine.add_oidc_token(auth_token):
                 logger.error("Unable to insert the AuthenticationToken object")
         except ValidationError as e:
             logger.debug(e)
