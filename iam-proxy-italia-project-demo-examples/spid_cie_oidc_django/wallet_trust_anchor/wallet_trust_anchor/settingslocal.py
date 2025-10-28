@@ -26,7 +26,7 @@ ADMIN_PATH = 'admin/'
 APPEND_SLASH = False
 
 # required for onboarding checks and also for all the leafs
-OIDCFED_DEFAULT_TRUST_ANCHOR = "http://wallet.trust-anchor.org:8005"
+OIDCFED_DEFAULT_TRUST_ANCHOR = "http://wallet.trust-anchor.org:8006"
 
 OIDCFED_TRUST_ANCHORS = [OIDCFED_DEFAULT_TRUST_ANCHOR]
 

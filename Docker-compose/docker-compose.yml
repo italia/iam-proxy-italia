@@ -192,7 +192,7 @@ services:
   wallet-trust-anchor:
     image: ghcr.io/italia/spid-cie-oidc-django:latest
     ports:
-      - "8005:8005"
+      - "8006:8005"
     volumes:
       - ./spid_cie_oidc_django/wallet_trust_anchor:/django-project
     networks:
@@ -201,7 +201,7 @@ services:
         bash -c "cd /django-project/ &&
         python3 manage.py migrate &&
         python3 manage.py loaddata dumps/ta-ec.json &&
-        python3 manage.py runserver 0.0.0.0:8005"
+        python3 manage.py runserver 0.0.0.0:8006"
 
 networks:
   iam-proxy-italia:
