@@ -1,3 +1,13 @@
+class StorageError(Exception):
+    def __init__(self, message="Generic error while interaction with the storage Layer"):
+        self.message = message
+        super().__init__(self.message)
+
+class StorageUnreachable(Exception):
+    def __init__(self, message="Connection to database failed. The server is not reachable."):
+        self.message = message
+        super().__init__(self.message)
+
 
 class HttpError(Exception):
     pass

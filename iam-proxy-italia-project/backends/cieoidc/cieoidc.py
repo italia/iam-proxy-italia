@@ -25,11 +25,6 @@ class CieOidcBackend(BackendModule):
         self.config = module_config
         self.endpoints = {}
         self.trust_chain = self._generate_trust_chains()
-        # self.auth_callback_func = auth_callback_func
-        # self.internal_attributes = internal_attributes
-        # self.converter = AttributeMapper(internal_attributes)
-        # self.base_url = base_url
-        # self.name = name
 
 
     def start_auth(self, context, internal_request):

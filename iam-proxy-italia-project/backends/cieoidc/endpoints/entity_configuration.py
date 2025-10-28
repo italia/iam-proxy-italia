@@ -46,7 +46,8 @@ class EntityConfigHandler(BaseEndpoint):
     def _metadata(self) -> dict:
         _meta = copy.deepcopy(self.config.get("metadata", {}))
         _meta[self._entity_type]["client_id"] = self._client_id
-        _meta[self._entity_type]["jwks"] = [public_jwk_from_private_jwk(_k) for _k in self._jwks_core]
+        _meta[self._entity_type]["jwks"]= {}
+        _meta[self._entity_type]["jwks"]["keys"] = [public_jwk_from_private_jwk(_k) for _k in self._jwks_core]
         return _meta
 
     def _validate_configs(self):

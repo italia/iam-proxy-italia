@@ -10,15 +10,6 @@ config:
         ssl: true
       session:
         timeout: 6
-  ui: &user_interface
-    static_storage_url: !ENV SATOSA_BASE_STATIC
-    template_folder: "templates" # project root
-    html_template: "echo_attributes.html"
-    error_template: "error.html"
-    error_url: "https://localhost/static/error_page.html"
-    html_error_template: "authorization_error.html"
-    size: 250 # px
-    color: '#000000'  # hex
 
   storage: &db_config
     mongo_db:
@@ -40,7 +31,7 @@ config:
     - http://cie-provider.org:8002/oidc/op/
     - http://ipzs-col-provider.org:8002/oidc/op/
     - http://ipsz-prod-provider.org:8002/oidc/op/
-    -
+
   security_operations:
     hash:
       default:
@@ -108,16 +99,16 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: http://relying-party.org:8001/resolve
+      federation_resolve_endpoint: https://localhost/CieOidcRp/resolve
       organization_name: Example RP
-      homepage_uri: http://relying-party.org:8001
-      policy_uri: http://relying-party.org:8001/en/website/legal-information
+      homepage_uri: https://localhost/CieOidcRp
+      policy_uri: https://localhost/CieOidcRp/en/website/legal-information
       logo_uri: http://trust-anchor.org:5002/static/svg/spid-logo-c-lb.svg
       contacts:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  http://relying-party.org:8001 # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      client_id:  https://localhost/CieOidcRp # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
@@ -131,7 +122,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - https://relying-party.org/CieOidcRp/oidc/callback
+        - https://localhost/CieOidcRp/oidc/callback
       response_types:
         - code
       subject_type: pairwise
@@ -199,6 +190,7 @@ config:
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
         prompt: "consent login"
+
     authorization_callback_endpoint:
       module: backends.cieoidc.endpoints.authorization_callback_endpoint
       class: AuthorizationCallBackHandler
@@ -213,7 +205,6 @@ config:
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
         httpc_params: *httpc_params
-        ui: *user_interface
         client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
         grant_type: "authorization_code"
         claims:
