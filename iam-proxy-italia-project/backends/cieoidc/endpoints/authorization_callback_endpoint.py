@@ -14,15 +14,13 @@ from pydantic import ValidationError
 from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from backends.cieoidc.utils.clients.oidc import OidcUserInfo
 from backends.cieoidc.storage.db_engine import OidcDbEngine
-from backends.cieoidc.models.oidc_auth import OidcAuthenticationToken
+from backends.cieoidc.models.oidc_auth import OidcAuthentication
 from backends.cieoidc.models.user import OidcUser
 from backends.cieoidc.utils.exceptions import StorageUnreachable
 from backends.cieoidc.utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attributes
 from backends.cieoidc.utils.handlers.base_endpoint import BaseEndpoint
 from backends.cieoidc.utils.helpers.jwtse import verify_jws, unpad_jwt_payload, verify_at_hash
-
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator #todo remove pyeudiw dependency
-
 
 logger = logging.getLogger(__name__)
 
@@ -61,17 +59,18 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             Response (satosa.response.Response): Satosa Response object.
         """
         if context.qs_params.get("error"):
-            logger.debug(f"error: {context.qs_params.get('error')} with details: {context.qs_params.get('error_description')}")
-            raise SATOSAAuthenticationError(context, context.qs_params.get('error_description'))
+            logger.debug(
+                f"error: {context.qs_params.get('error')} with details: {context.qs_params.get('error_description')}")
+            raise SATOSAAuthenticationError(context.state, context.qs_params.get('error_description'))
 
-        state : str = context.qs_params.get("state")
+        state: str = context.qs_params.get("state")
         authorization = self.__get_authorization(state)
 
         if not authorization:
             logger.debug("Authorization empty")
             raise SATOSAAuthenticationError(context.state, "Authorization empty")
 
-        #todo validate authorization ->raise exc
+        # todo validate authorization ->raise exc
 
         code: str = context.qs_params.get("code")
         iss: str = context.qs_params.get("iss")
@@ -80,32 +79,34 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug("Provider ID and iss don't match")
             raise SATOSABadRequestError("Provider ID and iss don't match")
 
-        authorization_token =  self.__create_token(authorization, code)
-        if authorization_token["authz_request"]["client_id"] != self.config["metadata"]["openid_relying_party"]["client_id"]:
+        authorization["code"] = code
+
+        # authorization_token =  self.__create_token(authorization, code)
+        if authorization["client_id"] != self.config["metadata"]["openid_relying_party"]["client_id"]:
             logger.debug("invalid request - Relying party not found")
             raise SATOSABadRequestError("Invalid relaying party")
 
-
         authorization_data = json.loads(authorization.get("data"))
-        oAuth2_authorization = OAuth2AuthorizationCodeGrant(grant_type = self.grant_type,
-                                                            client_assertion_type = self.client_assertion_type,
-                                                            jws_core = self.jws_core,
-                                                            httpc_params = self.httpc_params)
+        oAuth2_authorization = OAuth2AuthorizationCodeGrant(grant_type=self.grant_type,
+                                                            client_assertion_type=self.client_assertion_type,
+                                                            jws_core=self.jws_core,
+                                                            httpc_params=self.httpc_params)
 
         token_response = oAuth2_authorization.access_token_request(redirect_uri=authorization_data["redirect_uri"],
-            state=authorization.get("state"),
-            code=code,
-            client_id=authorization.get("client_id"),
-            token_endpoint_url=authorization["provider_configuration"]["openid_provider"].get("token_endpoint"),
-            code_verifier=authorization_data.get("code_verifier")
-         )
+                                                                   state=authorization.get("state"),
+                                                                   code=code,
+                                                                   client_id=authorization.get("client_id"),
+                                                                   token_endpoint_url=
+                                                                   authorization["provider_configuration"][
+                                                                       "openid_provider"].get("token_endpoint"),
+                                                                   code_verifier=authorization_data.get("code_verifier")
+                                                                   )
 
         if not token_response:
             logger.debug("Token response is empty")
             raise SATOSAAuthenticationError(context.state, "Token response is empty")
 
-
-        #todo validate token_response ->raise exc
+        # todo validate token_response ->raise exc
 
         jwks = get_jwks(authorization["provider_configuration"].get("openid_provider"), self.httpc_params)
         access_token = token_response["access_token"]
@@ -136,14 +137,14 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         # decoded_access_token = unpad_jwt_payload(access_token)
         # logger.debug(f"unpad_jwt_payload: {decoded_access_token}")
-        self.__update_authentication_token(authorization_token, access_token, id_token, token_response)
+        self.__update_authentication_token(authorization, access_token, id_token, token_response)
 
-
-        #retrieve user data
-        oidc_user = OidcUserInfo(authorization["provider_configuration"].get("openid_provider"), self.jws_core, self.httpc_params)
+        # retrieve user data
+        oidc_user = OidcUserInfo(authorization["provider_configuration"].get("openid_provider"), self.jws_core,
+                                 self.httpc_params)
         user_info = oidc_user.get_userinfo(
             authorization.get("state"),
-            authorization_token.get("access_token"),
+            authorization.get("access_token"),
             verify=self.httpc_params["connection"].get("ssl"),
             timeout=self.httpc_params["session"].get("timeout")
         )
@@ -154,7 +155,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
                 f"{authorization.get("state")} to {authorization.get("provider_id")}"
             )
             raise SATOSAAuthenticationError(context.state, "User_info request failed for state: "
-                f"{authorization.get("state")} to {authorization.get("provider_id")}")
+                                                           f"{authorization.get("state")} to {authorization.get("provider_id")}")
 
         user_attrs = process_user_attributes(user_info, self.claims, authorization)
         if not user_attrs:
@@ -162,22 +163,23 @@ class AuthorizationCallBackHandler(BaseEndpoint):
                 "No user attributes have been processed: "
                 f"user_info: {user_info} claims: {self.claims} authorization: {authorization}"
             )
-            raise SATOSAAuthenticationError(context.state,  "No user attributes have been processed")
+            raise SATOSAAuthenticationError(context.state, "No user attributes have been processed")
 
-        user = self.__update_user(user_attrs)
+        user = self.__add_user(user_attrs)
+
         if not user:
             logger.error("User is empty")
             raise SATOSAAuthenticationError(context.state, "User is empty")
 
-
-        authorization_token["user"] = user
         if token_response.get('refresh_token', None):
-            authorization_token["refresh_token"] = token_response["refresh_token"]
-        # @TODO Update the authorization_token
+            authorization["refresh_token"] = token_response["refresh_token"]
+
+        authorization["user"] = user
+
+        self.__update_authorization(authorization)
 
         internal_data = self._translate_response(user.model_dump(mode="json"), iss, authorization.get("client_id"))
         return self._auth_callback(context, internal_data)
-
 
     def __get_authorization(self, state: str) -> dict:
 
@@ -192,7 +194,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         :param state: str
 
         """
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [state {state}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [state {state}]")
         try:
             output = self._db_engine.get_authentications(state)
             if output:
@@ -200,6 +203,19 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         except ValidationError as e:
             logger.debug(e)
         return {}
+
+    def __add_user(self, user_attrs: dict) -> OidcUser | None:
+
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user_attrs {user_attrs}]"
+        )
+        try:
+            user_token = OidcUser(**user_attrs)
+            user_token.attributes = user_attrs
+            return user_token
+        except ValidationError as e:
+            logger.debug(e)
+            return None
 
     def __update_user(self, user_attrs: dict) -> OidcUser | None:
 
@@ -217,26 +233,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug(e)
             return None
 
-
-    def __create_token(self, authorization_input: dict, code: str) -> dict:
-
-        """
-        method __create_token:
-        This method create an instance for Authorization Token Object.
-
-        :type self: object
-        :type input: dict
-
-        :param self: object
-        :param input: dict
-
-        """
-        logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authorization_input {authorization_input}, code: {code}]"
-        )
-        return { "authz_request": authorization_input, "code": code}
-
-    def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict, token_response: dict):
+    def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict,
+                                      token_response: dict):
         """
         method __update_authentication_token:
         This method update the authentication token. Add this properties:
@@ -255,13 +253,13 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         authorization["scope"] = token_response.get("scope")
         authorization["token_type"] = token_response["token_type"]
         authorization["expires_in"] = token_response["expires_in"]
-        self.__insert_token(authorization)
+        self.__update_authorization(authorization)
 
-    def __insert_token(self, authorization_input: dict):
+    def __update_authorization(self, authorization_input: dict):
 
         """
-        method __insert_token:
-        This method create the instance for authorization input.
+        method __update_authorization:
+        This method update the authorization dict.
 
         :type self: object
         :type authorization_input: dict
@@ -275,8 +273,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         )
 
         try:
-            auth_token = OidcAuthenticationToken(**authorization_input)
-            if not self._db_engine.add_oidc_token(auth_token):
+            auth_token = OidcAuthentication(**authorization_input)
+            if not self._db_engine.update_oidc_auth(auth_token):
                 logger.error("Unable to insert the AuthenticationToken object")
         except ValidationError as e:
             logger.debug(e)

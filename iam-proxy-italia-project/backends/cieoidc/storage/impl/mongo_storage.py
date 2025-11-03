@@ -7,7 +7,7 @@ from bson import ObjectId
 from pydantic import BaseModel
 from typing import Optional, Any, List, TypeVar
 
-from backends.cieoidc.models.oidc_auth import OidcAuthentication, OidcAuthenticationToken
+from backends.cieoidc.models.oidc_auth import OidcAuthentication
 from backends.cieoidc.models.user import OidcUser
 from backends.cieoidc.storage.interfaces.storage import OidcStorage
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class MongoStorage(OidcStorage):
 
-    def __init__(self,  conf: dict, url: str, connection_params: dict = None):
+    def __init__(self, conf: dict, url: str, connection_params: dict = None):
         self._db_name = conf.get("db_name")
         self._data_ttl = conf.get("data_ttl")
         self._url = url
@@ -55,16 +55,16 @@ class MongoStorage(OidcStorage):
 
     def _to_doc(self, entity: E, include_unset=True) -> dict[str, Any]:
         d = entity.model_dump(mode="json", exclude_unset=not include_unset)
-        d.pop("id", None) #auto-gen mongo _id
+        d.pop("id", None)  # auto-gen mongo _id
         return d
 
     def _from_doc(self, doc: dict[str, Any], entity_cls) -> E:
         doc = doc.copy()
         doc["id"] = str(doc.pop("_id"))
         return entity_cls(**doc)
-    
+
     def _add(self, collection: str, entity: E) -> Optional[str]:
-        try:            
+        try:
             result = self._db[collection].insert_one(self._to_doc(entity))
             oid = result.inserted_id
             return str(oid)
@@ -72,7 +72,7 @@ class MongoStorage(OidcStorage):
             return None
 
     def _update(self, collection: str, entity_id: str, entity: E, override=False) -> Optional[bool]:
-        if not entity_id or entity_id is not str:
+        if not entity_id or not isinstance(entity_id, str):
             return False
 
         if not (to_update := self._to_doc(entity, include_unset=override)):
@@ -110,17 +110,21 @@ class MongoStorage(OidcStorage):
     def _find_all(self, collection: str, filters: dict[str, Any], entity_cls: type[BaseModel]) -> List[E]:
         cursor = self._db[collection].find(filters)
         return [self._from_doc(doc, entity_cls) for doc in cursor]
-    
 
     def add_oidc_auth(self, entity: OidcAuthentication) -> int:
         if self._add(self._auth_collection, entity) is not None:
             return 1
         return 0
 
-    def add_oidc_token(self, entity: OidcAuthenticationToken) -> int:
-        if self._add(self._token_collection, entity) is not None:
+    def update_oidc_auth(self, entity_id: str, entity: OidcAuthentication) -> int:
+        if self._update(self._auth_collection, entity_id, entity) is not None:
             return 1
         return 0
+
+    # def add_oidc_token(self, entity: OidcAuthenticationToken) -> int:
+    #     if self._add(self._token_collection, entity) is not None:
+    #         return 1
+    #     return 0
 
     def add_oidc_user(self, entity: OidcUser) -> int:
         if self._add(self._user_collection, entity) is not None:
