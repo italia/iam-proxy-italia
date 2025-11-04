@@ -58,6 +58,11 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         Returns:
             Response (satosa.response.Response): Satosa Response object.
         """
+
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [qs_params {context.qs_params}]"
+        )
+
         if context.qs_params.get("error"):
             logger.debug(
                 f"error: {context.qs_params.get('error')} with details: {context.qs_params.get('error_description')}")

@@ -106,10 +106,6 @@ class AuthorizationHandler(BaseEndpoint):
 
         provider_url = context.internal_data.get("target_entity_id")
 
-        logger.debug(
-            f"provider_url: {provider_url}."
-        )
-
         trust_chain = self.__get_trust_chain(provider_url)
 
         authorization_endpoint = trust_chain.subject_configuration.payload["metadata"]["openid_provider"]["authorization_endpoint"]
@@ -132,8 +128,6 @@ class AuthorizationHandler(BaseEndpoint):
             provider_configuration=trust_chain.subject_configuration.payload["metadata"]
         )
 
-        # Add method for DB insert
-        # @TODO Insert the DB repository
         self.__insert(authorization_entity)
 
         self.__create_jws(authz_data)
@@ -154,7 +148,6 @@ class AuthorizationHandler(BaseEndpoint):
         """
         Private method __get_trust_chain:
         This method get Trust chain from provider url from Trust Chains dictionary.
-        @TODO method for validate trust chain
 
         :type self: object
         :rtype: TrustChainBuilder
