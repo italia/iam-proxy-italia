@@ -108,7 +108,7 @@ config:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  https://localhost/CieOidcRp # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      client_id:  https://localhost/CieOidcRp # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
