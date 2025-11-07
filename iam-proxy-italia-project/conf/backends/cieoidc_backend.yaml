@@ -10,7 +10,6 @@ config:
         ssl: true
       session:
         timeout: 6
-
   storage: &db_config
     mongo_db:
       module: backends.cieoidc.storage.impl.mongo_storage
@@ -40,7 +39,7 @@ config:
       default:
         alg: &default_sign_alg "RS256" #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
       supported:
-        alg: #SIGNING_ALG_VALUES_SUPPORTED
+        alg: &supported_sign_alg #SIGNING_ALG_VALUES_SUPPORTED
           - RS256
           - RS384
           - RS512
@@ -52,7 +51,7 @@ config:
         alg: &default_enc_alg RSA-OAEP #DEFAULT_JWE_ALG
         enc: &default_enc_enc A256CBC-HS512 #DEFAULT_JWE_ENC
       supported:
-        alg: #ENCRYPTION_ALG_VALUES_SUPPORTED
+        alg: &supported_enc_alg #ENCRYPTION_ALG_VALUES_SUPPORTED
           - RSA-OAEP
           - RSA-OAEP-256
           - ECDH-ES
@@ -205,6 +204,11 @@ config:
         jwks_federation: *jwks_federation
         jwks_core: *jwks_core
         httpc_params: *httpc_params
+        default_sign_alg: *default_sign_alg #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+        supported_sign_alg: *supported_sign_alg
+        default_enc_alg: *default_enc_alg #DEFAULT_JWE_ALG
+        default_enc_enc: *default_enc_enc #DEFAULT_JWE_ENC
+        supported_enc_alg: *supported_enc_alg
         client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
         grant_type: "authorization_code"
         claims:

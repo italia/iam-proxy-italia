@@ -8,6 +8,7 @@ from backends.cieoidc.utils.helpers.jwtse import  (
     verify_jws
 )
 from backends.cieoidc.utils.helpers.misc import get_jwks
+from ...helpers.configuration_utils import ConfigurationPlugin
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class OidcUserInfo(object):
         raise UnknownKid() # pragma: no cover
 
     def get_userinfo(
-        self, state: str, access_token: str, verify: bool, timeout: int
+        self, state: str, access_token: str, verify: bool, timeout: int, configuration_utils: ConfigurationPlugin
     ):
         """
         User Info endpoint request with bearer access token
@@ -61,7 +62,10 @@ class OidcUserInfo(object):
                 header = unpad_jwt_head(jwe)
                 # header["kid"] kid di rp
                 rp_jwk = self.__get_jwk(header["kid"], self.jwks_core)
-                jws = decrypt_jwe(jwe, rp_jwk)
+                jws = decrypt_jwe(jwe, rp_jwk,
+                                  configuration_utils.get_default_jwe_alg,
+                                  configuration_utils.get_default_jwe_enc,
+                                  configuration_utils.get_encryption_alg_values_supported)
 
                 if isinstance(jws, bytes):
                     jws = jws.decode()
@@ -70,7 +74,7 @@ class OidcUserInfo(object):
                 idp_jwks = get_jwks(self.provider_configuration,self.httpc_params)
                 idp_jwk = self.__get_jwk(header["kid"], idp_jwks)
 
-                decoded_jwt = verify_jws(jws, idp_jwk)
+                decoded_jwt = verify_jws(jws, idp_jwk, configuration_utils.get_signing_alg_values_supported)
                 logger.debug(f"Userinfo endpoint result: {decoded_jwt}")
                 return decoded_jwt
 

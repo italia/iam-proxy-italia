@@ -7,7 +7,7 @@ from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
 from satosa.internal import InternalData
 from satosa.response import Response
-
+from satosa.exception import SATOSAAuthenticationError, SATOSABadRequestError
 from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import (
@@ -78,10 +78,8 @@ class ExtendSessionHandler(BaseEndpoint):
             token_response = oAuth2_authorization.refresh_token(authorization_token, authorization_token.get("client_id"))
 
             if token_response.status_code == 400:
-                logger.warning(
-                    "Get 400 from token response service"
-                )
-            # @TODO Talking with Giuseppe for rendering raise exception?
+                logger.warning("Get 400 from token response service")
+                raise SATOSAAuthenticationError(context.state, "Get 400 from token response service")
 
             refresh_token_response = json.loads(token_response.content.decode())
 
@@ -99,6 +97,7 @@ class ExtendSessionHandler(BaseEndpoint):
 
         except Exception as exception:  # pragma: no cover
             logger.warning(f"Refresh Token request failed: {exception}")
+            raise SATOSAAuthenticationError(context.state, f"Refresh Token request failed: {exception}")
 
 
 

@@ -14,9 +14,7 @@ from cryptojwt.jws.utils import left_hash
 from typing import Union
 
 #todo read from config
-DEFAULT_JWE_ALG="RSA-OAEP"
-DEFAULT_JWE_ENC="A256CBC-HS512"
-SIGNING_ALG_VALUES_SUPPORTED=["RS256", "RS384", "RS512", "ES256", "ES384", "ES512"]
+
 ENCRYPTION_ALG_VALUES_SUPPORTED=[
         "RSA-OAEP",
         "RSA-OAEP-256",
@@ -45,7 +43,7 @@ def unpad_jwt_payload(jwt: str) -> dict:
     return unpad_jwt_element(jwt, position=1)
 
 
-def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, **kwargs) -> str:
+def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, default_jwe_alg: str, default_jwe_enc: str,  **kwargs) -> str:
     logger.debug(f"Encrypting dict as JWE: " f"{plain_dict}")
     _key = key_from_jwk_dict(jwk_dict)
 
@@ -67,8 +65,8 @@ def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, **kwargs
 
     _keyobj = JWE_CLASS(
         _payload,
-        alg=DEFAULT_JWE_ALG,
-        enc=DEFAULT_JWE_ENC,
+        alg=default_jwe_alg,
+        enc=default_jwe_enc,
         kid=_key.kid,
         **kwargs
     )
@@ -78,7 +76,7 @@ def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, **kwargs
     return jwe
 
 
-def decrypt_jwe(jwe: str, jwk_dict: dict) -> dict:
+def decrypt_jwe(jwe: str, jwk_dict: dict, default_jwe_alg: str, default_jwe_enc: str, encryption_alg_values_supported: list[str]) -> dict:
     # get header
     try:
         jwe_header = unpad_jwt_head(jwe)
@@ -86,11 +84,11 @@ def decrypt_jwe(jwe: str, jwk_dict: dict) -> dict:
         logger.error(f"Failed to extract JWT header: {e}")
         raise VerificationError("The JWT is not valid")
 
-    _alg = jwe_header.get("alg", DEFAULT_JWE_ALG)
-    _enc = jwe_header.get("enc", DEFAULT_JWE_ENC)
+    _alg = jwe_header.get("alg", default_jwe_alg)
+    _enc = jwe_header.get("enc", default_jwe_enc)
     jwe_header.get("kid")
 
-    if _alg not in ENCRYPTION_ALG_VALUES_SUPPORTED:  # pragma: no cover
+    if _alg not in encryption_alg_values_supported:  # pragma: no cover
         raise UnsupportedAlgorithm(f"{_alg} has beed disabled for security reason")
 
     _decryptor = factory(jwe, alg=_alg, enc=_enc)
@@ -116,7 +114,7 @@ def create_jws(payload: dict, jwk_dict: dict, alg: str = "RS256", protected:dict
     return signature
 
 
-def verify_jws(jws: str, pub_jwk: dict, **kwargs) -> str:
+def verify_jws(jws: str, pub_jwk: dict, signing_alg_values_supported: list[str],  **kwargs) -> str:
     _key = key_from_jwk_dict(pub_jwk)
 
     _head = unpad_jwt_head(jws)
@@ -126,7 +124,7 @@ def verify_jws(jws: str, pub_jwk: dict, **kwargs) -> str:
         )
 
     _alg = _head["alg"]
-    if _alg not in SIGNING_ALG_VALUES_SUPPORTED or not _alg:  # pragma: no cover
+    if _alg not in signing_alg_values_supported or not _alg:  # pragma: no cover
         raise UnsupportedAlgorithm(f"{_alg} has beed disabled for security reason")
 
     verifier = JWS(alg=_head["alg"], **kwargs)

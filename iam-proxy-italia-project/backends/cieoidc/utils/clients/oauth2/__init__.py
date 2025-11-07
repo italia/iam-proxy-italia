@@ -10,7 +10,6 @@ from backends.cieoidc.utils.helpers.misc import (
     iat_now, exp_from_now
 )
 from backends.cieoidc.utils.helpers.jwtse import (
-    verify_jws,
     unpad_jwt_payload,
     verify_at_hash, create_jws
 )

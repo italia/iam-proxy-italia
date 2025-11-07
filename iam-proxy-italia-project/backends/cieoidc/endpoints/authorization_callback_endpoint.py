@@ -10,17 +10,18 @@ from satosa.exception import SATOSAAuthenticationError, SATOSABadRequestError
 from satosa.internal import InternalData, AuthenticationInformation
 from satosa.response import Response
 from pydantic import ValidationError
-
-from backends.cieoidc.utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
-from backends.cieoidc.utils.clients.oidc import OidcUserInfo
-from backends.cieoidc.storage.db_engine import OidcDbEngine
-from backends.cieoidc.models.oidc_auth import OidcAuthentication
-from backends.cieoidc.models.user import OidcUser
-from backends.cieoidc.utils.exceptions import StorageUnreachable
-from backends.cieoidc.utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attributes
-from backends.cieoidc.utils.handlers.base_endpoint import BaseEndpoint
-from backends.cieoidc.utils.helpers.jwtse import verify_jws, unpad_jwt_payload, verify_at_hash
+from ..utils.helpers.configuration_utils import ConfigurationPlugin
+from ..utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
+from ..utils.clients.oidc import OidcUserInfo
+from ..storage.db_engine import OidcDbEngine
+from ..models.oidc_auth import OidcAuthentication
+from ..models.user import OidcUser
+from ..utils.exceptions import StorageUnreachable
+from ..utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attributes
+from ..utils.handlers.base_endpoint import BaseEndpoint
+from ..utils.helpers.jwtse import verify_jws, unpad_jwt_payload, verify_at_hash
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator #todo remove pyeudiw dependency
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         self._db_engine.connect()
         if not self._db_engine.is_connected():
             raise StorageUnreachable
+        self.configuration_plugins = self.generate_configuration_plugin(self.config)
+
 
     def endpoint(self, context, *args):
         """
@@ -111,8 +114,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug("Token response is empty")
             raise SATOSAAuthenticationError(context.state, "Token response is empty")
 
-        # todo validate token_response ->raise exc
-
         jwks = get_jwks(authorization["provider_configuration"].get("openid_provider"), self.httpc_params)
         access_token = token_response["access_token"]
         id_token = token_response["id_token"]
@@ -125,8 +126,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             raise SATOSAAuthenticationError(context.state, "AC JWK or ID JWK is empty")
 
         try:
-            verify_jws(access_token, op_ac_jwk)
-            verify_jws(id_token, op_id_jwk)
+            verify_jws(access_token, op_ac_jwk, self.configuration_plugins.get_signing_alg_values_supported)
+            verify_jws(id_token, op_id_jwk, self.configuration_plugins.get_signing_alg_values_supported)
         except Exception as exception:
             logger.error(f"Exception from verify_jws, detail: {exception}")
             raise SATOSAAuthenticationError(context.state, "tokens jws verification failed")
@@ -151,7 +152,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             authorization.get("state"),
             authorization.get("access_token"),
             verify=self.httpc_params["connection"].get("ssl"),
-            timeout=self.httpc_params["session"].get("timeout")
+            timeout=self.httpc_params["session"].get("timeout"),
+            configuration_utils=self.configuration_plugins
         )
 
         if not user_info:
@@ -327,3 +329,25 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         internal_resp.attributes = self._converter.to_internal("cie_oidc", attributes)
         internal_resp.subject_id = sub
         return internal_resp
+
+
+
+    @staticmethod
+    def generate_configuration_plugin(config) -> ConfigurationPlugin:
+        '''
+        method generate_configuration_plugin:
+        This method generate a ConfigurationPlugin Object for endpoint.
+
+        '''
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params: [config: {config}]"
+        )
+
+        configuration_plugin = ConfigurationPlugin(
+            config.get("default_enc_alg"),
+            config.get("default_enc_enc"),
+            config.get("supported_sign_alg"),
+            config.get("supported_enc_alg")
+        )
+
+        return configuration_plugin
