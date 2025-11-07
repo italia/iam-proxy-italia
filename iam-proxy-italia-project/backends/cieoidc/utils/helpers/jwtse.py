@@ -15,14 +15,6 @@ from typing import Union
 
 #todo read from config
 
-ENCRYPTION_ALG_VALUES_SUPPORTED=[
-        "RSA-OAEP",
-        "RSA-OAEP-256",
-        "ECDH-ES",
-        "ECDH-ES+A128KW",
-        "ECDH-ES+A192KW",
-        "ECDH-ES+A256KW",
-    ]
 
 
 logger = logging.getLogger(__name__)

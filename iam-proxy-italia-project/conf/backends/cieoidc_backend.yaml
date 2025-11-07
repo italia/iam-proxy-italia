@@ -58,7 +58,7 @@ config:
           - ECDH-ES+A128KW
           - ECDH-ES+A192KW
           - ECDH-ES+A256KW
-        enc: #ENCRYPTION_ENC_SUPPORTED
+        enc: &supported_enc_enc #ENCRYPTION_ENC_SUPPORTED
           - A128CBC-HS256
           - A192CBC-HS384
           - A256CBC-HS512

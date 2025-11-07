@@ -5,6 +5,9 @@ from cryptojwt.jwk.jwk import key_from_jwk_dict
 
 from .helpers.jwks import serialize_rsa_key
 
+
+#@TODO We need this module?
+
 SIGNING_ALG_VALUES_SUPPORTED=["RS256", "RS384", "RS512", "ES256", "ES384", "ES512"]
 ENCRYPTION_ENC_SUPPORTED = [
     "A128CBC-HS256",
@@ -53,6 +56,32 @@ def validate_public_jwks(values: Union[dict, list]):
     except Exception as e:
         raise ValidationError(f"Not valid: {e}")
 
+
+def validate_metadata_algs_v1(signing_alg_values_supported: Union[list[str],None],
+                           encryption_alg_values_supported: Union[list[str],None],
+                           metadata: dict):
+    amap = dict(
+        id_token_signing_alg_values_supported = signing_alg_values_supported,
+        id_token_encryption_alg_values_supported = encryption_alg_values_supported,
+        id_token_encryption_enc_values_supported = ENCRYPTION_ENC_SUPPORTED,
+        token_endpoint_auth_signing_alg_values_supported = signing_alg_values_supported,
+        userinfo_encryption_alg_values_supported = encryption_alg_values_supported,
+        userinfo_encryption_enc_values_supported = ENCRYPTION_ENC_SUPPORTED,
+        userinfo_signing_alg_values_supported = signing_alg_values_supported,
+        request_object_encryption_alg_values_supported = encryption_alg_values_supported,
+        request_object_encryption_enc_values_supported = ENCRYPTION_ENC_SUPPORTED,
+        request_object_signing_alg_values_supported = signing_alg_values_supported,
+    )
+    if metadata.get("openid_provider", None):
+        md = metadata["openid_provider"]
+        for k, v in amap.items():
+            if k in md:
+                for alg in md[k]:
+                    if alg not in v:
+                        raise ValidationError(
+                            f"{k} has an unsupported value {alg}. "
+                            f"Supported algs are {v}"
+                        )
 
 def validate_metadata_algs(metadata: dict):
     amap = dict(
