@@ -2,7 +2,6 @@ import logging
 import json
 import inspect
 import time
-
 from typing import Callable
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
@@ -21,7 +20,6 @@ from ..utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attrib
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import verify_jws, unpad_jwt_payload, verify_at_hash
 from pyeudiw.trust.dynamic import CombinedTrustEvaluator #todo remove pyeudiw dependency
-
 
 logger = logging.getLogger(__name__)
 
@@ -61,11 +59,9 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         Returns:
             Response (satosa.response.Response): Satosa Response object.
         """
-
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [qs_params {context.qs_params}]"
         )
-
         if context.qs_params.get("error"):
             logger.debug(
                 f"error: {context.qs_params.get('error')} with details: {context.qs_params.get('error_description')}")
