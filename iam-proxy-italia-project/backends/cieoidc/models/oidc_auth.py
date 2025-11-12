@@ -39,31 +39,28 @@ from datetime import datetime
 #     revoked : Optional[str] = None
 
 
-
 class OidcAuthentication(BaseModel):
 
     # --- Authentication info ---
     id: Optional[str] = None
-    name: Optional[str] = None
     client_id: Optional[str]
     state: Optional[str]
     endpoint: Optional[str]
     data: Optional[str]
-    successful: Optional[bool] = None
     provider_id: Optional[str] = None
     provider_configuration: dict
 
-    # --- Token info ---
     user: Optional[OidcUser] = None
-    authz_request: Optional[dict] = None
+
+    # --- Token info ---
     access_token: Optional[str] = None
     code: Optional[str] = None
     id_token: Optional[str] = None
-    refresh_token: Optional[str] = None
+    refresh_token: Optional[str] = None #*
     scope: Optional[str] = None
     token_type: Optional[str] = None
     expires_in: Optional[int] = None
-    revoked: Optional[str] = None
+    revoked: Optional[str] = None #*
 
     # --- Audit fields ---
     created: Optional[datetime] = None

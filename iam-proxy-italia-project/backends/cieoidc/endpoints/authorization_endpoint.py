@@ -316,7 +316,7 @@ class AuthorizationHandler(BaseEndpoint):
 
         try:
             auth = OidcAuthentication(**obj)
-            if self._db_engine.add_oidc_auth(auth) < 1:
+            if self._db_engine.add_session(auth) < 1:
                 logger.error("Unable to insert the Authentication object")
         except ValidationError as e:
             logger.debug(e)

@@ -1,11 +1,10 @@
+import uuid
+
 from typing import Any
 from datetime import datetime, timezone
 from backends.cieoidc.models.oidc_auth import OidcAuthentication
-from backends.cieoidc.models.user import OidcUser
 from backends.cieoidc.storage.interfaces.storage import OidcStorage
 from backends.cieoidc.utils.helpers.misc import dynamic_class_loader
-
-
 
 
 class OidcDbEngine(OidcStorage):
@@ -70,22 +69,19 @@ class OidcDbEngine(OidcStorage):
         return alive
 
 
-    def add_oidc_auth(self, entity: OidcAuthentication) -> int:
+    def add_session(self, entity: OidcAuthentication) -> int:
         self.prepare_for_insert(entity)
-        return self.__write(self.add_oidc_auth.__name__, entity)
+        entity.id = str(uuid.uuid4())
+        return self.__write(self.add_session.__name__, entity)
 
-    def update_oidc_auth(self, entity: OidcAuthentication) -> int:
+    def update_session(self, entity: OidcAuthentication) -> int:
+        if not entity.id:
+            return 0
         self.prepare_for_insert(entity)
-        return self.__write(self.update_oidc_auth.__name__, entity.id, entity)
+        return self.__write(self.update_session.__name__, entity)
 
-    # def add_oidc_token(self, entity: OidcAuthenticationToken) -> int:
-    #     return self.__write(self.add_oidc_token.__name__, entity)
-
-    def add_oidc_user(self, entity: OidcUser) -> int:
-        return self.__write(self.add_oidc_user.__name__, entity)
-
-    def get_authentications(self, state: str) -> list[OidcAuthentication]:
-        return self.__find(self.get_authentications.__name__, state)
+    def get_sessions(self, state: str) -> list[OidcAuthentication]:
+        return self.__find(self.get_sessions.__name__, state)
 
     def prepare_for_insert(self, auth_entity: OidcAuthentication):
         now = datetime.now(timezone.utc)

@@ -204,7 +204,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [state {state}]")
         try:
-            output = self._db_engine.get_authentications(state)
+            output = self._db_engine.get_sessions(state)
             if output:
                 return output[0].model_dump(mode="json")
         except ValidationError as e:
@@ -219,22 +219,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         try:
             user_token = OidcUser(**user_attrs)
             user_token.attributes = user_attrs
-            return user_token
-        except ValidationError as e:
-            logger.debug(e)
-            return None
-
-    def __update_user(self, user_attrs: dict) -> OidcUser | None:
-
-        logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user_attrs {user_attrs}]"
-        )
-        try:
-            user_token = OidcUser(**user_attrs)
-            user_token.attributes = user_attrs
-            if not self._db_engine.add_oidc_user(user_token) > 0:
-                logger.error("Unable to insert the AuthenticationToken object")
-            logger.debug(f"Insert result: {user_token}")
             return user_token
         except ValidationError as e:
             logger.debug(e)
@@ -281,7 +265,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         try:
             auth_token = OidcAuthentication(**authorization_input)
-            if not self._db_engine.update_oidc_auth(auth_token):
+            if not self._db_engine.update_session(auth_token):
                 logger.error("Unable to insert the AuthenticationToken object")
         except ValidationError as e:
             logger.debug(e)

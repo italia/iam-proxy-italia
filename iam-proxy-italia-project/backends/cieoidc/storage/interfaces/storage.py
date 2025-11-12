@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 from backends.cieoidc.models.oidc_auth import OidcAuthentication
-from backends.cieoidc.models.user import OidcUser
 
 
 class OidcStorage(ABC):
@@ -19,17 +18,13 @@ class OidcStorage(ABC):
         ...
 
     @abstractmethod
-    def add_oidc_auth(self, entity: OidcAuthentication) -> int:
-        ...
-
-    # @abstractmethod
-    # def add_oidc_token(self, entity: OidcAuthenticationToken) -> int:
+    def add_session(self, entity: OidcAuthentication) -> int:
         ...
 
     @abstractmethod
-    def add_oidc_user(self, entity: OidcUser) -> int:
+    def update_session(self, entity: OidcAuthentication) -> int:
         ...
 
     @abstractmethod
-    def get_authentications(self, state: str) -> list[OidcAuthentication]:
+    def get_sessions(self, state: str) -> list[OidcAuthentication]:
         ...
