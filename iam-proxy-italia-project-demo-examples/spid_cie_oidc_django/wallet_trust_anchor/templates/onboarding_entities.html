@@ -1,0 +1,80 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block centered_container %}
+<div class="col-12 pl-lg-4">
+    <h4 class="text-left">
+        {% trans "Entities onboarded"%}
+    </h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{% trans "organization name" %}</th>
+                <th scope="col">{% trans "url entity" %}</th>
+                <th scope="col">{% trans "status" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entity in entities %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ entity.organization_name }}</td>
+                <td>{{ entity.url_entity }}</td>
+                {% if entity.status == 'processing' %}
+                <td class="complementary-2-color-b1">{{ entity.status }}</td>
+                {% elif entity.status == 'failed' %}
+                <td class="text-danger">{{ entity.status }}</td>
+                {% elif entity.status == 'onboarded' %}
+                <td class="analogue-2-color-b2">{{ entity.status }}</td>
+                {% else %}
+                <td class="text-secondary">{{ entity.status }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav class="pagination-wrapper justify-content-center">
+        <ul class="pagination">
+            {% if entities.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{entities.previous_page_number}}" tabindex="-1" aria-hidden="true">
+                    <svg class="icon icon-primary">
+                        <use href="{% static 'svg/sprite.svg' %}#it-chevron-left"></use>
+                    </svg>
+                    <span class="sr-only">{% trans "previous page" %}</span>
+                </a>
+            </li>
+            {% endif %}
+            {% for i in entities.paginator.page_range%}
+            {% if i == entities.number %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ i }}" aria-current="page">
+                    <span class="d-inline-block d-sm-none">{% trans "page" %}</span>{{ i }}
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if entities.has_next%}
+            <li class="page-item">
+                <a class="page-link" href="?page={{entities.next_page_number}}">
+                    <span class="sr-only">{% trans "next page" %}</span>
+                    <svg class="icon icon-primary">
+                        <use href="{% static 'svg/sprite.svg' %}#it-chevron-right"></use>
+                    </svg>
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+
+
+</div>
+{% endblock %}

@@ -32,7 +32,7 @@ cd Docker-compose
 The script creates the directories for local mounts and copies all required files to start a full demo with test and SAML2 Service Providers.
 
 The script can be run with different options:
--`f` cleans the folders;
+-`f` cleans the folders; if combined with `-e` (`-e -f`), it also overrides the .env file.
 -`t` to run tests with `spid_sp_test` in a pipeline-like execution;
 
 > ⚠️ Warning: The script deletes any previous created directory if found.
@@ -63,7 +63,7 @@ mkdir -p ./nginx/html/static # static files for nginx
 Copy required files
 ```bash
 cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project
-cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp
+cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp/* ./djangosaml2_sp
 cp -E ../iam-proxy-italia-project/static/* ./nginx/html/static
 ```
 

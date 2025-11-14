@@ -1,0 +1,202 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'bootstrap-italia-base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block extra_head %}
+    {{ block.super }}  
+{% endblock extra_head %}
+
+{% block page_title %}
+{% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock page_title %}
+
+<!-- URL link top left -->
+{% block header_slim_org_url %}
+https://github.com/italia/eudi-wallet-it-docs
+{% endblock header_slim_org_url %}
+
+<!-- Name top left -->
+{% block header_slim_org_name %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock header_slim_org_name %}
+
+<!-- Mobile slim_org_name -->
+{% block header_slim_mobile_org_name %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock header_slim_mobile_org_name %}
+
+<!-- Make empty areas -->
+{% block header_mobile_arrow %}{% endblock header_mobile_arrow %}
+{% block header_mobile_slim_menu %}{% endblock header_mobile_slim_menu %}
+
+<!-- Logo in Header -->
+{% block header_center_logo %}
+{% endblock header_center_logo %}
+
+<!-- Organization name in Header -->
+{% block header_center_org_name %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock header_center_org_name %}
+
+<!-- Organization description in Header -->
+{% block header_center_org_subname %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock header_center_org_subname %}
+
+
+{% block menu_links %}
+
+<li class="nav-item ">
+    <a class="nav-link {% if request.resolver_match.view_name == 'oidc_onboarding_landing' %}active{% endif %}" 
+    href="{% url 'oidc_onboarding_landing' %}">
+        <span>{% trans 'Home' %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.view_name == 'oidc_onboarding_entities' %}active{% endif %}" 
+    href="{% url 'oidc_onboarding_entities' %}">
+        <span>{% trans 'Entities onboarded' %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.resolver_match.view_name == 'oidc_onboarding_registration' %}active{% endif %}" 
+    href="{% url 'oidc_onboarding_registration' %}">
+        <span>{% trans 'Register your entity' %}</span>
+    </a>
+</li>
+
+
+<li class="nav-item dropdown megamenu">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="true">
+        <span>Tools</span>
+        <svg class="icon icon-m">
+            <use xlink:href="/static/svg/sprite.svg#it-expand"></use>
+        </svg>
+    </a>
+    <div class="dropdown-menu">
+        <div class="row">
+            <div class="col-12 col-lg-4">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <h3 class="no_toc">JWK</h3>
+                        </li>  
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_create_jwk'%}">
+                            <span>{% trans "Create a jwk" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_convert_jwk'%}?type=private">
+                            <span>{% trans "Convert a private JWK to PEM" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_convert_jwk'%}?type=public">
+                            <span>{% trans "Convert a public JWK to PEM" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_convert_pem'%}?type=private">
+                            <span>{% trans "Convert a private PEM to JWK" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_convert_pem'%}?type=public">
+                            <span>{% trans "Convert a public PEM to JWK" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_tools_decode_jwt' %}">
+                            <span>{% trans "JWT decode and verification" %}</span></a></li>
+                        <li>
+                            <h3 class="no_toc">Utils</h3>
+                        </li>        
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_resolve_statement' %}">
+                            <span>{% trans "Resolve entity statement" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_tools_apply_policy' %}">
+                            <span>{% trans "Apply policy" %}</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <h3 class="no_toc">VALIDATORS</h3>
+                        </li>        
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_md' %}?metadata_type=op_metadata&provider_profile=spid">
+                            <span>{% trans "Validate OP metadata spid" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_md' %}?metadata_type=op_metadata&provider_profile=cie">
+                            <span>{% trans "Validate OP metadata cie" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_md' %}?metadata_type=rp_metadata&provider_profile=spid">
+                            <span>{% trans "Validate RP metadata spid" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_md' %}?metadata_type=rp_metadata&provider_profile=cie">
+                            <span>{% trans "Validate RP metadata cie" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_authn_request_jwt'%}?provider_profile=spid">
+                            <span>{% trans "Validate Authn Request spid" %}</span></a></li> 
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_authn_request_jwt'%}?provider_profile=cie">
+                            <span>{% trans "Validate Authn Request cie" %}</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validate_ec' %}">
+                            <span>{% trans "Validate Entity Configuration" %}</span></a></li>  
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_validating_trustmark' %}">
+                            <span>{% trans "Trust mark validation" %}</span></a></li> 
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <h3 class="no_toc">{% trans "Schemas" %}</h3>
+                        </li>        
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_federation_entity' %}">
+                            <span>Federation Entity Endpoint</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_Authorization' %}">
+                            <span>Authorization Endpoint</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_introspection' %}">
+                            <span>Introspection Endpoint</span></a></li> 
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_metadata' %}">
+                            <span>Metadata</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_token' %}">
+                            <span>Token Endpoint</span></a></li> 
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_revocation' %}">
+                            <span>Revocation Endpoint</span></a></li>
+                        <li><a class="list-item" href="{% url 'oidc_onboarding_schemas_jwt_client_assertion' %}">
+                            <span>Jwt client Assertion</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+{% endblock menu_links %}
+
+{% block container %}
+<div>
+    <div class="container pt-2 p-3">
+       <div class="row d-lg-flex">
+            <div class="col-12">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body pl-lg-0">
+                            <div class="row h-100">
+                                {% block centered_container %}{% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock container %}
+
+<!-- Logo in Footer -->
+{% block footer_logo %}
+{% endblock footer_logo %}
+
+<!-- Organization name in Footer -->
+{% block footer_org_name %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock footer_org_name %}
+
+<!-- Organization name in Footer -->
+{% block footer_org_subname %}
+    {% trans "EUDI Wallet Federation onboarding system" %}
+{% endblock footer_org_subname %}
+
+{% block extra_scripts %}
+{% block bootstrap_italia_validation %}
+
+{% endblock bootstrap_italia_validation %}
+{% endblock extra_scripts %}
+
+{% block footer_menu_section %}
+{% endblock footer_menu_section %}

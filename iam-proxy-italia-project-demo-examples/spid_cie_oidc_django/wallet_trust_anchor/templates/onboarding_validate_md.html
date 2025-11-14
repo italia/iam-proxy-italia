@@ -1,0 +1,33 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block centered_container %}
+<div class="col-12 pl-lg-4">
+    <h4 class="text-left">
+        {% blocktrans %}
+            {{title}}
+        {% endblocktrans %}
+    </h4>
+
+    <p class="pt-4 mb-2">
+        {% trans description %}
+    </p>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-12 form-group my-3">
+                <label for="id_md">
+                    <span class="form-label-content">
+                        {{field_name}}
+                    </span>
+                </label>
+                <textarea id="id_md" rows="14" name="md">{{ md }}</textarea>
+            </div>
+        </div>
+        <input type="submit" name="confirm" class="btn btn-lg btn-success btn-block"
+            value="{% trans 'validate' %}" />
+    </form>
+</div>
+{% endblock %}

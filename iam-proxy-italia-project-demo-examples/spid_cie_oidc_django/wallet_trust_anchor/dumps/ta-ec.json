@@ -1,0 +1,959 @@
+[
+  {
+    "model": "spid_cie_oidc_entity.federationentityconfiguration",
+    "pk": 1,
+    "fields": {
+      "created": "2025-10-13T11:15:22.744Z",
+      "modified": "2025-10-13T11:15:22.745Z",
+      "uuid": "9d51be78-a93c-4208-9ff6-19d6c50d4100",
+      "sub": "https://localhost/OpenID4VP",
+      "default_exp": 2880,
+      "default_signature_alg": "RS256",
+      "authority_hints": [],
+      "jwks_fed": [
+        {
+          "kty": "EC",
+          "d": "i0HQiqDPXf-MqC776ztbgOCI9-eARhcUczqJ-7_httc",
+          "use": "sig",
+          "crv": "P-256",
+          "kid": "SQgNjv4yU8sfuafJ2DPWq2tnOlK1JSibd3V5KqYRhOk",
+          "x": "Q46FDkhMjewZIP9qP8ZKZIP-ZEemctvjxeP0l3vWHMI",
+          "y": "IT7lsGxdJewmonk9l1_TAVYx_nixydTtI1Sbn0LkfEA",
+          "alg": "ES256"
+        },
+        {
+          "kty": "RSA",
+          "d": "QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q",
+          "e": "AQAB",
+          "use": "enc",
+          "kid": "9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w",
+          "n": "utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw",
+          "p": "2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0",
+          "q": "2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM"
+        },
+        {
+          "kty": "RSA",
+          "use": "sig",
+          "alg": "RS256",
+          "kid": "m00NPAelNBnG_wK2R5EpI_k-GWCHEUySamQYubgFjCg",
+          "d": "nMsnqz0lPHNGBgUqyuJ5nXQ0jh-mzs6d2xOY_QhpkRW1kEbexRJDdVV3fqMxj_s0MiF8mn-s8ea3e8cbNDgIy000Wvx05y1rMkB6KaZX2ZL5jwU7i_xP6NlLh8itikqJz7kKQSILgibQFFQDcScpEk8gUKa6fmSJQVwTII6GoJCdiJflv-FI2OQ_TCBQEEVVLpeUiVSP0n3OMUKGBlbaHOQkArUpla_ke_mtdfIrl7uB74Rxrin68KtFHkGDGdJPs-PPO1yJ2paFZI9QR_ettZ22v45c-qIgmCjsEnITDMaO9724PU_umlWsWe36Y9RAAzofKsjKqvA1OIzU03ob9Q",
+          "n": "sP6jt1XwJE0JDKxy4B7r3Jdb8W6bSRoVunyjWMgl5IafqFwHsJlYgCAWPeTrAL-iyjdnWC1csHuTqWjdndDL-oqEarrqoDAycVkfFTUTD81_wVhWUzAwxhQHiT7PTUIsV7m9VGlfC_kdCpQl5CcK1yx2nQ1KbqWOV1_5WnMgnN_EpNmztkZDnJmKedVduOb2dKWwnLS3fcGvUxXc87DjAzC2vfgQSoQfXAZbwItyS6OinFiUnBxRvt9ZY2IapjI1-wwDKKeRrqPC-fV2oWTrMqoYAvIDnf9AjKHAbIw7q301-7-eaUMF1hVtAz1XeXvMp0wK8_uSo9Vgv1vHhBpOwQ",
+          "e": "AQAB",
+          "p": "0ViKTSyZdLtvbLBpTvVAXTdrhTwGXuh16PadQMAVmkoxOPiExRB5uLiy2ADaVKSglia5aQBUp9v0ygEEOmkiUtn5A26D9ui0dkPR0hx4fwqCOOmA2ZyDUNFJ_qrGSwT1SxGQDHeRteymJG7uN9QekS3XiBDgFJxwl-vVpoSTBJM",
+          "q": "2HBr9qhVd3zZUQuNb7ro06ErLl4fhL-DiKsNqXB772tDNTJYeog1nOWgS22tcv5WHrSoYF1x5Q74YVoA6yVj6DwFx2Hc2pYZazzhYMRC3NAWkTEdroy9IjtpzKIpQIqw-sq8CbWVBXzho8uQBCdg8h73z11_HPyXT9BqQCmxJ9s",
+          "dp": "WsQ32rQuqNUnv4lRb4GYcZI41SCsZnQFw4dBsTRXaXknlFr0PfkhvXyfVlYwU6i5U8DgfO0-xzTwErGUIrs4vZFyjRFauDA3JlvLWn0rpXFp-sELM87PhLfpjDiBFz_EFtM7kJw7GhTMCFnsgVpAEpQ8sesXLPiTPNts2_D5SW8",
+          "dq": "jWlucLrtFGOjDRuyLjT9l__uWZ4vk6kZRHsWMwWGRBhd0ezx-CT0em1hPMcNE1vvYqKAfG2xU4pjaB_JB9nnG73TvMBI7xwwwWsGihXQ5bqjc_uWPAxCKpKM_qFYuI2lMkaxctqL4gkE1-LRVpVv9uGa4YZh3ct_BSvTr9ZNpA8",
+          "qi": "kn9Etj4a2erCUmoZUQalPjHxCRYm5Q3wAkFIRGSQADA51mkwQHyTYqXbHcmXn2ZgXBVI6XDWJB51Me-NCPfITTlusqxvATF7Q-QJtdK_FbgNtcVRNc1FMq_M7VBHA1i9wJR7T4t57aywfXPmlsA5TToTDRe-ybdw0C3ys4KQATs"
+        }
+      ],
+      "jwks_core": [
+        {
+          "kty": "RSA",
+          "d": "QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q",
+          "e": "AQAB",
+          "use": "enc",
+          "kid": "9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w",
+          "n": "utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw",
+          "p": "2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0",
+          "q": "2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM"
+        }
+      ],
+      "trust_marks": [],
+      "trust_mark_issuers": {},
+      "entity_type": "openid_relying_party",
+      "metadata": {
+        "openid_credential_verifier": {
+          "application_type": "web",
+          "authorization_encrypted_response_alg": [
+            "RSA-OAEP",
+            "RSA-OAEP-256",
+            "ECDH-ES",
+            "ECDH-ES+A128KW",
+            "ECDH-ES+A192KW",
+            "ECDH-ES+A256KW"
+          ],
+          "authorization_encrypted_response_enc": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "authorization_signed_response_alg": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "client_id": null,
+          "client_name": "Name of an example organization",
+          "contacts": [
+            "ops@verifier.example.org"
+          ],
+          "default_acr_values": [
+            "https://www.spid.gov.it/SpidL2",
+            "https://www.spid.gov.it/SpidL3"
+          ],
+          "id_token_encrypted_response_alg": [
+            "RSA-OAEP",
+            "RSA-OAEP-256",
+            "ECDH-ES",
+            "ECDH-ES+A128KW",
+            "ECDH-ES+A192KW",
+            "ECDH-ES+A256KW"
+          ],
+          "id_token_encrypted_response_enc": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "id_token_signed_response_alg": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "jwks": {
+            "keys": [
+              {
+                "kty": "EC",
+                "use": "sig",
+                "kid": "SQgNjv4yU8sfuafJ2DPWq2tnOlK1JSibd3V5KqYRhOk",
+                "alg": "ES256",
+                "crv": "P-256",
+                "x": "Q46FDkhMjewZIP9qP8ZKZIP-ZEemctvjxeP0l3vWHMI",
+                "y": "IT7lsGxdJewmonk9l1_TAVYx_nixydTtI1Sbn0LkfEA"
+              },
+              {
+                "kty": "RSA",
+                "use": "enc",
+                "kid": "9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w",
+                "e": "AQAB",
+                "n": "utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw"
+              },
+              {
+                "kty": "RSA",
+                "use": "sig",
+                "kid": "m00NPAelNBnG_wK2R5EpI_k-GWCHEUySamQYubgFjCg",
+                "alg": "RS256",
+                "e": "AQAB",
+                "n": "sP6jt1XwJE0JDKxy4B7r3Jdb8W6bSRoVunyjWMgl5IafqFwHsJlYgCAWPeTrAL-iyjdnWC1csHuTqWjdndDL-oqEarrqoDAycVkfFTUTD81_wVhWUzAwxhQHiT7PTUIsV7m9VGlfC_kdCpQl5CcK1yx2nQ1KbqWOV1_5WnMgnN_EpNmztkZDnJmKedVduOb2dKWwnLS3fcGvUxXc87DjAzC2vfgQSoQfXAZbwItyS6OinFiUnBxRvt9ZY2IapjI1-wwDKKeRrqPC-fV2oWTrMqoYAvIDnf9AjKHAbIw7q301-7-eaUMF1hVtAz1XeXvMp0wK8_uSo9Vgv1vHhBpOwQ"
+              }
+            ]
+          },
+          "redirect_uris": null,
+          "request_uris": null,
+          "vp_formats": {
+            "dc+sd-jwt": {
+              "sd-jwt_alg_values": [
+                "ES256",
+                "ES384"
+              ],
+              "kb-jwt_alg_values": [
+                "ES256",
+                "ES384"
+              ]
+            }
+          }
+        },
+        "federation_entity": {
+          "organization_name": "IAM Proxy Italia OpenID4VP backend",
+          "homepage_uri": "https://developers.italia.it",
+          "policy_uri": "https://developers.italia.it",
+          "tos_uri": "https://developers.italia.it",
+          "logo_uri": "https://developers.italia.it/assets/icons/logo-it.svg"
+        }
+      },
+      "constraints": {},
+      "is_active": true
+    }
+  },
+  {
+    "model": "spid_cie_oidc_entity.federationentityconfiguration",
+    "pk": 2,
+    "fields": {
+      "created": "2025-10-13T11:25:47.360Z",
+      "modified": "2025-10-13T11:25:47.360Z",
+      "uuid": "32f598af-f046-4c2e-ba8f-fb92b2078bff",
+      "sub": "https://localhost/OpenID4VCI",
+      "default_exp": 2880,
+      "default_signature_alg": "ES256",
+      "authority_hints": [],
+      "jwks_fed": [
+        {
+          "kty": "EC",
+          "d": "YbMCJU43_GkbjUlWwTA5LbVvRRmz4788-k4zl2mjwrE",
+          "use": "sig",
+          "crv": "P-256",
+          "kid": "2uhBmKZqkmLaPdJjvQ6ll6dsWXr9FGlouTnhg3mUec0",
+          "x": "o8I43oRYmVk5x6Zmq2_Ni--cHD5S81qTD_5cQum2Atk",
+          "y": "RrhbyuxVw6ZXEpbb8H_HyvEyL7rX0UeSZqcvulHuyFQ",
+          "alg": "ES256"
+        }
+      ],
+      "jwks_core": [
+        {
+          "kty": "EC",
+          "d": "YbMCJU43_GkbjUlWwTA5LbVvRRmz4788-k4zl2mjwrE",
+          "use": "sig",
+          "crv": "P-256",
+          "kid": "2uhBmKZqkmLaPdJjvQ6ll6dsWXr9FGlouTnhg3mUec0",
+          "x": "o8I43oRYmVk5x6Zmq2_Ni--cHD5S81qTD_5cQum2Atk",
+          "y": "RrhbyuxVw6ZXEpbb8H_HyvEyL7rX0UeSZqcvulHuyFQ",
+          "alg": "ES256"
+        }
+      ],
+      "trust_marks": [],
+      "trust_mark_issuers": {},
+      "entity_type": "openid_credential_issuer",
+      "metadata": {
+        "oauth_authorization_server": {
+          "issuer": "https://eaa-provider.example.org",
+          "pushed_authorization_request_endpoint": "/as/par",
+          "authorization_endpoint": "/authorize",
+          "token_endpoint": "/token",
+          "client_registration_types_supported": [
+            "automatic"
+          ],
+          "code_challenge_methods_supported": [
+            "S256"
+          ],
+          "acr_values_supported": [
+            "https://trust-registry.eid-wallet.example.it/loa/substantial",
+            "https://trust-registry.eid-wallet.example.it/loa/high"
+          ],
+          "scopes_supported": [
+            "EuropeanDisabilityCard",
+            "mDL"
+          ],
+          "response_modes_supported": [
+            "form_post.jwt",
+            "query"
+          ],
+          "response_types_supported": [
+            "code"
+          ],
+          "authorization_signing_alg_values_supported": [
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "grant_types_supported": [
+            "authorization_code"
+          ],
+          "token_endpoint_auth_methods_supported": [
+            "attest_jwt_client_auth"
+          ],
+          "token_endpoint_auth_signing_alg_values_supported": [
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "request_object_signing_alg_values_supported": [
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "dpop_signing_alg_values_supported": [
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "jwks": [
+            {
+              "kty": "EC",
+              "d": "YbMCJU43_GkbjUlWwTA5LbVvRRmz4788-k4zl2mjwrE",
+              "use": "sig",
+              "crv": "P-256",
+              "kid": "2uhBmKZqkmLaPdJjvQ6ll6dsWXr9FGlouTnhg3mUec0",
+              "x": "o8I43oRYmVk5x6Zmq2_Ni--cHD5S81qTD_5cQum2Atk",
+              "y": "RrhbyuxVw6ZXEpbb8H_HyvEyL7rX0UeSZqcvulHuyFQ",
+              "alg": "ES256"
+            }
+          ]
+        },
+        "openid_credential_issuer": {
+          "credential_issuer": "https://eaa-provider.example.org",
+          "credential_endpoint": "/credential",
+          "nonce_endpoint": "/nonce-endpoint",
+          "deferred_credential_endpoint": "/deferred-credential",
+          "revocation_endpoint": "/revoke",
+          "status_assertion_endpoint": "/status",
+          "notification_endpoint": "/notification",
+          "credential_hash_alg_supported": "sha-256",
+          "authorization_servers": [
+            null
+          ],
+          "display": [
+            {
+              "name": "EAA Provider",
+              "locale": "it-IT"
+            },
+            {
+              "name": "EAA Provider",
+              "locale": "en-US"
+            }
+          ],
+          "credential_configurations_supported": {
+            "dc_sd_jwt_EuropeanDisabilityCard": {
+              "format": "dc+sd-jwt",
+              "scope": "EuropeanDisabilityCard",
+              "cryptographic_binding_methods_supported": [
+                "jwk"
+              ],
+              "credential_signing_alg_values_supported": [
+                "ES256",
+                "ES384",
+                "ES512"
+              ],
+              "proof_types_supported": {
+                "jwt": {
+                  "proof_signing_alg_values_supported": [
+                    "ES256",
+                    "ES384",
+                    "ES512"
+                  ]
+                }
+              },
+              "display": [
+                {
+                  "name": "Carta della disabilità europea",
+                  "locale": "it-IT"
+                },
+                {
+                  "name": "European Disability Card",
+                  "locale": "en-US"
+                }
+              ],
+              "vct": "https://trust-registry.eid-wallet.example.it/v1.0/EuropeanDisabilityCard",
+              "claims": [
+                {
+                  "path": [
+                    "document_number"
+                  ],
+                  "display": [
+                    {
+                      "name": "Numero Documento",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Document Number",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "given_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Nome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "family_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Cognome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Family Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "birth_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di Nascita (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Date of Birth (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "personal_administrative_number"
+                  ],
+                  "display": [
+                    {
+                      "name": "Codice Fiscale",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Tax Identification Number",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "expiry_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di Scadenza (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Expiration Date (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "constant_attendance_allowance"
+                  ],
+                  "display": [
+                    {
+                      "name": "Diritto accompagnatore",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Constant attendance allowance",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "portrait"
+                  ],
+                  "display": [
+                    {
+                      "name": "Foto codificata in base64",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Portrait base64 encoded",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "link_qr_code"
+                  ],
+                  "display": [
+                    {
+                      "name": "Link QR Code",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Link QR Code",
+                      "locale": "en-US"
+                    }
+                  ]
+                }
+              ]
+            },
+            "dc_sd_jwt_mDL": {
+              "format": "dc+sd-jwt",
+              "scope": "mDL",
+              "cryptographic_binding_methods_supported": [
+                "jwk"
+              ],
+              "credential_signing_alg_values_supported": [
+                "ES256",
+                "ES384",
+                "ES512"
+              ],
+              "proof_types_supported": {
+                "jwt": {
+                  "proof_signing_alg_values_supported": [
+                    "ES256",
+                    "ES384",
+                    "ES512"
+                  ]
+                }
+              },
+              "display": [
+                {
+                  "name": "Patente di guida",
+                  "locale": "it-IT"
+                },
+                {
+                  "name": "Mobile Driver's License",
+                  "locale": "en-US"
+                }
+              ],
+              "vct": "https://trust-registry.eid-wallet.example.it/v1.0/mDL",
+              "claims": [
+                {
+                  "path": [
+                    "given_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Nome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "family_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Cognome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Family Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "birth_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di Nascita (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Date of Birth (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "place_of_birth"
+                  ],
+                  "display": [
+                    {
+                      "name": "Luogo di Nascita",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Place of Birth",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "issue_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di rilascio (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issue Date (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "expiry_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di Scadenza (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Expiration Date (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "issuing_country"
+                  ],
+                  "display": [
+                    {
+                      "name": "Paese di rilascio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issuing Country",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "issuing_authority"
+                  ],
+                  "display": [
+                    {
+                      "name": "Autorità di rilascio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issuing Authority",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "document_number"
+                  ],
+                  "display": [
+                    {
+                      "name": "Numero Documento",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Document Number",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "portrait"
+                  ],
+                  "display": [
+                    {
+                      "name": "Foto codificata in base64",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Portrait base64 encoded",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "driving_privileges"
+                  ],
+                  "display": [
+                    {
+                      "name": "Elenco delle categorie di abilitazione separate da spazio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Driving Privileges separated by space",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "restrictions_conditions"
+                  ],
+                  "display": [
+                    {
+                      "name": "Annotazioni/Restrizioni valide per tutte le categorie separate da spazio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Restriction/Condition for all driving privileges separated by space",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "driving_privileges_details"
+                  ],
+                  "display": [
+                    {
+                      "name": "Dettagli delle categorie di abilitazione",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Driving privilege details",
+                      "locale": "en-US"
+                    }
+                  ]
+                }
+              ]
+            },
+            "mso_mdoc_mDL": {
+              "format": "mso_mdoc",
+              "scope": "mDL",
+              "doctype": "org.iso.18013.5.1.mDL",
+              "cryptographic_binding_methods_supported": [
+                "cose_key"
+              ],
+              "credential_signing_alg_values_supported": [
+                "ES256",
+                "ES384",
+                "ES512"
+              ],
+              "display": [
+                {
+                  "name": "Patente di guida",
+                  "locale": "it-IT"
+                },
+                {
+                  "name": "Mobile Driver's License",
+                  "locale": "en-US"
+                }
+              ],
+              "claims": [
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "given_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Nome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "First Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "family_name"
+                  ],
+                  "display": [
+                    {
+                      "name": "Cognome",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Family Name",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "birth_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di nascita (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Date of Birth (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "birth_place"
+                  ],
+                  "display": [
+                    {
+                      "name": "Luogo di Nascita",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Place of Birth",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "issue_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di rilascio (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issue Date (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "expiry_date"
+                  ],
+                  "display": [
+                    {
+                      "name": "Data di scadenza (YYYY-MM-GG)",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Expiry Date (YYYY-MM-GG)",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "issuing_country"
+                  ],
+                  "display": [
+                    {
+                      "name": "Paese di rilascio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issuing Country",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "issuing_authority"
+                  ],
+                  "display": [
+                    {
+                      "name": "Autorità di rilascio",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Issuing Authority",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "document_number"
+                  ],
+                  "display": [
+                    {
+                      "name": "Numero di documento",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Document Number",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "portrait"
+                  ],
+                  "display": [
+                    {
+                      "name": "Foto codificata in base64",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Portrait base64 encoded",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "driving_privileges"
+                  ],
+                  "display": [
+                    {
+                      "name": "Elenco delle categorie di abilitazione e relativi dettagli su restrizioni/condizioni",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Driving Privileges and related restrictions/conditions details",
+                      "locale": "en-US"
+                    }
+                  ]
+                },
+                {
+                  "path": [
+                    "org.iso.18013.5.1",
+                    "un_distinguishing_sign"
+                  ],
+                  "display": [
+                    {
+                      "name": "Codice identificativo della Nazione",
+                      "locale": "it-IT"
+                    },
+                    {
+                      "name": "Distinguishing sign of the issuing country",
+                      "locale": "en-US"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "jwks": [
+            {
+              "kty": "EC",
+              "d": "YbMCJU43_GkbjUlWwTA5LbVvRRmz4788-k4zl2mjwrE",
+              "use": "sig",
+              "crv": "P-256",
+              "kid": "2uhBmKZqkmLaPdJjvQ6ll6dsWXr9FGlouTnhg3mUec0",
+              "x": "o8I43oRYmVk5x6Zmq2_Ni--cHD5S81qTD_5cQum2Atk",
+              "y": "RrhbyuxVw6ZXEpbb8H_HyvEyL7rX0UeSZqcvulHuyFQ",
+              "alg": "ES256"
+            }
+          ],
+          "trust_frameworks_supported": [
+            "it_cie",
+            "it_wallet",
+            "eudi_wallet"
+          ],
+          "evidence_supported": [
+            "vouch"
+          ]
+        },
+        "federation_entity": {
+          "organization_name": "Organization Name",
+          "homepage_uri": "https://eaa-provider.example.org/",
+          "policy_uri": "https://eaa-provider.example.org/public/privacy_policy.html",
+          "tos_uri": "https://eaa-provider.example.org/public/info_policy.html",
+          "logo_uri": "https://eaa-provider.example.org/public/logo.svg",
+          "contacts": [
+            "informazioni@example.it",
+            "protocollo@pec.example.it"
+          ]
+        }
+      },
+      "constraints": {},
+      "is_active": true
+    }
+  }
+]

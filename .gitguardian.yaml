@@ -1,0 +1,12 @@
+version: 2
+rules:
+  - pattern: '!ENV\s+[A-Z_]+'
+    reason: 'Ignore ENV variables in YAML'
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'
+  - pattern: '!\*\*V\s+[A-Z_]+'
+    reason: 'Ignore variables with tag !**V in YAML'
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'

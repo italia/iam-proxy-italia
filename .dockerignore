@@ -2,7 +2,7 @@
 *
 # Add exception for the directories you actually want to include in the context
 !iam-proxy-italia-project
-!iam-proxy-italia-project_sp
+!iam-proxy-italia-project-demo-examples
 !example
 !example_sp
 !requirements.txt
