@@ -3,6 +3,7 @@ export COMPOSE_PROFILES=demo
 export SATOSA_CLEAN_DATA="false"
 export SKIP_UPDATE=
 export RUN_SPID_TEST=
+#export SATOSA_FORCE_ENV="true"
 
 function clean_data {
   if [ $SATOSA_CLEAN_DATA == "true" ]; then
@@ -10,8 +11,11 @@ function clean_data {
     rm -Rf ./iam-proxy-italia-project/*
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
-    rm -Rf ./certbot/live/localhost/*
-    rm -Rf ./spid_cie_oidc_django/wallet_trust_anchor/*
+    rm -Rf ./spid_cie_oidc_django/*
+
+#    rm -Rf ./certbot/live/localhost/*
+    find ./certbot/live/* -maxdepth 1 -type d -not -path '.' -exec rm -rf {} +
+
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
   else
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then echo "'-e' options is skipped. To perform this option is required '-f' too "; fi
@@ -43,7 +47,7 @@ function initialize_satosa {
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/localhost
-  mkdir -p ./spid_cie_oidc_django/wallet_trust_anchor
+  mkdir -p ./spid_cie_oidc_django
 
   init_files ./.env ".env" "cp env.example .env"
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -51,11 +55,14 @@ function initialize_satosa {
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
-  init_files ./spid_cie_oidc_django/wallet_trust_anchor/manage.py "Wallet Trust Anchor" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/wallet_trust_anchor ./spid_cie_oidc_django/"
+  init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
 
   rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
+  chmod -R 777 ./spid_cie_oidc_django
+  chmod -R 777 ./djangosaml2_sp
+
   echo "WARNING: iam-proxy-italia-project permission folder set recursively to 777"
 }
 

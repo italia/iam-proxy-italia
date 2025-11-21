@@ -20,6 +20,12 @@ services:
       - '27017-27019:27017-27019'
     networks:
       - iam-proxy-italia
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "admin", "--eval", "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   satosa-mongo-express:
     profiles:
@@ -30,7 +36,8 @@ services:
     ports:
       - 8082:8081
     depends_on:
-      - satosa-mongo
+      satosa-mongo:
+          condition: service_healthy
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "${EXPRESS_USER:-satosauser}"
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
@@ -50,6 +57,9 @@ services:
       args:
         - NODE_ENV=local
       dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
@@ -63,14 +73,17 @@ services:
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
     image: iam-proxy-italia:3.0
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
+    build:
+        context: ../
+        args:
+            - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
-    # depends_on:
-    # - satosa-mongo
+    depends_on:
+        trust-anchor:
+          condition: service_healthy
+        cie-provider:
+          condition: service_healthy
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -129,8 +142,6 @@ services:
       - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
       #- ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
-      - /home/mciofo/project/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
-      - /home/mciofo/project/SATOSA/src/satosa:/.venv/lib/python3.12/site-packages/satosa:rwx
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
@@ -159,7 +170,9 @@ services:
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - ${SATOSA_HOSTNAME:-localhost}
     environment:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
@@ -174,6 +187,7 @@ services:
       - "8443:8443"
     networks:
       - iam-proxy-italia
+
   satosa-certbot:
     image: certbot/certbot
     container_name: satosa-certbot
@@ -191,23 +205,78 @@ services:
       - "80:80"
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
-  wallet-trust-anchor:
-    image: ghcr.io/italia/spid-cie-oidc-django:latest
+  trust-anchor:
+    profiles:
+      - demo
+      - dev
+    container_name: trust-anchor
+    build:
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+      args:
+        MODULE_NAME: federation_authority
+        RUNNING_PORT: 5002
     ports:
-      - "8006:8005"
+      - "5002:5002"
     volumes:
-      - ./spid_cie_oidc_django/wallet_trust_anchor:/django-project
+      - ./spid_cie_oidc_django/federation_authority:/django-project:rw
     networks:
-      - iam-proxy-italia
-    command: |
-        bash -c "cd /django-project/ &&
-        python3 manage.py migrate &&
-        python3 manage.py loaddata dumps/ta-ec.json &&
-        python3 manage.py runserver 0.0.0.0:8006"
+      iam-proxy-italia:
+        aliases:
+          - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    healthcheck: #port in the healthcheck argv URL to be replaced along with the ports directive.
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp" #refers to the cie-oidc plugin
+
+  cie-provider:
+    profiles:
+      - demo
+      - dev
+    container_name: cie-provider
+    build:
+      context: ../
+      args:
+        MODULE_NAME: provider
+        RUNNING_PORT: 8002
+      dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+    expose:
+      - 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./spid_cie_oidc_django/provider:/django-project
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
+    depends_on:
+      - trust-anchor
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    healthcheck: #port in the healthcheck argv URL to be replaced along with the ports directive.
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp" #refers to the cie-oidc plugin
 
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
+
 ## External volumes
 # volumes:
 #   mongodata:

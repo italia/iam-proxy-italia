@@ -27,6 +27,4 @@ config:
     "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
     #IT Wallet
     "wallet": "OpenID4VP"
-    "http://cie-provider.org:8002/oidc/op/": "CieOidcRp"
-    "http://ipzs-example-col-provider.org:8002/oidc/op/": "CieOidcRp"
-    "http://ipzs-example-prod-provider.org:8002/oidc/op/": "CieOidcRp"
+    "http://cie-provider.example.org:8002/oidc/op/": "CieOidcRp"
