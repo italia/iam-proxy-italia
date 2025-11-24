@@ -60,6 +60,8 @@ services:
     depends_on:
       iam-proxy-italia:
         condition: service_healthy
+      satosa-nginx:
+        condition: service_started
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"

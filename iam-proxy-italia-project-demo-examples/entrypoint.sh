@@ -7,6 +7,7 @@ if [ $? -eq 0 ]; then
     echo "Satosa IDP Metadata salvato con successo"
 else
     echo "ERRORE: Download Satosa IDP Metadata fallito!."
+    exit 1
 fi
 
 python -B manage.py migrate
