@@ -1,6 +1,5 @@
 import json
 import logging
-from pydantic import BaseModel
 
 from typing import Union
 from cryptojwt.jwk.jwk import key_from_jwk_dict
@@ -25,23 +24,6 @@ def is_leaf(statement_metadata):
         if _typ in statement_metadata:
             return True # pragma: no cover
 
-#todo
-# class FederationEntityConfiguration(BaseModel):
-#     """
-#     Federation Authority configuration.
-#     """
-#
-#     sub: str
-#     default_exp: int
-#     default_signature_alg: str
-#     jwks_fed: list
-#     jwks_core: list
-#     entity_type: str
-#     metadata: dict
-#     authority_hints: list = None
-#     trust_marks:list = None
-#     trust_mark_issuers:dict = None
-#     constraints:  = None
 
 class FederationEntityConfiguration:
     def __init__(self, sub, exp, default_signature_alg, jwks_core, jwks_fed, entity_type, metadata,

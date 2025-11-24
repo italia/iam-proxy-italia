@@ -109,34 +109,7 @@ def validate_metadata_algs(metadata: dict):
 
 
 def validate_entity_metadata(value):
-    ...
-    # status = False
-    # for i in ENTITY_TYPES:
-    #     if i in value:
-    #         status = True
-    # if not status:
-    #     raise ValidationError(
-    #         f'Need to specify one of {", ".join(ENTITY_TYPES)}'
-    #     )
-    # # todo
-    # if "openid_provider" in value:
-    #     schema = OIDCFED_PROVIDER_PROFILES[OIDCFED_DEFAULT_PROVIDER_PROFILE]
-    #     try:
-    #         schema["op_metadata"](**value["openid_provider"])
-    #     except Exception as e:
-    #         raise ValidationError(
-    #             f"OP metadata fail {e}. "
-    #         )
-    # if "openid_relying_party" in value:
-    #     schema = RP_PROVIDER_PROFILES[RP_DEFAULT_PROVIDER_PROFILES]
-    #     try:
-    #         schema["rp_metadata"](**value["openid_relying_party"])
-    #     except Exception as e:
-    #         raise ValidationError(
-    #             f"RP metadata fail {e}. "
-    #         )
-    #
-    # # TODO - add wallet_provider and wallet_relying_party once standardized
+    pass
 
 
 def validate_private_jwks(values: Union[dict, list]):

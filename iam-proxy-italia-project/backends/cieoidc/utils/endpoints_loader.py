@@ -5,7 +5,7 @@ from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.attribute_mapping import AttributeMapper
 
-# from pyeudiw.trust.dynamic import CombinedTrustEvaluator
+
 from .helpers.misc import get_dynamic_class
 
 
@@ -24,7 +24,6 @@ class EndpointsLoader:
             auth_callback_func: Callable[[Context, InternalData], Response] | None = None,
             converter: AttributeMapper | None = None,
             trust_evaluator=None
-            # trust_evaluator: CombinedTrustEvaluator | None = None
     ):
         """
         Create a backend/frontend dynamically.

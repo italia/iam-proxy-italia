@@ -4,7 +4,6 @@ import inspect
 
 from satosa.backends.base import BackendModule
 from satosa.backends.oauth import get_metadata_desc_for_oauth_backend
-# from satosa.backends.openid_connect import OpenIDConnectBackend
 
 from .utils.endpoints_loader import EndpointsLoader
 
@@ -60,12 +59,6 @@ class CieOidcBackend(BackendModule):
 
         for path, inst in el.endpoint_instances.items():
             url_map.append((f"{self.name}/{path}", inst))
-        #
-        # metadata_map = self.trust_evaluator.build_metadata_endpoints(
-        #     self.name, self._backend_url
-        # )
-
-        # url_map.extend(metadata_map)
 
         for path, inst in url_map:
             self.endpoints[f"{path.split('/')[-1].replace('-', '_').replace('$', '')}"] = inst
@@ -134,7 +127,5 @@ class CieOidcBackend(BackendModule):
         )
 
         trust_chain.start()
-
         trust_chain.apply_metadata_policy()
-
         return trust_chain
