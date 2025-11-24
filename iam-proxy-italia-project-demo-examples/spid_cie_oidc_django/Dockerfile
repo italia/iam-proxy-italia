@@ -1,7 +1,7 @@
 FROM ghcr.io/italia/spid-cie-oidc-django:latest
 
-ARG RUNNING_PORT=8000
-ARG MODULE_NAME=federation_authority
+ARG RUNNING_PORT
+ARG MODULE_NAME
 
 RUN apt update
 RUN apt install -y wget
