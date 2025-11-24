@@ -1,5 +1,18 @@
-services:
 
+# Template for django
+x-django-build: &django-build
+  context: ../
+  dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+
+# Common template for Django project
+x-django-common: &django-common
+  working_dir: /django-project
+  entrypoint: "sh /entrypoint.sh"
+  networks:
+    - iam-proxy-italia
+  restart: unless-stopped
+
+services:
   satosa-mongo:
     profiles:
       - demo
@@ -208,13 +221,10 @@ services:
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
   trust-anchor:
-    profiles:
-      - demo
-      - dev
+    <<: *django-common
     container_name: trust-anchor
     build:
-      context: ../
-      dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+      <<: *django-build
       args:
         MODULE_NAME: federation_authority
         RUNNING_PORT: 5002
@@ -226,9 +236,7 @@ services:
       iam-proxy-italia:
         aliases:
           - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
-    working_dir: /django-project
-    entrypoint: "sh /entrypoint.sh"
-    healthcheck: #port in the healthcheck argv URL to be replaced along with the ports directive.
+    healthcheck:
       test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
       interval: 15s
       timeout: 10s
@@ -237,21 +245,16 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp" #refers to the cie-oidc plugin
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
 
   cie-provider:
-    profiles:
-      - demo
-      - dev
+    <<: *django-common
     container_name: cie-provider
     build:
-      context: ../
+      <<: *django-build
       args:
         MODULE_NAME: provider
         RUNNING_PORT: 8002
-      dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
-    expose:
-      - 8002
     ports:
       - "8002:8002"
     volumes:
@@ -262,9 +265,7 @@ services:
           - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
     depends_on:
       - trust-anchor
-    working_dir: /django-project
-    entrypoint: "sh /entrypoint.sh"
-    healthcheck: #port in the healthcheck argv URL to be replaced along with the ports directive.
+    healthcheck:
       test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
       interval: 15s
       timeout: 10s
@@ -273,7 +274,7 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp" #refers to the cie-oidc plugin
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
 
 networks:
   iam-proxy-italia:
