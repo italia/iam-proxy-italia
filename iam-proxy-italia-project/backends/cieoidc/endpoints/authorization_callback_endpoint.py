@@ -155,10 +155,10 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         if not user_info:
             logger.error(
                 "User_info request failed for state: "
-                f"{authorization.get("state")} to {authorization.get("provider_id")}"
+                f"{authorization.get('state')} to {authorization.get('provider_id')}"
             )
             raise SATOSAAuthenticationError(context.state, "User_info request failed for state: "
-                                                           f"{authorization.get("state")} to {authorization.get("provider_id")}")
+                                                           f"{authorization.get('state')} to {authorization.get('provider_id')}")
 
         user_attrs = process_user_attributes(user_info, self.claims, authorization)
         if not user_attrs:
