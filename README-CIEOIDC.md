@@ -36,6 +36,9 @@ This backend is designed to integrate cleanly with the SATOSA proxy, enabling le
     1. [Developer Summary](#developer-summary)
     2. [Developer Checklist](#developer-checklist)
     3. [Developer Tips](#developer-tips)
+    4. [Hosts file section](#hosts-file-section)
+    5. [Edit env.example](#edit-envexample)
+    6. [Windows OS](#windows-os)
 11. [Quick Start: How to Integrate SPID/CIE OIDC](#quick-start-how-to-integrate-spidcie-oidc)
     1. [Run docker-prepare.sh](#run-docker-preparesh)
     2. [Configure the Trust-Anchor](#configure-the-trust-anchor)
@@ -270,6 +273,44 @@ As a developer, you typically need to:
 - You can mock the Trust Anchor by hosting a static metadata JSON.
 - Always ensure JWKS signing keys **match the algorithm configured** (ES vs RS).
 
+### Edit env.example
+Modify the following line from:
+````
+SATOSA_HOSTNAME=localhost
+.
+.
+.
+````
+to:
+````
+#SATOSA_HOSTNAME=localhost
+SATOSA_HOSTNAME=satosa-nginx.example.org
+````
+
+### Hosts file section
+
+Add the following entries to the hosts file:
+````
+127.0.0.1		cie-provider.example.org
+127.0.0.1		trust-anchor.example.org
+127.0.0.1		satosa-nginx.example.org
+````
+
+### Windows OS
+
+If the development environment is using WSL, it is recommended 
+to verify the Git configuration.
+Configure autocrlf from:
+````
+[core]
+ autocrlf = true
+````
+to: 
+
+````
+[core]
+ autocrlf = input
+````
 
 ## Quick Start: How to Integrate SPID/CIE OIDC
 
@@ -335,6 +376,8 @@ Explanation:
 - `authority_hints` is a standard OIDC mechanism for indicating trusted entities.
 - It allows dynamic discovery of metadata from trusted roots.
 - Always include all the Trust-Anchor URIs that your backend relies on for validation.
+
+
 
 ### Additional Notes
 
