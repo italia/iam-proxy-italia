@@ -21,7 +21,6 @@ from django.views.static import serve
 from spid_cie_oidc.entity.urls import urlpatterns as entity_urlpatterns
 from spid_cie_oidc.authority.urls import urlpatterns as ta_urlpatterns
 from spid_cie_oidc.onboarding.urls import urlpatterns as onb_urlpatterns
-from spid_cie_oidc.provider.urls import urlpatterns as prov_urlpatterns
 
 admin.site.site_header = "OIDC Federation Entity Administration"
 admin.site.site_title = "OIDC Federation"
@@ -32,7 +31,6 @@ ADMIN_PATH = getattr(settings, 'ADMIN_PATH', 'admin/')
 urlpatterns = []
 
 urlpatterns.extend(entity_urlpatterns)
-urlpatterns.extend(prov_urlpatterns)
 urlpatterns.extend(ta_urlpatterns)
 urlpatterns.extend(onb_urlpatterns)
 
@@ -48,52 +46,5 @@ urlpatterns.extend(
         
     )
 )
-
-if 'spid_cie_oidc.relying_party' in settings.INSTALLED_APPS:
-    from spid_cie_oidc.relying_party.urls import urlpatterns as rp_urlpatterns
-    urlpatterns.extend(rp_urlpatterns)
-
-    from spid_cie_oidc.entity.views import entity_configuration, resolve_entity_statement
-
-    urlpatterns.extend(
-        [
-            path(
-                f"oidc/rp/.well-known/openid-federation",
-                entity_configuration,
-                name="rp_entity_configuration",
-            ),
-            path(
-                "oidc/rp/resolve",
-                resolve_entity_statement,
-                name="rp_entity_resolve",
-            ),
-        ]
-    )
-
-if 'spid_cie_oidc.provider' in settings.INSTALLED_APPS:
-    from spid_cie_oidc.provider.urls import urlpatterns as op_urlpatterns
-    urlpatterns.extend(op_urlpatterns)
-
-    from spid_cie_oidc.entity.views import entity_configuration
-
-    urlpatterns.extend(
-        [
-            path(
-                f"oidc/op/.well-known/openid-federation",
-                entity_configuration,
-                name="op_entity_configuration",
-            ),
-            path(
-                "oidc/op/resolve",
-                resolve_entity_statement,
-                name="op_entity_resolve",
-            ),
-        ]
-    )
-
-if 'spid_cie_oidc.relying_party_test' in settings.INSTALLED_APPS:
-    from spid_cie_oidc.relying_party_test.urls import urlpatterns as rp_urlpatterns_test
-    urlpatterns.extend(rp_urlpatterns_test)
-
 if 'djagger' in settings.INSTALLED_APPS:
     urlpatterns.append(path('rest/', include('djagger.urls')))

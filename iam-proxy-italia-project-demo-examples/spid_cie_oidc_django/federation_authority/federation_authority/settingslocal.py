@@ -30,20 +30,6 @@ OIDCFED_DEFAULT_TRUST_ANCHOR = "http://trust-anchor.example.org:5002"
 
 OIDCFED_TRUST_ANCHORS = [OIDCFED_DEFAULT_TRUST_ANCHOR]
 
-OIDCFED_PROVIDER_PROFILE = "spid"
-OIDCFED_PROVIDER_MAX_REFRESH = 10 #used in SPID
-
-# OIDCFED_PROVIDER_MAX_CONSENT_TIMEFRAME = 3600 #used in CIE (seconds)
-
-# for RP only
-OIDCFED_IDENTITY_PROVIDERS = {
-  "spid": {
-    "http://trust-anchor.example.org:5002/oidc/op" : OIDCFED_DEFAULT_TRUST_ANCHOR,
-  },
-  "cie": {
-    "http://cie-provider.example.org:8002/oidc/op" : OIDCFED_DEFAULT_TRUST_ANCHOR,
-  }
-}
 
 OIDCFED_REQUIRED_TRUST_MARKS = []
 
@@ -63,6 +49,8 @@ LOGIN_URL = "/oidc/rp/landing"
 
 
 FEDERATION_DEFAULT_POLICY = {
+    "wallet_provider": {},
+    "wallet_relying_party": {},
     "openid_relying_party": {
       # TODO: to be customized for each entities, not somethinf to default!
       # "client_id": {"value":  "https://rp.example.it/spid"},
@@ -126,9 +114,6 @@ INSTALLED_APPS = [
     'spid_cie_oidc.entity',
     'spid_cie_oidc.authority',
     'spid_cie_oidc.onboarding',
-    'spid_cie_oidc.relying_party',
-    'spid_cie_oidc.relying_party_test',
-    'spid_cie_oidc.provider',
     'djagger'
 ]
 
@@ -162,19 +147,7 @@ DJAGGER_DOCUMENT = {
         'oidcfed_resolve',
         'oidcfed_list',
         'oidcfed_trust_mark_status',
-        'oidcfed_advanced_entity_listing',
-
-        # Provider
-        'oidc_provider_authnrequest',
-        'oidc_provider_token_endpoint',
-        'oidc_provider_userinfo_endpoint',
-        'introspection_endpoint',
-        'oidc_provider_revoke_session',
-
-        # Relying Party
-        'spid_cie_rp_begin',
-        'spid_cie_rp_callback',
-        'spid_cie_rpinitiated_logout'
+        'oidcfed_advanced_entity_listing'
     ]
 }
 
