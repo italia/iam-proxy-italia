@@ -221,6 +221,9 @@ services:
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
 
   trust-anchor:
+    profiles:
+      - demo
+      - mongo
     <<: *django-common
     container_name: trust-anchor
     build:
@@ -248,6 +251,9 @@ services:
       RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
 
   cie-provider:
+    profiles:
+      - demo
+      - mongo
     <<: *django-common
     container_name: cie-provider
     build:

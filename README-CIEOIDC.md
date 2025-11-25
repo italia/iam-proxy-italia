@@ -102,8 +102,7 @@ Credentials come from environment variables.
 # LOCAL CONFIGURATION
 providers:
   - http://trust-anchor.org:8000/oidc/op/
-  - http://ipzs-col-provider.org:8002/oidc/op/
-  - http://ipsz-prod-provider.org:8002/oidc/op/
+  - http://trust-anchor.example.org:8000/oidc/op/
 ````
 
 These are the federated OpenID Providers the RP can authenticate against.
