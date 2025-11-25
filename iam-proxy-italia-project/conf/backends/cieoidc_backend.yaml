@@ -1,9 +1,6 @@
 module: backends.cieoidc.CieOidcBackend
 name: CieOidcRp
 config:
-  static_storage_url: !ENV SATOSA_BASE_STATIC
-  error_template: "cie_login_error.html"
-  template_folder: "templates" # project root
   network:
     httpc_params: &httpc_params
       connection:
