@@ -9,9 +9,9 @@ function loadWalletsi18next() {
   if (typeof Ita !== "undefined") {
     new Ita();
   }
-  if (typeof Cie !== "undefined") {
-    new Cie();
-  }
+//  if (typeof Cie !== "undefined") {
+//    new Cie();
+//  }
 }
 
 // Inizializza i18next
@@ -160,31 +160,32 @@ function createLogoButton(wallet, hasLearnMore = false) {
     return span;
   };
 
-if (wallet.login_url?.includes("#cie-idp-button")) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'ita ita-dropdown ita-l ita-fixed mb-3';
-
-    const btn = document.createElement('a');
-    btn.href = "#";
-    btn.className = 'btn btn-primary d-flex align-items-center';
-    btn.style.gap = '0.5rem';
-    btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
-    btn.setAttribute('aria-haspopup', 'true');
-    btn.setAttribute('aria-expanded', 'false');
-
-    btn.appendChild(createLogoImg());
-    btn.appendChild(createTextSpan());
-
-    const menu = document.createElement('div');
-    menu.className = 'ita-menu';
-    menu.setAttribute('role', 'menu');
-    menu.setAttribute('data-cie-remote', '');
-
-    wrapper.appendChild(btn);
-    wrapper.appendChild(menu);
-
-    return wrapper;
-  }
+// Support for multy-provider for CIE OIDC
+//if (wallet.login_url?.includes("#cie-idp-button")) {
+//    const wrapper = document.createElement('div');
+//    wrapper.className = 'ita ita-dropdown ita-l ita-fixed mb-3';
+//
+//    const btn = document.createElement('a');
+//    btn.href = "#";
+//    btn.className = 'btn btn-primary d-flex align-items-center';
+//    btn.style.gap = '0.5rem';
+//    btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
+//    btn.setAttribute('aria-haspopup', 'true');
+//    btn.setAttribute('aria-expanded', 'false');
+//
+//    btn.appendChild(createLogoImg());
+//    btn.appendChild(createTextSpan());
+//
+//    const menu = document.createElement('div');
+//    menu.className = 'ita-menu';
+//    menu.setAttribute('role', 'menu');
+//    menu.setAttribute('data-cie-remote', '');
+//
+//    wrapper.appendChild(btn);
+//    wrapper.appendChild(menu);
+//
+//    return wrapper;
+//  }
 
 if (wallet.login_url?.includes("#spid-idp-button")) {
     const wrapper = document.createElement('div');
