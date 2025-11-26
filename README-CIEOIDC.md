@@ -12,6 +12,10 @@ It acts as a federated OpenID Connect Relying Party (RP) capable of:
 
 This backend is designed to integrate cleanly with the SATOSA proxy, enabling legacy SAML2/OIDC SPs to authenticate via SPID/CIE OIDC.
 
+### For testing follow the steps described in the image below:
+
+![result](gallery/cieoidc_example.gif)
+
 ## Table of Contents
 
 1. [General Settings](#general-settings)
@@ -40,29 +44,16 @@ This backend is designed to integrate cleanly with the SATOSA proxy, enabling le
     5. [Edit env.example](#edit-envexample)
     6. [Windows OS](#windows-os)
 11. [Quick Start: How to Integrate SPID/CIE OIDC](#quick-start-how-to-integrate-spidcie-oidc)
-    1. [Run docker-prepare.sh](#run-docker-preparesh)
-    2. [Configure the Trust-Anchor](#configure-the-trust-anchor)
-    3. [Configure personal Trust Chain](#configure-personal-trust-chain)
-    4. [Configure the authority_hints](#configure-the-authority_hints)
-    5. [Additional Notes](#additional-notes)
+    1. [Configure the Trust-Anchor](#configure-the-trust-anchor)
+    2. [Configure personal Trust Chain](#configure-personal-trust-chain)
+    3. [Configure the authority_hints](#configure-the-authority_hints)
+    4. [Additional Notes](#additional-notes)
 12. [Troubleshooting](#troubleshooting)
 13. [Diagram (Mermaid)](#diagram-mermaid)
 
 ### Configuration File Explained in Detail
 
 Below is a complete explanation of the configuration you provided.
-
-#### General Settings
-
-````
-static_storage_url: !ENV SATOSA_BASE_STATIC
-error_template: "cie_login_error.html"
-template_folder: "templates"
-````
-
-- static_storage_url: base URL used to serve static files.
-- error_template: HTML template displayed in case of login/OP errors.
-- template_folder: folder containing backend templates.
 
 #### Network Parameters
 
@@ -315,15 +306,6 @@ to:
 
 Follow these steps to integrate SPID/CIE OIDC into SATOSA using this backend.
 
-### Run docker-prepare.sh
-
-Before running SATOSA with Docker, you need to prepare the local Trust-Anchor.
-````
-./docker-prepare.sh
-````
-This script ensures that all required certificates, keys, and local metadata are correctly initialized. 
-It must be executed before running the main Docker Compose setup.
-
 ### Configure the Trust-Anchor
 
 The Trust-Anchor is the root entity that the backend uses to validate the authenticity of OIDC providers. 
@@ -380,6 +362,7 @@ Explanation:
 
 ### Additional Notes
 
+- Copy all key from path: **Docker-compose/certbot/live/localhost** into  **Docker-compose/certbot/live/satosa-nginx.example.org**
 - Make sure that your MongoDB or storage backend is running and correctly configured. It stores session data, authentication tokens, and user attributes.
 - The `CieOidcBackend` will automatically map incoming OIDC claims to the standard SATOSA attributes for SAML or OIDC responses.
 - Always verify JWKS URIs and certificate chains. Misconfigured JWKS URLs are a common source of errors.
