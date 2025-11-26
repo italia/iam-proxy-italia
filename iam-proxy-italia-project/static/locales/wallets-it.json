@@ -11,16 +11,16 @@
   },
   "digital_id": {
     "cie": {
-      "name": "CIE",
+      "name": "CIE SAML2",
       "logo_text": "Entra con CIE",
       "logo": "cie/cie_white.svg",
       "login_url": "/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco"
     },
     "cie_oidc": {
       "name": "CIE OIDC",
-      "logo_text": "Entra con CIE OIDC",
+      "logo_text": "Entra con CIE",
       "logo": "cie/cie_white.svg",
-      "login_url": "#cie-idp-button"
+      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op/"
     },
     "it_wallet": {
       "name": "IT-Wallet",
