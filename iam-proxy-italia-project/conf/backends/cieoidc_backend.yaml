@@ -97,7 +97,7 @@ config:
       organization_name: Example RP
       homepage_uri: https://satosa-nginx.example.org/CieOidcRp
       policy_uri: https://satosa-nginx.example.org/CieOidcRp/en/website/legal-information
-      logo_uri: http://trust-anchor.example.org:5002/static/svg/spid-logo-c-lb.svg
+      logo_uri: https://satosa-nginx.example.org/static/cie/sample-cie-logo.png
       contacts:
         - ops@rp.example.it
     openid_relying_party:

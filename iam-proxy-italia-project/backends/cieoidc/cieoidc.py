@@ -24,6 +24,7 @@ class CieOidcBackend(BackendModule):
         self.config = module_config
         self.endpoints = {}
         self.trust_chain = self._generate_trust_chains()
+        self._client_id = self.config.get("metadata", {}).get("openid_relying_party", {}).get("client_id") or f"{base_url}/{name}"
 
 
     def start_auth(self, context, internal_request):
@@ -72,7 +73,7 @@ class CieOidcBackend(BackendModule):
         See satosa.backends.oauth.get_metadata_desc
         :rtype: satosa.metadata_creation.description.MetadataDescription
         """
-        meta = get_metadata_desc_for_oauth_backend(self.config["provider_metadata"]["issuer"], self.config)
+        meta = get_metadata_desc_for_oauth_backend(self._client_id, self.config)
         return meta
 
     def _generate_trust_chains(self) -> dict:
