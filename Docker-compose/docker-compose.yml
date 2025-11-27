@@ -86,8 +86,8 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:3.0
+    image: ghcr.io/italia/iam-proxy-italia:latest
+    # image: iam-proxy-italia:3.0
     build:
         context: ../
         args:
