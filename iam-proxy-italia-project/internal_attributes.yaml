@@ -1,0 +1,125 @@
+attributes:
+  address:
+    openid: [address.street_address]
+    orcid: [addresses.str]
+    saml: [postaladdress, address]
+    openid4vp: [address]
+  displayname:
+    openid: [nickname]
+    orcid: [name.credit-name]
+    github: [login]
+    saml: [displayName, familyname, FamilyName, familyName]
+    cie_oidc: [first_name]
+  edupersontargetedid:
+    facebook: [id]
+    linkedin: [id]
+    orcid: [orcid]
+    github: [id]
+    openid: [sub]
+    saml: [eduPersonTargetedID, eduPersonTargetedId, spidCode, sub, id, fiscalNumber]
+    openid4vp: [sub]
+    cie_oidc: [sub]
+  edupersonprincipalname:
+    saml: [eduPersonPrincipalName]
+  edupersonscopedaffiliation:
+    saml: [eduPersonScopedAffiliation]
+  edupersonentilement:
+    saml: [eduPersonEntitlement]
+  schacpersonaluniqueid:
+    saml: [schacPersonalUniqueID, fiscalNumber]
+  schacpersonaluniquecode:
+    saml: [schacPersonalUniqueCode]
+  schachomeorganizationtype:
+    saml: [schacHomeOrganizationType]
+  schachomeorganization:
+    saml: [schacHomeOrganization]
+  givenname:
+    facebook: [first_name]
+    linkedin: [email-address]
+    orcid: [name.given-names.value]
+    openid: [given_name]
+    openid4vp: [given_name]
+    saml: [givenName, name, Name]
+    cie_oidc: [first_name]
+  mail:
+    facebook: [email]
+    linkedin: [email-address]
+    orcid: [emails.str]
+    github: [email]
+    openid: [email]
+    saml: [mail, email]
+    openid4vp: [mail, email]
+    openid4vci: [mail, email]
+    cie_oidc: [email]
+  name:
+    facebook: [name]
+    orcid: [name.credit-name]
+    github: [name]
+    openid: [name]
+    saml: [name, Name]
+    openid4vp: [given_name]
+    openid4vci: [given_name]
+    cie_oidc: [first_name]
+  surname:
+    facebook: [last_name]
+    linkedin: [lastName]
+    orcid: [name.family-name.value]
+    openid: [family_name]
+    saml: [sn, surname, familyName, FamilyName]
+    openid4vp: [family_name]
+    openid4vci: [family_name]
+    cie_oidc: [last_name]
+  # spid related
+  spidcode:
+    openid: [spidcode]
+    openid4vp: [sub]
+    saml: [spidCode]
+# decommentando questo la email rilasciata anche in caso di account linking sarà quella di spid
+# commentando: email sarà rilasciato in formato URI
+  email:
+    facebook: [email]
+    linkedin: [email-address]
+    orcid: [emails.str]
+    github: [email]
+    openid: [email]
+    openid4vp: [mail, email]
+    saml: [mail]
+    cie_oidc: [email]
+
+  familyname:
+    saml: [familyName, familyname, FamilyName]
+    cie_oidc: [last_name]
+
+  fiscalnumber:
+    saml: [fiscalNumber, fiscalnumber, FiscalNumber]
+    cie_oidc: [fiscal_number]
+  gender:
+    saml: [gender, Gender]
+  companyName:
+    saml: [companyName]
+  registeredOffice:
+    saml: [registeredOffice]
+  ivaCode:
+    saml: [ivaCode]
+  idCard:
+    saml: [idCard]
+  digitalAddress:
+    saml: [digitalAddress]
+  placeOfBirth:
+    saml: [placeOfBirth]
+    openid4vci: [placeOfBirth]
+  countyOfBirth:
+    saml: [countyOfBirth]
+    openid4vci: [countyOfBirth]
+  dateOfBirth:
+    saml: [dateOfBirth]
+    openid4vci: [dateOfBirth]
+  mobilePhone:
+    saml: [mobilePhone]
+  expirationDate:
+    saml: [expirationDate]
+  fiscal_code:
+    openid4vci: [fiscal_code]
+# user identification mapping
+user_id_from_attrs: [edupersontargetedid]
+user_id_to_attr: spidcode

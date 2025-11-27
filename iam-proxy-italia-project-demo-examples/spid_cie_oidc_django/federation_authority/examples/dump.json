@@ -1,0 +1,2225 @@
+[
+{
+  "model": "spid_cie_oidc_accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$FIyN55FCASEozeA1pWYRm1$8QzndgdnJkC7OPhEGPVHrrAxsa5KDoydMkl4zgrn0fs=",
+    "last_login": "2022-04-23T15:47:54.267Z",
+    "is_superuser": true,
+    "username": "admin",
+    "is_staff": true,
+    "date_joined": "2022-03-02T22:51:34.537Z",
+    "first_name": null,
+    "last_name": null,
+    "is_active": true,
+    "email": "",
+    "origin": null,
+    "attributes": {
+      "https://attributes.eid.gov.it/spid_code":"ABCD123456789A",
+      "given_name":"peppe",
+      "family_name":"maradona",
+      "place_of_birth":{
+        "region":"NA",
+        "locality":"F839"
+      },
+      "birthdate":"1980-10-10",
+      "gender":"M",
+      "https://attributes.eid.gov.it/company_name":"Maradona Inc",
+      "https://attributes.eid.gov.it/registered_office":{
+        "formatted":"Via del miracolo 21 80100 Napoli"
+      },
+      "https://attributes.eid.gov.it/fiscal_number":"TINIT-ABCXYZ00W00Z000Z",
+      "https://attributes.eid.gov.it/company_fiscal_number":"TINIT-ABCXYZ00W00Z000Z",
+      "https://attributes.eid.gov.it/vat_number":"VATIT-12345678901",
+      "document_details":{
+        "type":"cartaIdentita",
+        "document_number":"AS09452389",
+        "issuer":{
+        "name":"ComuneNapoli"},
+        "date_of_issuance":"2016-01-02",
+        "date_of_expiry":"2026-01-31"
+      },
+      "phone_number":"39041322222",
+      "email":"that@ema.il",
+      "https://attributes.eid.gov.it/e_delivery_service":"peppe@pec.it",
+      "https://attributes.eid.gov.it/eid_exp_date":"2050-01-01",
+      "address": {
+        "street_address":"503,Washington Avenue",
+        "postal_code":"12401",
+        "locality":"Kingston",
+        "region":"New york",
+        "country_code":"US"
+      },
+      "sub": "76f6777878cc718fad7a6c4337268b33276a8492ef8e036d8cb0f421780d4ede",
+      "username": "http://127.0.0.1:8002/oidc/op__76f6777878cc718fad7a6c4337268b33276a8492ef8e036d8cb0f421780d4ede"
+    },
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "spid_cie_oidc_accounts.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$AhIzWIg12g3HskebsrXn98$vnuNV6C91Bnc1JobVWj392ekqHkKiI12bhgd0q6ApZk=",
+    "last_login": "2022-04-23T15:48:12.656Z",
+    "is_superuser": false,
+    "username": "user",
+    "is_staff": false,
+    "date_joined": "2022-03-11T22:09:22.789Z",
+    "first_name": null,
+    "last_name": null,
+    "is_active": true,
+    "email": "",
+    "origin": null,
+    "attributes": {
+        "https://attributes.eid.gov.it/spid_code": "ABCD123456789A",
+        "given_name": "antonio",
+        "family_name": "rossi",
+        "place_of_birth": {
+          "region": "NA",
+          "locality": "F839"
+        },
+        "birthdate": "1980-10-10",
+        "gender": "male",
+        "https://attributes.eid.gov.it/company_name": "AgID",
+        "https://attributes.eid.gov.it/registered_office": {
+            "formatted":"via Listz 21 00144 Roma"
+        },
+        "https://attributes.eid.gov.it/fiscal_number": "TINIT-AATTTJDFKSKDF89",
+        "https://attributes.eid.gov.it/company_fiscal_number": "TINIT-ABCXYZ00W00Z000Z",
+        "https://attributes.eid.gov.it/vat_number": "VATIT-12345678901",
+        "document_details": {
+          "type": "cartaIdentita",
+          "document_number": "AS09452389",
+          "issuer": {
+            "name": "ComuneRoma"
+          },
+          "date_of_issuance": "2015-01-02",
+          "date_of_expiry": "2025-01-31"
+        },
+        "phone_number": "39041322222",
+        "email": "antonio@email.it",
+        "https://attributes.eid.gov.it/e_delivery_service": "antonio@pec.it",
+        "https://attributes.eid.gov.it/eid_exp_date": "2049-01-01",
+        "address": {
+          "street_address": "503,Washington Avenue",
+          "postal_code": "12401",
+          "locality": "Kingston",
+          "region": "New york",
+          "country_code": "US"
+        },
+        "sub": "da750f319fa08358b1342d9de6156f590c8f97c6b5d33a9dfd71657e121ecc58",
+        "username": "http://127.0.0.1:8000/oidc/op/__da750f319fa08358b1342d9de6156f590c8f97c6b5d33a9dfd71657e121ecc58"
+      },
+
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "spid_cie_oidc_accounts.user",
+  "pk": 3,
+  "fields": {
+    "password": "",
+    "last_login": "2022-04-23T15:47:44.704Z",
+    "is_superuser": false,
+    "username": "http://127.0.0.1:8000/oidc/op/__da750f319fa08358b1342d9de6156f590c8f97c6b5d33a9dfd71657e121ecc58",
+    "is_staff": false,
+    "date_joined": "2022-03-11T22:23:56.005Z",
+    "first_name": "da750f319fa08358b1342d9de6156f590c8f97c6b5d33a9dfd71657e121ecc58",
+    "last_name": "da750f319fa08358b1342d9de6156f590c8f97c6b5d33a9dfd71657e121ecc58",
+    "is_active": true,
+    "email": "antonio@email.it",
+    "origin": null,
+    "attributes": {
+          "https://attributes.eid.gov.it/fiscal_number": "AATTTJDFKSKDF89",
+          "given_name": "antonio",
+          "family_name": "rossi",
+          "email": "that@ema.il",
+          "fiscal_number": "8sada89s7da89sd7a98sd78"
+        },
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.federationentityconfiguration",
+  "pk": 1,
+  "fields": {
+    "created": "2022-02-05T22:04:49.310Z",
+    "modified": "2022-03-17T22:39:55.749Z",
+    "uuid": "afd47731-7484-427f-a1db-4e470835fa86",
+    "sub": "http://127.0.0.1:8000",
+    "default_exp": 33,
+    "default_signature_alg": "RS256",
+    "authority_hints": [],
+    "jwks_fed": [
+      {
+        "use": "sig",
+        "kty": "RSA",
+        "n": "o8IolRjZlkzct-48rhrVlTnYU1pkMbVJD-DU05oMS9RVGrsFypg98m-Kw4H4qNPyQVx2OQORi-xShgk7HU-gK_2pVguYkv06FajL_edEAqqsqt_74Qf2WLRC5pfJG_z9OPzY8JGyk-z3SbeHN_BXKI8GY5E4WU2SstmQ9fyL4CxtRfjUia8limTC_3MOpT3zi5nr03jfbjpnjga51qXurxnlzc3a_xjk5RAApKxUvNwhJ275M0CmB99DjPwF6BLvUgJqgyCpUOn36LOhI4FquVqhqhiwKlMmiMe3yy0yNQ7FXBWxjzhexbpyc3Vu7zFIHPAcC4UyIQhc3waEj2viXw",
+        "e": "AQAB",
+        "d": "QfBLUQXpj2ixs2o9ismJWQYqwh1ynMVnfvpEGFQ-QUZlYlcOVO6KexVI5cJu8uQs9v6ZKAn00Ee_TvNmlz3Zu_zu85PFwuIuQkxun3VA4GYDEucP0CPZoQwsqBdURm3PNOQzImM4afIP_OHmk7K2FcHJi8wMyYC_4j5S7YncdM4pp1bxH9Uu7siY34IYbx7i6qzmKyyAYbDNQtGu_H83Kqd6qC0Ik-zYT9d1TCL53h_X48RWrigOJUbXIP1X3Cdg-hNmMsmvm90rN00w6xQP7k6BqYA_Ws7xfuJQC7cGcCNDwFYh_FH78DsgMw_AIWkWepUqvcgKT24aMheTte5BMQ",
+        "p": "2JbyVzXPcZpupYvaP9mXFt7s9j4-1a4i7GLDGHwc3WyjqadEosQpehH6n14uUiF2T4IAWAE-gUut8lrTfaXVJxI2efdavg7nOB-kIP-Bht5C_Ie-AG53tJMtyg9tByrWA_mWjOQ7zeh6Gnjl9xAT--4yePHr9E1SvDIVzF-pPoc",
+        "q": "wY5CXpFijWo6UQVnRmWuba4Gnhk2UTTGEhnccUiMO7PrKv4nWTlILeLFtEf5TOCCst5ic1fzm8NpC6kld9v2FK3XXWE8PQW4moJxZC4AYn1AD01PquH9LqzCHGUes_fXVsPKCqe1O1kGo0uryxhPOtIq3gs5TDCLTkX04hSPG2k",
+        "kid": "BXvfrlnhAMuHR07ajUmAcBRQcSzmw0c_RAgJnpS-9WQ"
+      }
+    ],
+    "jwks_core": [
+      {
+        "use": "sig",
+        "kty": "RSA",
+        "kid": "FifYx03bnosD8m6gYQIfNHNP9cM_Sam9Tc5nLloIIrc",
+        "e": "AQAB",
+        "n": "3i5vV-_4nF_ES1BU86Zf2Bj6SiyGdGM3Izc2GrvtknQQCzpT3QlGv2d_wMrzVTS7PmZlvjyi2Qceq8EmEwbsIa5R8G57fxSpE0HL33giJfhpe8ublY4hGb6tEqSbHiFcgiF4T-Ft_98pz4nZtKTcesMZ8CcDUd9ibaLXGM4vaiUhSt76X1qOzqJHqAKMG-9VGm5DD2GSe7cu1yvaMCMPU6DGOqHYoBSkSbsnLelsRg6sINh6mZfb39odTJlOMFGhlg665702kc_iqqxd8jpyOh94vBagmJB4EQqI1qEte8sTMeBkVRpSLDoV5uNTlp2ZdINu1SakmaHB3WeStwC1lw",
+        "d": "QvPRP7mjvFOrjlp9zxJyzWbxfYqfVdFUGzuXBUVeWQS6lPeVsAUMmb8xo0JFQ4bpaetne4VAOZBIsM86jv9GBvxF2uMgOfJa5N-t9QB5oeGSv-hiURYMaXqpIvYRfGnnO5ukasXu5O0150GOJj6L5j6GwXSwLmrXeVxZ3zK63QwVl71xU1LR-lO0wLbqQROIT37Jw72B__wBk3QC0HjbrPv1fUVxKB3RCDR43X7PQkMPOfRHxicyp2MA4mLhLvuoRTTI4dfnd8Ou-xX5ctVzYmL0EMxPCleDFDIn9gTxpgCH95sVi-Zg6Zw5k1J_cchoD4AgGSSt2dr9mbiTRjLlcQ",
+        "p": "8BHX7hErQjESybgfzcX0hZmM-e1EWaM76uNJop9BiqRlBz9f-XxuC40A032AaZFDXqxVi3W0Hn1vJA6lSj9mGY5HEY-YVWAdOLLjM12oQ_cnH6czElExAoppUeMWsDEewDbZTn6rX5silcZ8Pu7Tsj-KSjPVzl9dr1w76EzsYj8",
+        "q": "7Oy3PGm3MjVlgTlgHnRKC-IcoB50hCBiqwACVcnlIgpg9Kt_srV7NWdmo5DJFIdrrvkjmN4wi9IOknSymStU-sB8BepnnterjPyBOr9PbttUP13qcOjuvjzD7Tr0IGou3yhA-YOuO9hOluhqd4tJIkdxT_X9qxgFQx5NSnsBpqk"
+      }
+    ],
+    "trust_marks": [],
+    "trust_mark_issuers": {
+      "https://www.spid.gov.it/certification/rp/public": [
+        "https://registry.spid.agid.gov.it",
+        "https://public.intermediary.spid.it"
+      ],
+      "https://www.spid.gov.it/certification/rp/private": [
+        "https://registry.spid.agid.gov.it",
+        "https://private.other.intermediary.it"
+      ],
+      "https://sgd.aa.it/onboarding": [
+        "https://sgd.aa.it"
+      ]
+    },
+    "entity_type": "federation_entity",
+    "metadata": {
+      "federation_entity": {
+        "contacts": [
+          "ops@localhost"
+        ],
+        "federation_fetch_endpoint": "http://127.0.0.1:8000/fetch",
+        "federation_resolve_endpoint": "http://127.0.0.1:8000/resolve",
+        "federation_trust_mark_status_endpoint": "http://127.0.0.1:8000/trust_mark_status",
+        "homepage_uri": "http://127.0.0.1:8000",
+        "organization_name": "example TA",
+        "policy_uri": "http://127.0.0.1:8000/en/website/legal-information",
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "federation_list_endpoint": "http://127.0.0.1:8000/list"
+      }
+    },
+    "constraints": {
+      "max_path_length": 1
+    },
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.federationentityconfiguration",
+  "pk": 2,
+  "fields": {
+    "created": "2022-02-14T23:44:47.487Z",
+    "modified": "2022-03-11T22:40:23.007Z",
+    "uuid": "780373bb-7b4e-4511-8fef-ca920d66addb",
+    "sub": "http://127.0.0.1:8000/oidc/rp",
+    "default_exp": 2880,
+    "default_signature_alg": "RS256",
+    "authority_hints": [
+      "http://127.0.0.1:8000"
+    ],
+    "jwks_fed": [
+      {
+        "use": "sig",
+        "kty": "RSA",
+        "n": "pn_IchC66SFQMhbTHLtbD58jKiYYvYo7S4wjPjzECMu27c6FJVFNXtlubtb7sC6-WTQ1Hv4rSQdPhafJbIxa32R51sRQpkTr3JFMYP7x22DRQD_ixtQJRaiHw-npnZ8qgVHJ_t4gRTc4HJkehBLGv4-rHVAKzFiQNU1u2AFw1fWMnMH4ob_pyisXVgcku3dy14l7sYSANlpXufY_qnkQFTv0wMH-C6Izl-akENS2UHpvTLhfCBVKPrFXJxul4XDbUwUbvNZUxTernEx8lV5gxCSgKSBEgoH9MgpD1YWFPbAnwi7p7e7MNGz5lH7eDFKkPQhXLWABU8UvEIIWyA95SQ",
+        "e": "AQAB",
+        "d": "jOvIjuqkGF-OzeZNpprY1t79V1ZJSFtwFmA1EB9EWKF7YcmTHeOzVZ04f-3LtvHJQB0U_PdpUXUzlE9QB2TAISWcje84x5G8A8Ki39HIiMJoOTYZTen3MxMSXfpkNXma8ztzeRkuPQcgoevjTSvLNiV2UegGS7CF1eeE8qQ9iYjeimPSnfVeLx70L9Rat9-2cs3tqxkPOPPechnKrLJneVbxSmimiAEOQ238gGyEwmlfEGPn3OiIdU5oT-qvyp2KasmLucNgQxGLCkc5ppC_RsstQyNjs8bj88bjq3ahVDCiCFs8n6iRHAEZC1CM7xcEyZjyJ9ozC5nB-Pw3hLBSdQ",
+        "p": "0LeDPVA0DOSV3Gy3M1t5JxPMmPsgsCbx8y1thLuP21FOiVwRixRsXW10CxH56mX1qS9WVodlcCsqy1U-7yGJK9r-De8FvQtS8hbKEiVGMW61qIcMCv8krWOk5qU7uhxHLTL6qkvCsCpLdHeR7x842Aq3AnMCsNuWpLl3G4c0Cps",
+        "q": "zDfdUHIR1PvvBGleEnJFqe0Kw8bW9dOEGusZJ4bDoz61QRyn149Y64b8VW1f4kp1aGBySDm40BgnvPJtTMY0Bm-dPmL7XupsTyt-WHLmD178HQmsVTVIL0VLEIm0yKX7SdpgBOV9FFpHAkn1Mq3H0-tm48DwhCyi-84_bkc2h-s",
+        "kid": "k54HQtDibyGcs9ZWVMfviHf-2qLcFUtpwY2rgxBk88M"
+      }
+    ],
+    "jwks_core": [
+      {
+        "alg": "RSA-OAEP",
+        "use": "enc",
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "oP1EPjcPOtV7Zog2suguY-tCLUVWSe2DOAHqlEWeDJtuQ1sO99Ue_5-Zbdm7iUmA2JNoCKZhp3RpICxRy01PsmXVm5UhsiYvHwK4vYq8hJRgtNpci3Gwj4YzpsN1p2un1VbvtAgiSN5wXURWyaMPMDuOMhIPIleaXU0wHcmGeXEuJrVPluz2jbqYhUHkAlySsH8-3Tx9VIjYohkiaSGU43XIYgCDL3mDkt7u3Z5w009vsNu1XhVZ7SE_XhkOzcvnA82NSq04ogwZ_oAyBY8nYMIN0irxR9r8NssGR3OZxqUMwvElqpyWt2NthgvS0GkMrgirQig-rvJ5bldlBkgOWQ", "d": "caSgY0rD4zH0oSM9eZ_ajUCFUgIN54-dyFlI0M_Bwf_2jQNM1sqbO9eSm9Rgsq2eIh-jLC7ZnBK1kLdvTxRELhiQQ7FwPHZuzQeMhkBpZb_qhFJ8JjyI1DXDZPUnquMK3_xaFODNnBCOZdqO1uxozFpivT7duTvUvAgupfzlp2XWDu_b2xDed16ZtroQk2gqjcByJSDt8U3lj82n34HjcpTZNGIIV4IbJ1jbUJ554A73bmQbjRFInKHMEDmTZGoa-GVcn9YgITUPL_vNvMJgzwcNeextFFLsX-Z8WD3ku4en-guehqFt7-6ZPVLJ0nlBn7oYOpLEML-U-tBZXsBx",
+        "p": "z8soMD0NaVkvMqIYN1OkKPGQUNSaopYiQEgS9ynQfo-GEo7lhHbcLnhpnqXVR0MYwpvdchJwehIr5-UZIWIV7BHkNLSWy5KPCKZ5G2P7CWsbDTDk0DjL7IJpOukhMsWRpumIKoOefs8RurTtbvGhwj09eLwy4sWO7uI7u11SHdU",
+        "q": "xlZonE4-C1acGa15uQDSes0DXrLShT337FLCRMy-6HQODSW__xxtV87wVywvDIf39nTQxoOnvUybuAfXww9xexuzC3Q2jXznpvHE7O7lglc6Uq-tEnviVVe-RhAwEQheVPEbCIJQHfvXhDsRzbTrzw7ennM0Gd5WtaICtb54vHU",
+        "kid": "m1-4Lr9DqAh5-UXYvQnacFiMSrPMaXfK0cfFmCxVvI8"
+      },
+      {
+        "alg": "RS256",
+        "use": "sig",
+        "kty": "RSA",
+        "kid": "2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
+        "n": "5s4qi1Ta-sEuKb5rJ8TzHmyGKaSu89pIXIi6w4Ekx6GL56mJDNE_MWJHsFjWXajfMdMQmZrSXAvLtXxmbhUui9Mq_IormhmEyyEJS0SyE9UKTxWzi0yd_n_C7OjFBhM-0ZyUlgl81E_sr-35P1A6b5WSYwMvRSR-P9yx_NI-XBQ48G_zdmk3CbuuzZsXZqqgj5U7OGWH-4Huosn9nH3FVkwX0OlWkgWM-J9DEWzGBjl9hfbbrMtM_obljHL2NfT6RJYER2IpdI8RCyQS3sMPt6ZHDskmuNlyMDNATCChXQJLnltwEjxcgvzjw_G9J25DwfdfVEhDF_0kCp44UMmS3Q",
+        "e": "AQAB",
+        "d": "kXg7xFmVMxpy2AiWTRiLCw_nd3O-eR-JIBllbTeGUPR202o9YQC5TYzeFj3HznxTQHoBKm80SqN8n0Rq4tMi5SoRG96SIKwY0FZgHzqK6okJ2FKbOR7vLaqk1uDW3T9gBokj9XTBYqeFTFU3FTqhuhaRjypArtmTYPjejbSNbUZ29r2UjlMY92y-w4-IVDD9cWlI5I75QA1iWrmPF2t80uk9qqZFde8ZwWsvqqJym-I-x7T34SfMVhJQPbts6VzsUFAUZbT6kVKuUzffSdnr-QeQgj2dR-ULjcN3Y_M-6oc_n25Cz_xFgv3_3hLveizP6inooBzyhgTD1nlR7cWNgQ",
+        "p": "_XLjTNHt1OfGbaHae50Sm_C4dWp_fNNt1__cUNJ62bxJgFG3KlnwbRWtztXGe-BThMyMXK1HHjjUCf66FQGmfoDYTe7qz9j0OBctKMdkoAjTTYZdOYXu3G9U3HddnB-6bnd8fNnKidGAiseWi1eCoViEqeZ7cVULeOlI-ZOB500",
+        "q": "6SDtrFt50EL37kgcaKVttxXjz7JbanH5q-mLgV_tzBcdjEeg1lSv9-7pRDPNedF7KD-FsaT-2YSrPrc2F8z6_aKE7M_TCUv-m2LdLbvvB0iqO_kOjkdd1v9I-3qOq3Yvvd_SYTb81uAFTEFeRXoE7sLINOCO8ClCWa95nEFOMdE"
+      }
+    ],
+    "trust_marks": [
+      {
+        "id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+        "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig"
+      }
+    ],
+    "trust_mark_issuers": {},
+    "entity_type": "openid_relying_party",
+    "metadata": {
+      "federation_entity": {
+        "federation_resolve_endpoint": "http://127.0.0.1:8000/oidc/rp/resolve",
+        "organization_name": "that fancy RP",
+        "homepage_uri": "http://127.0.0.1:8000",
+        "policy_uri": "http://127.0.0.1:8000/oidc/rp/en/website/legal-information",
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "contacts": [
+          "ops@rp.example.it"
+        ]
+      },
+      "openid_relying_party": {
+        "organization_name": "that fancy RP",
+        "application_type": "web",
+        "client_id": "http://127.0.0.1:8000/oidc/rp",
+        "client_registration_types": [
+          "automatic"
+        ],
+        "jwks": {
+          "keys": [
+            {
+              "use": "sig",
+              "alg": "RS256",
+              "kty": "RSA",
+              "n": "5s4qi1Ta-sEuKb5rJ8TzHmyGKaSu89pIXIi6w4Ekx6GL56mJDNE_MWJHsFjWXajfMdMQmZrSXAvLtXxmbhUui9Mq_IormhmEyyEJS0SyE9UKTxWzi0yd_n_C7OjFBhM-0ZyUlgl81E_sr-35P1A6b5WSYwMvRSR-P9yx_NI-XBQ48G_zdmk3CbuuzZsXZqqgj5U7OGWH-4Huosn9nH3FVkwX0OlWkgWM-J9DEWzGBjl9hfbbrMtM_obljHL2NfT6RJYER2IpdI8RCyQS3sMPt6ZHDskmuNlyMDNATCChXQJLnltwEjxcgvzjw_G9J25DwfdfVEhDF_0kCp44UMmS3Q",
+              "e": "AQAB",
+              "kid": "2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs"
+            },
+            {
+              "use": "enc",
+              "kty": "RSA",
+              "e": "AQAB",
+              "alg": "RSA-OAEP",
+              "n": "oP1EPjcPOtV7Zog2suguY-tCLUVWSe2DOAHqlEWeDJtuQ1sO99Ue_5-Zbdm7iUmA2JNoCKZhp3RpICxRy01PsmXVm5UhsiYvHwK4vYq8hJRgtNpci3Gwj4YzpsN1p2un1VbvtAgiSN5wXURWyaMPMDuOMhIPIleaXU0wHcmGeXEuJrVPluz2jbqYhUHkAlySsH8-3Tx9VIjYohkiaSGU43XIYgCDL3mDkt7u3Z5w009vsNu1XhVZ7SE_XhkOzcvnA82NSq04ogwZ_oAyBY8nYMIN0irxR9r8NssGR3OZxqUMwvElqpyWt2NthgvS0GkMrgirQig-rvJ5bldlBkgOWQ",
+              "kid": "m1-4Lr9DqAh5-UXYvQnacFiMSrPMaXfK0cfFmCxVvI8"}
+          ]
+        },
+        "jwks_uri": "http://127.0.0.1:8000/oidc/rp/openid_relying_party/jwks.json",
+        "signed_jwks_uri": "http://127.0.0.1:8000/oidc/rp/openid_relying_party/jwks.jose",
+        "client_name": "Name of an example organization",
+        "contacts": [
+          "ops@rp.example.it"
+        ],
+        "grant_types": [
+          "refresh_token",
+          "authorization_code"
+        ],
+        "redirect_uris": [
+          "http://127.0.0.1:8000/oidc/rp/callback"
+        ],
+        "response_types": [
+          "code"
+        ],
+        "subject_type": "pairwise"
+      }
+    },
+    "constraints": {},
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.federationentityconfiguration",
+  "pk": 3,
+  "fields": {
+    "created": "2022-02-25T16:27:20.027Z",
+    "modified": "2022-04-23T15:45:45.117Z",
+    "uuid": "86834b2b-73be-480a-932d-000c1c7af69b",
+    "sub": "http://127.0.0.1:8000/oidc/op",
+    "default_exp": 2880,
+    "default_signature_alg": "RS256",
+    "authority_hints": [
+      "http://127.0.0.1:8000"
+    ],
+    "jwks_fed": [
+      {
+        "use": "sig",
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "1AYGF0C_j5CPeYMRH_mkhnYtnvM_CmdlWSFHK9YEas3gJ1922DnhFx3EIw1U-kZww7bgNz6C1l_1cyjkgBSuWxObObK4zVLZBGUZfXMBNFm2hdr5VoLKLemtZHpBOmdsxR1R3TJ30D0vY-LJbUtrwuRC8oOCYI5whcEc8B4utEex3W6dCjBIjsGfdJIqZHhfLN3xwPMOjkG5A_y8WnTVfGq9OUeuaUn3-PVs3O9LMpOBlaT7GreXgUqWAW-zxUCsiHHUVl9uIAGi5OHukIuBs2ClAlMX_S6mbN7_7KIGx2mTIrcgVBPJgYop9qnSqcXub_EQTKsFtNGigsUFnDqFNQ",
+        "d": "b44j0kQ9Bhp3guWVMw-0oxK2-jTd7Gluh7Dcs5HNjSx5Tf4Kl8YMSo9czVyMY4qAdllYK3j2ejjO-iJ_52v6OO1d9MO2PEHk8U0IVlsWPScew9rs6bmzCukyU_WHMGWOcz_z_MA7DhPDRXjjpl_SeR6EovjStl77kUSEJ0qaJDvGelNimnMRBBsDgtDUMbOIzng82GclTsRkv8b041G0Q32XJ8YcJxGOlvWdr-q36fXJua0joshH0e2LilTtftjHCbgPdg1a6MGChCrgeTFTi6ihifMwcxINF-hSFcxA2WLaECCvMsjB40bd51wPfF0AiK5JvHLyJsAV6OzD9pf32Q",
+        "p": "_92f7QZr4IKRgeTpr49RG5V53A4PE0QW-4IBETZaaI6ymvvqTL1ik28qNVStR5xT6n3r7-_y3IHQQOPO0r8lbGvqYonVIuCUZaz66_QuZg4Gnm61Uyec8ecXQV3rsvMMwpHU_3RRB5RXGeDwWq9CAFpYERQGxf6naEeuurP1usM",
+        "q": "1CKCSTiSABX1OtfkiKcJV0PvhACTuoHSGW62TpqtdOxHsopb2kph2XM82Kt10jJDESosQcPTXc7ttTrYsfTSKva3kvRXrwcWzC4yMoacxaqyHKbatBValkMSMaVeRabtzECulHyxbK6bsLKRUAD0thQuUs_WSITWSPPty2ygkKc",
+        "kid": "cI8pBvWdHgcvldmI7HXbPMfFhSKkfACIbofsD6q2JtE"
+      }
+    ],
+    "jwks_core": [
+      {
+        "use": "sig",
+        "kty": "RSA",
+        "kid": "dB67gL7ck3TFiIAf7N6_7SHvqk0MDYMEQcoGGlkUAAw",
+        "n": "01_4aI2Lu5ggsElmRkE_S_a83V_szXU0txV4db2hmJ8HR1Y2s7PsZZ5-emGpnTydGrR3n-QExeEEIcFt_a06Ryiink34RQcKoGXUDBMBU0Bu8G7NcZ99YX6yeG9wFi4xs-WviTPmtPqijkz6jm1_ltWDcwbktfkraIRKKggZaEl9ldtsFr2wSpin3AXuGIdeJ0hZqhF92ODBLGjJlaIL9KlwopDy56adReVnraawSdrxmuPGj78IEADNAme2nQNvv9UCu0FkAn5St1bKds3Gpv26W0kjr1gZLsmQrj9lTcDk_KbAwfEY__P7se62kusoSuKMTQqUG1TQpUY7oFGSdw",
+        "e": "AQAB",
+        "d": "AxvyR3dtisDeGjm6K2ZiS_fBJ3B1xz_mGptSPkkfy2LrdH0sKNCItaXzLlGpcQqnNPFaoRt1hoOcz_JMb-LQbKOIYNO8xycnXNyildrhthvIhfjbRMSXz4tRjLv25hyf1omWX2pIBnl5UqaHOPkbW1igqlx7mMGlhdAMVznvRb1oJOXxPtSdlVOhqT5ohn4BJZcJ85TKm_E49KUKUsz_xkd3BlYnUaiuEu-VQbC0u61iH-N017wg4ZQn9eXQgAzFdSNI2GQ7IH76l00iUu-y9oT2ld4WHGYMmsZBJgaQZnu2Yj4IMb5NjQz2VAOTU844RXP7-7Y5rWsS1oewfWSHAQ",
+        "p": "9dvm96S4wBrwzs73DOG8eV6sWEN13ZJNLa4tKzJvonOLG_8Z9Rshnfg_HcYDm_mqRD-nFC-8JKufnNaZbZuO_hDiA6UkvlZMGePxoN7nueHGfAqZ9lRQX0Vpp2Ac480jJgBLOhwgjkySRI5Ck-enTGabkxVN_LJSU9FC54TW6KE",
+        "q": "3BfwsumO62vhekd2gm97Uk1XFOM5UXmb1esdFnZ_RZRw1tDUB2irTxLJSqECCZbMWRoFRB3k-17LAOMaITUqv8g-83zdCmR3gpO71ahbdEfkGGKQYL7WmMNv3YvSMY5lN4_mCEz8R_OCz0_H7bip0Es_KAl5TSXjnVTvaACnLBc"
+      }
+    ],
+    "trust_marks": [],
+    "trust_mark_issuers": {},
+    "entity_type": "openid_provider",
+    "metadata": {
+      "federation_entity": {
+        "federation_resolve_endpoint": "http://127.0.0.1:8000/oidc/op/resolve",
+        "organization_name": "SPID OIDC identity provider",
+        "homepage_uri": "http://127.0.0.1:8000",
+        "policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "contacts": [
+          "tech@example.it"
+        ]
+      },
+      "openid_provider": {
+        "authorization_endpoint": "http://127.0.0.1:8000/oidc/op/authorization",
+        "revocation_endpoint": "http://127.0.0.1:8000/oidc/op/revocation",
+        "id_token_encryption_alg_values_supported": [
+          "RSA-OAEP"
+        ],
+        "id_token_encryption_enc_values_supported": [
+          "A128CBC-HS256"
+        ],
+        "token_endpoint": "http://127.0.0.1:8000/oidc/op/token",
+        "userinfo_endpoint": "http://127.0.0.1:8000/oidc/op/userinfo",
+        "introspection_endpoint": "http://127.0.0.1:8000/oidc/op/introspection",
+        "claims_parameter_supported": true,
+        "contacts": [
+          "ops@https://idp.it"
+        ],
+        "client_registration_types_supported": [
+          "automatic"
+        ],
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "request_authentication_methods_supported": {
+          "ar": [
+            "request_object"
+          ]
+        },
+        "acr_values_supported": [
+          "https://www.spid.gov.it/SpidL1",
+          "https://www.spid.gov.it/SpidL2",
+          "https://www.spid.gov.it/SpidL3"
+        ],
+        "claims_supported": [
+            "https://attributes.eid.gov.it/spid_code",
+            "given_name",
+            "family_name",
+            "place_of_birth",
+            "birthdate",
+            "gender",
+            "https://attributes.eid.gov.it/company_name",
+            "https://attributes.eid.gov.it/registered_office",
+            "https://attributes.eid.gov.it/fiscal_number",
+            "https://attributes.eid.gov.it/company_fiscal_number",
+            "https://attributes.eid.gov.it/vat_number",
+            "document_details",
+            "phone_number",
+            "email",
+            "https://attributes.eid.gov.it/e_delivery_service",
+            "https://attributes.eid.gov.it/eid_exp_date",
+            "address"
+        ],
+        "grant_types_supported": [
+          "authorization_code",
+          "refresh_token"
+        ],
+        "id_token_signing_alg_values_supported": [
+          "RS256",
+          "ES256"
+        ],
+        "issuer": "http://127.0.0.1:8000/oidc/op",
+        "jwks_uri": "http://127.0.0.1:8000/oidc/op/openid_provider/jwks.json",
+        "signed_jwks_uri": "http://127.0.0.1:8000/oidc/op/openid_provider/jwks.jose",
+        "jwks": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "use": "sig",
+              "n": "01_4aI2Lu5ggsElmRkE_S_a83V_szXU0txV4db2hmJ8HR1Y2s7PsZZ5-emGpnTydGrR3n-QExeEEIcFt_a06Ryiink34RQcKoGXUDBMBU0Bu8G7NcZ99YX6yeG9wFi4xs-WviTPmtPqijkz6jm1_ltWDcwbktfkraIRKKggZaEl9ldtsFr2wSpin3AXuGIdeJ0hZqhF92ODBLGjJlaIL9KlwopDy56adReVnraawSdrxmuPGj78IEADNAme2nQNvv9UCu0FkAn5St1bKds3Gpv26W0kjr1gZLsmQrj9lTcDk_KbAwfEY__P7se62kusoSuKMTQqUG1TQpUY7oFGSdw",
+              "e": "AQAB",
+              "kid": "dB67gL7ck3TFiIAf7N6_7SHvqk0MDYMEQcoGGlkUAAw"
+            }
+          ]
+        },
+        "scopes_supported": [
+          "openid",
+          "offline_access"
+        ],
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "organization_name": "SPID OIDC identity provider",
+        "op_policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+        "request_parameter_supported": true,
+        "request_uri_parameter_supported": true,
+        "require_request_uri_registration": true,
+        "response_types_supported": [
+          "code"
+        ],
+        "subject_types_supported": [
+          "pairwise",
+          "public"
+        ],
+        "token_endpoint_auth_methods_supported": [
+          "private_key_jwt"
+        ],
+        "token_endpoint_auth_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "userinfo_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "userinfo_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "userinfo_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "request_object_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "request_object_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "request_object_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ]
+      }
+    },
+    "constraints": {},
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 117,
+  "fields": {
+    "created": "2022-03-31T19:38:18.847Z",
+    "modified": "2022-03-31T19:38:18.847Z",
+    "iss": "http://127.0.0.1:8000",
+    "sub": "http://127.0.0.1:8000",
+    "exp": "2022-04-23T16:20:28Z",
+    "iat": "2022-04-23T15:47:28Z",
+    "statement": {
+      "exp": 1650730828,
+      "iat": 1650728848,
+      "iss": "http://127.0.0.1:8000",
+      "sub": "http://127.0.0.1:8000",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "o8IolRjZlkzct-48rhrVlTnYU1pkMbVJD-DU05oMS9RVGrsFypg98m-Kw4H4qNPyQVx2OQORi-xShgk7HU-gK_2pVguYkv06FajL_edEAqqsqt_74Qf2WLRC5pfJG_z9OPzY8JGyk-z3SbeHN_BXKI8GY5E4WU2SstmQ9fyL4CxtRfjUia8limTC_3MOpT3zi5nr03jfbjpnjga51qXurxnlzc3a_xjk5RAApKxUvNwhJ275M0CmB99DjPwF6BLvUgJqgyCpUOn36LOhI4FquVqhqhiwKlMmiMe3yy0yNQ7FXBWxjzhexbpyc3Vu7zFIHPAcC4UyIQhc3waEj2viXw",
+            "kid": "BXvfrlnhAMuHR07ajUmAcBRQcSzmw0c_RAgJnpS-9WQ"
+          }
+        ]
+      },
+      "metadata": {
+        "federation_entity": {
+          "contacts": [
+            "ops@localhost"
+          ],
+          "federation_fetch_endpoint": "http://127.0.0.1:8000/fetch",
+          "federation_resolve_endpoint": "http://127.0.0.1:8000/resolve",
+          "federation_trust_mark_status_endpoint": "http://127.0.0.1:8000/trust_mark_status",
+          "homepage_uri": "http://127.0.0.1:8000",
+          "organization_name": "example TA",
+          "policy_uri": "http://127.0.0.1:8000/en/website/legal-information",
+          "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+          "federation_list_endpoint": "http://127.0.0.1:8000/list"
+        }
+      },
+      "trust_mark_issuers": {
+        "https://www.spid.gov.it/certification/rp/public": [
+          "https://registry.spid.agid.gov.it",
+          "https://public.intermediary.spid.it"
+        ],
+        "https://www.spid.gov.it/certification/rp/private": [
+          "https://registry.spid.agid.gov.it",
+          "https://private.other.intermediary.it"
+        ],
+        "https://sgd.aa.it/onboarding": [
+          "https://sgd.aa.it"
+        ]
+      },
+      "constraints": {
+        "max_path_length": 1
+      }
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6Im84SW9sUmpabGt6Y3QtNDhyaHJWbFRuWVUxcGtNYlZKRC1EVTA1b01TOVJWR3JzRnlwZzk4bS1LdzRINHFOUHlRVngyT1FPUmkteFNoZ2s3SFUtZ0tfMnBWZ3VZa3YwNkZhakxfZWRFQXFxc3F0Xzc0UWYyV0xSQzVwZkpHX3o5T1B6WThKR3lrLXozU2JlSE5fQlhLSThHWTVFNFdVMlNzdG1ROWZ5TDRDeHRSZmpVaWE4bGltVENfM01PcFQzemk1bnIwM2pmYmpwbmpnYTUxcVh1cnhubHpjM2FfeGprNVJBQXBLeFV2TndoSjI3NU0wQ21COTlEalB3RjZCTHZVZ0pxZ3lDcFVPbjM2TE9oSTRGcXVWcWhxaGl3S2xNbWlNZTN5eTB5TlE3RlhCV3hqemhleGJweWMzVnU3ekZJSFBBY0M0VXlJUWhjM3dhRWoydmlYdyIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EifV19LCJtZXRhZGF0YSI6eyJmZWRlcmF0aW9uX2VudGl0eSI6eyJjb250YWN0cyI6WyJvcHNAbG9jYWxob3N0Il0sImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZmV0Y2gvIiwiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Jlc29sdmUvIiwiZmVkZXJhdGlvbl9zdGF0dXNfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJ1c3RfbWFya19zdGF0dXMvIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIiwibmFtZSI6ImV4YW1wbGUgVEEiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbGlzdC8ifX0sInRydXN0X21hcmtzX2lzc3VlcnMiOnsiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wdWJsaWMiOlsiaHR0cHM6Ly9yZWdpc3RyeS5zcGlkLmFnaWQuZ292Lml0IiwiaHR0cHM6Ly9wdWJsaWMuaW50ZXJtZWRpYXJ5LnNwaWQuaXQiXSwiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wcml2YXRlIjpbImh0dHBzOi8vcmVnaXN0cnkuc3BpZC5hZ2lkLmdvdi5pdCIsImh0dHBzOi8vcHJpdmF0ZS5vdGhlci5pbnRlcm1lZGlhcnkuaXQiXSwiaHR0cHM6Ly9zZ2QuYWEuaXQvb25ib2FyZGluZyI6WyJodHRwczovL3NnZC5hYS5pdCJdfSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.LA69BlKROnjaOO3qBQuvfFpFOzEEPCnyvU0gDW4j_20tUqvdJMLfdEAtxwoBg7xBXYhImHnG5mGLvL1zvZWM8LWAzpPq4HeXSjsa0b05o819Ix4k3wImiH6JKdzHr2A4P3aaup5mI_0XrN2VqYh8TSIxkJTXCjYmgGa2g11ulv2wwyzVjVIMiq5KQ6EFgJ3CVXGDOfgl5VO_WeaNsp7-ujLbD-6ULOexPI8NQvyth7ObsnD0jkKUQ_fDrNkJfh4lk7ffMT309D5RyWXkdlzNYlo_d4buv9A5AnsUyMCNBQJppDFAYGCwc40TC7pW4hbANSZQCbY6C4fBUp3ED_88uA"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 118,
+  "fields": {
+    "created": "2022-03-31T19:42:31.832Z",
+    "modified": "2022-03-31T19:42:31.832Z",
+    "iss": "http://127.0.0.1:8001",
+    "sub": "http://127.0.0.1:8001",
+    "exp": "2022-04-23T16:20:28Z",
+    "iat": "2022-04-23T15:47:28Z",
+    "statement": {
+      "exp": 1650730828,
+      "iat": 1650728848,
+      "iss": "http://127.0.0.1:8001",
+      "sub": "http://127.0.0.1:8001",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w",
+            "kid": "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+          }
+        ]
+      },
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "client_id": "http://127.0.0.1:8001",
+          "client_registration_types": [
+            "automatic"
+          ],
+          "jwks": {
+            "keys": [
+              {
+                "kty": "RSA",
+                "use": "sig",
+                "n": "uXfJA-wTlTCA4FdsoE0qZfmKIgedmarrtWgQbElKbWg9RDR7Z8JVBaRLFqwyfyG1JJFm64G51cBJwLIFwWoF7nxsH9VYLm5ocjAnsR4RhlfVE0y_60wjf8skJgBRpiXQPlwH9jDGaqVE_PEBTObDO5w3XourD1F360-v5cLDLRHdFJIitdEVtqATqY5DglRDaKiBhis7a5_1bk839PDLaQhju4XJk4tvDy5-LVkMy5sP2zU6-1tJdA-VmaBZLXy9n0967FGIWmMzpafrBMOuHFcUOH56o-clDah_CITH1dq2D64K0MYhEpACO2p8AH4K8Q6YuJ1dnkVDDwZp2C84sQ",
+                "e": "AQAB",
+                "kid": "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+              }
+            ]
+          },
+          "client_name": "Name of an example organization",
+          "contacts": [
+            "ops@rp.example.it"
+          ],
+          "grant_types": [
+            "refresh_token",
+            "authorization_code"
+          ],
+          "redirect_uris": [
+            "http://127.0.0.1:8001/oidc/rp/callback"
+          ],
+          "response_types": [
+            "code"
+          ],
+          "subject_type": "pairwise"
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig"
+        }
+      ],
+      "authority_hints": [
+        "http://127.0.0.1:8000"
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAxLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMS8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6IjZTRGtzYTY0SWpCazdITlFDN3g1QzluTUFSR2FhbmZhVW0zd0MyV3Vsd0dfOGE1YUl5NENFd1hOMkxFTmtDeXlwT0RxV1pjVEF3Q3pXc2lpaFZOOWtEY0VzN1VOdS1YMVdva0syNTJEN19EUlktRlhJOEFCM1AwQ3hUbmdzMGstT2pjbWJ4cVZXMlU4RzU2ckpGcDRHX0NZQTR2ekJvQVBfNXNrRkJ0LTRhNWxZSmxCZkoyZ0psRTB2aDRfNDZveU51VVQ5a21LYXVSN25wVlNIakJVU3hZeURFTHpvYVBtdlI3U2tYNHNKZTBNSzM5SEVTNnM0bm85RzdCcmFMcDc1ZU93RVFtSGdFaEVTV3NjU09mX0NtQzVBTG56V0ozRmNGaHhnc3VNa2Rqb1U3YkgwOXk4cGRLczY0a1Iyem54cy15SVdyUEZXOGhKS255U2MyZms4dyIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfcmVseWluZ19wYXJ0eSI6eyJhcHBsaWNhdGlvbl90eXBlIjoid2ViIiwiY2xpZW50X2lkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAxLyIsImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXMiOlsiYXV0b21hdGljIl0sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6InVYZkpBLXdUbFRDQTRGZHNvRTBxWmZtS0lnZWRtYXJydFdnUWJFbEtiV2c5UkRSN1o4SlZCYVJMRnF3eWZ5RzFKSkZtNjRHNTFjQkp3TElGd1dvRjdueHNIOVZZTG01b2NqQW5zUjRSaGxmVkUweV82MHdqZjhza0pnQlJwaVhRUGx3SDlqREdhcVZFX1BFQlRPYkRPNXczWG91ckQxRjM2MC12NWNMRExSSGRGSklpdGRFVnRxQVRxWTVEZ2xSRGFLaUJoaXM3YTVfMWJrODM5UERMYVFoanU0WEprNHR2RHk1LUxWa015NXNQMnpVNi0xdEpkQS1WbWFCWkxYeTluMDk2N0ZHSVdtTXpwYWZyQk1PdUhGY1VPSDU2by1jbERhaF9DSVRIMWRxMkQ2NEswTVloRXBBQ08ycDhBSDRLOFE2WXVKMWRua1ZERHdacDJDODRzUSIsImUiOiJBUUFCIiwia2lkIjoiWWh1SUpVNm8xNUVVQ3lxQTBMSEVxSmQteFZQSmdveVc1d1oxbzRwYWRXcyJ9XX0sImNsaWVudF9uYW1lIjoiTmFtZSBvZiBhbiBleGFtcGxlIG9yZ2FuaXphdGlvbiIsImNvbnRhY3RzIjpbIm9wc0BycC5leGFtcGxlLml0Il0sImdyYW50X3R5cGVzIjpbInJlZnJlc2hfdG9rZW4iLCJhdXRob3JpemF0aW9uX2NvZGUiXSwicmVkaXJlY3RfdXJpcyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDEvb2lkYy9ycC9jYWxsYmFjayJdLCJyZXNwb25zZV90eXBlcyI6WyJjb2RlIl0sInN1YmplY3RfdHlwZSI6InBhaXJ3aXNlIn19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtacFpsbDRNRE5pYm05elJEaHRObWRaVVVsbVRraE9VRGxqVFY5VFlXMDVWR00xYmt4c2IwbEpjbU1pZlEuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalExTmpFeU5EQXhMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5Lm1TUE5SMEFPUEJuM1VOSkFJYnJXVU1ROHZHVGV0UWFqcGEzaTU5SkRLRFhZV3FvMlRVR2g0QVFCZ2hDaUczcXFWOWNsLWhsZUx0dXdvZVoxSW5LSGVzbFRMZnRWZGNSM21lZU1MczNtTG9iSFlyMjZNaTdwQzctangxWkZWeWs0R1hsN21uOVdWU1FHRVVPaXVoTDAxdGRsVWZ4ZjBUSlNGU09NRVpHcENBM2hYcm9MT25FbDNGamtBdzdzUHZqZkltc2JhZGJIVnVzYjcySFRUczFuNVhvN3ozQXMzZkRXSGN4RC1mdnZxMGJldTljeC1MMnNUNFlhTkMtRUxkMU0zbTVyME5JampFVUF0NEdub3QtbDVaMy1DX2JBNDF1dmgyaFgzNFVfZkdaNmpwbXVsdUpvMUxxaTI2TjhMVEItUmJ1MFVNYVpua1JnOUU3Ml9ZUlppZyJ9XSwiYXV0aG9yaXR5X2hpbnRzIjpbImh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iXX0.sLKVasSqeg0YEFIkDhn03P4cgEPa_zFBFx65yjp3oh7DGP7dvf_baJ0rPBZ6BhrUulS19lhhRzoHScUkeKBwScrK-K-y4acW9b1To2lliDUc0V0NtLvlW15Tj9sfQI52SOfSlPrLVJV3K2tESUw7LzmsxPE_r5rBLs0Ek7rrpEr0DLju2Agf8r7pzk44tDy5ZJ6hE69rsqMG7LEBEjyBpN3jc1cefrqLOM_1aMQsad6trxVdhf1EXuSNOGefPVx3MV8ziiV9JHEnyeoS09HWHr9iJ-9y1XVBR_fa8IVSzcVZCzb4M33UGTAtpMynvcRoDaK-fr8if5r6BUiomtX4Dg"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 119,
+  "fields": {
+    "created": "2022-03-31T19:42:31.848Z",
+    "modified": "2022-03-31T19:42:31.848Z",
+    "iss": "http://127.0.0.1:8000",
+    "sub": "http://127.0.0.1:8001",
+    "exp": "2022-04-25T15:47:28Z",
+    "iat": "2022-04-23T15:47:28Z",
+    "statement": {
+      "exp": 1650901648,
+      "iat": 1650728848,
+      "iss": "http://127.0.0.1:8000",
+      "sub": "http://127.0.0.1:8001",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w",
+            "kid": "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+          }
+        ]
+      },
+      "metadata_policy": {
+        "openid_relying_party": {
+          "grant_types": {
+            "subset_of": [
+              "authorization_code",
+              "refresh_token"
+            ]
+          },
+          "scope": {
+            "superset_of": [
+              "openid"
+            ],
+            "subset_of": [
+              "openid",
+              "offline_access"
+            ]
+          },
+          "contacts": {
+            "add": [
+              "that.email@ciao.it"
+            ]
+          }
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAxLyIsImlhdCI6MTY1MDcyODg0OCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL3JwIiwibWFyayI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbmljaGUtb2lkYy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.CcacL4KH4C8MmoLyRgo7SfPFP3JdVlbUcTRatGgJEn4uPCWbQG2OxegquVAYGoi0dyp_fPbJJ8iUTb3r96xbXkf4n4U5DOMgTDATJp3p8Kt4lHet0DbAAWunFiyZC44lXa6hfx8lvVye2qG77zHpHbWf8-ECbA2wqLX8rbWY8QSNMo8wjX0JIRFbctV9AFcu7SXWJfD8Po6q20WVcMLbd-Sjd7bRwb6iWen0cEpp9K3CWZ8-NZFoBclAk1jijZO7gHIkkusBiI6VUxERJXzd4NsPPEg4eqHdn2TCLQyk6lkAr_bG-VoLTC1qpGBFv8zgaPdPjBs-ZX0814IaJ-0U1Q"
+        }
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMS8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6IjZTRGtzYTY0SWpCazdITlFDN3g1QzluTUFSR2FhbmZhVW0zd0MyV3Vsd0dfOGE1YUl5NENFd1hOMkxFTmtDeXlwT0RxV1pjVEF3Q3pXc2lpaFZOOWtEY0VzN1VOdS1YMVdva0syNTJEN19EUlktRlhJOEFCM1AwQ3hUbmdzMGstT2pjbWJ4cVZXMlU4RzU2ckpGcDRHX0NZQTR2ekJvQVBfNXNrRkJ0LTRhNWxZSmxCZkoyZ0psRTB2aDRfNDZveU51VVQ5a21LYXVSN25wVlNIakJVU3hZeURFTHpvYVBtdlI3U2tYNHNKZTBNSzM5SEVTNnM0bm85RzdCcmFMcDc1ZU93RVFtSGdFaEVTV3NjU09mX0NtQzVBTG56V0ozRmNGaHhnc3VNa2Rqb1U3YkgwOXk4cGRLczY0a1Iyem54cy15SVdyUEZXOGhKS255U2MyZms4dyIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MifV19LCJtZXRhZGF0YV9wb2xpY3kiOnsib3BlbmlkX3JlbHlpbmdfcGFydHkiOnsiZ3JhbnRfdHlwZXMiOnsic3Vic2V0X29mIjpbImF1dGhvcml6YXRpb25fY29kZSIsInJlZnJlc2hfdG9rZW4iXX0sInNjb3BlIjp7InN1cGVyc2V0X29mIjpbIm9wZW5pZCJdLCJzdWJzZXRfb2YiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiXX0sImNvbnRhY3RzIjp7ImFkZCI6WyJ0aGF0LmVtYWlsQGNpYW8uaXQiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L3NwLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF4THlJc0ltbGhkQ0k2TVRZMU1EY3lPRGcwT0N3aWFXUWlPaUpvZEhSd2N6b3ZMM2QzZHk1emNHbGtMbWR2ZGk1cGRDOWpaWEowYVdacFkyRjBhVzl1TDNKd0lpd2liV0Z5YXlJNkltaDBkSEJ6T2k4dmQzZDNMbUZuYVdRdVoyOTJMbWwwTDNSb1pXMWxjeTlqZFhOMGIyMHZZV2RwWkM5c2IyZHZMbk4yWnlJc0luSmxaaUk2SW1oMGRIQnpPaTh2Wkc5amN5NXBkR0ZzYVdFdWFYUXZhWFJoYkdsaEwzTndhV1F2YzNCcFpDMXlaV2R2YkdVdGRHVmpibWxqYUdVdGIybGtZeTlwZEM5emRHRmlhV3hsTDJsdVpHVjRMbWgwYld3aWZRLkNjYWNMNEtINEM4TW1vTHlSZ283U2ZQRlAzSmRWbGJVY1RSYXRHZ0pFbjR1UENXYlFHMk94ZWdxdVZBWUdvaTBkeXBfZlBiSko4aVVUYjNyOTZ4YlhrZjRuNFU1RE9NZ1REQVRKcDNwOEt0NGxIZXQwRGJBQVd1bkZpeVpDNDRsWGE2aGZ4OGx2VnllMnFHNzd6SHBIYldmOC1FQ2JBMndxTFg4cmJXWThRU05Nbzh3algwSklSRmJjdFY5QUZjdTdTWFdKZkQ4UG82cTIwV1ZjTUxiZC1TamQ3YlJ3YjZpV2VuMGNFcHA5SzNDV1o4LU5aRm9CY2xBazFqaWpaTzdnSElra3VzQmlJNlZVeEVSSlh6ZDROc1BQRWc0ZXFIZG4yVENMUXlrNmxrQXJfYkctVm9MVEMxcXBHQkZ2OHpnYVBkUGpCcy1aWDA4MTRJYUotMFUxUSJ9XX0.TeNguC4vz7GPVR_4hHa7-zXsc9oV-EHzQGe51ylx8wUJkOl473qfTY_oYA8jkYRn3tAZeh2vRvtzOZOJMyMyZgnWhKf6s6MkeNKzpjJwnyZmmsGG6VXjKpC20gxN4U1Fl_JRIPl42WkzCUD1I74iXX2-PxkvFo4jHBPR56wwA7xvAGvTESCAHZo5QNWk3mHdSv1Shm49ij7IliCsJTm7VqQ6zgZlD19J4uH109W-2KWlImDkVbZ-9sQBTYPJliJKlimHkJnpPqGKZxzDeTohg8a1EyOa9JxdngiWZ-Bj3qAhhbnonVNIsSTRcVmtWv9gzn2VATLN8vk4Uard-SFjMA"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 120,
+  "fields": {
+    "created": "2022-03-31T20:20:30.363Z",
+    "modified": "2022-03-31T20:20:30.363Z",
+    "iss": "http://127.0.0.1:8000/oidc/op",
+    "sub": "http://127.0.0.1:8000/oidc/op",
+    "exp": "2022-04-25T15:47:27Z",
+    "iat": "2022-04-23T15:47:27Z",
+    "statement": {
+      "exp": 1650901647,
+      "iat": 1650728847,
+      "iss": "http://127.0.0.1:8000/oidc/op",
+      "sub": "http://127.0.0.1:8000/oidc/op",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "1AYGF0C_j5CPeYMRH_mkhnYtnvM_CmdlWSFHK9YEas3gJ1922DnhFx3EIw1U-kZww7bgNz6C1l_1cyjkgBSuWxObObK4zVLZBGUZfXMBNFm2hdr5VoLKLemtZHpBOmdsxR1R3TJ30D0vY-LJbUtrwuRC8oOCYI5whcEc8B4utEex3W6dCjBIjsGfdJIqZHhfLN3xwPMOjkG5A_y8WnTVfGq9OUeuaUn3-PVs3O9LMpOBlaT7GreXgUqWAW-zxUCsiHHUVl9uIAGi5OHukIuBs2ClAlMX_S6mbN7_7KIGx2mTIrcgVBPJgYop9qnSqcXub_EQTKsFtNGigsUFnDqFNQ",
+            "kid": "cI8pBvWdHgcvldmI7HXbPMfFhSKkfACIbofsD6q2JtE"
+          }
+        ]
+      },
+      "metadata": {
+        "federation_entity": {
+          "federation_resolve_endpoint": "http://127.0.0.1:8000/oidc/op/resolve",
+          "organization_name": "SPID OIDC identity provider",
+          "homepage_uri": "http://127.0.0.1:8000",
+          "policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+          "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+          "contacts": [
+            "tech@example.it"
+          ]
+        },
+        "openid_provider": {
+          "authorization_endpoint": "http://127.0.0.1:8000/oidc/op/authorization",
+          "revocation_endpoint": "http://127.0.0.1:8000/oidc/op/revocation",
+          "id_token_encryption_alg_values_supported": [
+            "RSA-OAEP"
+          ],
+          "id_token_encryption_enc_values_supported": [
+            "A128CBC-HS256"
+          ],
+          "token_endpoint": "http://127.0.0.1:8000/oidc/op/token",
+          "userinfo_endpoint": "http://127.0.0.1:8000/oidc/op/userinfo",
+          "introspection_endpoint": "http://127.0.0.1:8000/oidc/op/introspection",
+          "claims_parameter_supported": true,
+          "contacts": [
+            "ops@https://idp.it"
+          ],
+          "client_registration_types_supported": [
+            "automatic"
+          ],
+          "code_challenge_methods_supported": [
+            "S256"
+          ],
+          "request_authentication_methods_supported": {
+            "ar": [
+              "request_object"
+            ]
+          },
+          "acr_values_supported": [
+            "https://www.spid.gov.it/SpidL1",
+            "https://www.spid.gov.it/SpidL2",
+            "https://www.spid.gov.it/SpidL3"
+          ],
+          "claims_supported": [
+            "https://attributes.eid.gov.it/spid_code",
+            "given_name",
+            "family_name",
+            "place_of_birth",
+            "birthdate",
+            "gender",
+            "https://attributes.eid.gov.it/company_name",
+            "https://attributes.eid.gov.it/registered_office",
+            "https://attributes.eid.gov.it/fiscal_number",
+            "https://attributes.eid.gov.it/company_fiscal_number",
+            "https://attributes.eid.gov.it/vat_number",
+            "document_details",
+            "phone_number",
+            "email",
+            "https://attributes.eid.gov.it/e_delivery_service",
+            "https://attributes.eid.gov.it/eid_exp_date",
+            "address"
+          ],
+          "grant_types_supported": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "id_token_signing_alg_values_supported": [
+            "RS256",
+            "ES256"
+          ],
+          "issuer": "http://127.0.0.1:8000/oidc/op",
+          "jwks": {
+            "keys": [
+              {
+                "kty": "RSA",
+                "use": "sig",
+                "n": "01_4aI2Lu5ggsElmRkE_S_a83V_szXU0txV4db2hmJ8HR1Y2s7PsZZ5-emGpnTydGrR3n-QExeEEIcFt_a06Ryiink34RQcKoGXUDBMBU0Bu8G7NcZ99YX6yeG9wFi4xs-WviTPmtPqijkz6jm1_ltWDcwbktfkraIRKKggZaEl9ldtsFr2wSpin3AXuGIdeJ0hZqhF92ODBLGjJlaIL9KlwopDy56adReVnraawSdrxmuPGj78IEADNAme2nQNvv9UCu0FkAn5St1bKds3Gpv26W0kjr1gZLsmQrj9lTcDk_KbAwfEY__P7se62kusoSuKMTQqUG1TQpUY7oFGSdw",
+                "e": "AQAB",
+                "kid": "dB67gL7ck3TFiIAf7N6_7SHvqk0MDYMEQcoGGlkUAAw"
+              }
+            ]
+          },
+          "scopes_supported": [
+            "openid",
+            "offline_access"
+          ],
+          "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+          "organization_name": "SPID OIDC identity provider",
+          "op_policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+          "request_parameter_supported": true,
+          "request_uri_parameter_supported": true,
+          "require_request_uri_registration": true,
+          "response_types_supported": [
+            "code"
+          ],
+          "subject_types_supported": [
+            "pairwise",
+            "public"
+          ],
+          "token_endpoint_auth_methods_supported": [
+            "private_key_jwt"
+          ],
+          "token_endpoint_auth_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "userinfo_encryption_alg_values_supported": [
+            "RSA-OAEP",
+            "RSA-OAEP-256"
+          ],
+          "userinfo_encryption_enc_values_supported": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "userinfo_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "request_object_encryption_alg_values_supported": [
+            "RSA-OAEP",
+            "RSA-OAEP-256"
+          ],
+          "request_object_encryption_enc_values_supported": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "request_object_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ]
+        }
+      },
+      "authority_hints": [
+        "http://127.0.0.1:8000"
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNJOHBCdldkSGdjdmxkbUk3SFhiUE1mRmhTS2tmQUNJYm9mc0Q2cTJKdEUiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiIxQVlHRjBDX2o1Q1BlWU1SSF9ta2huWXRudk1fQ21kbFdTRkhLOVlFYXMzZ0oxOTIyRG5oRngzRUl3MVUta1p3dzdiZ056NkMxbF8xY3lqa2dCU3VXeE9iT2JLNHpWTFpCR1VaZlhNQk5GbTJoZHI1Vm9MS0xlbXRaSHBCT21kc3hSMVIzVEozMEQwdlktTEpiVXRyd3VSQzhvT0NZSTV3aGNFYzhCNHV0RWV4M1c2ZENqQklqc0dmZEpJcVpIaGZMTjN4d1BNT2prRzVBX3k4V25UVmZHcTlPVWV1YVVuMy1QVnMzTzlMTXBPQmxhVDdHcmVYZ1VxV0FXLXp4VUNzaUhIVVZsOXVJQUdpNU9IdWtJdUJzMkNsQWxNWF9TNm1iTjdfN0tJR3gybVRJcmNnVkJQSmdZb3A5cW5TcWNYdWJfRVFUS3NGdE5HaWdzVUZuRHFGTlEiLCJraWQiOiJjSThwQnZXZEhnY3ZsZG1JN0hYYlBNZkZoU0trZkFDSWJvZnNENnEySnRFIn1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3Byb3ZpZGVyIjp7ImF1dGhvcml6YXRpb25fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC9hdXRob3JpemF0aW9uIiwicmV2b2NhdGlvbl9lbmRwb2ludCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wL3Jldm9jYXRpb24vIiwiaWRfdG9rZW5fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCJdLCJpZF90b2tlbl9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiXSwib3BfbmFtZSI6IkFnZW56aWEgcGVyIGxcdTIwMTlJdGFsaWEgRGlnaXRhbGUiLCJvcF91cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInRva2VuX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvdG9rZW4vIiwidXNlcmluZm9fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC91c2VyaW5mby8iLCJpbnRyb3NwZWN0aW9uX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvaW50cm9zcGVjdGlvbi8iLCJjbGFpbXNfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwiY29udGFjdHMiOlsib3BzQGh0dHBzOi8vaWRwLml0Il0sImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXNfc3VwcG9ydGVkIjpbImF1dG9tYXRpYyJdLCJjb2RlX2NoYWxsZW5nZV9tZXRob2RzX3N1cHBvcnRlZCI6WyJTMjU2Il0sInJlcXVlc3RfYXV0aGVudGljYXRpb25fbWV0aG9kc19zdXBwb3J0ZWQiOnsiYXIiOlsicmVxdWVzdF9vYmplY3QiXX0sImFjcl92YWx1ZXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMSIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMiIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMyJdLCJjbGFpbXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vYXR0cmlidXRlcy5zcGlkLmdvdi5pdC9zcGlkQ29kZSIsImh0dHBzOi8vYXR0cmlidXRlcy5zcGlkLmdvdi5pdC9uYW1lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2ZhbWlseU5hbWUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvcGxhY2VPZkJpcnRoIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2NvdW50eU9mQmlydGgiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZGF0ZU9mQmlydGgiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZ2VuZGVyIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2NvbXBhbnlOYW1lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L3JlZ2lzdGVyZWRPZmZpY2UiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZmlzY2FsTnVtYmVyIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2l2YUNvZGUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvaWRDYXJkIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L21vYmlsZVBob25lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2VtYWlsIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2FkZHJlc3MiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZXhwaXJhdGlvbkRhdGUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZGlnaXRhbEFkZHJlc3MiXSwiZ3JhbnRfdHlwZXNfc3VwcG9ydGVkIjpbImF1dGhvcml6YXRpb25fY29kZSIsInJlZnJlc2hfdG9rZW4iXSwiaWRfdG9rZW5fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIkVTMjU2Il0sImlzc3VlciI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6IjAxXzRhSTJMdTVnZ3NFbG1Sa0VfU19hODNWX3N6WFUwdHhWNGRiMmhtSjhIUjFZMnM3UHNaWjUtZW1HcG5UeWRHclIzbi1RRXhlRUVJY0Z0X2EwNlJ5aWluazM0UlFjS29HWFVEQk1CVTBCdThHN05jWjk5WVg2eWVHOXdGaTR4cy1XdmlUUG10UHFpamt6NmptMV9sdFdEY3dia3Rma3JhSVJLS2dnWmFFbDlsZHRzRnIyd1NwaW4zQVh1R0lkZUowaFpxaEY5Mk9EQkxHakpsYUlMOUtsd29wRHk1NmFkUmVWbnJhYXdTZHJ4bXVQR2o3OElFQUROQW1lMm5RTnZ2OVVDdTBGa0FuNVN0MWJLZHMzR3B2MjZXMGtqcjFnWkxzbVFyajlsVGNEa19LYkF3ZkVZX19QN3NlNjJrdXNvU3VLTVRRcVVHMVRRcFVZN29GR1NkdyIsImUiOiJBUUFCIiwia2lkIjoiZEI2N2dMN2NrM1RGaUlBZjdONl83U0h2cWswTURZTUVRY29HR2xrVUFBdyJ9XX0sInNjb3Blc19zdXBwb3J0ZWQiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiXSwibG9nb191cmkiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3RhdGljL3N2Zy9zcGlkLWxvZ28tYy1sYi5zdmciLCJvcmdhbml6YXRpb25fbmFtZSI6IlNQSUQgT0lEQyBpZGVudGl0eSBwcm92aWRlciIsIm9wX3BvbGljeV91cmkiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC9lbi93ZWJzaXRlL2xlZ2FsLWluZm9ybWF0aW9uLyIsInJlcXVlc3RfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwicmVxdWVzdF91cmlfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwicmVxdWlyZV9yZXF1ZXN0X3VyaV9yZWdpc3RyYXRpb24iOnRydWUsInJlc3BvbnNlX3R5cGVzX3N1cHBvcnRlZCI6WyJjb2RlIl0sInN1YmplY3RfdHlwZXNfc3VwcG9ydGVkIjpbInBhaXJ3aXNlIiwicHVibGljIl0sInRva2VuX2VuZHBvaW50X2F1dGhfbWV0aG9kc19zdXBwb3J0ZWQiOlsicHJpdmF0ZV9rZXlfand0Il0sInRva2VuX2VuZHBvaW50X2F1dGhfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCIsIlJTQS1PQUVQLTI1NiIsIkVDREgtRVMiLCJFQ0RILUVTK0ExMjhLVyIsIkVDREgtRVMrQTE5MktXIiwiRUNESC1FUytBMjU2S1ciXSwidXNlcmluZm9fZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCIsIlJTQS1PQUVQLTI1NiIsIkVDREgtRVMiLCJFQ0RILUVTK0ExMjhLVyIsIkVDREgtRVMrQTE5MktXIiwiRUNESC1FUytBMjU2S1ciXSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXSwicmVxdWVzdF9vYmplY3Rfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19LCJhdXRob3JpdHlfaGludHMiOlsiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyJdfQ.n4Iut7R3JwLSCnH0PMoF3huC0Ie_XBqvKX666OJqw01XMWSD7fgwGmSxhd7DoJ4dhQi31iLGuvYAmd0jct6fY6Q2MXVOGT8_jYh8roAyDDP-MdfmOHp0OfAyx8guuiELM-oyfNdRlcWtP0JRxWLW57JmR572Xr-UcOV8mpbYFkUJ0pixYZGMtYd1qLUahutSurD0I-6mCnEc5OiFctFwXjVcJ5yVby0qc5WMEKlzneLJifzgpJu1KVW361_YHlc_lJW3RLr6NOj6WdHUy7EF4MrztdTK8268SOHW66J-tPCLGCGe8JwC_x0OgP39_6SPHrtEgojAd6hQnFtowXVwvg"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 121,
+  "fields": {
+    "created": "2022-03-31T20:20:30.378Z",
+    "modified": "2022-03-31T20:20:30.378Z",
+    "iss": "http://127.0.0.1:8000",
+    "sub": "http://127.0.0.1:8000/oidc/op",
+    "exp": "2022-04-25T15:47:27Z",
+    "iat": "2022-04-23T15:47:27Z",
+    "statement": {
+      "exp": 1650901647,
+      "iat": 1650728847,
+      "iss": "http://127.0.0.1:8000",
+      "sub": "http://127.0.0.1:8000/oidc/op",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "1AYGF0C_j5CPeYMRH_mkhnYtnvM_CmdlWSFHK9YEas3gJ1922DnhFx3EIw1U-kZww7bgNz6C1l_1cyjkgBSuWxObObK4zVLZBGUZfXMBNFm2hdr5VoLKLemtZHpBOmdsxR1R3TJ30D0vY-LJbUtrwuRC8oOCYI5whcEc8B4utEex3W6dCjBIjsGfdJIqZHhfLN3xwPMOjkG5A_y8WnTVfGq9OUeuaUn3-PVs3O9LMpOBlaT7GreXgUqWAW-zxUCsiHHUVl9uIAGi5OHukIuBs2ClAlMX_S6mbN7_7KIGx2mTIrcgVBPJgYop9qnSqcXub_EQTKsFtNGigsUFnDqFNQ",
+            "kid": "cI8pBvWdHgcvldmI7HXbPMfFhSKkfACIbofsD6q2JtE"
+          }
+        ]
+      },
+      "metadata_policy": {
+        "openid_provider": {
+          "subject_types_supported": {
+            "value": [
+              "pairwise"
+            ]
+          },
+          "id_token_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          },
+          "userinfo_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          },
+          "token_endpoint_auth_methods_supported": {
+            "value": [
+              "private_key_jwt"
+            ]
+          },
+          "userinfo_encryption_alg_values_supported": {
+            "subset_of": [
+              "RSA-OAEP",
+              "RSA-OAEP-256"
+            ]
+          },
+          "userinfo_encryption_enc_values_supported": {
+            "subset_of": [
+              "A128CBC-HS256",
+              "A192CBC-HS384",
+              "A256CBC-HS512",
+              "A128GCM",
+              "A192GCM",
+              "A256GCM"
+            ]
+          },
+          "request_object_encryption_alg_values_supported": {
+            "subset_of": [
+              "RSA-OAEP",
+              "RSA-OAEP-256"
+            ]
+          },
+          "request_object_encryption_enc_values_supported": {
+            "subset_of": [
+              "A128CBC-HS256",
+              "A192CBC-HS384",
+              "A256CBC-HS512",
+              "A128GCM",
+              "A192GCM",
+              "A256GCM"
+            ]
+          },
+          "request_object_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          }
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/op-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvIiwiaWF0IjoxNjUwNzI4ODQ3LCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vb3AiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.THy9YbuCL4i2TXC2AD-DbjA7PS4j9bETwuxYzB9nWafIFmWsDxndJLI6r2gfgU5VuBEi4PSvLjhwqKiCcSrtwRB4SgvZxn3i-xvR1qEyBS96BN80biz1mAtSp-y76QoSaCb_qoi5qWGRw-0s2UWOQig-0bgKIXH3Krt90y7e665lGSg1e7p33zsNIeCpct7rb5_kPE97mlNGU_axHycUsFax839ThVMDC40Y_-X8KVEp3XYl3aIkvlQV80CkyCSGcoKGIebWWYXKWwaDb_c_GKAZAbEM2-fWPbZRjJxI1iT6cwqZUI9zUh38GZmgJkM-9RXMkHeuJKqeA_EBoR_vlA"
+        }
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoiMUFZR0YwQ19qNUNQZVlNUkhfbWtobll0bnZNX0NtZGxXU0ZISzlZRWFzM2dKMTkyMkRuaEZ4M0VJdzFVLWtad3c3YmdOejZDMWxfMWN5amtnQlN1V3hPYk9iSzR6VkxaQkdVWmZYTUJORm0yaGRyNVZvTEtMZW10WkhwQk9tZHN4UjFSM1RKMzBEMHZZLUxKYlV0cnd1UkM4b09DWUk1d2hjRWM4QjR1dEVleDNXNmRDakJJanNHZmRKSXFaSGhmTE4zeHdQTU9qa0c1QV95OFduVFZmR3E5T1VldWFVbjMtUFZzM085TE1wT0JsYVQ3R3JlWGdVcVdBVy16eFVDc2lISFVWbDl1SUFHaTVPSHVrSXVCczJDbEFsTVhfUzZtYk43XzdLSUd4Mm1USXJjZ1ZCUEpnWW9wOXFuU3FjWHViX0VRVEtzRnROR2lnc1VGbkRxRk5RIiwia2lkIjoiY0k4cEJ2V2RIZ2N2bGRtSTdIWGJQTWZGaFNLa2ZBQ0lib2ZzRDZxMkp0RSJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcHJvdmlkZXIiOnsic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOnsidmFsdWUiOlsicGFpcndpc2UiXX0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlMyNTYiLCJSUzM4NCIsIlJTNTEyIiwiRVMyNTYiLCJFUzM4NCIsIkVTNTEyIl19LCJ0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZHNfc3VwcG9ydGVkIjp7InZhbHVlIjpbInByaXZhdGVfa2V5X2p3dCJdfSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlNBLU9BRVAiLCJSU0EtT0FFUC0yNTYiLCJFQ0RILUVTIiwiRUNESC1FUytBMTI4S1ciLCJFQ0RILUVTK0ExOTJLVyIsIkVDREgtRVMrQTI1NktXIl19LCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXX0sInJlcXVlc3Rfb2JqZWN0X2VuY3J5cHRpb25fYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdfSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiQTEyOENCQy1IUzI1NiIsIkExOTJDQkMtSFMzODQiLCJBMjU2Q0JDLUhTNTEyIiwiQTEyOEdDTSIsIkExOTJHQ00iLCJBMjU2R0NNIl19LCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L29wLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF3TDI5cFpHTXZiM0F2SWl3aWFXRjBJam94TmpVd056STRPRFEzTENKcFpDSTZJbWgwZEhCek9pOHZkM2QzTG5Od2FXUXVaMjkyTG1sMEwyTmxjblJwWm1sallYUnBiMjR2YjNBaUxDSnRZWEpySWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5USHk5WWJ1Q0w0aTJUWEMyQUQtRGJqQTdQUzRqOWJFVHd1eFl6QjluV2FmSUZtV3NEeG5kSkxJNnIyZ2ZnVTVWdUJFaTRQU3ZMamh3cUtpQ2NTcnR3UkI0U2d2WnhuM2kteHZSMXFFeUJTOTZCTjgwYml6MW1BdFNwLXk3NlFvU2FDYl9xb2k1cVdHUnctMHMyVVdPUWlnLTBiZ0tJWEgzS3J0OTB5N2U2NjVsR1NnMWU3cDMzenNOSWVDcGN0N3JiNV9rUEU5N21sTkdVX2F4SHljVXNGYXg4MzlUaFZNREM0MFlfLVg4S1ZFcDNYWWwzYUlrdmxRVjgwQ2t5Q1NHY29LR0llYldXWVhLV3dhRGJfY19HS0FaQWJFTTItZldQYlpSakp4STFpVDZjd3FaVUk5elVoMzhHWm1nSmtNLTlSWE1rSGV1SktxZUFfRUJvUl92bEEifV19.hz3VNTBPEq08hstWh8KwBhNP9OnwWlS6pn-NXXG64O8FvmXsUJ8XNVmPeLyV9QtPwbSMxXs3ZZYOjvzR7fNAeCLHTQx04r7Is-tdFnAPvsN68qMbWeVtmOPS78vyLdqz4-eDA6YN49xgiCs5XHO5pyrJwU6CcznPKSJAFp40042poX8h7BU4Yx9QXKd3DedwoPfI_3pOLP53zUj4qimRJRt-3BENRu_vmFb-M4MF66ihF2raZlgs9ujn9xQ4fmpPuNQk2nxJ1cgco-5h9NYlTP8lw8cOoPKNiDp5obAf0XOmFmoxJ2Rm1RMjBpYvVDwwXO0yxZvHCJ3Zg5CPQrxxrQ"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 122,
+  "fields": {
+    "created": "2022-04-07T18:19:47.520Z",
+    "modified": "2022-04-07T18:19:47.520Z",
+    "iss": "http://127.0.0.1:8000/oidc/rp",
+    "sub": "http://127.0.0.1:8000/oidc/rp",
+    "exp": "2022-04-25T15:47:27Z",
+    "iat": "2022-04-23T15:47:27Z",
+    "statement": {
+      "exp": 1650901647,
+      "iat": 1650728847,
+      "iss": "http://127.0.0.1:8000/oidc/rp",
+      "sub": "http://127.0.0.1:8000/oidc/rp",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "pn_IchC66SFQMhbTHLtbD58jKiYYvYo7S4wjPjzECMu27c6FJVFNXtlubtb7sC6-WTQ1Hv4rSQdPhafJbIxa32R51sRQpkTr3JFMYP7x22DRQD_ixtQJRaiHw-npnZ8qgVHJ_t4gRTc4HJkehBLGv4-rHVAKzFiQNU1u2AFw1fWMnMH4ob_pyisXVgcku3dy14l7sYSANlpXufY_qnkQFTv0wMH-C6Izl-akENS2UHpvTLhfCBVKPrFXJxul4XDbUwUbvNZUxTernEx8lV5gxCSgKSBEgoH9MgpD1YWFPbAnwi7p7e7MNGz5lH7eDFKkPQhXLWABU8UvEIIWyA95SQ",
+            "kid": "k54HQtDibyGcs9ZWVMfviHf-2qLcFUtpwY2rgxBk88M"
+          }
+        ]
+      },
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "client_id": "http://127.0.0.1:8000/oidc/rp",
+          "client_registration_types": [
+            "automatic"
+          ],
+          "jwks": {
+            "keys": [
+              {
+                "kty": "RSA",
+                "use": "sig",
+                "n": "5s4qi1Ta-sEuKb5rJ8TzHmyGKaSu89pIXIi6w4Ekx6GL56mJDNE_MWJHsFjWXajfMdMQmZrSXAvLtXxmbhUui9Mq_IormhmEyyEJS0SyE9UKTxWzi0yd_n_C7OjFBhM-0ZyUlgl81E_sr-35P1A6b5WSYwMvRSR-P9yx_NI-XBQ48G_zdmk3CbuuzZsXZqqgj5U7OGWH-4Huosn9nH3FVkwX0OlWkgWM-J9DEWzGBjl9hfbbrMtM_obljHL2NfT6RJYER2IpdI8RCyQS3sMPt6ZHDskmuNlyMDNATCChXQJLnltwEjxcgvzjw_G9J25DwfdfVEhDF_0kCp44UMmS3Q",
+                "e": "AQAB",
+                "kid": "2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs"
+              }
+            ]
+          },
+          "client_name": "Name of an example organization",
+          "contacts": [
+            "ops@rp.example.it"
+          ],
+          "grant_types": [
+            "refresh_token",
+            "authorization_code"
+          ],
+          "redirect_uris": [
+            "http://127.0.0.1:8000/oidc/rp/callback"
+          ],
+          "response_types": [
+            "code"
+          ],
+          "subject_type": "pairwise"
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig"
+        }
+      ],
+      "authority_hints": [
+        "http://127.0.0.1:8000"
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhmLTJxTGNGVXRwd1kycmd4Qms4OE0iLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiJwbl9JY2hDNjZTRlFNaGJUSEx0YkQ1OGpLaVlZdllvN1M0d2pQanpFQ011MjdjNkZKVkZOWHRsdWJ0YjdzQzYtV1RRMUh2NHJTUWRQaGFmSmJJeGEzMlI1MXNSUXBrVHIzSkZNWVA3eDIyRFJRRF9peHRRSlJhaUh3LW5wblo4cWdWSEpfdDRnUlRjNEhKa2VoQkxHdjQtckhWQUt6RmlRTlUxdTJBRncxZldNbk1ING9iX3B5aXNYVmdja3UzZHkxNGw3c1lTQU5scFh1ZllfcW5rUUZUdjB3TUgtQzZJemwtYWtFTlMyVUhwdlRMaGZDQlZLUHJGWEp4dWw0WERiVXdVYnZOWlV4VGVybkV4OGxWNWd4Q1NnS1NCRWdvSDlNZ3BEMVlXRlBiQW53aTdwN2U3TU5HejVsSDdlREZLa1BRaFhMV0FCVThVdkVJSVd5QTk1U1EiLCJraWQiOiJrNTRIUXREaWJ5R2NzOVpXVk1mdmlIZi0ycUxjRlV0cHdZMnJneEJrODhNIn1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3JlbHlpbmdfcGFydHkiOnsiYXBwbGljYXRpb25fdHlwZSI6IndlYiIsImNsaWVudF9pZCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL3JwLyIsImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXMiOlsiYXV0b21hdGljIl0sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6IjVzNHFpMVRhLXNFdUtiNXJKOFR6SG15R0thU3U4OXBJWElpNnc0RWt4NkdMNTZtSkRORV9NV0pIc0ZqV1hhamZNZE1RbVpyU1hBdkx0WHhtYmhVdWk5TXFfSW9ybWhtRXl5RUpTMFN5RTlVS1R4V3ppMHlkX25fQzdPakZCaE0tMFp5VWxnbDgxRV9zci0zNVAxQTZiNVdTWXdNdlJTUi1QOXl4X05JLVhCUTQ4R196ZG1rM0NidXV6WnNYWnFxZ2o1VTdPR1dILTRIdW9zbjluSDNGVmt3WDBPbFdrZ1dNLUo5REVXekdCamw5aGZiYnJNdE1fb2JsakhMMk5mVDZSSllFUjJJcGRJOFJDeVFTM3NNUHQ2WkhEc2ttdU5seU1ETkFUQ0NoWFFKTG5sdHdFanhjZ3Z6andfRzlKMjVEd2ZkZlZFaERGXzBrQ3A0NFVNbVMzUSIsImUiOiJBUUFCIiwia2lkIjoiMkhub0ZTM1luQzl0amlDYWl2aFdMVlVKM0F4d0dHel85OHVSRmFxTUVFcyJ9XX0sImNsaWVudF9uYW1lIjoiTmFtZSBvZiBhbiBleGFtcGxlIG9yZ2FuaXphdGlvbiIsImNvbnRhY3RzIjpbIm9wc0BycC5leGFtcGxlLml0Il0sImdyYW50X3R5cGVzIjpbInJlZnJlc2hfdG9rZW4iLCJhdXRob3JpemF0aW9uX2NvZGUiXSwicmVkaXJlY3RfdXJpcyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9ycC9jYWxsYmFjayJdLCJyZXNwb25zZV90eXBlcyI6WyJjb2RlIl0sInN1YmplY3RfdHlwZSI6InBhaXJ3aXNlIn19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtacFpsbDRNRE5pYm05elJEaHRObWRaVVVsbVRraE9VRGxqVFY5VFlXMDVWR00xYmt4c2IwbEpjbU1pZlEuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalExTmpFeU5EQXhMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5Lm1TUE5SMEFPUEJuM1VOSkFJYnJXVU1ROHZHVGV0UWFqcGEzaTU5SkRLRFhZV3FvMlRVR2g0QVFCZ2hDaUczcXFWOWNsLWhsZUx0dXdvZVoxSW5LSGVzbFRMZnRWZGNSM21lZU1MczNtTG9iSFlyMjZNaTdwQzctangxWkZWeWs0R1hsN21uOVdWU1FHRVVPaXVoTDAxdGRsVWZ4ZjBUSlNGU09NRVpHcENBM2hYcm9MT25FbDNGamtBdzdzUHZqZkltc2JhZGJIVnVzYjcySFRUczFuNVhvN3ozQXMzZkRXSGN4RC1mdnZxMGJldTljeC1MMnNUNFlhTkMtRUxkMU0zbTVyME5JampFVUF0NEdub3QtbDVaMy1DX2JBNDF1dmgyaFgzNFVfZkdaNmpwbXVsdUpvMUxxaTI2TjhMVEItUmJ1MFVNYVpua1JnOUU3Ml9ZUlppZyJ9XSwiYXV0aG9yaXR5X2hpbnRzIjpbImh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iXX0.ZQj5t0G8aocCJe21Tzqu0cy0KtftbAgOacEyCYwdEnldrfnG4NSHxkSEJxLfSjD6wDynktR-LfimvTifvRnVdQaFvOR7spCtKgfR1pAxYTG_UWFVhpGlPUC2gJObOa64ypr6aSQaOwaJh8LfPAYtj4rNcMGpqqdc-ZmgvozghEsGcXsyYGz5FgFOgh8QVuXhQM6XOS0aXqN2ExgwMD0XY4BxBNOkhH7y25vH7CLpawBhv5bsTYtIm6oKj978_EVm0W41CPvpAaieoG3I2ZzhrDL3Em7SS0BquEQTLH5iD8gixbcLMVlTIr-gTKO-LrWaC5Q1hGAIqWPYvlulKyfqxQ"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 123,
+  "fields": {
+    "created": "2022-04-07T18:19:47.537Z",
+    "modified": "2022-04-07T18:19:47.537Z",
+    "iss": "http://127.0.0.1:8000",
+    "sub": "http://127.0.0.1:8000/oidc/rp",
+    "exp": "2022-04-25T15:47:27Z",
+    "iat": "2022-04-23T15:47:27Z",
+    "statement": {
+      "exp": 1650901647,
+      "iat": 1650728847,
+      "iss": "http://127.0.0.1:8000",
+      "sub": "http://127.0.0.1:8000/oidc/rp",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "pn_IchC66SFQMhbTHLtbD58jKiYYvYo7S4wjPjzECMu27c6FJVFNXtlubtb7sC6-WTQ1Hv4rSQdPhafJbIxa32R51sRQpkTr3JFMYP7x22DRQD_ixtQJRaiHw-npnZ8qgVHJ_t4gRTc4HJkehBLGv4-rHVAKzFiQNU1u2AFw1fWMnMH4ob_pyisXVgcku3dy14l7sYSANlpXufY_qnkQFTv0wMH-C6Izl-akENS2UHpvTLhfCBVKPrFXJxul4XDbUwUbvNZUxTernEx8lV5gxCSgKSBEgoH9MgpD1YWFPbAnwi7p7e7MNGz5lH7eDFKkPQhXLWABU8UvEIIWyA95SQ",
+            "kid": "k54HQtDibyGcs9ZWVMfviHf-2qLcFUtpwY2rgxBk88M"
+          }
+        ]
+      },
+      "metadata_policy": {
+        "openid_relying_party": {
+          "scope": {
+            "superset_of": [
+              "openid"
+            ],
+            "subset_of": [
+              "openid",
+              "offline_access",
+              "profile",
+              "email"
+            ]
+          },
+          "contacts": {
+            "add": [
+              "ciao@email.it"
+            ]
+          }
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjUwNzI4ODQ3LCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.LQTlLCChcnyySFVFrDBDVbi4POVO97qZ4C75gdAV5OqGjW66FbnySFLlI5SYpV3If7c6jvDUjqW47LaECUL3DIYWE4G0AvkYcwIHWIsCe1aM5hl2iLcBr5Vp1H5SJ0yeYSV-AvNIdMDhe2jWbMlxUCBHULDZdbnKwkV2DTHYr_1vwsjkSU1J78yTkzPqJ-VkIeku7dVKLYvxlXccEYAxtEx_sDFWBYZ0fXCwvR3KeywpvFh5SFFrATeSpM-zn4bNzQFiWM6v91P1PX1Xu83ZBx5vmJ4XEXjE6wDSFYV1b8UZODUh0B77BqEMzP0HG7OIOyKXprfMFuO33lErnVzwlQ"
+        },
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/sp-private",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjUwNzI4ODQ3LCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAvcHJpdmF0ZSIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.ILAeX7u1dMrT3ecFfEveeU_Ie_-DmDxsPhgC78v_qhyUZubLyribPsCcfHCOmI1mdYtDJUlHhx0LA5K2C6240tJc1IUV23K_tSLzOwfcElMPrZkX543tPAZIxMkyEK5xQ5len2DR0UniLLa9AtaaEYrWUQ_MXj0d61wW-1-IsyOHsbmw5cF0z9M_yte1XWkuDo5YxpwuVd3LRFvzU2AwUFjgMUUfvfewWSSb5rwaorN1X9ndR-MpSpGiDVkS7sXQLo3tQF-PV1q56ohwx4Wo_vq6BaXSxdqXi4Y9c8_Q2MNPc0RCOhwBypqYvStJnoJE_qZLVQNleDMg5stB7iDsZw"
+        }
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL3JwLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoicG5fSWNoQzY2U0ZRTWhiVEhMdGJENThqS2lZWXZZbzdTNHdqUGp6RUNNdTI3YzZGSlZGTlh0bHVidGI3c0M2LVdUUTFIdjRyU1FkUGhhZkpiSXhhMzJSNTFzUlFwa1RyM0pGTVlQN3gyMkRSUURfaXh0UUpSYWlIdy1ucG5aOHFnVkhKX3Q0Z1JUYzRISmtlaEJMR3Y0LXJIVkFLekZpUU5VMXUyQUZ3MWZXTW5NSDRvYl9weWlzWFZnY2t1M2R5MTRsN3NZU0FObHBYdWZZX3Fua1FGVHYwd01ILUM2SXpsLWFrRU5TMlVIcHZUTGhmQ0JWS1ByRlhKeHVsNFhEYlV3VWJ2TlpVeFRlcm5FeDhsVjVneENTZ0tTQkVnb0g5TWdwRDFZV0ZQYkFud2k3cDdlN01OR3o1bEg3ZURGS2tQUWhYTFdBQlU4VXZFSUlXeUE5NVNRIiwia2lkIjoiazU0SFF0RGlieUdjczlaV1ZNZnZpSGYtMnFMY0ZVdHB3WTJyZ3hCazg4TSJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcmVseWluZ19wYXJ0eSI6eyJzY29wZSI6eyJzdXBlcnNldF9vZiI6WyJvcGVuaWQiXSwic3Vic2V0X29mIjpbIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIiwicHJvZmlsZSIsImVtYWlsIl19LCJjb250YWN0cyI6eyJhZGQiOlsiY2lhb0BlbWFpbC5pdCJdfX19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlNVV05UZW0xM01HTmZVa0ZuU201d1V5MDVWMUVpTENKMGVYQWlPaUowY25WemRDMXRZWEpySzJwM2RDSjkuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalV3TnpJNE9EUTNMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5LkxRVGxMQ0NoY255eVNGVkZyREJEVmJpNFBPVk85N3FaNEM3NWdkQVY1T3FHalc2NkZibnlTRkxsSTVTWXBWM0lmN2M2anZEVWpxVzQ3TGFFQ1VMM0RJWVdFNEcwQXZrWWN3SUhXSXNDZTFhTTVobDJpTGNCcjVWcDFINVNKMHllWVNWLUF2TklkTURoZTJqV2JNbHhVQ0JIVUxEWmRibkt3a1YyRFRIWXJfMXZ3c2prU1UxSjc4eVRrelBxSi1Wa0lla3U3ZFZLTFl2eGxYY2NFWUF4dEV4X3NERldCWVowZlhDd3ZSM0tleXdwdkZoNVNGRnJBVGVTcE0tem40Yk56UUZpV002djkxUDFQWDFYdTgzWkJ4NXZtSjRYRVhqRTZ3RFNGWVYxYjhVWk9EVWgwQjc3QnFFTXpQMEhHN09JT3lLWHByZk1GdU8zM2xFcm5WendsUSJ9LHsiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHJpdmF0ZSIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlNVV05UZW0xM01HTmZVa0ZuU201d1V5MDVWMUVpTENKMGVYQWlPaUowY25WemRDMXRZWEpySzJwM2RDSjkuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalV3TnpJNE9EUTNMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkF2Y0hKcGRtRjBaU0lzSW14dloyOWZkWEpwSWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5JTEFlWDd1MWRNclQzZWNGZkV2ZWVVX0llXy1EbUR4c1BoZ0M3OHZfcWh5VVp1Ykx5cmliUHNDY2ZIQ09tSTFtZFl0REpVbEhoeDBMQTVLMkM2MjQwdEpjMUlVVjIzS190U0x6T3dmY0VsTVByWmtYNTQzdFBBWkl4TWt5RUs1eFE1bGVuMkRSMFVuaUxMYTlBdGFhRVlyV1VRX01YajBkNjF3Vy0xLUlzeU9Ic2JtdzVjRjB6OU1feXRlMVhXa3VEbzVZeHB3dVZkM0xSRnZ6VTJBd1VGamdNVVVmdmZld1dTU2I1cndhb3JOMVg5bmRSLU1wU3BHaURWa1M3c1hRTG8zdFFGLVBWMXE1Nm9od3g0V29fdnE2QmFYU3hkcVhpNFk5YzhfUTJNTlBjMFJDT2h3QnlwcVl2U3RKbm9KRV9xWkxWUU5sZURNZzVzdEI3aURzWncifV19.ic8RmrSl88jM5JALeDsFLBD-z0zmBU7tv5VxHewXewk0NFR-n_HRZdLKvxvqZKVkt5EeFCTr5qmyJaOjdAj7iFwZ408Lw9Bo0wG4Ex_QhWFrfbJlu2lKJ_G056c6hZbyEEMdRexxGAh1-8IWHtXjHsQbEkif1WMOrqrOMd3HY2z5i0UBeQ43Od8tMkWGL9TyFPjjKXra76t7SRNqa9-hYI5bOErLRJBLNRGyf7VxSVwrFobL245h4-sel_w7utgouduP2x1dfJKD3ylBdkVSB9YsDESM-pssT334v_g40pHwiYq0LudwBEQ1e-dfqp0mVcC0LNrkCLphL1IL2vuIyQ"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 124,
+  "fields": {
+    "created": "2022-04-16T13:13:58.647Z",
+    "modified": "2022-04-16T13:13:58.647Z",
+    "iss": "http://127.0.0.1:8002/oidc/op",
+    "sub": "http://127.0.0.1:8002/oidc/op",
+    "exp": "2022-04-25T15:47:28Z",
+    "iat": "2022-04-23T15:47:28Z",
+    "statement": {
+      "exp": 1650901648,
+      "iat": 1650728848,
+      "iss": "http://127.0.0.1:8002/oidc/op",
+      "sub": "http://127.0.0.1:8002/oidc/op",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
+            "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
+          }
+        ]
+      },
+      "metadata": {
+        "federation_entity": {
+          "federation_resolve_endpoint": "http://127.0.0.1:8002/oidc/op/resolve",
+          "organization_name": "SPID OIDC identity provider",
+          "homepage_uri": "http://127.0.0.1:8002",
+          "policy_uri": "http://127.0.0.1:8002/oidc/op/en/website/legal-information",
+          "logo_uri": "http://127.0.0.1:8002/static/svg/logo-cie.svg",
+          "contacts": [
+            "tech@example.it"
+          ]
+        },
+        "openid_provider": {
+          "authorization_endpoint": "http://127.0.0.1:8002/oidc/op/authorization",
+          "revocation_endpoint": "http://127.0.0.1:8002/oidc/op/revocation",
+          "id_token_encryption_alg_values_supported": [
+            "RSA-OAEP"
+          ],
+          "id_token_encryption_enc_values_supported": [
+            "A128CBC-HS256"
+          ],
+          "token_endpoint": "http://127.0.0.1:8002/oidc/op/token",
+          "userinfo_endpoint": "http://127.0.0.1:8002/oidc/op/userinfo",
+          "introspection_endpoint": "http://127.0.0.1:8002/oidc/op/introspection",
+          "claims_parameter_supported": true,
+          "contacts": [
+            "ops@https://idp.it"
+          ],
+          "code_challenge_methods_supported": [
+            "S256"
+          ],
+          "client_registration_types_supported": [
+            "automatic"
+          ],
+          "request_authentication_methods_supported": {
+            "ar": [
+              "request_object"
+            ]
+          },
+          "acr_values_supported": [
+            "https://www.spid.gov.it/SpidL1",
+            "https://www.spid.gov.it/SpidL2",
+            "https://www.spid.gov.it/SpidL3"
+          ],
+          "claims_supported": [
+            "given_name",
+            "family_name",
+            "birthdate",
+            "gender",
+            "phone_number",
+            "https://attributes.eid.gov.it/fiscal_number",
+            "phone_number_verified",
+            "email",
+            "address",
+            "document_details",
+            "https://attributes.eid.gov.it/physical_phone_number"
+          ],
+          "grant_types_supported": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "id_token_signing_alg_values_supported": [
+            "RS256",
+            "ES256"
+          ],
+          "issuer": "http://127.0.0.1:8002/oidc/op",
+          "jwks": {
+            "keys": [
+              {
+                "kty": "RSA",
+                "use": "sig",
+                "e": "AQAB",
+                "n": "rJoSYv1stwlbM11tR9SYGIJuzqlJe2bv2N35oPRbwV_epjNWvGG2ZqEj53YFMC8AMZNFhuLa_LNwr1kLVE-jXQe8xjiLhe7DgMf1OnSzq9yAEXVo19BPBwkgJe2jp9HIgM_nfbIsUbSSkFAM2CKvGb0Bk2GvvqXZ12P-fpbVyA9hIQr6rNTqnCGx2-v4oViGG4u_3iTw7D1ZvLWmrmZOaKnDAqG3MJSdQ-2ggQ-Aiahg48si9C9D_JgnBV9tJ2eCS58ZC6kVG5sftElQVdH6e26mz464TZj5QgCwZCTsAQfIvBoXSdCKxpnvsFfrajz4q9BiXAryxIOl5fLmCFVNhw",
+                "kid": "Pd2N9-TZz_AWS3GFCkoYdRaXXls8YPhx_d_Ez7JwjQI"
+              }
+            ]
+          },
+          "scopes_supported": [
+            "openid",
+            "offline_access"
+          ],
+          "logo_uri": "http://127.0.0.1:8002/static/images/logo-cie.png",
+          "organization_name": "SPID OIDC identity provider",
+          "op_policy_uri": "http://127.0.0.1:8002/oidc/op/en/website/legal-information",
+          "request_parameter_supported": true,
+          "request_uri_parameter_supported": true,
+          "require_request_uri_registration": true,
+          "response_types_supported": [
+            "code"
+          ],
+          "response_modes_supported": [
+            "query",
+            "form_post"
+          ],
+          "subject_types_supported": [
+            "pairwise",
+            "public"
+          ],
+          "token_endpoint_auth_methods_supported": [
+            "private_key_jwt"
+          ],
+          "token_endpoint_auth_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "userinfo_encryption_alg_values_supported": [
+            "RSA-OAEP",
+            "RSA-OAEP-256"
+          ],
+          "userinfo_encryption_enc_values_supported": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "userinfo_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ],
+          "request_object_encryption_alg_values_supported": [
+            "RSA-OAEP",
+            "RSA-OAEP-256"
+          ],
+          "request_object_encryption_enc_values_supported": [
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
+            "A128GCM",
+            "A192GCM",
+            "A256GCM"
+          ],
+          "request_object_signing_alg_values_supported": [
+            "RS256",
+            "RS384",
+            "RS512",
+            "ES256",
+            "ES384",
+            "ES512"
+          ]
+        }
+      },
+      "authority_hints": [
+        "http://127.0.0.1:8000"
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpoU29hT2VkVk9zQnc2bTJ2Y2x3U1dpcXFuR2VPU3RULWdVY2xvdF82N3ciLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiJ0ZzNhRTlmZDZsdFh6TnJpbV80Q0dLWVdmQzNucWNfdHY0WGphdzQ3M0NjcmZpcUR6ZVRLSGZSZmJ2YnFiMUR3bUk0ZnZDT2k1MUVWY21LTG5UaHpYeW5BVXB5VXZzd3ZMOF91emdEV08xUlNtQkcxTDBSRS1Da0tpaDRrZVhoMWt1OWhOczFfVi04MmRLNW9MT1ItVkpMbmhaQ3FUaFI0SEg2VHFMampXcnJYZnNIVlJ2YXVKaWxYNkZ4R2I1SkZvYzI3Vnh4ZEgyYzZQMlNIQzl3dUI4dG5mRzdPU3JTRDFnMmg3bFRYYklmbTc4YTBvcDY3ZF9qdXB6a29Lb0NUbXprUjJ6dndUVlZEZDk5dmtETFkyV1htYjhoSXdHNmRRWlhZbGtocUFZS3pUdVRaMHRqVmgwT3JxZkR4WXRMSDN3UXp6YUpPUmV3WllxTHlCMDlQOHciLCJraWQiOiJaaFNvYU9lZFZPc0J3Nm0ydmNsd1NXaXFxbkdlT1N0VC1nVWNsb3RfNjd3In1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3Byb3ZpZGVyIjp7ImF1dGhvcml6YXRpb25fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC9hdXRob3JpemF0aW9uIiwicmV2b2NhdGlvbl9lbmRwb2ludCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMi9vaWRjL29wL3Jldm9jYXRpb24vIiwiaWRfdG9rZW5fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCJdLCJpZF90b2tlbl9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiXSwib3BfbmFtZSI6IkFnZW56aWEgcGVyIGxcdTIwMTlJdGFsaWEgRGlnaXRhbGUiLCJvcF91cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInRva2VuX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvdG9rZW4vIiwidXNlcmluZm9fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC91c2VyaW5mby8iLCJpbnRyb3NwZWN0aW9uX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvaW50cm9zcGVjdGlvbi8iLCJjbGFpbXNfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwiY29udGFjdHMiOlsib3BzQGh0dHBzOi8vaWRwLml0Il0sImNvZGVfY2hhbGxlbmdlX21ldGhvZHNfc3VwcG9ydGVkIjpbIlMyNTYiXSwiY2xpZW50X3JlZ2lzdHJhdGlvbl90eXBlc19zdXBwb3J0ZWQiOlsiYXV0b21hdGljIl0sInJlcXVlc3RfYXV0aGVudGljYXRpb25fbWV0aG9kc19zdXBwb3J0ZWQiOnsiYXIiOlsicmVxdWVzdF9vYmplY3QiXX0sImFjcl92YWx1ZXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMSIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMiIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMyJdLCJjbGFpbXNfc3VwcG9ydGVkIjpbImdpdmVuX25hbWUiLCJmYW1pbHlfbmFtZSIsImJpcnRoZGF0ZSIsImdlbmRlciIsInBob25lX251bWJlciIsImh0dHBzOi8vYXR0cmlidXRlcy5laWQuZ292Lml0L2Zpc2NhbF9udW1iZXIiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiLCJlbWFpbCIsImFkZHJlc3MiLCJkb2N1bWVudF9kZXRhaWxzIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLmVpZC5nb3YuaXQvcGh5c2ljYWxfcGhvbmVfbnVtYmVyIl0sImdyYW50X3R5cGVzX3N1cHBvcnRlZCI6WyJhdXRob3JpemF0aW9uX2NvZGUiLCJyZWZyZXNoX3Rva2VuIl0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOlsiUlMyNTYiLCJFUzI1NiJdLCJpc3N1ZXIiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsInVzZSI6InNpZyIsImUiOiJBUUFCIiwibiI6InJKb1NZdjFzdHdsYk0xMXRSOVNZR0lKdXpxbEplMmJ2Mk4zNW9QUmJ3Vl9lcGpOV3ZHRzJacUVqNTNZRk1DOEFNWk5GaHVMYV9MTndyMWtMVkUtalhRZTh4amlMaGU3RGdNZjFPblN6cTl5QUVYVm8xOUJQQndrZ0plMmpwOUhJZ01fbmZiSXNVYlNTa0ZBTTJDS3ZHYjBCazJHdnZxWFoxMlAtZnBiVnlBOWhJUXI2ck5UcW5DR3gyLXY0b1ZpR0c0dV8zaVR3N0QxWnZMV21ybVpPYUtuREFxRzNNSlNkUS0yZ2dRLUFpYWhnNDhzaTlDOURfSmduQlY5dEoyZUNTNThaQzZrVkc1c2Z0RWxRVmRINmUyNm16NDY0VFpqNVFnQ3daQ1RzQVFmSXZCb1hTZENLeHBudnNGZnJhano0cTlCaVhBcnl4SU9sNWZMbUNGVk5odyIsImtpZCI6IlBkMk45LVRael9BV1MzR0ZDa29ZZFJhWFhsczhZUGh4X2RfRXo3SndqUUkifV19LCJzY29wZXNfc3VwcG9ydGVkIjpbIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImxvZ29fdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL3N0YXRpYy9pbWFnZXMvbG9nby1jaWUucG5nIiwib3JnYW5pemF0aW9uX25hbWUiOiJTUElEIE9JREMgaWRlbnRpdHkgcHJvdmlkZXIiLCJvcF9wb2xpY3lfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvZW4vd2Vic2l0ZS9sZWdhbC1pbmZvcm1hdGlvbi8iLCJyZXF1ZXN0X3BhcmFtZXRlcl9zdXBwb3J0ZWQiOnRydWUsInJlcXVlc3RfdXJpX3BhcmFtZXRlcl9zdXBwb3J0ZWQiOnRydWUsInJlcXVpcmVfcmVxdWVzdF91cmlfcmVnaXN0cmF0aW9uIjp0cnVlLCJyZXNwb25zZV90eXBlc19zdXBwb3J0ZWQiOlsiY29kZSJdLCJyZXNwb25zZV9tb2Rlc19zdXBwb3J0ZWQiOlsicXVlcnkiLCJmb3JtX3Bvc3QiXSwic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOlsicGFpcndpc2UiLCJwdWJsaWMiXSwidG9rZW5fZW5kcG9pbnRfYXV0aF9tZXRob2RzX3N1cHBvcnRlZCI6WyJwcml2YXRlX2tleV9qd3QiXSwidG9rZW5fZW5kcG9pbnRfYXV0aF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdLCJ1c2VyaW5mb19lbmNyeXB0aW9uX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdLCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiLCJBMTkyQ0JDLUhTMzg0IiwiQTI1NkNCQy1IUzUxMiIsIkExMjhHQ00iLCJBMTkyR0NNIiwiQTI1NkdDTSJdLCJ1c2VyaW5mb19zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdLCJyZXF1ZXN0X29iamVjdF9lbmNyeXB0aW9uX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdLCJyZXF1ZXN0X29iamVjdF9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiLCJBMTkyQ0JDLUhTMzg0IiwiQTI1NkNCQy1IUzUxMiIsIkExMjhHQ00iLCJBMTkyR0NNIiwiQTI1NkdDTSJdLCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfX0sImF1dGhvcml0eV9oaW50cyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIl19.WnWh9OkfAzb6YCo-yrnV9-7K_I3fucMVxNuw7tr7V43nVvgGJd4BqBSqc8Q0nKgzLcnNtnhf3MRiJ-hVkUL6vhaxt6jsXWvJupRQDf7f6-AgeNPvsHNvlrjoUkVNvTDS3jPUwXtnW7k7xQLEpdoxFW2ggbeG0zLfyyBypEGW3IZa1fDxlnEWvHH7Kctu55OBT_PC514HlKHWBYrBLYMODDoV-PCfOochOroSj3nM1WlDg50OoPXdjRUvM4eRxOmjEOF4kdXK2AKXY8wGMhJere07XnFk7TjdfLMNUdGaDR0aiPYoBkshq7Vhpy8pXt-JdN7RKKjjK-WAFLdEwASDtQ"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.fetchedentitystatement",
+  "pk": 125,
+  "fields": {
+    "created": "2022-04-16T13:13:58.654Z",
+    "modified": "2022-04-16T13:13:58.654Z",
+    "iss": "http://127.0.0.1:8000",
+    "sub": "http://127.0.0.1:8002/oidc/op",
+    "exp": "2022-04-25T15:47:28Z",
+    "iat": "2022-04-23T15:47:28Z",
+    "statement": {
+      "exp": 1650901648,
+      "iat": 1650728848,
+      "iss": "http://127.0.0.1:8000",
+      "sub": "http://127.0.0.1:8002/oidc/op",
+      "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
+            "e": "AQAB",
+            "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
+          }
+        ]
+      },
+      "metadata_policy": {
+        "openid_provider": {
+          "subject_types_supported": {
+            "value": [
+              "pairwise"
+            ]
+          },
+          "id_token_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          },
+          "userinfo_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          },
+          "token_endpoint_auth_methods_supported": {
+            "value": [
+              "private_key_jwt"
+            ]
+          },
+          "userinfo_encryption_alg_values_supported": {
+            "subset_of": [
+              "RSA-OAEP",
+              "RSA-OAEP-256"
+            ]
+          },
+          "userinfo_encryption_enc_values_supported": {
+            "subset_of": [
+              "A128CBC-HS256",
+              "A192CBC-HS384",
+              "A256CBC-HS512",
+              "A128GCM",
+              "A192GCM",
+              "A256GCM"
+            ]
+          },
+          "request_object_encryption_alg_values_supported": {
+            "subset_of": [
+              "RSA-OAEP",
+              "RSA-OAEP-256"
+            ]
+          },
+          "request_object_encryption_enc_values_supported": {
+            "subset_of": [
+              "A128CBC-HS256",
+              "A192CBC-HS384",
+              "A256CBC-HS512",
+              "A128GCM",
+              "A192GCM",
+              "A256GCM"
+            ]
+          },
+          "request_object_signing_alg_values_supported": {
+            "subset_of": [
+              "RS256",
+              "RS384",
+              "RS512",
+              "ES256",
+              "ES384",
+              "ES512"
+            ]
+          }
+        }
+      },
+      "trust_marks": [
+        {
+          "id": "https://www.spid.gov.it/openid-federation/agreement/op-public",
+          "trust_mark": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvIiwiaWF0IjoxNjUwNzI4ODQ4LCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vb3AiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.bCueZbCyLLGRRECTU-Pi7-tkgIn74godu9mmzbUcEnDGlYRjZlrK9IWjGloFuQJNymQndWvyEDzHIIHIXpaJqQ4qwqr7hjmZaHC2mrEbUApD9ME72roxWoYL423IZzkZE4B0l0xAzcoIitKIvZb9elDhEgyJmYgaWFV3E47cE4z1DlOecHjp8utxdHawHzN74nOF79-DPe6wtOQnrJkUK4wPckrwZl-hZl5DIl2XP1A30OFpjPfr0XZ_1CSjyM0RO_z6q548WKrvG-JmpDiYw4rY7D9FDbHAlJQML-RL7MNMVeTnkK05E_XsdN6GEE9Lffq1JF95K2lLpOY4QA3Apg"
+        }
+      ]
+    },
+    "jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMi9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwibiI6InRnM2FFOWZkNmx0WHpOcmltXzRDR0tZV2ZDM25xY190djRYamF3NDczQ2NyZmlxRHplVEtIZlJmYnZicWIxRHdtSTRmdkNPaTUxRVZjbUtMblRoelh5bkFVcHlVdnN3dkw4X3V6Z0RXTzFSU21CRzFMMFJFLUNrS2loNGtlWGgxa3U5aE5zMV9WLTgyZEs1b0xPUi1WSkxuaFpDcVRoUjRISDZUcUxqaldyclhmc0hWUnZhdUppbFg2RnhHYjVKRm9jMjdWeHhkSDJjNlAyU0hDOXd1Qjh0bmZHN09TclNEMWcyaDdsVFhiSWZtNzhhMG9wNjdkX2p1cHprb0tvQ1RtemtSMnp2d1RWVkRkOTl2a0RMWTJXWG1iOGhJd0c2ZFFaWFlsa2hxQVlLelR1VFowdGpWaDBPcnFmRHhZdExIM3dRenphSk9SZXdaWXFMeUIwOVA4dyIsImUiOiJBUUFCIiwia2lkIjoiWmhTb2FPZWRWT3NCdzZtMnZjbHdTV2lxcW5HZU9TdFQtZ1VjbG90XzY3dyJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcHJvdmlkZXIiOnsic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOnsidmFsdWUiOlsicGFpcndpc2UiXX0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlMyNTYiLCJSUzM4NCIsIlJTNTEyIiwiRVMyNTYiLCJFUzM4NCIsIkVTNTEyIl19LCJ0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZHNfc3VwcG9ydGVkIjp7InZhbHVlIjpbInByaXZhdGVfa2V5X2p3dCJdfSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlNBLU9BRVAiLCJSU0EtT0FFUC0yNTYiLCJFQ0RILUVTIiwiRUNESC1FUytBMTI4S1ciLCJFQ0RILUVTK0ExOTJLVyIsIkVDREgtRVMrQTI1NktXIl19LCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXX0sInJlcXVlc3Rfb2JqZWN0X2VuY3J5cHRpb25fYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdfSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiQTEyOENCQy1IUzI1NiIsIkExOTJDQkMtSFMzODQiLCJBMjU2Q0JDLUhTNTEyIiwiQTEyOEdDTSIsIkExOTJHQ00iLCJBMjU2R0NNIl19LCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L29wLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF5TDI5cFpHTXZiM0F2SWl3aWFXRjBJam94TmpVd056STRPRFE0TENKcFpDSTZJbWgwZEhCek9pOHZkM2QzTG5Od2FXUXVaMjkyTG1sMEwyTmxjblJwWm1sallYUnBiMjR2YjNBaUxDSnRZWEpySWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5iQ3VlWmJDeUxMR1JSRUNUVS1QaTctdGtnSW43NGdvZHU5bW16YlVjRW5ER2xZUmpabHJLOUlXakdsb0Z1UUpOeW1RbmRXdnlFRHpISUlISVhwYUpxUTRxd3FyN2hqbVphSEMybXJFYlVBcEQ5TUU3MnJveFdvWUw0MjNJWnprWkU0QjBsMHhBemNvSWl0S0l2WmI5ZWxEaEVneUptWWdhV0ZWM0U0N2NFNHoxRGxPZWNIanA4dXR4ZEhhd0h6Tjc0bk9GNzktRFBlNnd0T1FuckprVUs0d1Bja3J3WmwtaFpsNURJbDJYUDFBMzBPRnBqUGZyMFhaXzFDU2p5TTBST196NnE1NDhXS3J2Ry1KbXBEaVl3NHJZN0Q5RkRiSEFsSlFNTC1STDdNTk1WZVRua0swNUVfWHNkTjZHRUU5TGZmcTFKRjk1SzJsTHBPWTRRQTNBcGcifV19.BtyhU0RYjVKig081cbTtN7cpCLJP6sQ9V0GTMdkoWu3D5fR8zUtdbxOK6f726k_at-6ftMQtetv85F0-u7TQG9aZqdRXmZsMsQi9HtUeGhPrfjUFYqEIctocFBhnHOiyh8sQiXRFOklRPHlui1IVa47XFmM4T7Z8tPzmPFUCucxDDkpMnEA5rdOxOfiM1cCqYJi7XVopwYJXPvMqiOqFB8QB0ESKaIOHMskvAU-208rnwxCjWS_dglmUBRdSuGuLpHUw8pjt7Z2T0oN646nwRkLMLB3oWMhaOD3pFsshpyjg2pL5LTTSvFm8wJEejvwz-guG7L283ODswMAe9y5HHQ"
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.trustchain",
+  "pk": 40,
+  "fields": {
+    "created": "2022-03-31T19:42:31.861Z",
+    "modified": "2022-03-31T19:42:31.861Z",
+    "sub": "http://127.0.0.1:8001",
+    "trust_anchor": 117,
+    "exp": "2022-04-23T16:20:27Z",
+    "iat": "2022-03-31T19:42:31.861Z",
+    "chain": [
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAxLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMS8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6IjZTRGtzYTY0SWpCazdITlFDN3g1QzluTUFSR2FhbmZhVW0zd0MyV3Vsd0dfOGE1YUl5NENFd1hOMkxFTmtDeXlwT0RxV1pjVEF3Q3pXc2lpaFZOOWtEY0VzN1VOdS1YMVdva0syNTJEN19EUlktRlhJOEFCM1AwQ3hUbmdzMGstT2pjbWJ4cVZXMlU4RzU2ckpGcDRHX0NZQTR2ekJvQVBfNXNrRkJ0LTRhNWxZSmxCZkoyZ0psRTB2aDRfNDZveU51VVQ5a21LYXVSN25wVlNIakJVU3hZeURFTHpvYVBtdlI3U2tYNHNKZTBNSzM5SEVTNnM0bm85RzdCcmFMcDc1ZU93RVFtSGdFaEVTV3NjU09mX0NtQzVBTG56V0ozRmNGaHhnc3VNa2Rqb1U3YkgwOXk4cGRLczY0a1Iyem54cy15SVdyUEZXOGhKS255U2MyZms4dyIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfcmVseWluZ19wYXJ0eSI6eyJhcHBsaWNhdGlvbl90eXBlIjoid2ViIiwiY2xpZW50X2lkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAxLyIsImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXMiOlsiYXV0b21hdGljIl0sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6InVYZkpBLXdUbFRDQTRGZHNvRTBxWmZtS0lnZWRtYXJydFdnUWJFbEtiV2c5UkRSN1o4SlZCYVJMRnF3eWZ5RzFKSkZtNjRHNTFjQkp3TElGd1dvRjdueHNIOVZZTG01b2NqQW5zUjRSaGxmVkUweV82MHdqZjhza0pnQlJwaVhRUGx3SDlqREdhcVZFX1BFQlRPYkRPNXczWG91ckQxRjM2MC12NWNMRExSSGRGSklpdGRFVnRxQVRxWTVEZ2xSRGFLaUJoaXM3YTVfMWJrODM5UERMYVFoanU0WEprNHR2RHk1LUxWa015NXNQMnpVNi0xdEpkQS1WbWFCWkxYeTluMDk2N0ZHSVdtTXpwYWZyQk1PdUhGY1VPSDU2by1jbERhaF9DSVRIMWRxMkQ2NEswTVloRXBBQ08ycDhBSDRLOFE2WXVKMWRua1ZERHdacDJDODRzUSIsImUiOiJBUUFCIiwia2lkIjoiWWh1SUpVNm8xNUVVQ3lxQTBMSEVxSmQteFZQSmdveVc1d1oxbzRwYWRXcyJ9XX0sImNsaWVudF9uYW1lIjoiTmFtZSBvZiBhbiBleGFtcGxlIG9yZ2FuaXphdGlvbiIsImNvbnRhY3RzIjpbIm9wc0BycC5leGFtcGxlLml0Il0sImdyYW50X3R5cGVzIjpbInJlZnJlc2hfdG9rZW4iLCJhdXRob3JpemF0aW9uX2NvZGUiXSwicmVkaXJlY3RfdXJpcyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDEvb2lkYy9ycC9jYWxsYmFjayJdLCJyZXNwb25zZV90eXBlcyI6WyJjb2RlIl0sInN1YmplY3RfdHlwZSI6InBhaXJ3aXNlIn19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtacFpsbDRNRE5pYm05elJEaHRObWRaVVVsbVRraE9VRGxqVFY5VFlXMDVWR00xYmt4c2IwbEpjbU1pZlEuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalExTmpFeU5EQXhMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5Lm1TUE5SMEFPUEJuM1VOSkFJYnJXVU1ROHZHVGV0UWFqcGEzaTU5SkRLRFhZV3FvMlRVR2g0QVFCZ2hDaUczcXFWOWNsLWhsZUx0dXdvZVoxSW5LSGVzbFRMZnRWZGNSM21lZU1MczNtTG9iSFlyMjZNaTdwQzctangxWkZWeWs0R1hsN21uOVdWU1FHRVVPaXVoTDAxdGRsVWZ4ZjBUSlNGU09NRVpHcENBM2hYcm9MT25FbDNGamtBdzdzUHZqZkltc2JhZGJIVnVzYjcySFRUczFuNVhvN3ozQXMzZkRXSGN4RC1mdnZxMGJldTljeC1MMnNUNFlhTkMtRUxkMU0zbTVyME5JampFVUF0NEdub3QtbDVaMy1DX2JBNDF1dmgyaFgzNFVfZkdaNmpwbXVsdUpvMUxxaTI2TjhMVEItUmJ1MFVNYVpua1JnOUU3Ml9ZUlppZyJ9XSwiYXV0aG9yaXR5X2hpbnRzIjpbImh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iXX0.sLKVasSqeg0YEFIkDhn03P4cgEPa_zFBFx65yjp3oh7DGP7dvf_baJ0rPBZ6BhrUulS19lhhRzoHScUkeKBwScrK-K-y4acW9b1To2lliDUc0V0NtLvlW15Tj9sfQI52SOfSlPrLVJV3K2tESUw7LzmsxPE_r5rBLs0Ek7rrpEr0DLju2Agf8r7pzk44tDy5ZJ6hE69rsqMG7LEBEjyBpN3jc1cefrqLOM_1aMQsad6trxVdhf1EXuSNOGefPVx3MV8ziiV9JHEnyeoS09HWHr9iJ-9y1XVBR_fa8IVSzcVZCzb4M33UGTAtpMynvcRoDaK-fr8if5r6BUiomtX4Dg",
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6Im84SW9sUmpabGt6Y3QtNDhyaHJWbFRuWVUxcGtNYlZKRC1EVTA1b01TOVJWR3JzRnlwZzk4bS1LdzRINHFOUHlRVngyT1FPUmkteFNoZ2s3SFUtZ0tfMnBWZ3VZa3YwNkZhakxfZWRFQXFxc3F0Xzc0UWYyV0xSQzVwZkpHX3o5T1B6WThKR3lrLXozU2JlSE5fQlhLSThHWTVFNFdVMlNzdG1ROWZ5TDRDeHRSZmpVaWE4bGltVENfM01PcFQzemk1bnIwM2pmYmpwbmpnYTUxcVh1cnhubHpjM2FfeGprNVJBQXBLeFV2TndoSjI3NU0wQ21COTlEalB3RjZCTHZVZ0pxZ3lDcFVPbjM2TE9oSTRGcXVWcWhxaGl3S2xNbWlNZTN5eTB5TlE3RlhCV3hqemhleGJweWMzVnU3ekZJSFBBY0M0VXlJUWhjM3dhRWoydmlYdyIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EifV19LCJtZXRhZGF0YSI6eyJmZWRlcmF0aW9uX2VudGl0eSI6eyJjb250YWN0cyI6WyJvcHNAbG9jYWxob3N0Il0sImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZmV0Y2gvIiwiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Jlc29sdmUvIiwiZmVkZXJhdGlvbl9zdGF0dXNfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJ1c3RfbWFya19zdGF0dXMvIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIiwibmFtZSI6ImV4YW1wbGUgVEEiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbGlzdC8ifX0sInRydXN0X21hcmtzX2lzc3VlcnMiOnsiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wdWJsaWMiOlsiaHR0cHM6Ly9yZWdpc3RyeS5zcGlkLmFnaWQuZ292Lml0IiwiaHR0cHM6Ly9wdWJsaWMuaW50ZXJtZWRpYXJ5LnNwaWQuaXQiXSwiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wcml2YXRlIjpbImh0dHBzOi8vcmVnaXN0cnkuc3BpZC5hZ2lkLmdvdi5pdCIsImh0dHBzOi8vcHJpdmF0ZS5vdGhlci5pbnRlcm1lZGlhcnkuaXQiXSwiaHR0cHM6Ly9zZ2QuYWEuaXQvb25ib2FyZGluZyI6WyJodHRwczovL3NnZC5hYS5pdCJdfSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.fMQvcBAK4hFMJ2EU6dIR4wHTfNj_8yxohS_QcPHSPuFgMwqnhmAou6xDpv3L0TsibuU7Gnc4GRc2El8_9wVuXsUJOsAa2DpDJg6zoIa-XmLKjFKTpRDj735vcZb_wJqlXPTWI3AGRb1xAUKYF7BIg0KxIDjzOkLqkz8-XfmyHhESgnVXudITRaFad1nijYb1jb7ivLvgV3wdZ5IsKDaDV5Ys9ICTmSnMAEEmwYKWltWHj4bcqLs_diXL14wTJyzySvqG7FwSrVOS4qTdlfEqMuxOJ0b4Nr7L92DtG9KxxdMluBLZDmRwoL3rKu24vDvgfzftAxaoR57QH3IC4Qvp8A",
+      [
+        "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMS8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6IjZTRGtzYTY0SWpCazdITlFDN3g1QzluTUFSR2FhbmZhVW0zd0MyV3Vsd0dfOGE1YUl5NENFd1hOMkxFTmtDeXlwT0RxV1pjVEF3Q3pXc2lpaFZOOWtEY0VzN1VOdS1YMVdva0syNTJEN19EUlktRlhJOEFCM1AwQ3hUbmdzMGstT2pjbWJ4cVZXMlU4RzU2ckpGcDRHX0NZQTR2ekJvQVBfNXNrRkJ0LTRhNWxZSmxCZkoyZ0psRTB2aDRfNDZveU51VVQ5a21LYXVSN25wVlNIakJVU3hZeURFTHpvYVBtdlI3U2tYNHNKZTBNSzM5SEVTNnM0bm85RzdCcmFMcDc1ZU93RVFtSGdFaEVTV3NjU09mX0NtQzVBTG56V0ozRmNGaHhnc3VNa2Rqb1U3YkgwOXk4cGRLczY0a1Iyem54cy15SVdyUEZXOGhKS255U2MyZms4dyIsImtpZCI6IndMX0xtUDhVakxWTi1zQWVvWjdLR0VNSmZCa0Z0Yk5MZDI0ZUREOVJHQ3MifV19LCJtZXRhZGF0YV9wb2xpY3kiOnsib3BlbmlkX3JlbHlpbmdfcGFydHkiOnsiZ3JhbnRfdHlwZXMiOnsic3Vic2V0X29mIjpbImF1dGhvcml6YXRpb25fY29kZSIsInJlZnJlc2hfdG9rZW4iXX0sInNjb3BlIjp7InN1cGVyc2V0X29mIjpbIm9wZW5pZCJdLCJzdWJzZXRfb2YiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiXX0sImNvbnRhY3RzIjp7ImFkZCI6WyJ0aGF0LmVtYWlsQGNpYW8uaXQiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L3NwLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF4THlJc0ltbGhkQ0k2TVRZMU1EY3lPRGcwT0N3aWFXUWlPaUpvZEhSd2N6b3ZMM2QzZHk1emNHbGtMbWR2ZGk1cGRDOWpaWEowYVdacFkyRjBhVzl1TDNKd0lpd2liV0Z5YXlJNkltaDBkSEJ6T2k4dmQzZDNMbUZuYVdRdVoyOTJMbWwwTDNSb1pXMWxjeTlqZFhOMGIyMHZZV2RwWkM5c2IyZHZMbk4yWnlJc0luSmxaaUk2SW1oMGRIQnpPaTh2Wkc5amN5NXBkR0ZzYVdFdWFYUXZhWFJoYkdsaEwzTndhV1F2YzNCcFpDMXlaV2R2YkdVdGRHVmpibWxqYUdVdGIybGtZeTlwZEM5emRHRmlhV3hsTDJsdVpHVjRMbWgwYld3aWZRLkNjYWNMNEtINEM4TW1vTHlSZ283U2ZQRlAzSmRWbGJVY1RSYXRHZ0pFbjR1UENXYlFHMk94ZWdxdVZBWUdvaTBkeXBfZlBiSko4aVVUYjNyOTZ4YlhrZjRuNFU1RE9NZ1REQVRKcDNwOEt0NGxIZXQwRGJBQVd1bkZpeVpDNDRsWGE2aGZ4OGx2VnllMnFHNzd6SHBIYldmOC1FQ2JBMndxTFg4cmJXWThRU05Nbzh3algwSklSRmJjdFY5QUZjdTdTWFdKZkQ4UG82cTIwV1ZjTUxiZC1TamQ3YlJ3YjZpV2VuMGNFcHA5SzNDV1o4LU5aRm9CY2xBazFqaWpaTzdnSElra3VzQmlJNlZVeEVSSlh6ZDROc1BQRWc0ZXFIZG4yVENMUXlrNmxrQXJfYkctVm9MVEMxcXBHQkZ2OHpnYVBkUGpCcy1aWDA4MTRJYUotMFUxUSJ9XX0.TeNguC4vz7GPVR_4hHa7-zXsc9oV-EHzQGe51ylx8wUJkOl473qfTY_oYA8jkYRn3tAZeh2vRvtzOZOJMyMyZgnWhKf6s6MkeNKzpjJwnyZmmsGG6VXjKpC20gxN4U1Fl_JRIPl42WkzCUD1I74iXX2-PxkvFo4jHBPR56wwA7xvAGvTESCAHZo5QNWk3mHdSv1Shm49ij7IliCsJTm7VqQ6zgZlD19J4uH109W-2KWlImDkVbZ-9sQBTYPJliJKlimHkJnpPqGKZxzDeTohg8a1EyOa9JxdngiWZ-Bj3qAhhbnonVNIsSTRcVmtWv9gzn2VATLN8vk4Uard-SFjMA"
+      ]
+    ],
+    "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w",
+            "kid": "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+          }
+        ]
+    },
+    "metadata": {
+      "openid_relying_party": {
+        "application_type": "web",
+        "client_id": "http://127.0.0.1:8001",
+        "client_registration_types": [
+          "automatic"
+        ],
+        "jwks": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "use": "sig",
+              "n": "uXfJA-wTlTCA4FdsoE0qZfmKIgedmarrtWgQbElKbWg9RDR7Z8JVBaRLFqwyfyG1JJFm64G51cBJwLIFwWoF7nxsH9VYLm5ocjAnsR4RhlfVE0y_60wjf8skJgBRpiXQPlwH9jDGaqVE_PEBTObDO5w3XourD1F360-v5cLDLRHdFJIitdEVtqATqY5DglRDaKiBhis7a5_1bk839PDLaQhju4XJk4tvDy5-LVkMy5sP2zU6-1tJdA-VmaBZLXy9n0967FGIWmMzpafrBMOuHFcUOH56o-clDah_CITH1dq2D64K0MYhEpACO2p8AH4K8Q6YuJ1dnkVDDwZp2C84sQ",
+              "e": "AQAB",
+              "kid": "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+            }
+          ]
+        },
+        "client_name": "Name of an example organization",
+        "contacts": [
+          "ops@rp.example.it"
+        ],
+        "grant_types": [
+          "refresh_token",
+          "authorization_code"
+        ],
+        "redirect_uris": [
+          "http://127.0.0.1:8001/oidc/rp/callback"
+        ],
+        "response_types": [
+          "code"
+        ],
+        "subject_type": "pairwise"
+      }
+    },
+    "trust_marks": [],
+    "parties_involved": [
+      "http://127.0.0.1:8001",
+      "http://127.0.0.1:8000"
+    ],
+    "status": "valid",
+    "log": "",
+    "processing_start": "2022-04-23T15:47:28.079Z",
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.trustchain",
+  "pk": 41,
+  "fields": {
+    "created": "2022-03-31T20:20:30.392Z",
+    "modified": "2022-03-31T20:20:30.392Z",
+    "sub": "http://127.0.0.1:8000/oidc/op",
+    "trust_anchor": 117,
+    "exp": "2022-04-23T16:20:27Z",
+    "iat": "2022-03-31T20:20:30.392Z",
+    "chain": [
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNJOHBCdldkSGdjdmxkbUk3SFhiUE1mRmhTS2tmQUNJYm9mc0Q2cTJKdEUiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiIxQVlHRjBDX2o1Q1BlWU1SSF9ta2huWXRudk1fQ21kbFdTRkhLOVlFYXMzZ0oxOTIyRG5oRngzRUl3MVUta1p3dzdiZ056NkMxbF8xY3lqa2dCU3VXeE9iT2JLNHpWTFpCR1VaZlhNQk5GbTJoZHI1Vm9MS0xlbXRaSHBCT21kc3hSMVIzVEozMEQwdlktTEpiVXRyd3VSQzhvT0NZSTV3aGNFYzhCNHV0RWV4M1c2ZENqQklqc0dmZEpJcVpIaGZMTjN4d1BNT2prRzVBX3k4V25UVmZHcTlPVWV1YVVuMy1QVnMzTzlMTXBPQmxhVDdHcmVYZ1VxV0FXLXp4VUNzaUhIVVZsOXVJQUdpNU9IdWtJdUJzMkNsQWxNWF9TNm1iTjdfN0tJR3gybVRJcmNnVkJQSmdZb3A5cW5TcWNYdWJfRVFUS3NGdE5HaWdzVUZuRHFGTlEiLCJraWQiOiJjSThwQnZXZEhnY3ZsZG1JN0hYYlBNZkZoU0trZkFDSWJvZnNENnEySnRFIn1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3Byb3ZpZGVyIjp7ImF1dGhvcml6YXRpb25fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC9hdXRob3JpemF0aW9uIiwicmV2b2NhdGlvbl9lbmRwb2ludCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wL3Jldm9jYXRpb24vIiwiaWRfdG9rZW5fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCJdLCJpZF90b2tlbl9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiXSwib3BfbmFtZSI6IkFnZW56aWEgcGVyIGxcdTIwMTlJdGFsaWEgRGlnaXRhbGUiLCJvcF91cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInRva2VuX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvdG9rZW4vIiwidXNlcmluZm9fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC91c2VyaW5mby8iLCJpbnRyb3NwZWN0aW9uX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvb3AvaW50cm9zcGVjdGlvbi8iLCJjbGFpbXNfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwiY29udGFjdHMiOlsib3BzQGh0dHBzOi8vaWRwLml0Il0sImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXNfc3VwcG9ydGVkIjpbImF1dG9tYXRpYyJdLCJjb2RlX2NoYWxsZW5nZV9tZXRob2RzX3N1cHBvcnRlZCI6WyJTMjU2Il0sInJlcXVlc3RfYXV0aGVudGljYXRpb25fbWV0aG9kc19zdXBwb3J0ZWQiOnsiYXIiOlsicmVxdWVzdF9vYmplY3QiXX0sImFjcl92YWx1ZXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMSIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMiIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMyJdLCJjbGFpbXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vYXR0cmlidXRlcy5zcGlkLmdvdi5pdC9zcGlkQ29kZSIsImh0dHBzOi8vYXR0cmlidXRlcy5zcGlkLmdvdi5pdC9uYW1lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2ZhbWlseU5hbWUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvcGxhY2VPZkJpcnRoIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2NvdW50eU9mQmlydGgiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZGF0ZU9mQmlydGgiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZ2VuZGVyIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2NvbXBhbnlOYW1lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L3JlZ2lzdGVyZWRPZmZpY2UiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZmlzY2FsTnVtYmVyIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2l2YUNvZGUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvaWRDYXJkIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L21vYmlsZVBob25lIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2VtYWlsIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLnNwaWQuZ292Lml0L2FkZHJlc3MiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZXhwaXJhdGlvbkRhdGUiLCJodHRwczovL2F0dHJpYnV0ZXMuc3BpZC5nb3YuaXQvZGlnaXRhbEFkZHJlc3MiXSwiZ3JhbnRfdHlwZXNfc3VwcG9ydGVkIjpbImF1dGhvcml6YXRpb25fY29kZSIsInJlZnJlc2hfdG9rZW4iXSwiaWRfdG9rZW5fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIkVTMjU2Il0sImlzc3VlciI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6IjAxXzRhSTJMdTVnZ3NFbG1Sa0VfU19hODNWX3N6WFUwdHhWNGRiMmhtSjhIUjFZMnM3UHNaWjUtZW1HcG5UeWRHclIzbi1RRXhlRUVJY0Z0X2EwNlJ5aWluazM0UlFjS29HWFVEQk1CVTBCdThHN05jWjk5WVg2eWVHOXdGaTR4cy1XdmlUUG10UHFpamt6NmptMV9sdFdEY3dia3Rma3JhSVJLS2dnWmFFbDlsZHRzRnIyd1NwaW4zQVh1R0lkZUowaFpxaEY5Mk9EQkxHakpsYUlMOUtsd29wRHk1NmFkUmVWbnJhYXdTZHJ4bXVQR2o3OElFQUROQW1lMm5RTnZ2OVVDdTBGa0FuNVN0MWJLZHMzR3B2MjZXMGtqcjFnWkxzbVFyajlsVGNEa19LYkF3ZkVZX19QN3NlNjJrdXNvU3VLTVRRcVVHMVRRcFVZN29GR1NkdyIsImUiOiJBUUFCIiwia2lkIjoiZEI2N2dMN2NrM1RGaUlBZjdONl83U0h2cWswTURZTUVRY29HR2xrVUFBdyJ9XX0sInNjb3Blc19zdXBwb3J0ZWQiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiXSwibG9nb191cmkiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3RhdGljL3N2Zy9zcGlkLWxvZ28tYy1sYi5zdmciLCJvcmdhbml6YXRpb25fbmFtZSI6IlNQSUQgT0lEQyBpZGVudGl0eSBwcm92aWRlciIsIm9wX3BvbGljeV91cmkiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9vcC9lbi93ZWJzaXRlL2xlZ2FsLWluZm9ybWF0aW9uLyIsInJlcXVlc3RfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwicmVxdWVzdF91cmlfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwicmVxdWlyZV9yZXF1ZXN0X3VyaV9yZWdpc3RyYXRpb24iOnRydWUsInJlc3BvbnNlX3R5cGVzX3N1cHBvcnRlZCI6WyJjb2RlIl0sInN1YmplY3RfdHlwZXNfc3VwcG9ydGVkIjpbInBhaXJ3aXNlIiwicHVibGljIl0sInRva2VuX2VuZHBvaW50X2F1dGhfbWV0aG9kc19zdXBwb3J0ZWQiOlsicHJpdmF0ZV9rZXlfand0Il0sInRva2VuX2VuZHBvaW50X2F1dGhfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCIsIlJTQS1PQUVQLTI1NiIsIkVDREgtRVMiLCJFQ0RILUVTK0ExMjhLVyIsIkVDREgtRVMrQTE5MktXIiwiRUNESC1FUytBMjU2S1ciXSwidXNlcmluZm9fZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCIsIlJTQS1PQUVQLTI1NiIsIkVDREgtRVMiLCJFQ0RILUVTK0ExMjhLVyIsIkVDREgtRVMrQTE5MktXIiwiRUNESC1FUytBMjU2S1ciXSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXSwicmVxdWVzdF9vYmplY3Rfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19LCJhdXRob3JpdHlfaGludHMiOlsiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyJdfQ.n4Iut7R3JwLSCnH0PMoF3huC0Ie_XBqvKX666OJqw01XMWSD7fgwGmSxhd7DoJ4dhQi31iLGuvYAmd0jct6fY6Q2MXVOGT8_jYh8roAyDDP-MdfmOHp0OfAyx8guuiELM-oyfNdRlcWtP0JRxWLW57JmR572Xr-UcOV8mpbYFkUJ0pixYZGMtYd1qLUahutSurD0I-6mCnEc5OiFctFwXjVcJ5yVby0qc5WMEKlzneLJifzgpJu1KVW361_YHlc_lJW3RLr6NOj6WdHUy7EF4MrztdTK8268SOHW66J-tPCLGCGe8JwC_x0OgP39_6SPHrtEgojAd6hQnFtowXVwvg",
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6Im84SW9sUmpabGt6Y3QtNDhyaHJWbFRuWVUxcGtNYlZKRC1EVTA1b01TOVJWR3JzRnlwZzk4bS1LdzRINHFOUHlRVngyT1FPUmkteFNoZ2s3SFUtZ0tfMnBWZ3VZa3YwNkZhakxfZWRFQXFxc3F0Xzc0UWYyV0xSQzVwZkpHX3o5T1B6WThKR3lrLXozU2JlSE5fQlhLSThHWTVFNFdVMlNzdG1ROWZ5TDRDeHRSZmpVaWE4bGltVENfM01PcFQzemk1bnIwM2pmYmpwbmpnYTUxcVh1cnhubHpjM2FfeGprNVJBQXBLeFV2TndoSjI3NU0wQ21COTlEalB3RjZCTHZVZ0pxZ3lDcFVPbjM2TE9oSTRGcXVWcWhxaGl3S2xNbWlNZTN5eTB5TlE3RlhCV3hqemhleGJweWMzVnU3ekZJSFBBY0M0VXlJUWhjM3dhRWoydmlYdyIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EifV19LCJtZXRhZGF0YSI6eyJmZWRlcmF0aW9uX2VudGl0eSI6eyJjb250YWN0cyI6WyJvcHNAbG9jYWxob3N0Il0sImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZmV0Y2gvIiwiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Jlc29sdmUvIiwiZmVkZXJhdGlvbl9zdGF0dXNfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJ1c3RfbWFya19zdGF0dXMvIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIiwibmFtZSI6ImV4YW1wbGUgVEEiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbGlzdC8ifX0sInRydXN0X21hcmtzX2lzc3VlcnMiOnsiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wdWJsaWMiOlsiaHR0cHM6Ly9yZWdpc3RyeS5zcGlkLmFnaWQuZ292Lml0IiwiaHR0cHM6Ly9wdWJsaWMuaW50ZXJtZWRpYXJ5LnNwaWQuaXQiXSwiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wcml2YXRlIjpbImh0dHBzOi8vcmVnaXN0cnkuc3BpZC5hZ2lkLmdvdi5pdCIsImh0dHBzOi8vcHJpdmF0ZS5vdGhlci5pbnRlcm1lZGlhcnkuaXQiXSwiaHR0cHM6Ly9zZ2QuYWEuaXQvb25ib2FyZGluZyI6WyJodHRwczovL3NnZC5hYS5pdCJdfSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.fMQvcBAK4hFMJ2EU6dIR4wHTfNj_8yxohS_QcPHSPuFgMwqnhmAou6xDpv3L0TsibuU7Gnc4GRc2El8_9wVuXsUJOsAa2DpDJg6zoIa-XmLKjFKTpRDj735vcZb_wJqlXPTWI3AGRb1xAUKYF7BIg0KxIDjzOkLqkz8-XfmyHhESgnVXudITRaFad1nijYb1jb7ivLvgV3wdZ5IsKDaDV5Ys9ICTmSnMAEEmwYKWltWHj4bcqLs_diXL14wTJyzySvqG7FwSrVOS4qTdlfEqMuxOJ0b4Nr7L92DtG9KxxdMluBLZDmRwoL3rKu24vDvgfzftAxaoR57QH3IC4Qvp8A",
+      [
+        "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoiMUFZR0YwQ19qNUNQZVlNUkhfbWtobll0bnZNX0NtZGxXU0ZISzlZRWFzM2dKMTkyMkRuaEZ4M0VJdzFVLWtad3c3YmdOejZDMWxfMWN5amtnQlN1V3hPYk9iSzR6VkxaQkdVWmZYTUJORm0yaGRyNVZvTEtMZW10WkhwQk9tZHN4UjFSM1RKMzBEMHZZLUxKYlV0cnd1UkM4b09DWUk1d2hjRWM4QjR1dEVleDNXNmRDakJJanNHZmRKSXFaSGhmTE4zeHdQTU9qa0c1QV95OFduVFZmR3E5T1VldWFVbjMtUFZzM085TE1wT0JsYVQ3R3JlWGdVcVdBVy16eFVDc2lISFVWbDl1SUFHaTVPSHVrSXVCczJDbEFsTVhfUzZtYk43XzdLSUd4Mm1USXJjZ1ZCUEpnWW9wOXFuU3FjWHViX0VRVEtzRnROR2lnc1VGbkRxRk5RIiwia2lkIjoiY0k4cEJ2V2RIZ2N2bGRtSTdIWGJQTWZGaFNLa2ZBQ0lib2ZzRDZxMkp0RSJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcHJvdmlkZXIiOnsic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOnsidmFsdWUiOlsicGFpcndpc2UiXX0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlMyNTYiLCJSUzM4NCIsIlJTNTEyIiwiRVMyNTYiLCJFUzM4NCIsIkVTNTEyIl19LCJ0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZHNfc3VwcG9ydGVkIjp7InZhbHVlIjpbInByaXZhdGVfa2V5X2p3dCJdfSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlNBLU9BRVAiLCJSU0EtT0FFUC0yNTYiLCJFQ0RILUVTIiwiRUNESC1FUytBMTI4S1ciLCJFQ0RILUVTK0ExOTJLVyIsIkVDREgtRVMrQTI1NktXIl19LCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXX0sInJlcXVlc3Rfb2JqZWN0X2VuY3J5cHRpb25fYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdfSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiQTEyOENCQy1IUzI1NiIsIkExOTJDQkMtSFMzODQiLCJBMjU2Q0JDLUhTNTEyIiwiQTEyOEdDTSIsIkExOTJHQ00iLCJBMjU2R0NNIl19LCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L29wLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF3TDI5cFpHTXZiM0F2SWl3aWFXRjBJam94TmpVd056STRPRFEzTENKcFpDSTZJbWgwZEhCek9pOHZkM2QzTG5Od2FXUXVaMjkyTG1sMEwyTmxjblJwWm1sallYUnBiMjR2YjNBaUxDSnRZWEpySWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5USHk5WWJ1Q0w0aTJUWEMyQUQtRGJqQTdQUzRqOWJFVHd1eFl6QjluV2FmSUZtV3NEeG5kSkxJNnIyZ2ZnVTVWdUJFaTRQU3ZMamh3cUtpQ2NTcnR3UkI0U2d2WnhuM2kteHZSMXFFeUJTOTZCTjgwYml6MW1BdFNwLXk3NlFvU2FDYl9xb2k1cVdHUnctMHMyVVdPUWlnLTBiZ0tJWEgzS3J0OTB5N2U2NjVsR1NnMWU3cDMzenNOSWVDcGN0N3JiNV9rUEU5N21sTkdVX2F4SHljVXNGYXg4MzlUaFZNREM0MFlfLVg4S1ZFcDNYWWwzYUlrdmxRVjgwQ2t5Q1NHY29LR0llYldXWVhLV3dhRGJfY19HS0FaQWJFTTItZldQYlpSakp4STFpVDZjd3FaVUk5elVoMzhHWm1nSmtNLTlSWE1rSGV1SktxZUFfRUJvUl92bEEifV19.hz3VNTBPEq08hstWh8KwBhNP9OnwWlS6pn-NXXG64O8FvmXsUJ8XNVmPeLyV9QtPwbSMxXs3ZZYOjvzR7fNAeCLHTQx04r7Is-tdFnAPvsN68qMbWeVtmOPS78vyLdqz4-eDA6YN49xgiCs5XHO5pyrJwU6CcznPKSJAFp40042poX8h7BU4Yx9QXKd3DedwoPfI_3pOLP53zUj4qimRJRt-3BENRu_vmFb-M4MF66ihF2raZlgs9ujn9xQ4fmpPuNQk2nxJ1cgco-5h9NYlTP8lw8cOoPKNiDp5obAf0XOmFmoxJ2Rm1RMjBpYvVDwwXO0yxZvHCJ3Zg5CPQrxxrQ"
+      ]
+    ],
+    "jwks": [
+      {
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "1AYGF0C_j5CPeYMRH_mkhnYtnvM_CmdlWSFHK9YEas3gJ1922DnhFx3EIw1U-kZww7bgNz6C1l_1cyjkgBSuWxObObK4zVLZBGUZfXMBNFm2hdr5VoLKLemtZHpBOmdsxR1R3TJ30D0vY-LJbUtrwuRC8oOCYI5whcEc8B4utEex3W6dCjBIjsGfdJIqZHhfLN3xwPMOjkG5A_y8WnTVfGq9OUeuaUn3-PVs3O9LMpOBlaT7GreXgUqWAW-zxUCsiHHUVl9uIAGi5OHukIuBs2ClAlMX_S6mbN7_7KIGx2mTIrcgVBPJgYop9qnSqcXub_EQTKsFtNGigsUFnDqFNQ",
+        "d": "b44j0kQ9Bhp3guWVMw-0oxK2-jTd7Gluh7Dcs5HNjSx5Tf4Kl8YMSo9czVyMY4qAdllYK3j2ejjO-iJ_52v6OO1d9MO2PEHk8U0IVlsWPScew9rs6bmzCukyU_WHMGWOcz_z_MA7DhPDRXjjpl_SeR6EovjStl77kUSEJ0qaJDvGelNimnMRBBsDgtDUMbOIzng82GclTsRkv8b041G0Q32XJ8YcJxGOlvWdr-q36fXJua0joshH0e2LilTtftjHCbgPdg1a6MGChCrgeTFTi6ihifMwcxINF-hSFcxA2WLaECCvMsjB40bd51wPfF0AiK5JvHLyJsAV6OzD9pf32Q",
+        "p": "_92f7QZr4IKRgeTpr49RG5V53A4PE0QW-4IBETZaaI6ymvvqTL1ik28qNVStR5xT6n3r7-_y3IHQQOPO0r8lbGvqYonVIuCUZaz66_QuZg4Gnm61Uyec8ecXQV3rsvMMwpHU_3RRB5RXGeDwWq9CAFpYERQGxf6naEeuurP1usM",
+        "q": "1CKCSTiSABX1OtfkiKcJV0PvhACTuoHSGW62TpqtdOxHsopb2kph2XM82Kt10jJDESosQcPTXc7ttTrYsfTSKva3kvRXrwcWzC4yMoacxaqyHKbatBValkMSMaVeRabtzECulHyxbK6bsLKRUAD0thQuUs_WSITWSPPty2ygkKc",
+        "kid": "cI8pBvWdHgcvldmI7HXbPMfFhSKkfACIbofsD6q2JtE"
+      }
+    ],
+    "metadata": {
+      "federation_entity": {
+        "federation_resolve_endpoint": "http://127.0.0.1:8000/oidc/op/resolve",
+        "organization_name": "SPID OIDC identity provider",
+        "homepage_uri": "http://127.0.0.1:8000",
+        "policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "contacts": [
+          "tech@example.it"
+        ]
+      },
+      "openid_provider": {
+        "authorization_endpoint": "http://127.0.0.1:8000/oidc/op/authorization",
+        "revocation_endpoint": "http://127.0.0.1:8000/oidc/op/revocation",
+        "id_token_encryption_alg_values_supported": [
+          "RSA-OAEP"
+        ],
+        "id_token_encryption_enc_values_supported": [
+          "A128CBC-HS256"
+        ],
+        "token_endpoint": "http://127.0.0.1:8000/oidc/op/token",
+        "userinfo_endpoint": "http://127.0.0.1:8000/oidc/op/userinfo",
+        "introspection_endpoint": "http://127.0.0.1:8000/oidc/op/introspection",
+        "claims_parameter_supported": true,
+        "contacts": [
+          "ops@https://idp.it"
+        ],
+        "client_registration_types_supported": [
+          "automatic"
+        ],
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "request_authentication_methods_supported": {
+          "ar": [
+            "request_object"
+          ]
+        },
+        "acr_values_supported": [
+          "https://www.spid.gov.it/SpidL1",
+          "https://www.spid.gov.it/SpidL2",
+          "https://www.spid.gov.it/SpidL3"
+        ],
+        "claims_supported": [
+            "https://attributes.eid.gov.it/spid_code",
+            "given_name",
+            "family_name",
+            "place_of_birth",
+            "birthdate",
+            "gender",
+            "https://attributes.eid.gov.it/company_name",
+            "https://attributes.eid.gov.it/registered_office",
+            "https://attributes.eid.gov.it/fiscal_number",
+            "https://attributes.eid.gov.it/company_fiscal_number",
+            "https://attributes.eid.gov.it/vat_number",
+            "document_details",
+            "phone_number",
+            "email",
+            "https://attributes.eid.gov.it/e_delivery_service",
+            "https://attributes.eid.gov.it/eid_exp_date",
+            "address"
+        ],
+        "grant_types_supported": [
+          "authorization_code",
+          "refresh_token"
+        ],
+        "id_token_signing_alg_values_supported": [
+          "RS256",
+          "ES256"
+        ],
+        "issuer": "http://127.0.0.1:8000/oidc/op",
+        "jwks": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "use": "sig",
+              "n": "01_4aI2Lu5ggsElmRkE_S_a83V_szXU0txV4db2hmJ8HR1Y2s7PsZZ5-emGpnTydGrR3n-QExeEEIcFt_a06Ryiink34RQcKoGXUDBMBU0Bu8G7NcZ99YX6yeG9wFi4xs-WviTPmtPqijkz6jm1_ltWDcwbktfkraIRKKggZaEl9ldtsFr2wSpin3AXuGIdeJ0hZqhF92ODBLGjJlaIL9KlwopDy56adReVnraawSdrxmuPGj78IEADNAme2nQNvv9UCu0FkAn5St1bKds3Gpv26W0kjr1gZLsmQrj9lTcDk_KbAwfEY__P7se62kusoSuKMTQqUG1TQpUY7oFGSdw",
+              "e": "AQAB",
+              "kid": "dB67gL7ck3TFiIAf7N6_7SHvqk0MDYMEQcoGGlkUAAw"
+            }
+          ]
+        },
+        "scopes_supported": [
+          "openid",
+          "offline_access"
+        ],
+        "logo_uri": "http://127.0.0.1:8000/static/svg/spid-logo-c-lb.svg",
+        "organization_name": "SPID OIDC identity provider",
+        "op_policy_uri": "http://127.0.0.1:8000/oidc/op/en/website/legal-information",
+        "request_parameter_supported": true,
+        "request_uri_parameter_supported": true,
+        "require_request_uri_registration": true,
+        "response_types_supported": [
+          "code"
+        ],
+        "subject_types_supported": [
+          "pairwise",
+          "public"
+        ],
+        "token_endpoint_auth_methods_supported": [
+          "private_key_jwt"
+        ],
+        "token_endpoint_auth_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "userinfo_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "userinfo_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "userinfo_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "request_object_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "request_object_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "request_object_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ]
+      }
+    },
+    "trust_marks": [],
+    "parties_involved": [
+      "http://127.0.0.1:8000/oidc/op",
+      "http://127.0.0.1:8000"
+    ],
+    "status": "valid",
+    "log": "",
+    "processing_start": "2022-04-23T15:47:27.824Z",
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.trustchain",
+  "pk": 42,
+  "fields": {
+    "created": "2022-04-07T18:19:47.553Z",
+    "modified": "2022-04-07T18:19:47.553Z",
+    "sub": "http://127.0.0.1:8000/oidc/rp",
+    "trust_anchor": 117,
+    "exp": "2022-04-23T16:20:27Z",
+    "iat": "2022-04-07T18:19:47.553Z",
+    "chain": [
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhmLTJxTGNGVXRwd1kycmd4Qms4OE0iLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiJwbl9JY2hDNjZTRlFNaGJUSEx0YkQ1OGpLaVlZdllvN1M0d2pQanpFQ011MjdjNkZKVkZOWHRsdWJ0YjdzQzYtV1RRMUh2NHJTUWRQaGFmSmJJeGEzMlI1MXNSUXBrVHIzSkZNWVA3eDIyRFJRRF9peHRRSlJhaUh3LW5wblo4cWdWSEpfdDRnUlRjNEhKa2VoQkxHdjQtckhWQUt6RmlRTlUxdTJBRncxZldNbk1ING9iX3B5aXNYVmdja3UzZHkxNGw3c1lTQU5scFh1ZllfcW5rUUZUdjB3TUgtQzZJemwtYWtFTlMyVUhwdlRMaGZDQlZLUHJGWEp4dWw0WERiVXdVYnZOWlV4VGVybkV4OGxWNWd4Q1NnS1NCRWdvSDlNZ3BEMVlXRlBiQW53aTdwN2U3TU5HejVsSDdlREZLa1BRaFhMV0FCVThVdkVJSVd5QTk1U1EiLCJraWQiOiJrNTRIUXREaWJ5R2NzOVpXVk1mdmlIZi0ycUxjRlV0cHdZMnJneEJrODhNIn1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3JlbHlpbmdfcGFydHkiOnsiYXBwbGljYXRpb25fdHlwZSI6IndlYiIsImNsaWVudF9pZCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL3JwLyIsImNsaWVudF9yZWdpc3RyYXRpb25fdHlwZXMiOlsiYXV0b21hdGljIl0sImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwidXNlIjoic2lnIiwibiI6IjVzNHFpMVRhLXNFdUtiNXJKOFR6SG15R0thU3U4OXBJWElpNnc0RWt4NkdMNTZtSkRORV9NV0pIc0ZqV1hhamZNZE1RbVpyU1hBdkx0WHhtYmhVdWk5TXFfSW9ybWhtRXl5RUpTMFN5RTlVS1R4V3ppMHlkX25fQzdPakZCaE0tMFp5VWxnbDgxRV9zci0zNVAxQTZiNVdTWXdNdlJTUi1QOXl4X05JLVhCUTQ4R196ZG1rM0NidXV6WnNYWnFxZ2o1VTdPR1dILTRIdW9zbjluSDNGVmt3WDBPbFdrZ1dNLUo5REVXekdCamw5aGZiYnJNdE1fb2JsakhMMk5mVDZSSllFUjJJcGRJOFJDeVFTM3NNUHQ2WkhEc2ttdU5seU1ETkFUQ0NoWFFKTG5sdHdFanhjZ3Z6andfRzlKMjVEd2ZkZlZFaERGXzBrQ3A0NFVNbVMzUSIsImUiOiJBUUFCIiwia2lkIjoiMkhub0ZTM1luQzl0amlDYWl2aFdMVlVKM0F4d0dHel85OHVSRmFxTUVFcyJ9XX0sImNsaWVudF9uYW1lIjoiTmFtZSBvZiBhbiBleGFtcGxlIG9yZ2FuaXphdGlvbiIsImNvbnRhY3RzIjpbIm9wc0BycC5leGFtcGxlLml0Il0sImdyYW50X3R5cGVzIjpbInJlZnJlc2hfdG9rZW4iLCJhdXRob3JpemF0aW9uX2NvZGUiXSwicmVkaXJlY3RfdXJpcyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDAvb2lkYy9ycC9jYWxsYmFjayJdLCJyZXNwb25zZV90eXBlcyI6WyJjb2RlIl0sInN1YmplY3RfdHlwZSI6InBhaXJ3aXNlIn19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtacFpsbDRNRE5pYm05elJEaHRObWRaVVVsbVRraE9VRGxqVFY5VFlXMDVWR00xYmt4c2IwbEpjbU1pZlEuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalExTmpFeU5EQXhMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5Lm1TUE5SMEFPUEJuM1VOSkFJYnJXVU1ROHZHVGV0UWFqcGEzaTU5SkRLRFhZV3FvMlRVR2g0QVFCZ2hDaUczcXFWOWNsLWhsZUx0dXdvZVoxSW5LSGVzbFRMZnRWZGNSM21lZU1MczNtTG9iSFlyMjZNaTdwQzctangxWkZWeWs0R1hsN21uOVdWU1FHRVVPaXVoTDAxdGRsVWZ4ZjBUSlNGU09NRVpHcENBM2hYcm9MT25FbDNGamtBdzdzUHZqZkltc2JhZGJIVnVzYjcySFRUczFuNVhvN3ozQXMzZkRXSGN4RC1mdnZxMGJldTljeC1MMnNUNFlhTkMtRUxkMU0zbTVyME5JampFVUF0NEdub3QtbDVaMy1DX2JBNDF1dmgyaFgzNFVfZkdaNmpwbXVsdUpvMUxxaTI2TjhMVEItUmJ1MFVNYVpua1JnOUU3Ml9ZUlppZyJ9XSwiYXV0aG9yaXR5X2hpbnRzIjpbImh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iXX0.ZQj5t0G8aocCJe21Tzqu0cy0KtftbAgOacEyCYwdEnldrfnG4NSHxkSEJxLfSjD6wDynktR-LfimvTifvRnVdQaFvOR7spCtKgfR1pAxYTG_UWFVhpGlPUC2gJObOa64ypr6aSQaOwaJh8LfPAYtj4rNcMGpqqdc-ZmgvozghEsGcXsyYGz5FgFOgh8QVuXhQM6XOS0aXqN2ExgwMD0XY4BxBNOkhH7y25vH7CLpawBhv5bsTYtIm6oKj978_EVm0W41CPvpAaieoG3I2ZzhrDL3Em7SS0BquEQTLH5iD8gixbcLMVlTIr-gTKO-LrWaC5Q1hGAIqWPYvlulKyfqxQ",
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6Im84SW9sUmpabGt6Y3QtNDhyaHJWbFRuWVUxcGtNYlZKRC1EVTA1b01TOVJWR3JzRnlwZzk4bS1LdzRINHFOUHlRVngyT1FPUmkteFNoZ2s3SFUtZ0tfMnBWZ3VZa3YwNkZhakxfZWRFQXFxc3F0Xzc0UWYyV0xSQzVwZkpHX3o5T1B6WThKR3lrLXozU2JlSE5fQlhLSThHWTVFNFdVMlNzdG1ROWZ5TDRDeHRSZmpVaWE4bGltVENfM01PcFQzemk1bnIwM2pmYmpwbmpnYTUxcVh1cnhubHpjM2FfeGprNVJBQXBLeFV2TndoSjI3NU0wQ21COTlEalB3RjZCTHZVZ0pxZ3lDcFVPbjM2TE9oSTRGcXVWcWhxaGl3S2xNbWlNZTN5eTB5TlE3RlhCV3hqemhleGJweWMzVnU3ekZJSFBBY0M0VXlJUWhjM3dhRWoydmlYdyIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EifV19LCJtZXRhZGF0YSI6eyJmZWRlcmF0aW9uX2VudGl0eSI6eyJjb250YWN0cyI6WyJvcHNAbG9jYWxob3N0Il0sImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZmV0Y2gvIiwiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Jlc29sdmUvIiwiZmVkZXJhdGlvbl9zdGF0dXNfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJ1c3RfbWFya19zdGF0dXMvIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIiwibmFtZSI6ImV4YW1wbGUgVEEiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbGlzdC8ifX0sInRydXN0X21hcmtzX2lzc3VlcnMiOnsiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wdWJsaWMiOlsiaHR0cHM6Ly9yZWdpc3RyeS5zcGlkLmFnaWQuZ292Lml0IiwiaHR0cHM6Ly9wdWJsaWMuaW50ZXJtZWRpYXJ5LnNwaWQuaXQiXSwiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wcml2YXRlIjpbImh0dHBzOi8vcmVnaXN0cnkuc3BpZC5hZ2lkLmdvdi5pdCIsImh0dHBzOi8vcHJpdmF0ZS5vdGhlci5pbnRlcm1lZGlhcnkuaXQiXSwiaHR0cHM6Ly9zZ2QuYWEuaXQvb25ib2FyZGluZyI6WyJodHRwczovL3NnZC5hYS5pdCJdfSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.fMQvcBAK4hFMJ2EU6dIR4wHTfNj_8yxohS_QcPHSPuFgMwqnhmAou6xDpv3L0TsibuU7Gnc4GRc2El8_9wVuXsUJOsAa2DpDJg6zoIa-XmLKjFKTpRDj735vcZb_wJqlXPTWI3AGRb1xAUKYF7BIg0KxIDjzOkLqkz8-XfmyHhESgnVXudITRaFad1nijYb1jb7ivLvgV3wdZ5IsKDaDV5Ys9ICTmSnMAEEmwYKWltWHj4bcqLs_diXL14wTJyzySvqG7FwSrVOS4qTdlfEqMuxOJ0b4Nr7L92DtG9KxxdMluBLZDmRwoL3rKu24vDvgfzftAxaoR57QH3IC4Qvp8A",
+      [
+        "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDcsImlhdCI6MTY1MDcyODg0NywiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vaWRjL3JwLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoicG5fSWNoQzY2U0ZRTWhiVEhMdGJENThqS2lZWXZZbzdTNHdqUGp6RUNNdTI3YzZGSlZGTlh0bHVidGI3c0M2LVdUUTFIdjRyU1FkUGhhZkpiSXhhMzJSNTFzUlFwa1RyM0pGTVlQN3gyMkRSUURfaXh0UUpSYWlIdy1ucG5aOHFnVkhKX3Q0Z1JUYzRISmtlaEJMR3Y0LXJIVkFLekZpUU5VMXUyQUZ3MWZXTW5NSDRvYl9weWlzWFZnY2t1M2R5MTRsN3NZU0FObHBYdWZZX3Fua1FGVHYwd01ILUM2SXpsLWFrRU5TMlVIcHZUTGhmQ0JWS1ByRlhKeHVsNFhEYlV3VWJ2TlpVeFRlcm5FeDhsVjVneENTZ0tTQkVnb0g5TWdwRDFZV0ZQYkFud2k3cDdlN01OR3o1bEg3ZURGS2tQUWhYTFdBQlU4VXZFSUlXeUE5NVNRIiwia2lkIjoiazU0SFF0RGlieUdjczlaV1ZNZnZpSGYtMnFMY0ZVdHB3WTJyZ3hCazg4TSJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcmVseWluZ19wYXJ0eSI6eyJzY29wZSI6eyJzdXBlcnNldF9vZiI6WyJvcGVuaWQiXSwic3Vic2V0X29mIjpbIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIiwicHJvZmlsZSIsImVtYWlsIl19LCJjb250YWN0cyI6eyJhZGQiOlsiY2lhb0BlbWFpbC5pdCJdfX19LCJ0cnVzdF9tYXJrcyI6W3siaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHVibGljLyIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlNVV05UZW0xM01HTmZVa0ZuU201d1V5MDVWMUVpTENKMGVYQWlPaUowY25WemRDMXRZWEpySzJwM2RDSjkuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalV3TnpJNE9EUTNMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkFpTENKdFlYSnJJam9pYUhSMGNITTZMeTkzZDNjdVlXZHBaQzVuYjNZdWFYUXZkR2hsYldWekwyTjFjM1J2YlM5aFoybGtMMnh2WjI4dWMzWm5JaXdpY21WbUlqb2lhSFIwY0hNNkx5OWtiMk56TG1sMFlXeHBZUzVwZEM5cGRHRnNhV0V2YzNCcFpDOXpjR2xrTFhKbFoyOXNaUzEwWldOdWFXTm9aUzF2YVdSakwybDBMM04wWVdKcGJHVXZhVzVrWlhndWFIUnRiQ0o5LkxRVGxMQ0NoY255eVNGVkZyREJEVmJpNFBPVk85N3FaNEM3NWdkQVY1T3FHalc2NkZibnlTRkxsSTVTWXBWM0lmN2M2anZEVWpxVzQ3TGFFQ1VMM0RJWVdFNEcwQXZrWWN3SUhXSXNDZTFhTTVobDJpTGNCcjVWcDFINVNKMHllWVNWLUF2TklkTURoZTJqV2JNbHhVQ0JIVUxEWmRibkt3a1YyRFRIWXJfMXZ3c2prU1UxSjc4eVRrelBxSi1Wa0lla3U3ZFZLTFl2eGxYY2NFWUF4dEV4X3NERldCWVowZlhDd3ZSM0tleXdwdkZoNVNGRnJBVGVTcE0tem40Yk56UUZpV002djkxUDFQWDFYdTgzWkJ4NXZtSjRYRVhqRTZ3RFNGWVYxYjhVWk9EVWgwQjc3QnFFTXpQMEhHN09JT3lLWHByZk1GdU8zM2xFcm5WendsUSJ9LHsiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9vcGVuaWQtZmVkZXJhdGlvbi9hZ3JlZW1lbnQvc3AtcHJpdmF0ZSIsInRydXN0X21hcmsiOiJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlNVV05UZW0xM01HTmZVa0ZuU201d1V5MDVWMUVpTENKMGVYQWlPaUowY25WemRDMXRZWEpySzJwM2RDSjkuZXlKcGMzTWlPaUpvZEhSd09pOHZNVEkzTGpBdU1DNHhPamd3TURBdklpd2ljM1ZpSWpvaWFIUjBjRG92THpFeU55NHdMakF1TVRvNE1EQXdMMjlwWkdNdmNuQXZJaXdpYVdGMElqb3hOalV3TnpJNE9EUTNMQ0pwWkNJNkltaDBkSEJ6T2k4dmQzZDNMbk53YVdRdVoyOTJMbWwwTDJObGNuUnBabWxqWVhScGIyNHZjbkF2Y0hKcGRtRjBaU0lzSW14dloyOWZkWEpwSWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5JTEFlWDd1MWRNclQzZWNGZkV2ZWVVX0llXy1EbUR4c1BoZ0M3OHZfcWh5VVp1Ykx5cmliUHNDY2ZIQ09tSTFtZFl0REpVbEhoeDBMQTVLMkM2MjQwdEpjMUlVVjIzS190U0x6T3dmY0VsTVByWmtYNTQzdFBBWkl4TWt5RUs1eFE1bGVuMkRSMFVuaUxMYTlBdGFhRVlyV1VRX01YajBkNjF3Vy0xLUlzeU9Ic2JtdzVjRjB6OU1feXRlMVhXa3VEbzVZeHB3dVZkM0xSRnZ6VTJBd1VGamdNVVVmdmZld1dTU2I1cndhb3JOMVg5bmRSLU1wU3BHaURWa1M3c1hRTG8zdFFGLVBWMXE1Nm9od3g0V29fdnE2QmFYU3hkcVhpNFk5YzhfUTJNTlBjMFJDT2h3QnlwcVl2U3RKbm9KRV9xWkxWUU5sZURNZzVzdEI3aURzWncifV19.ic8RmrSl88jM5JALeDsFLBD-z0zmBU7tv5VxHewXewk0NFR-n_HRZdLKvxvqZKVkt5EeFCTr5qmyJaOjdAj7iFwZ408Lw9Bo0wG4Ex_QhWFrfbJlu2lKJ_G056c6hZbyEEMdRexxGAh1-8IWHtXjHsQbEkif1WMOrqrOMd3HY2z5i0UBeQ43Od8tMkWGL9TyFPjjKXra76t7SRNqa9-hYI5bOErLRJBLNRGyf7VxSVwrFobL245h4-sel_w7utgouduP2x1dfJKD3ylBdkVSB9YsDESM-pssT334v_g40pHwiYq0LudwBEQ1e-dfqp0mVcC0LNrkCLphL1IL2vuIyQ"
+      ]
+    ],
+    "jwks": [
+      {
+        "kty": "RSA",
+        "n": "pn_IchC66SFQMhbTHLtbD58jKiYYvYo7S4wjPjzECMu27c6FJVFNXtlubtb7sC6-WTQ1Hv4rSQdPhafJbIxa32R51sRQpkTr3JFMYP7x22DRQD_ixtQJRaiHw-npnZ8qgVHJ_t4gRTc4HJkehBLGv4-rHVAKzFiQNU1u2AFw1fWMnMH4ob_pyisXVgcku3dy14l7sYSANlpXufY_qnkQFTv0wMH-C6Izl-akENS2UHpvTLhfCBVKPrFXJxul4XDbUwUbvNZUxTernEx8lV5gxCSgKSBEgoH9MgpD1YWFPbAnwi7p7e7MNGz5lH7eDFKkPQhXLWABU8UvEIIWyA95SQ",
+        "e": "AQAB",
+        "d": "jOvIjuqkGF-OzeZNpprY1t79V1ZJSFtwFmA1EB9EWKF7YcmTHeOzVZ04f-3LtvHJQB0U_PdpUXUzlE9QB2TAISWcje84x5G8A8Ki39HIiMJoOTYZTen3MxMSXfpkNXma8ztzeRkuPQcgoevjTSvLNiV2UegGS7CF1eeE8qQ9iYjeimPSnfVeLx70L9Rat9-2cs3tqxkPOPPechnKrLJneVbxSmimiAEOQ238gGyEwmlfEGPn3OiIdU5oT-qvyp2KasmLucNgQxGLCkc5ppC_RsstQyNjs8bj88bjq3ahVDCiCFs8n6iRHAEZC1CM7xcEyZjyJ9ozC5nB-Pw3hLBSdQ",
+        "p": "0LeDPVA0DOSV3Gy3M1t5JxPMmPsgsCbx8y1thLuP21FOiVwRixRsXW10CxH56mX1qS9WVodlcCsqy1U-7yGJK9r-De8FvQtS8hbKEiVGMW61qIcMCv8krWOk5qU7uhxHLTL6qkvCsCpLdHeR7x842Aq3AnMCsNuWpLl3G4c0Cps",
+        "q": "zDfdUHIR1PvvBGleEnJFqe0Kw8bW9dOEGusZJ4bDoz61QRyn149Y64b8VW1f4kp1aGBySDm40BgnvPJtTMY0Bm-dPmL7XupsTyt-WHLmD178HQmsVTVIL0VLEIm0yKX7SdpgBOV9FFpHAkn1Mq3H0-tm48DwhCyi-84_bkc2h-s",
+        "kid": "k54HQtDibyGcs9ZWVMfviHf-2qLcFUtpwY2rgxBk88M"
+      }
+    ],
+    "metadata": {
+      "openid_relying_party": {
+        "application_type": "web",
+        "client_id": "http://127.0.0.1:8000/oidc/rp",
+        "client_registration_types": [
+          "automatic"
+        ],
+        "jwks": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "use": "sig",
+              "n": "5s4qi1Ta-sEuKb5rJ8TzHmyGKaSu89pIXIi6w4Ekx6GL56mJDNE_MWJHsFjWXajfMdMQmZrSXAvLtXxmbhUui9Mq_IormhmEyyEJS0SyE9UKTxWzi0yd_n_C7OjFBhM-0ZyUlgl81E_sr-35P1A6b5WSYwMvRSR-P9yx_NI-XBQ48G_zdmk3CbuuzZsXZqqgj5U7OGWH-4Huosn9nH3FVkwX0OlWkgWM-J9DEWzGBjl9hfbbrMtM_obljHL2NfT6RJYER2IpdI8RCyQS3sMPt6ZHDskmuNlyMDNATCChXQJLnltwEjxcgvzjw_G9J25DwfdfVEhDF_0kCp44UMmS3Q",
+              "e": "AQAB",
+              "kid": "2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs"
+            }
+          ]
+        },
+        "client_name": "Name of an example organization",
+        "contacts": [
+          "ops@rp.example.it"
+        ],
+        "grant_types": [
+          "refresh_token",
+          "authorization_code"
+        ],
+        "redirect_uris": [
+          "http://127.0.0.1:8000/oidc/rp/callback"
+        ],
+        "response_types": [
+          "code"
+        ],
+        "subject_type": "pairwise"
+      }
+    },
+    "trust_marks": [],
+    "parties_involved": [
+      "http://127.0.0.1:8000/oidc/rp",
+      "http://127.0.0.1:8000"
+    ],
+    "status": "valid",
+    "log": "",
+    "processing_start": "2022-04-23T15:47:27.958Z",
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_entity.trustchain",
+  "pk": 43,
+  "fields": {
+    "created": "2022-04-16T13:13:58.661Z",
+    "modified": "2022-04-16T13:13:58.661Z",
+    "sub": "http://127.0.0.1:8002/oidc/op",
+    "trust_anchor": 117,
+    "exp": "2022-04-23T16:20:28Z",
+    "iat": "2022-04-16T13:13:58.661Z",
+    "chain": [
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpoU29hT2VkVk9zQnc2bTJ2Y2x3U1dpcXFuR2VPU3RULWdVY2xvdF82N3ciLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJlIjoiQVFBQiIsIm4iOiJ0ZzNhRTlmZDZsdFh6TnJpbV80Q0dLWVdmQzNucWNfdHY0WGphdzQ3M0NjcmZpcUR6ZVRLSGZSZmJ2YnFiMUR3bUk0ZnZDT2k1MUVWY21LTG5UaHpYeW5BVXB5VXZzd3ZMOF91emdEV08xUlNtQkcxTDBSRS1Da0tpaDRrZVhoMWt1OWhOczFfVi04MmRLNW9MT1ItVkpMbmhaQ3FUaFI0SEg2VHFMampXcnJYZnNIVlJ2YXVKaWxYNkZ4R2I1SkZvYzI3Vnh4ZEgyYzZQMlNIQzl3dUI4dG5mRzdPU3JTRDFnMmg3bFRYYklmbTc4YTBvcDY3ZF9qdXB6a29Lb0NUbXprUjJ6dndUVlZEZDk5dmtETFkyV1htYjhoSXdHNmRRWlhZbGtocUFZS3pUdVRaMHRqVmgwT3JxZkR4WXRMSDN3UXp6YUpPUmV3WllxTHlCMDlQOHciLCJraWQiOiJaaFNvYU9lZFZPc0J3Nm0ydmNsd1NXaXFxbkdlT1N0VC1nVWNsb3RfNjd3In1dfSwibWV0YWRhdGEiOnsib3BlbmlkX3Byb3ZpZGVyIjp7ImF1dGhvcml6YXRpb25fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC9hdXRob3JpemF0aW9uIiwicmV2b2NhdGlvbl9lbmRwb2ludCI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMi9vaWRjL29wL3Jldm9jYXRpb24vIiwiaWRfdG9rZW5fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJSU0EtT0FFUCJdLCJpZF90b2tlbl9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiXSwib3BfbmFtZSI6IkFnZW56aWEgcGVyIGxcdTIwMTlJdGFsaWEgRGlnaXRhbGUiLCJvcF91cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInRva2VuX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvdG9rZW4vIiwidXNlcmluZm9fZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC91c2VyaW5mby8iLCJpbnRyb3NwZWN0aW9uX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvaW50cm9zcGVjdGlvbi8iLCJjbGFpbXNfcGFyYW1ldGVyX3N1cHBvcnRlZCI6dHJ1ZSwiY29udGFjdHMiOlsib3BzQGh0dHBzOi8vaWRwLml0Il0sImNvZGVfY2hhbGxlbmdlX21ldGhvZHNfc3VwcG9ydGVkIjpbIlMyNTYiXSwiY2xpZW50X3JlZ2lzdHJhdGlvbl90eXBlc19zdXBwb3J0ZWQiOlsiYXV0b21hdGljIl0sInJlcXVlc3RfYXV0aGVudGljYXRpb25fbWV0aG9kc19zdXBwb3J0ZWQiOnsiYXIiOlsicmVxdWVzdF9vYmplY3QiXX0sImFjcl92YWx1ZXNfc3VwcG9ydGVkIjpbImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMSIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMiIsImh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L1NwaWRMMyJdLCJjbGFpbXNfc3VwcG9ydGVkIjpbImdpdmVuX25hbWUiLCJmYW1pbHlfbmFtZSIsImJpcnRoZGF0ZSIsImdlbmRlciIsInBob25lX251bWJlciIsImh0dHBzOi8vYXR0cmlidXRlcy5laWQuZ292Lml0L2Zpc2NhbF9udW1iZXIiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiLCJlbWFpbCIsImFkZHJlc3MiLCJkb2N1bWVudF9kZXRhaWxzIiwiaHR0cHM6Ly9hdHRyaWJ1dGVzLmVpZC5nb3YuaXQvcGh5c2ljYWxfcGhvbmVfbnVtYmVyIl0sImdyYW50X3R5cGVzX3N1cHBvcnRlZCI6WyJhdXRob3JpemF0aW9uX2NvZGUiLCJyZWZyZXNoX3Rva2VuIl0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOlsiUlMyNTYiLCJFUzI1NiJdLCJpc3N1ZXIiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDIvb2lkYy9vcC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsInVzZSI6InNpZyIsImUiOiJBUUFCIiwibiI6InJKb1NZdjFzdHdsYk0xMXRSOVNZR0lKdXpxbEplMmJ2Mk4zNW9QUmJ3Vl9lcGpOV3ZHRzJacUVqNTNZRk1DOEFNWk5GaHVMYV9MTndyMWtMVkUtalhRZTh4amlMaGU3RGdNZjFPblN6cTl5QUVYVm8xOUJQQndrZ0plMmpwOUhJZ01fbmZiSXNVYlNTa0ZBTTJDS3ZHYjBCazJHdnZxWFoxMlAtZnBiVnlBOWhJUXI2ck5UcW5DR3gyLXY0b1ZpR0c0dV8zaVR3N0QxWnZMV21ybVpPYUtuREFxRzNNSlNkUS0yZ2dRLUFpYWhnNDhzaTlDOURfSmduQlY5dEoyZUNTNThaQzZrVkc1c2Z0RWxRVmRINmUyNm16NDY0VFpqNVFnQ3daQ1RzQVFmSXZCb1hTZENLeHBudnNGZnJhano0cTlCaVhBcnl4SU9sNWZMbUNGVk5odyIsImtpZCI6IlBkMk45LVRael9BV1MzR0ZDa29ZZFJhWFhsczhZUGh4X2RfRXo3SndqUUkifV19LCJzY29wZXNfc3VwcG9ydGVkIjpbIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImxvZ29fdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL3N0YXRpYy9pbWFnZXMvbG9nby1jaWUucG5nIiwib3JnYW5pemF0aW9uX25hbWUiOiJTUElEIE9JREMgaWRlbnRpdHkgcHJvdmlkZXIiLCJvcF9wb2xpY3lfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAyL29pZGMvb3AvZW4vd2Vic2l0ZS9sZWdhbC1pbmZvcm1hdGlvbi8iLCJyZXF1ZXN0X3BhcmFtZXRlcl9zdXBwb3J0ZWQiOnRydWUsInJlcXVlc3RfdXJpX3BhcmFtZXRlcl9zdXBwb3J0ZWQiOnRydWUsInJlcXVpcmVfcmVxdWVzdF91cmlfcmVnaXN0cmF0aW9uIjp0cnVlLCJyZXNwb25zZV90eXBlc19zdXBwb3J0ZWQiOlsiY29kZSJdLCJyZXNwb25zZV9tb2Rlc19zdXBwb3J0ZWQiOlsicXVlcnkiLCJmb3JtX3Bvc3QiXSwic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOlsicGFpcndpc2UiLCJwdWJsaWMiXSwidG9rZW5fZW5kcG9pbnRfYXV0aF9tZXRob2RzX3N1cHBvcnRlZCI6WyJwcml2YXRlX2tleV9qd3QiXSwidG9rZW5fZW5kcG9pbnRfYXV0aF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdLCJ1c2VyaW5mb19lbmNyeXB0aW9uX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdLCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiLCJBMTkyQ0JDLUhTMzg0IiwiQTI1NkNCQy1IUzUxMiIsIkExMjhHQ00iLCJBMTkyR0NNIiwiQTI1NkdDTSJdLCJ1c2VyaW5mb19zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdLCJyZXF1ZXN0X29iamVjdF9lbmNyeXB0aW9uX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdLCJyZXF1ZXN0X29iamVjdF9lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjpbIkExMjhDQkMtSFMyNTYiLCJBMTkyQ0JDLUhTMzg0IiwiQTI1NkNCQy1IUzUxMiIsIkExMjhHQ00iLCJBMTkyR0NNIiwiQTI1NkdDTSJdLCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfX0sImF1dGhvcml0eV9oaW50cyI6WyJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIl19.WnWh9OkfAzb6YCo-yrnV9-7K_I3fucMVxNuw7tr7V43nVvgGJd4BqBSqc8Q0nKgzLcnNtnhf3MRiJ-hVkUL6vhaxt6jsXWvJupRQDf7f6-AgeNPvsHNvlrjoUkVNvTDS3jPUwXtnW7k7xQLEpdoxFW2ggbeG0zLfyyBypEGW3IZa1fDxlnEWvHH7Kctu55OBT_PC514HlKHWBYrBLYMODDoV-PCfOochOroSj3nM1WlDg50OoPXdjRUvM4eRxOmjEOF4kdXK2AKXY8wGMhJere07XnFk7TjdfLMNUdGaDR0aiPYoBkshq7Vhpy8pXt-JdN7RKKjjK-WAFLdEwASDtQ",
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA3MzA4MjgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8iLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImUiOiJBUUFCIiwibiI6Im84SW9sUmpabGt6Y3QtNDhyaHJWbFRuWVUxcGtNYlZKRC1EVTA1b01TOVJWR3JzRnlwZzk4bS1LdzRINHFOUHlRVngyT1FPUmkteFNoZ2s3SFUtZ0tfMnBWZ3VZa3YwNkZhakxfZWRFQXFxc3F0Xzc0UWYyV0xSQzVwZkpHX3o5T1B6WThKR3lrLXozU2JlSE5fQlhLSThHWTVFNFdVMlNzdG1ROWZ5TDRDeHRSZmpVaWE4bGltVENfM01PcFQzemk1bnIwM2pmYmpwbmpnYTUxcVh1cnhubHpjM2FfeGprNVJBQXBLeFV2TndoSjI3NU0wQ21COTlEalB3RjZCTHZVZ0pxZ3lDcFVPbjM2TE9oSTRGcXVWcWhxaGl3S2xNbWlNZTN5eTB5TlE3RlhCV3hqemhleGJweWMzVnU3ekZJSFBBY0M0VXlJUWhjM3dhRWoydmlYdyIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EifV19LCJtZXRhZGF0YSI6eyJmZWRlcmF0aW9uX2VudGl0eSI6eyJjb250YWN0cyI6WyJvcHNAbG9jYWxob3N0Il0sImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZmV0Y2gvIiwiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Jlc29sdmUvIiwiZmVkZXJhdGlvbl9zdGF0dXNfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJ1c3RfbWFya19zdGF0dXMvIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwIiwibmFtZSI6ImV4YW1wbGUgVEEiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvbGlzdC8ifX0sInRydXN0X21hcmtzX2lzc3VlcnMiOnsiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wdWJsaWMiOlsiaHR0cHM6Ly9yZWdpc3RyeS5zcGlkLmFnaWQuZ292Lml0IiwiaHR0cHM6Ly9wdWJsaWMuaW50ZXJtZWRpYXJ5LnNwaWQuaXQiXSwiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycC9wcml2YXRlIjpbImh0dHBzOi8vcmVnaXN0cnkuc3BpZC5hZ2lkLmdvdi5pdCIsImh0dHBzOi8vcHJpdmF0ZS5vdGhlci5pbnRlcm1lZGlhcnkuaXQiXSwiaHR0cHM6Ly9zZ2QuYWEuaXQvb25ib2FyZGluZyI6WyJodHRwczovL3NnZC5hYS5pdCJdfSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.LA69BlKROnjaOO3qBQuvfFpFOzEEPCnyvU0gDW4j_20tUqvdJMLfdEAtxwoBg7xBXYhImHnG5mGLvL1zvZWM8LWAzpPq4HeXSjsa0b05o819Ix4k3wImiH6JKdzHr2A4P3aaup5mI_0XrN2VqYh8TSIxkJTXCjYmgGa2g11ulv2wwyzVjVIMiq5KQ6EFgJ3CVXGDOfgl5VO_WeaNsp7-ujLbD-6ULOexPI8NQvyth7ObsnD0jkKUQ_fDrNkJfh4lk7ffMT309D5RyWXkdlzNYlo_d4buv9A5AnsUyMCNBQJppDFAYGCwc40TC7pW4hbANSZQCbY6C4fBUp3ED_88uA",
+      [
+        "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JSUWNTem13MGNfUkFnSm5wUy05V1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2NTA5MDE2NDgsImlhdCI6MTY1MDcyODg0OCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwLyIsInN1YiI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMi9vaWRjL29wLyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwibiI6InRnM2FFOWZkNmx0WHpOcmltXzRDR0tZV2ZDM25xY190djRYamF3NDczQ2NyZmlxRHplVEtIZlJmYnZicWIxRHdtSTRmdkNPaTUxRVZjbUtMblRoelh5bkFVcHlVdnN3dkw4X3V6Z0RXTzFSU21CRzFMMFJFLUNrS2loNGtlWGgxa3U5aE5zMV9WLTgyZEs1b0xPUi1WSkxuaFpDcVRoUjRISDZUcUxqaldyclhmc0hWUnZhdUppbFg2RnhHYjVKRm9jMjdWeHhkSDJjNlAyU0hDOXd1Qjh0bmZHN09TclNEMWcyaDdsVFhiSWZtNzhhMG9wNjdkX2p1cHprb0tvQ1RtemtSMnp2d1RWVkRkOTl2a0RMWTJXWG1iOGhJd0c2ZFFaWFlsa2hxQVlLelR1VFowdGpWaDBPcnFmRHhZdExIM3dRenphSk9SZXdaWXFMeUIwOVA4dyIsImUiOiJBUUFCIiwia2lkIjoiWmhTb2FPZWRWT3NCdzZtMnZjbHdTV2lxcW5HZU9TdFQtZ1VjbG90XzY3dyJ9XX0sIm1ldGFkYXRhX3BvbGljeSI6eyJvcGVuaWRfcHJvdmlkZXIiOnsic3ViamVjdF90eXBlc19zdXBwb3J0ZWQiOnsidmFsdWUiOlsicGFpcndpc2UiXX0sImlkX3Rva2VuX3NpZ25pbmdfYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTMjU2IiwiUlMzODQiLCJSUzUxMiIsIkVTMjU2IiwiRVMzODQiLCJFUzUxMiJdfSwidXNlcmluZm9fc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlMyNTYiLCJSUzM4NCIsIlJTNTEyIiwiRVMyNTYiLCJFUzM4NCIsIkVTNTEyIl19LCJ0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZHNfc3VwcG9ydGVkIjp7InZhbHVlIjpbInByaXZhdGVfa2V5X2p3dCJdfSwidXNlcmluZm9fZW5jcnlwdGlvbl9hbGdfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiUlNBLU9BRVAiLCJSU0EtT0FFUC0yNTYiLCJFQ0RILUVTIiwiRUNESC1FUytBMTI4S1ciLCJFQ0RILUVTK0ExOTJLVyIsIkVDREgtRVMrQTI1NktXIl19LCJ1c2VyaW5mb19lbmNyeXB0aW9uX2VuY192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJBMTI4Q0JDLUhTMjU2IiwiQTE5MkNCQy1IUzM4NCIsIkEyNTZDQkMtSFM1MTIiLCJBMTI4R0NNIiwiQTE5MkdDTSIsIkEyNTZHQ00iXX0sInJlcXVlc3Rfb2JqZWN0X2VuY3J5cHRpb25fYWxnX3ZhbHVlc19zdXBwb3J0ZWQiOnsic3Vic2V0X29mIjpbIlJTQS1PQUVQIiwiUlNBLU9BRVAtMjU2IiwiRUNESC1FUyIsIkVDREgtRVMrQTEyOEtXIiwiRUNESC1FUytBMTkyS1ciLCJFQ0RILUVTK0EyNTZLVyJdfSwicmVxdWVzdF9vYmplY3RfZW5jcnlwdGlvbl9lbmNfdmFsdWVzX3N1cHBvcnRlZCI6eyJzdWJzZXRfb2YiOlsiQTEyOENCQy1IUzI1NiIsIkExOTJDQkMtSFMzODQiLCJBMjU2Q0JDLUhTNTEyIiwiQTEyOEdDTSIsIkExOTJHQ00iLCJBMjU2R0NNIl19LCJyZXF1ZXN0X29iamVjdF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjp7InN1YnNldF9vZiI6WyJSUzI1NiIsIlJTMzg0IiwiUlM1MTIiLCJFUzI1NiIsIkVTMzg0IiwiRVM1MTIiXX19fSwidHJ1c3RfbWFya3MiOlt7ImlkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvb3BlbmlkLWZlZGVyYXRpb24vYWdyZWVtZW50L29wLXB1YmxpYy8iLCJ0cnVzdF9tYXJrIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTVVdOVGVtMTNNR05mVWtGblNtNXdVeTA1VjFFaUxDSjBlWEFpT2lKMGNuVnpkQzF0WVhKcksycDNkQ0o5LmV5SnBjM01pT2lKb2RIUndPaTh2TVRJM0xqQXVNQzR4T2pnd01EQXZJaXdpYzNWaUlqb2lhSFIwY0Rvdkx6RXlOeTR3TGpBdU1UbzRNREF5TDI5cFpHTXZiM0F2SWl3aWFXRjBJam94TmpVd056STRPRFE0TENKcFpDSTZJbWgwZEhCek9pOHZkM2QzTG5Od2FXUXVaMjkyTG1sMEwyTmxjblJwWm1sallYUnBiMjR2YjNBaUxDSnRZWEpySWpvaWFIUjBjSE02THk5M2QzY3VZV2RwWkM1bmIzWXVhWFF2ZEdobGJXVnpMMk4xYzNSdmJTOWhaMmxrTDJ4dloyOHVjM1puSWl3aWNtVm1Jam9pYUhSMGNITTZMeTlrYjJOekxtbDBZV3hwWVM1cGRDOXBkR0ZzYVdFdmMzQnBaQzl6Y0dsa0xYSmxaMjlzWlMxMFpXTnVhV05vWlMxdmFXUmpMMmwwTDNOMFlXSnBiR1V2YVc1a1pYZ3VhSFJ0YkNKOS5iQ3VlWmJDeUxMR1JSRUNUVS1QaTctdGtnSW43NGdvZHU5bW16YlVjRW5ER2xZUmpabHJLOUlXakdsb0Z1UUpOeW1RbmRXdnlFRHpISUlISVhwYUpxUTRxd3FyN2hqbVphSEMybXJFYlVBcEQ5TUU3MnJveFdvWUw0MjNJWnprWkU0QjBsMHhBemNvSWl0S0l2WmI5ZWxEaEVneUptWWdhV0ZWM0U0N2NFNHoxRGxPZWNIanA4dXR4ZEhhd0h6Tjc0bk9GNzktRFBlNnd0T1FuckprVUs0d1Bja3J3WmwtaFpsNURJbDJYUDFBMzBPRnBqUGZyMFhaXzFDU2p5TTBST196NnE1NDhXS3J2Ry1KbXBEaVl3NHJZN0Q5RkRiSEFsSlFNTC1STDdNTk1WZVRua0swNUVfWHNkTjZHRUU5TGZmcTFKRjk1SzJsTHBPWTRRQTNBcGcifV19.BtyhU0RYjVKig081cbTtN7cpCLJP6sQ9V0GTMdkoWu3D5fR8zUtdbxOK6f726k_at-6ftMQtetv85F0-u7TQG9aZqdRXmZsMsQi9HtUeGhPrfjUFYqEIctocFBhnHOiyh8sQiXRFOklRPHlui1IVa47XFmM4T7Z8tPzmPFUCucxDDkpMnEA5rdOxOfiM1cCqYJi7XVopwYJXPvMqiOqFB8QB0ESKaIOHMskvAU-208rnwxCjWS_dglmUBRdSuGuLpHUw8pjt7Z2T0oN646nwRkLMLB3oWMhaOD3pFsshpyjg2pL5LTTSvFm8wJEejvwz-guG7L283ODswMAe9y5HHQ"
+      ]
+    ],
+    "jwks": {
+        "keys": [
+          {
+            "kty": "RSA",
+            "e": "AQAB",
+            "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
+            "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
+          }
+        ]
+    },
+    "metadata": {
+      "federation_entity": {
+        "federation_resolve_endpoint": "http://127.0.0.1:8002/oidc/op/resolve",
+        "organization_name": "SPID OIDC identity provider",
+        "homepage_uri": "http://127.0.0.1:8002",
+        "policy_uri": "http://127.0.0.1:8002/oidc/op/en/website/legal-information",
+        "logo_uri": "http://127.0.0.1:8002/static/images/logo-cie.png",
+        "contacts": [
+          "tech@example.it"
+        ]
+      },
+      "openid_provider": {
+        "authorization_endpoint": "http://127.0.0.1:8002/oidc/op/authorization",
+        "revocation_endpoint": "http://127.0.0.1:8002/oidc/op/revocation",
+        "id_token_encryption_alg_values_supported": [
+          "RSA-OAEP"
+        ],
+        "id_token_encryption_enc_values_supported": [
+          "A128CBC-HS256"
+        ],
+        "token_endpoint": "http://127.0.0.1:8002/oidc/op/token",
+        "userinfo_endpoint": "http://127.0.0.1:8002/oidc/op/userinfo",
+        "introspection_endpoint": "http://127.0.0.1:8002/oidc/op/introspection",
+        "claims_parameter_supported": true,
+        "contacts": [
+          "ops@https://idp.it"
+        ],
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "client_registration_types_supported": [
+          "automatic"
+        ],
+        "request_authentication_methods_supported": {
+          "ar": [
+            "request_object"
+          ]
+        },
+        "acr_values_supported": [
+          "https://www.spid.gov.it/SpidL1",
+          "https://www.spid.gov.it/SpidL2",
+          "https://www.spid.gov.it/SpidL3"
+        ],
+        "claims_supported": [
+          "given_name",
+          "family_name",
+          "birthdate",
+          "gender",
+          "phone_number",
+          "https://attributes.eid.gov.it/fiscal_number",
+          "phone_number_verified",
+          "email",
+          "address",
+          "document_details",
+          "https://attributes.eid.gov.it/physical_phone_number"
+        ],
+        "grant_types_supported": [
+          "authorization_code",
+          "refresh_token"
+        ],
+        "id_token_signing_alg_values_supported": [
+          "RS256",
+          "ES256"
+        ],
+        "issuer": "http://127.0.0.1:8002/oidc/op",
+        "jwks": {
+          "keys": [
+            {
+              "kty": "RSA",
+              "use": "sig",
+              "e": "AQAB",
+              "n": "rJoSYv1stwlbM11tR9SYGIJuzqlJe2bv2N35oPRbwV_epjNWvGG2ZqEj53YFMC8AMZNFhuLa_LNwr1kLVE-jXQe8xjiLhe7DgMf1OnSzq9yAEXVo19BPBwkgJe2jp9HIgM_nfbIsUbSSkFAM2CKvGb0Bk2GvvqXZ12P-fpbVyA9hIQr6rNTqnCGx2-v4oViGG4u_3iTw7D1ZvLWmrmZOaKnDAqG3MJSdQ-2ggQ-Aiahg48si9C9D_JgnBV9tJ2eCS58ZC6kVG5sftElQVdH6e26mz464TZj5QgCwZCTsAQfIvBoXSdCKxpnvsFfrajz4q9BiXAryxIOl5fLmCFVNhw",
+              "kid": "Pd2N9-TZz_AWS3GFCkoYdRaXXls8YPhx_d_Ez7JwjQI"
+            }
+          ]
+        },
+        "scopes_supported": [
+          "openid",
+          "offline_access"
+        ],
+        "logo_uri": "http://127.0.0.1:8002/static/images/logo-cie.png",
+        "organization_name": "SPID OIDC identity provider",
+        "op_policy_uri": "http://127.0.0.1:8002/oidc/op/en/website/legal-information",
+        "request_parameter_supported": true,
+        "request_uri_parameter_supported": true,
+        "require_request_uri_registration": true,
+        "response_types_supported": [
+          "code"
+        ],
+        "response_modes_supported": [
+          "query",
+          "form_post"
+        ],
+        "subject_types_supported": [
+          "pairwise",
+          "public"
+        ],
+        "token_endpoint_auth_methods_supported": [
+          "private_key_jwt"
+        ],
+        "token_endpoint_auth_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "userinfo_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "userinfo_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "userinfo_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ],
+        "request_object_encryption_alg_values_supported": [
+          "RSA-OAEP",
+          "RSA-OAEP-256"
+        ],
+        "request_object_encryption_enc_values_supported": [
+          "A128CBC-HS256",
+          "A192CBC-HS384",
+          "A256CBC-HS512",
+          "A128GCM",
+          "A192GCM",
+          "A256GCM"
+        ],
+        "request_object_signing_alg_values_supported": [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512"
+        ]
+      }
+    },
+    "trust_marks": [],
+    "parties_involved": [
+      "http://127.0.0.1:8002/oidc/op",
+      "http://127.0.0.1:8000"
+    ],
+    "status": "valid",
+    "log": "",
+    "processing_start": "2022-04-23T15:47:28.224Z",
+    "is_active": true
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityprofile",
+  "pk": 1,
+  "fields": {
+    "created": "2022-02-10T17:47:04.952Z",
+    "modified": "2022-02-10T17:47:04.952Z",
+    "name": "SPID Public SP",
+    "profile_category": "openid_relying_party",
+    "profile_id": "https://www.spid.gov.it/openid-federation/agreement/sp-public",
+    "trust_mark_template": {
+      "iss": "$.issuer_sub",
+      "sub": "$.sub",
+      "iat": 1579621160,
+      "id": "https://www.spid.gov.it/certification/rp",
+      "mark": "https://www.agid.gov.it/themes/custom/agid/logo.svg",
+      "ref": "https://docs.italia.it/italia/spid/spid-regole-tecniche-oidc/it/stabile/index.html"
+    }
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityprofile",
+  "pk": 2,
+  "fields": {
+    "created": "2022-02-23T10:54:19.124Z",
+    "modified": "2022-02-23T10:54:19.124Z",
+    "name": "SPID Private SP",
+    "profile_category": "openid_relying_party",
+    "profile_id": "https://www.spid.gov.it/openid-federation/agreement/sp-private",
+    "trust_mark_template": {
+      "iss": "$.issuer_sub",
+      "sub": "$.sub",
+      "iat": 1579621160,
+      "id": "https://www.spid.gov.it/certification/rp/private",
+      "logo_uri": "https://www.agid.gov.it/themes/custom/agid/logo.svg",
+      "ref": "https://docs.italia.it/italia/spid/spid-regole-tecniche-oidc/it/stabile/index.html"
+    }
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityprofile",
+  "pk": 3,
+  "fields": {
+    "created": "2022-02-25T16:38:00.936Z",
+    "modified": "2022-02-25T16:38:00.936Z",
+    "name": "Identity Provider",
+    "profile_category": "openid_provider",
+    "profile_id": "https://www.spid.gov.it/openid-federation/agreement/op-public",
+    "trust_mark_template": {
+      "iss": "$.issuer_sub",
+      "sub": "$.sub",
+      "iat": 1579621160,
+      "id": "https://www.spid.gov.it/certification/op",
+      "mark": "https://www.agid.gov.it/themes/custom/agid/logo.svg",
+      "ref": "https://docs.italia.it/italia/spid/spid-regole-tecniche-oidc/it/stabile/index.html"
+    }
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendant",
+  "pk": 1,
+  "fields": {
+    "created": "2022-02-06T18:01:01.998Z",
+    "modified": "2022-04-23T15:40:32.349Z",
+    "uid": "autouid-b0caa9d7-da0e-442f-a613-8623acf9d0c1",
+    "name": "Test Relying Party",
+    "sub": "http://127.0.0.1:8000/oidc/rp",
+    "type": "openid_relying_party",
+    "jwks": [
+      {
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "pn_IchC66SFQMhbTHLtbD58jKiYYvYo7S4wjPjzECMu27c6FJVFNXtlubtb7sC6-WTQ1Hv4rSQdPhafJbIxa32R51sRQpkTr3JFMYP7x22DRQD_ixtQJRaiHw-npnZ8qgVHJ_t4gRTc4HJkehBLGv4-rHVAKzFiQNU1u2AFw1fWMnMH4ob_pyisXVgcku3dy14l7sYSANlpXufY_qnkQFTv0wMH-C6Izl-akENS2UHpvTLhfCBVKPrFXJxul4XDbUwUbvNZUxTernEx8lV5gxCSgKSBEgoH9MgpD1YWFPbAnwi7p7e7MNGz5lH7eDFKkPQhXLWABU8UvEIIWyA95SQ",
+        "kid": "k54HQtDibyGcs9ZWVMfviHf-2qLcFUtpwY2rgxBk88M"
+      }
+    ],
+    "metadata_policy": {
+      "openid_relying_party": {
+        "scope": {
+          "superset_of": [
+            "openid"
+          ],
+          "subset_of": [
+            "openid",
+            "offline_access",
+            "profile",
+            "email"
+          ]
+        }
+      }
+    },
+    "constraints": {},
+    "extended_claims": {},
+    "status": "valid",
+    "status_log": {},
+    "is_active": true,
+    "registrant": []
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendant",
+  "pk": 2,
+  "fields": {
+    "created": "2022-02-25T16:33:11.970Z",
+    "modified": "2022-04-23T15:47:08.105Z",
+    "uid": "autouid-ecee6ac5-0525-4c3e-839e-9da92e6ce5bd",
+    "name": "http://127.0.0.1:8000/oidc/op",
+    "sub": "http://127.0.0.1:8000/oidc/op",
+    "type": "openid_provider",
+    "jwks": [
+      {
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "1AYGF0C_j5CPeYMRH_mkhnYtnvM_CmdlWSFHK9YEas3gJ1922DnhFx3EIw1U-kZww7bgNz6C1l_1cyjkgBSuWxObObK4zVLZBGUZfXMBNFm2hdr5VoLKLemtZHpBOmdsxR1R3TJ30D0vY-LJbUtrwuRC8oOCYI5whcEc8B4utEex3W6dCjBIjsGfdJIqZHhfLN3xwPMOjkG5A_y8WnTVfGq9OUeuaUn3-PVs3O9LMpOBlaT7GreXgUqWAW-zxUCsiHHUVl9uIAGi5OHukIuBs2ClAlMX_S6mbN7_7KIGx2mTIrcgVBPJgYop9qnSqcXub_EQTKsFtNGigsUFnDqFNQ",
+        "kid": "cI8pBvWdHgcvldmI7HXbPMfFhSKkfACIbofsD6q2JtE"
+      }
+    ],
+    "metadata_policy": {},
+    "constraints": {},
+    "extended_claims": {},
+    "status": "valid",
+    "status_log": {},
+    "is_active": true,
+    "registrant": []
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendant",
+  "pk": 3,
+  "fields": {
+    "created": "2022-03-19T22:36:34.269Z",
+    "modified": "2022-04-23T15:27:41.661Z",
+    "uid": "autouid-0b4008cd-b476-452a-b292-6aa3b570b0b3",
+    "name": "cie provider",
+    "sub": "http://127.0.0.1:8002/oidc/op",
+    "type": "openid_provider",
+    "jwks": [
+      {
+        "kty": "RSA",
+        "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
+        "e": "AQAB",
+        "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
+      }
+    ],
+    "metadata_policy": {},
+    "constraints": {},
+    "extended_claims": {},
+    "status": "valid",
+    "status_log": {},
+    "is_active": true,
+    "registrant": []
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendant",
+  "pk": 5,
+  "fields": {
+    "created": "2022-03-25T15:20:49.175Z",
+    "modified": "2022-04-23T15:30:23.816Z",
+    "uid": "autouid-3a6f6af6-9041-4f68-8632-775740fe68f1",
+    "name": "tel dei tali org",
+    "sub": "http://127.0.0.1:8001",
+    "type": "openid_relying_party",
+    "jwks": [
+      {
+        "kty": "RSA",
+        "e": "AQAB",
+        "n": "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w",
+        "kid": "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+      }
+    ],
+    "metadata_policy": {},
+    "constraints": {},
+    "extended_claims": {},
+    "status": "valid",
+    "status_log": {},
+    "is_active": true,
+    "registrant": []
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+  "pk": 1,
+  "fields": {
+    "created": "2022-02-10T17:56:54.482Z",
+    "modified": "2022-02-10T17:56:54.482Z",
+    "descendant": 1,
+    "profile": 1,
+    "issuer": 1
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+  "pk": 2,
+  "fields": {
+    "created": "2022-02-23T10:55:20.229Z",
+    "modified": "2022-02-23T10:55:20.229Z",
+    "descendant": 1,
+    "profile": 2,
+    "issuer": 1
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+  "pk": 3,
+  "fields": {
+    "created": "2022-02-25T16:38:17.563Z",
+    "modified": "2022-02-25T16:38:17.563Z",
+    "descendant": 2,
+    "profile": 3,
+    "issuer": 1
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+  "pk": 4,
+  "fields": {
+    "created": "2022-03-19T22:36:52.498Z",
+    "modified": "2022-03-19T22:36:52.498Z",
+    "descendant": 3,
+    "profile": 3,
+    "issuer": 1
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+  "pk": 6,
+  "fields": {
+    "created": "2022-03-25T15:52:12.616Z",
+    "modified": "2022-03-25T15:52:12.616Z",
+    "descendant": 5,
+    "profile": 1,
+    "issuer": 1
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendantcontact",
+  "pk": 1,
+  "fields": {
+    "created": "2022-02-13T09:15:26.335Z",
+    "modified": "2022-02-13T09:15:26.335Z",
+    "entity": 1,
+    "contact": "ciao@email.it",
+    "type": "email"
+  }
+},
+{
+  "model": "spid_cie_oidc_authority.federationdescendantcontact",
+  "pk": 2,
+  "fields": {
+    "created": "2022-03-25T15:20:49.182Z",
+    "modified": "2022-03-25T15:20:49.182Z",
+    "entity": 5,
+    "contact": "that.email@ciao.it",
+    "type": "email"
+  }
+}
+]

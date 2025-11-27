@@ -1,5 +1,18 @@
-services:
 
+# Template for django
+x-django-build: &django-build
+  context: ../
+  dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+
+# Common template for Django project
+x-django-common: &django-common
+  working_dir: /django-project
+  entrypoint: "sh /entrypoint.sh"
+  networks:
+    - iam-proxy-italia
+  restart: unless-stopped
+
+services:
   satosa-mongo:
     profiles:
       - demo
@@ -20,6 +33,12 @@ services:
       - '27017-27019:27017-27019'
     networks:
       - iam-proxy-italia
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "admin", "--eval", "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   satosa-mongo-express:
     profiles:
@@ -30,7 +49,8 @@ services:
     ports:
       - 8082:8081
     depends_on:
-      - satosa-mongo
+      satosa-mongo:
+          condition: service_healthy
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "${EXPRESS_USER:-satosauser}"
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
@@ -45,11 +65,16 @@ services:
     profiles:
       - demo
       - dev
-    build: 
-        context: ../
-        args: 
-            - NODE_ENV=local
-        dockerfile: example_sp/django.Dockerfile
+    build:
+      context: ../
+      args:
+        - NODE_ENV=local
+      dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
+      satosa-nginx:
+        condition: service_started
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
@@ -62,23 +87,28 @@ services:
 
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:latest
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
+    image: iam-proxy-italia:3.0
+    build:
+        context: ../
+        args:
+            - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
-    # depends_on:
-    # - satosa-mongo
+    depends_on:
+        trust-anchor:
+          condition: service_healthy
+        cie-provider:
+          condition: service_healthy
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
       - TZ=${TZ:-Europe/Rome}
       - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
       - SATOSA_BY_DOCKER=1
-      - GET_IDEM_MDQ_KEY=${GET_IDEM_MDQ_KEY:-true}
-      - GET_SPID_IDP_METADATA=${GET_SPID_IDP_METADATA:-true}
+      - SATOSA_GET_IDEM_MDQ_KEY=${SATOSA_GET_IDEM_MDQ_KEY:-true}
+      - SATOSA_GET_SPID_IDP_METADATA=${SATOSA_GET_SPID_IDP_METADATA:-true}
+      - SATOSA_GET_FICEP_IDP_METADATA=${SATOSA_GET_FICEP_IDP_METADATA:-true}
+      - SATOSA_GET_CIE_IDP_METADATA=${SATOSA_GET_CIE_IDP_METADATA:-true}
 
       - BASE_DIR=/satosa_proxy
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
@@ -87,7 +117,7 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      
+
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -123,34 +153,41 @@ services:
     ports:
       - "10000:10000"
     volumes:
-      - ./satosa-project:/satosa_proxy:rwx
-      # - /eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      - ./iam-proxy-italia-project:/satosa_proxy:rwx
+      - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
+      #- ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
       - iam-proxy-italia
     healthcheck:
-      test: wget -O - https://satosa-nginx/Saml2IDP/metadata --no-check-certificate || exit 1
+      test: ["CMD", "sh", "pyeudiw-healthcheck.sh"]
       interval: 30s
       retries: 10
       start_period: 30s
-      timeout: 30s
+      timeout: 10s
 
   satosa-nginx:
     image: nginx:alpine
     container_name: satosa-nginx
     depends_on:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        condition: service_started
+      satosa-certbot:
+        condition: service_completed_successfully
     ports:
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./certbot/archive:/etc/archive:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - ${SATOSA_HOSTNAME:-localhost}
     environment:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
@@ -159,17 +196,97 @@ services:
     profiles:
       - demo
       - dev
-    image: italia/spid-saml-check
+    image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
     ports:
       - "8443:8443"
     networks:
       - iam-proxy-italia
+
+  satosa-certbot:
+    image: certbot/certbot
+    container_name: satosa-certbot
+    environment:
+      - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
+      - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
+      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - TZ=${TZ:-Europe/Rome}
+    volumes:
+      - ./certbot:/etc/letsencrypt
+      - ./nginx/html:/var/www/certbot
+    networks:
+      - iam-proxy-italia
+    ports:
+      - "80:80"
+    entrypoint: "sh /etc/letsencrypt/certbot.sh"
+
+  trust-anchor:
+    profiles:
+      - demo
+      - mongo
+    <<: *django-common
+    container_name: trust-anchor
+    build:
+      <<: *django-build
+      args:
+        MODULE_NAME: federation_authority
+        RUNNING_PORT: 5002
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./spid_cie_oidc_django/federation_authority:/django-project:rw
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
+    healthcheck:
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+
+  cie-provider:
+    profiles:
+      - demo
+      - mongo
+    <<: *django-common
+    container_name: cie-provider
+    build:
+      <<: *django-build
+      args:
+        MODULE_NAME: provider
+        RUNNING_PORT: 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./spid_cie_oidc_django/provider:/django-project
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
+    depends_on:
+      - trust-anchor
+    healthcheck:
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
 
-## External volumes 
+## External volumes
 # volumes:
 #   mongodata:
 #     name: iam-proxy-italia_mongodata

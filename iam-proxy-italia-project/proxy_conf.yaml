@@ -1,0 +1,138 @@
+---
+#--- SATOSA Proxy_conf.yaml Config ---#
+BASE: !ENV SATOSA_BASE
+INTERNAL_ATTRIBUTES: "internal_attributes.yaml"
+COOKIE_STATE_NAME: "SATOSA_STATE"
+CONTEXT_STATE_DELETE: yes
+
+COOKIE_MAX_AGE: 600 # 10 minutes
+#COOKIE_SECURE: no
+#COOKIE_HTTPONLY: no
+#COOKIE_SAMESITE: "None"
+STATE_ENCRYPTION_KEY: !ENV SATOSA_STATE_ENCRYPTION_KEY
+
+cookies_samesite_compat:
+  - ["SATOSA_STATE", "SATOSA_STATE_LEGACY"]
+
+# The proxy can hash any attribute value (e.g., for obfuscation) before passing it on to the client
+# DEPRECATED, use hasher microservice instead
+USER_ID_HASH_SALT: !ENV SATOSA_SALT
+
+ERROR_URL: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
+
+CUSTOM_PLUGIN_MODULE_PATHS:
+  #- "conf/ping"
+  - "conf/backends"
+  - "conf/frontends"
+  - "conf/micro_services"
+BACKEND_MODULES:
+  - "conf/backends/saml2_backend.yaml"
+  - "conf/backends/spidsaml2_backend.yaml"
+  - "conf/backends/ciesaml2_backend.yaml"
+  - "conf/backends/pyeudiw_backend.yaml"
+  - "conf/backends/cieoidc_backend.yaml"
+
+FRONTEND_MODULES:
+  - "conf/frontends/saml2_frontend.yaml"
+  # - "conf/frontends/oidcop_frontend.yaml"
+  - "conf/frontends/openid4vci_frontend.yaml"
+MICRO_SERVICES:
+  # - "conf/microservices/spid_unical_account_linking.yaml"
+  # - "conf/microservices/multiple_ldap_attribute_store.yaml"
+  # - "conf/microservices/ldap_attribute_store.yaml"
+  # re-process again after new attributes beign pushed (or not) from ldap store
+  # - "conf/microservices/spid_unical_account_linking.yaml"
+  - "conf/microservices/idp_hinting.yaml"
+  - "conf/microservices/disco_to_target_issuer.yaml"
+  - "conf/microservices/target_based_routing.yaml"
+LOGGING:
+  version: 1
+  formatters:
+    simple:
+      format: "[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s [%(name)s.%(funcName)s:%(lineno)s]"
+    syslog:
+      format: "[SATOSA] [%(name)s] [%(levelname)s]: %(message)s"
+  handlers:
+    spid_daily:
+      class: logging.handlers.TimedRotatingFileHandler
+      level: INFO
+      formatter: simple
+      filename: logs/spid.log
+      when: D
+      interval: 1
+      backupCount: 860
+    syslog:
+      class: logging.handlers.SysLogHandler
+      level: INFO
+      formatter: syslog
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+    saml2_debug_file:
+      class: logging.handlers.RotatingFileHandler
+      level: DEBUG
+      formatter: simple
+      filename: logs/saml2_debug.log
+      maxBytes: 104857600 # 100MB
+      backupCount: 20
+      encoding: utf8
+    oidcop_debug_file:
+      class: logging.handlers.RotatingFileHandler
+      level: DEBUG
+      formatter: simple
+      filename: logs/oidcop_debug.log
+      maxBytes: 104857600 # 100MB
+      backupCount: 20
+      encoding: utf8
+  loggers:
+    satosa:
+      level: INFO
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    saml2:
+      level: ERROR
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    satosa.frontends.saml2:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    satosa.backends.saml2:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    satosa.frontends.idpy_oidcop:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    backends.spidsaml2:
+      level: INFO
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    backends.ciesaml2:
+      level: INFO
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    pyeudiw.satosa.backend:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    backends.cieoidc:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+
+  # root:
+  # level: INFO
+  # handlers: [info_file_handler]

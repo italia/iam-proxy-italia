@@ -18,61 +18,154 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.10'
+          - '3.10.18'
+          - '3.11'
+          - '3.12'
+          - '3.13.7'
+          - '3.14.0-rc.2'
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install xmlsec1
-      run: sudo apt-get install -y xmlsec1
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Python dependencies
-      run: |
-        pip install --upgrade pip
-        pip install flake8
-        pip install "spid-sp-test>=1.2.17"
-    - name: Inspect Python dependencies
-      run: |
-        pip list
-    - name: Lint with flake8
-      run: |
-        ## stop the build if there are Python syntax errors or undefined names
-        flake8 --count --select=E9,F63,F7,F82 --show-source --statistics example
-        ## exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 --max-line-length 120 --count --exit-zero --statistics example
-    - name: docker compose
-      run: |       
-        cd Docker-compose
-        ./run-docker-compose.sh
-        docker ps -a
-    - name: djangosaml2 SP metadata to Proxy
-      run: |
-        wget http://localhost:8000/saml2/metadata -O Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
-    - name: Inspect djangosaml2 SP metadata
-      run: |
-        cat Docker-compose/satosa-project/metadata/sp/djangosaml2_sp.xml
-    - name: Inspect Satosa status
-      run: |
-        docker container inspect iam-proxy-italia
-        docker container logs iam-proxy-italia 
-    - name: Copy Satosa IDP Metadata to djangosaml2 SP
-      run: |
-        wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
-    - name: Inspect Satosa IDP Metadata
-      run: |
-        cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
-    - name: spid-sp-test SPID metadata, requests and responses
-      run: |
-        cd Docker-compose/satosa-project
-        spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
-        spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
-    - name: spid-sp-test CIE id metadata
-      run: |
-        cd Docker-compose/satosa-project
-        spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
-    - name: spid-sp-test eIDAS FiCEP metadata
-      run: |
-        cd Docker-compose/satosa-project
-        spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+      - uses: actions/checkout@v3
+
+      - name: Install xmlsec1
+        run: sudo apt-get install -y xmlsec1
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install flake8
+          pip install spid-sp-test
+
+      - name: Inspect Python dependencies
+        run: |
+          pip list
+      - name: Lint with flake8
+        run: |
+          ## stop the build if there are Python syntax errors or undefined names
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics iam-proxy-italia-project
+          ## exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 --max-line-length 120 --count --exit-zero --statistics iam-proxy-italia-project
+
+      - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
+        env:
+          CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+          DEPTH_COMMITS: 50
+        run: |
+          echo "Current branch: '$CURRENT_BRANCH'"
+          echo "Target branch: '$TARGET_BRANCH'"
+
+          PYEUDIW_REPO_NAME="eudi-wallet-it-python"
+          PYEUDIW_REPO_URL="https://github.com/italia/${PYEUDIW_REPO_NAME}"
+          PYEUDIW_REPO_GIT="${PYEUDIW_REPO_URL}.git"
+          
+          echo "pyeudiw git repo: '$PYEUDIW_REPO_GIT'"
+          
+          if [ "$CURRENT_BRANCH" = "master" ]; then
+            echo "Current branch is master → no patch needed."
+          else
+            TMP_DIR=$(mktemp -d)
+            git clone --quiet --no-checkout "$PYEUDIW_REPO_GIT" "$TMP_DIR"
+            cd "$TMP_DIR"
+          
+            BRANCH_MERGED=false
+            if git ls-remote --exit-code --heads "$PYEUDIW_REPO_GIT" "$CURRENT_BRANCH" >/dev/null 2>&1; then
+              echo "Branch '$CURRENT_BRANCH' exists in '$PYEUDIW_REPO_NAME' → checking if it's merged..."
+          
+              # Fetch branches for comparison
+              git fetch origin "$CURRENT_BRANCH" --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+              git fetch origin "$TARGET_BRANCH" --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+              git fetch origin master --depth="$DEPTH_COMMITS" >/dev/null 2>&1 || true
+          
+              # Check merge status in target branch
+              if git merge-base --is-ancestor "origin/$CURRENT_BRANCH" "origin/$TARGET_BRANCH" 2>/dev/null; then
+                echo "Branch '$CURRENT_BRANCH' has already been merged into '$TARGET_BRANCH' → will use '$TARGET_BRANCH'."
+                CURRENT_BRANCH="$TARGET_BRANCH"
+                BRANCH_MERGED=true
+              elif git merge-base --is-ancestor "origin/$CURRENT_BRANCH" "origin/master" 2>/dev/null; then
+                echo "Branch '$CURRENT_BRANCH' has already been merged into 'master' → will use 'master'."
+                CURRENT_BRANCH="master"
+                BRANCH_MERGED=true
+              fi
+            else
+              echo "Branch '$CURRENT_BRANCH' does not exist in '$PYEUDIW_REPO_NAME' → skipping merge check."
+            fi
+          
+            cd - >/dev/null
+          
+            # Build candidate list
+            BRANCH_CANDIDATES=()
+            [ -n "$CURRENT_BRANCH" ] && BRANCH_CANDIDATES+=("$CURRENT_BRANCH")
+            [ -n "$TARGET_BRANCH" ] && [[ "$TARGET_BRANCH" != "$CURRENT_BRANCH" ]] && BRANCH_CANDIDATES+=("$TARGET_BRANCH")
+            BRANCH_CANDIDATES+=("master")
+          
+            echo "Branch candidates for patch: ${BRANCH_CANDIDATES[*]}"
+          
+            PATCHED=false
+            for BRANCH in "${BRANCH_CANDIDATES[@]}"; do
+              echo "Checking if branch '$BRANCH' exists in '$PYEUDIW_REPO_NAME'..."
+              if git ls-remote --heads "$PYEUDIW_REPO_GIT" "$BRANCH" | grep -q "$BRANCH"; then
+                echo "Branch '$BRANCH' found! Patching pyproject.toml..."
+                # PEP 508 style
+                sed -i "s|git+${PYEUDIW_REPO_URL}|git+${PYEUDIW_REPO_GIT}@${BRANCH}|g" pyproject.toml
+                # Table style
+                sed -i "s|git = \"${PYEUDIW_REPO_URL}\"|git = \"${PYEUDIW_REPO_GIT}\", rev = \"${BRANCH}\"|g"  pyproject.toml
+                rm -f poetry.lock
+                PATCHED=true
+                break
+              else
+                echo "Branch '$BRANCH' does not exist → trying next candidate."
+              fi
+            done
+          
+            if [ "$PATCHED" = false ]; then
+              echo "No matching branch found. Using default pyproject.toml."
+            fi
+          fi
+
+      - name: docker compose
+        run: |
+          cd Docker-compose
+          ./run-docker-compose.sh
+          docker ps -a
+
+      - name: djangosaml2 SP metadata to Proxy
+        run: |
+          wget http://localhost:8000/saml2/metadata -O Docker-compose/iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
+
+      - name: Inspect djangosaml2 SP metadata
+        run: |
+          cat Docker-compose/iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
+      - name: Inspect Satosa status
+        run: |
+          docker container inspect iam-proxy-italia
+          docker container logs iam-proxy-italia
+
+      - name: Copy Satosa IDP Metadata to djangosaml2 SP
+        run: |
+          wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
+      - name: Inspect Satosa IDP Metadata
+        run: |
+          cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
+      - name: spid-sp-test SPID metadata, requests and responses
+        run: |
+          cd Docker-compose/iam-proxy-italia-project
+          spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
+          spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+
+      - name: spid-sp-test CIE id metadata
+        run: |
+          cd Docker-compose/iam-proxy-italia-project
+          spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+
+      - name: spid-sp-test eIDAS FiCEP metadata
+        run: |
+          cd Docker-compose/iam-proxy-italia-project
+          spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
