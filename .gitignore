@@ -8,6 +8,7 @@ iam-proxy-italia-project/logs/*.log
 iam-proxy-italia-project/metadata/*.md
 iam-proxy-italia-project/data/*
 iam-proxy-italia-project/private/*
+iam-proxy-italia-project/wwwallet/mysql/data/
 *.pyc
 *pyFF_example/info.log
 *pyFF_example/error.log
@@ -19,7 +20,7 @@ iam-proxy-italia-project/private/*
 *pyFF_example/garr
 *pyFF_example/entities
 example_sp/djangosaml2_sp/sqlite3.db
-iam-proxy-italia-project_sp/djangosaml2_sp/sqlite3.db
+iam-proxy-italia-project-demo-examples/djangosaml2_sp/sqlite3.db
 project/*
 docker-example/*
 Docker-compose/iam-proxy-italia-project/*
@@ -29,6 +30,8 @@ Docker-compose/nginx/html/static/*
 Docker-compose/certbot/live/localhost
 Docker-compose/.env
 Docker-compose/eudi-wallet-it-python
+Docker-compose/wwwallet
+Docker-compose/spid_cie_oidc_django
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
@@ -40,3 +43,6 @@ Docker-compose/eudi-wallet-it-python
 # Ignore Mac system files
 **/.DS_Store
 .DS_Store
+*.log.*
+*.log
+*.sqlite3

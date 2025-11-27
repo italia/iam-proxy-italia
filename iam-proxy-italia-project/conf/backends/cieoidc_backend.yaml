@@ -1,0 +1,242 @@
+module: backends.cieoidc.CieOidcBackend
+name: CieOidcRp
+config:
+  network:
+    httpc_params: &httpc_params
+      connection:
+        ssl: true
+      session:
+        timeout: 6
+  storage: &db_config
+    mongo_db:
+      module: backends.cieoidc.storage.impl.mongo_storage
+      class: MongoStorage
+      init_params:
+        url: mongodb://satosa-mongo:27017
+        conf:
+          db_name: cie_oidc
+          db_auth_collection: authentication
+          db_token_collection: authentication_token
+          db_user_collection: users
+          data_ttl: 63072000 # 2 years
+        connection_params:
+          username: !ENV MONGODB_USERNAME
+          password: !ENV MONGODB_PASSWORD
+
+  providers:
+    - http://cie-provider.example.org:8002/oidc/op/
+
+  security_operations:
+    hash:
+      default:
+        func: SHA-256 #DEFAULT_HASH_FUNC
+    sign:
+      default:
+        alg: &default_sign_alg "RS256" #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+      supported:
+        alg: &supported_sign_alg #SIGNING_ALG_VALUES_SUPPORTED
+          - RS256
+          - RS384
+          - RS512
+          - ES256
+          - ES384
+          - ES512
+    encrypt:
+      default:
+        alg: &default_enc_alg RSA-OAEP #DEFAULT_JWE_ALG
+        enc: &default_enc_enc A256CBC-HS512 #DEFAULT_JWE_ENC
+      supported:
+        alg: &supported_enc_alg #ENCRYPTION_ALG_VALUES_SUPPORTED
+          - RSA-OAEP
+          - RSA-OAEP-256
+          - ECDH-ES
+          - ECDH-ES+A128KW
+          - ECDH-ES+A192KW
+          - ECDH-ES+A256KW
+        enc: &supported_enc_enc #ENCRYPTION_ENC_SUPPORTED
+          - A128CBC-HS256
+          - A192CBC-HS384
+          - A256CBC-HS512
+          - A128GCM
+          - A192GCM
+          - A256GCM
+
+  jwks:
+    federation: &jwks_federation
+      - d: "Npw19klvaNLdUWZRwe4MjPIgD8AH5BjfU5_dM05Gb6lBRWQKSWNlqP8bET-oZbWSw3zMaOAy2-k2GnYVXBYKu9WnjFFFPlbH-sVPfdKQLYzEABmxR_aaeSHrnDfKozTtFsYEgtI_WoGEaxPoE0P-Ds11Tp9h9ovZM48sDGnEdyjopnLPEZBR6VinP_yF1kfDg0kcIPmM1ZchIqJrnQpoKWeVTXtFFGrVqOAYmm4xBfP4U8TEimbeJJuYkJ9gLNnRDg_FC-ZPUiBIXigWZsEeJyevymP-NH4lq3osLgFOq0sqPxS3zkDwx9tWfT5UyqrCCortiQd2dxKzxZlEEvlQAQ"
+        e: "AQAB"
+        kid: "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+        kty: "RSA"
+        n: "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w"
+        p: "-1JcdcT2FdwavmPqtfOEKFUGBM9hhvwgX7KyCwl8tmresJQz8pNDkILMeKJf8ZCDVU7v4_i4C_P8oe41f2_SDsv9AIYh09zu_tQsMMdH_lqNx0YP8Yv25N5KOxnSOBO837SieFZ2xkbolXXIV7WIHrdFiyAOMOSWlETEO6JNu_M"
+        q: "7XfVt4ArSMLmRvvSl11yDF25t1aR3ylUmwZgLAJTNo76j-zo8Q2Ty7GfCIQmLOhOZTkwqnrbmwEBMEBsomWZFh_j90CLMyn1ccYUjiTI4CHJOTLMA8rYVWeArYkqek1jC4TQ9e1PkRrPcEvq2Tak8GFsBhnhOCzejJrMDgqkcwE"
+
+    core: &jwks_core
+      - use: "sig"
+        d: "n_ePK5DdOxqArf75tDGaViYrXDqRVk8zyl2dfKiiR0dXQJK7tbzJtHoGQeH4E-sw3_-Bc7OKY7DcbBWgHTijMRWj9LkAu9uCvqqGMaAroWH0aBcUmZAsNjcyUIyJ3_JRcNfUDiX3nVg67qe4ZWnMDogowaVZv3aXJiCvKE8aJK4BV_nF3Nt5R6zUYpjZQ8T1GDZCV3vza3qglDrXe8zoc-p8cLs3rJn7tMVSJVznCIqOfeM1VIg0I3n2bubYOx88sckHuDnfXTiTDlyq5IwDyBHmiIe3fpu-c4e1tiBmbOf2IqDCaX8SdpnU2gTj9YlZtRNqmh3NB_rksBKWLz3uIQ"
+        e: "AQAB"
+        kid: "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+        kty: "RSA"
+        n: "uXfJA-wTlTCA4FdsoE0qZfmKIgedmarrtWgQbElKbWg9RDR7Z8JVBaRLFqwyfyG1JJFm64G51cBJwLIFwWoF7nxsH9VYLm5ocjAnsR4RhlfVE0y_60wjf8skJgBRpiXQPlwH9jDGaqVE_PEBTObDO5w3XourD1F360-v5cLDLRHdFJIitdEVtqATqY5DglRDaKiBhis7a5_1bk839PDLaQhju4XJk4tvDy5-LVkMy5sP2zU6-1tJdA-VmaBZLXy9n0967FGIWmMzpafrBMOuHFcUOH56o-clDah_CITH1dq2D64K0MYhEpACO2p8AH4K8Q6YuJ1dnkVDDwZp2C84sQ"
+        p: "5PA7lJEDd3vrw5hlolFzvjvRriOu1SMHXx9Y52AgpOeQ6MnE1pO8qwn33lwYTSPGYinaq4jS3FKF_U5vOZltJAGBMa4ByEvAROJVCh958rKVRWKIqVXLOi8Gk11kHbVKw6oDXAd8Qt_y_ff8k_K6jW2EbWm1K6kfTvTMzoHkqrU"
+        q: "z2QeMH4WtrdiWUET7JgZNX0TbcaVBgd2Gpo8JHnfnGOUsvO_euKGgqpCcxiWVXSlqffQyTgVzl4iMROP8bEaQwvueHurtziMDSy9Suumyktu3PbGgjqu_izRim8Xlg7sz8Hs2quJPII_fQ8BCoaWpg30osFZqCBarQM7CWhxR40"
+
+      - use: "enc"
+        alg: "RSA-OAEP"
+        d: "Agb1P-F-bVupnNWH_5ZYh-8S7qb5I500yyjS6A9dVfvs736BGZYhQc5uoZQtrglwzgIA96uOmwW3h6Mx-469h1gTny3FE3vrmNEvIKogRRATssxMR8VWXU4Nma6gz4jp0MlgApKKPhPmkBrN925i9a_ODNeBI9dSKYP-Y4RPJb5RWBj2SwL62AwfSAYD012qUQAOw9uYP9c2gIA2sWRnNG0ufe6YTh0UDZub3B34BCoMf8Cr0cZZ4AvjVqoPBWWLZm265TDRHmJ3cS8EdMsSYCzQSaMy5B2wEwGmilO14TiNroDN1UcdoANhmXC9lzZWYx8Iz6BYH4ybk4fwGinEWQ"
+        e: "AQAB"
+        kid: "dlDtBxB1sKzY5hZTxJRLpvKVLeWHy5QYsFTSxETF5qM"
+        kty: "RSA"
+        n: "rZDx5jxztL4RL4obgFtOZCCelabRolJo_WHdvHVM0Pe5M1rCYXmcnGq5I2M7MdXrFHLa_Yl5rAzkxKyFgpB48vkmqIGNl8NX-6c95XDMQttHmp_atrPnKyJ0E2Zk1ZTomZMWnQCIXQYfcJI2x4W5Mjyh8Ip0ZDDUiqlYsADkHCThj0q6RjJRXtmK_rrt1-tcHOQbIHDVKXYACMWOzUr1YDGWgrFjPu2D2QAXmO3qxhaqIdABwim6XKuLYwzTlIeHJyeEZQiVLEY_Notu5GVQGeL8qMnW3SsqBw7rMYxKgLOcSk2-2J5_orToRNy0x1LQfMtHG3ic8KcFefV7UZeR3w"
+        p: "7-9WcW5dg64vEAok88rZESb9ZXP6FgPMrZ2wCIDxP3XxhqQlaVANE2bSBLQYrwxCpKlIznCJOvOY2FALhBcF5GKdBhUrBhs7Iz46ACr2HKr7mQ5EiigDwMmdIJ5LGJL-RVevP2Ye4QxOWQbn3jttc9fsj2Pw3FjYaeUurs9AnUs"
+        q: "uS__hm1ZVGN1FPmT6LfiM5-_xPmZwNwKRWV02e4drqa_qXQgbaMzZoSAc4duXXXgbyXc7LaJF4_fqR3Cpr1rXsXMTuJf9rb0uN4wZ9awZgmwbBx1JM2ikoQt08xvdxuH_7_0j584Ta7Go1TO2XX1QII06nr7EkVJ8HJqsE665T0"
+
+  metadata: &metadata
+    federation_entity:
+      federation_resolve_endpoint: https://satosa-nginx.example.org/CieOidcRp/resolve
+      organization_name: Example RP
+      homepage_uri: https://satosa-nginx.example.org/CieOidcRp
+      policy_uri: https://satosa-nginx.example.org/CieOidcRp/en/website/legal-information
+      logo_uri: https://satosa-nginx.example.org/static/cie/sample-cie-logo.png
+      contacts:
+        - ops@rp.example.it
+    openid_relying_party:
+      application_type: web
+      client_id:  https://satosa-nginx.example.org/CieOidcRp # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
+      client_name: Name of an example organization
+      organization_name: Example RP
+      client_registration_types:
+        - automatic
+      jwks_uri: https://satosa-nginx.example.org/CieOidcRp/openid_relying_party/jwks.json
+      signed_jwks_uri: https://satosa-nginx.example.org/CieOidcRp/openid_relying_party/jwks.jose
+      jwks: # this field is autopopulated
+      contacts:
+        - ops@rp.example.it
+      grant_types:
+        - refresh_token
+        - authorization_code
+      redirect_uris:
+        - https://satosa-nginx.example.org/CieOidcRp/oidc/callback
+      response_types:
+        - code
+      subject_type: pairwise
+      id_token_signed_response_alg: *default_sign_alg #RS256
+#      id_token_encrypted_response_alg [OPTIONAL]
+      #id_token_encrypted_response_enc [MANDATORY ONLY IF id_token_encrypted_response_alg]
+      userinfo_signed_response_alg: *default_sign_alg #RS256
+      userinfo_encrypted_response_alg: *default_enc_alg #RSA-OAEP
+      userinfo_encrypted_response_enc: *default_enc_enc #A128CBC-HS256
+      token_endpoint_auth_method: private_key_jwt
+      scope: "openid"
+      code_challenge:
+        length: 64
+        method: "S256"
+      claim:
+        id_token:
+          family_name:
+            essential: true
+          given_name:
+            essential: true
+        userinfo:
+          given_name: null
+          family_name: null
+          email: null
+          https://attributes.eid.gov.it/fiscal_number: null
+  trust_chain:
+      config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
+        trust_anchor:
+          - http://trust-anchor.example.org:5002
+
+
+  endpoints:
+    entity_config_endpoint:
+      module: backends.cieoidc.endpoints.entity_configuration
+      class: EntityConfigHandler
+      routes:
+        - /.well-known/openid-federation
+        - /openid_relying_party/jwks.json
+        - /openid_relying_party/jwks.jose
+      config:
+        metadata: *metadata
+        jwks_federation: *jwks_federation
+        jwks_core: *jwks_core
+        entity_type: openid_relying_party
+        entity_configuration_exp: 2800
+        default_sig_alg: *default_sign_alg #RS256
+        authority_hints:
+          - http://trust-anchor.example.org:5002
+        trust_marks:
+          - id: https://registry.agid.gov.it/openid_relying_party/public/
+            trust_mark: eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig
+    authorization_endpoint:
+      module: backends.cieoidc.endpoints.authorization_endpoint
+      class: AuthorizationHandler
+      routes:
+        - /oidc/authorization
+      config:
+        db_config: *db_config
+        entity_type: openid_relying_party
+        entity_configuration_exp: 2800
+        default_sig_alg: RS256
+        metadata: *metadata
+        jwks_federation: *jwks_federation
+        jwks_core: *jwks_core
+        prompt: "consent login"
+
+    authorization_callback_endpoint:
+      module: backends.cieoidc.endpoints.authorization_callback_endpoint
+      class: AuthorizationCallBackHandler
+      routes:
+        - /oidc/callback
+      config:
+        entity_type: openid_relying_party
+        entity_configuration_exp: 2800
+        default_sig_alg: RS256
+        db_config: *db_config
+        metadata: *metadata
+        jwks_federation: *jwks_federation
+        jwks_core: *jwks_core
+        httpc_params: *httpc_params
+        default_sign_alg: *default_sign_alg #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+        supported_sign_alg: *supported_sign_alg
+        default_enc_alg: *default_enc_alg #DEFAULT_JWE_ALG
+        default_enc_enc: *default_enc_enc #DEFAULT_JWE_ENC
+        supported_enc_alg: *supported_enc_alg
+        client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+        grant_type: "authorization_code"
+        claims:
+          sub:
+            - sub
+          username:
+            - func: backends.cieoidc.utils.helpers.misc.issuer_prefixed_sub
+              kwargs:
+                sep: "__"
+          first_name:
+            - given_name
+            - given_name
+          last_name:
+            - family_name
+            - last_name
+          email:
+            - email
+            - email
+          fiscal_number:
+            - https://attributes.eid.gov.it/fiscal_number
+            - fiscal_number
+    extends_session_endpoint:
+      module: backends.cieoidc.endpoints.extend_session_endpoint
+      class: ExtendSessionHandler
+      routes:
+        - /extend_session
+      config:
+        entity_type: openid_relying_party
+        entity_configuration_exp: 2800
+        default_sig_alg: RS256
+        metadata: *metadata
+        jwks_federation: *jwks_federation
+        jwks_core: *jwks_core
+        httpc_params: *httpc_params
+        client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+        grant_type: "refresh_token"

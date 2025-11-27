@@ -30,6 +30,8 @@ BACKEND_MODULES:
   - "conf/backends/spidsaml2_backend.yaml"
   - "conf/backends/ciesaml2_backend.yaml"
   - "conf/backends/pyeudiw_backend.yaml"
+  - "conf/backends/cieoidc_backend.yaml"
+
 FRONTEND_MODULES:
   - "conf/frontends/saml2_frontend.yaml"
   # - "conf/frontends/oidcop_frontend.yaml"
@@ -115,7 +117,17 @@ LOGGING:
       formatter: simple
       handlers: [console]
       propagate: no
+    backends.ciesaml2:
+      level: INFO
+      formatter: simple
+      handlers: [console]
+      propagate: no
     pyeudiw.satosa.backend:
+      level: DEBUG
+      formatter: simple
+      handlers: [console]
+      propagate: no
+    backends.cieoidc:
       level: DEBUG
       formatter: simple
       handlers: [console]

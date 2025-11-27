@@ -63,7 +63,7 @@ mkdir -p ./nginx/html/static # static files for nginx
 Copy required files
 ```bash
 cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project
-cp -R ../iam-proxy-italia-project_sp/djangosaml2_sp/* ./djangosaml2_sp
+cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp/* ./djangosaml2_sp
 cp -E ../iam-proxy-italia-project/static/* ./nginx/html/static
 ```
 

@@ -1,5 +1,18 @@
-services:
 
+# Template for django
+x-django-build: &django-build
+  context: ../
+  dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
+
+# Common template for Django project
+x-django-common: &django-common
+  working_dir: /django-project
+  entrypoint: "sh /entrypoint.sh"
+  networks:
+    - iam-proxy-italia
+  restart: unless-stopped
+
+services:
   satosa-mongo:
     profiles:
       - demo
@@ -20,6 +33,12 @@ services:
       - '27017-27019:27017-27019'
     networks:
       - iam-proxy-italia
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "admin", "--eval", "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   satosa-mongo-express:
     profiles:
@@ -30,7 +49,8 @@ services:
     ports:
       - 8082:8081
     depends_on:
-      - satosa-mongo
+      satosa-mongo:
+          condition: service_healthy
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: "${EXPRESS_USER:-satosauser}"
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
@@ -49,7 +69,12 @@ services:
       context: ../
       args:
         - NODE_ENV=local
-      dockerfile: iam-proxy-italia-project_sp/django.Dockerfile
+      dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
+      satosa-nginx:
+        condition: service_started
     container_name: django_sp
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
@@ -63,14 +88,17 @@ services:
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
     image: iam-proxy-italia:3.0
-    build: 
-        context: ../      
-        args: 
-            - NODE_ENV=local        
+    build:
+        context: ../
+        args:
+            - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
-    # depends_on:
-    # - satosa-mongo
+    depends_on:
+        trust-anchor:
+          condition: service_healthy
+        cie-provider:
+          condition: service_healthy
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -89,7 +117,7 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      
+
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -157,7 +185,9 @@ services:
       - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - ${SATOSA_HOSTNAME:-localhost}
     environment:
       - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
       - TZ=${TZ:-Europe/Rome}
@@ -166,15 +196,16 @@ services:
     profiles:
       - demo
       - dev
-    image: italia/spid-saml-check
+    image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
     ports:
       - "8443:8443"
     networks:
       - iam-proxy-italia
+
   satosa-certbot:
     image: certbot/certbot
-    container_name: satosa-certbot 
+    container_name: satosa-certbot
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
@@ -188,6 +219,68 @@ services:
     ports:
       - "80:80"
     entrypoint: "sh /etc/letsencrypt/certbot.sh"
+
+  trust-anchor:
+    profiles:
+      - demo
+      - mongo
+    <<: *django-common
+    container_name: trust-anchor
+    build:
+      <<: *django-build
+      args:
+        MODULE_NAME: federation_authority
+        RUNNING_PORT: 5002
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./spid_cie_oidc_django/federation_authority:/django-project:rw
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
+    healthcheck:
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+
+  cie-provider:
+    profiles:
+      - demo
+      - mongo
+    <<: *django-common
+    container_name: cie-provider
+    build:
+      <<: *django-build
+      args:
+        MODULE_NAME: provider
+        RUNNING_PORT: 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./spid_cie_oidc_django/provider:/django-project
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
+    depends_on:
+      - trust-anchor
+    healthcheck:
+      test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    environment:
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
 
 networks:
   iam-proxy-italia:

@@ -179,7 +179,7 @@ class CieSAMLBackend(SAMLBackend):
         )
 
     def get_kwargs_sign_dig_algs(self):
-        logger.info(
+        logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}"
         )
         kwargs = {}
@@ -194,7 +194,7 @@ class CieSAMLBackend(SAMLBackend):
         return kwargs
 
     def check_blacklist(self, context, entity_id):
-        logger.info(
+        logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [context: {context}, entity_id: {entity_id}]"
         )
@@ -212,7 +212,7 @@ class CieSAMLBackend(SAMLBackend):
                     )
 
     def authn_request(self, context, entity_id):
-        logger.info(
+        logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [context: {context}, entity_id: {entity_id}]"
         )
@@ -364,7 +364,7 @@ class CieSAMLBackend(SAMLBackend):
         template_path="templates",
         error_template="spid_login_error.html",
     ):
-        logger.info(
+        logger.debug(
             f"[INFO] Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
             f"Params [message: {message}, troubleshoot: {troubleshoot}]"
         )
