@@ -10,3 +10,8 @@ rules:
     paths:
       - '**/*.yaml'
       - '**/*.yml'
+
+secret:
+  ignored-paths:
+    - 'iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/provider/dumps/example.json'
+    - 'iam-proxy-italia-project/conf/backends/cieoidc_backend.yaml'
