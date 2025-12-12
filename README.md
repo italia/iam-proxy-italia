@@ -1,6 +1,6 @@
 # IAM Proxy Italia
 
-IAM Proxy Italia is the distribution of the [SATOSA](https://github.com/IdentityPython/SATOSA) SAML2/OIDC IAM Proxy allowing
+IAM Proxy Italia is the distribution of the [SATOSA](https://github.com/IdentityPython/SATOSA) IAM Proxy allowing
 **SAML-to-SAML**, **OIDC-to-SAML**, **SAML-to-Wallet** and **OIDC-to-Wallet** interoperability
 with the  **Italian Digital Identity Systems**.
 
@@ -30,7 +30,7 @@ Backends:
 - SAML2 CIE id SP
 - FICEP SP (eIDAS 1.0)
 - SAML2 SP
-- SPID/CIE OIDC (Work In Progress)
+- CIE OIDC
 - EUDI Wallet (eIDAS 2.0, experimental using [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python))
 
 Frontends:
