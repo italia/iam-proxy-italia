@@ -1,11 +1,8 @@
 
 ## TEST
 
-TEST
-
 The following document is intended to guide the use of the various tests included 
 in the "iam-proxy-italia" project.
-
 
 ## Table of Contents
 
