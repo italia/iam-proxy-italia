@@ -16,6 +16,7 @@ in the "iam-proxy-italia" project.
    2. [RUN](#TAH-run)
    3. [US01](#TAH-US01)
    4. [US02](#TAH-US02)
+   5. [US03](#TAH-US03)
 
 ### Prerequisites
 
@@ -94,3 +95,8 @@ This use case, US01, is used to test the validate_configs method. We expect a su
 
 #### TAH-US02
 This use case (US02) is used to test a missing field in the validate_configs method. We expect an exception to be raised.
+
+#### TAH-US03
+This use case (US03) is used to test a happy path.
+
+
