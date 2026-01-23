@@ -83,11 +83,11 @@ def handler(minimal_config, trust_chain):
 
 
 
-def test_validate_configs_ok(handler):
-    handler._validate_configs()
+def test_us01(handler):
+    handler.v()
 
 
-def test_validate_configs_missing_field(minimal_config):
+def test_us02(minimal_config):
     del minimal_config["endpoints"]
 
     with patch("backends.cieoidc.storage.db_engine.OidcDbEngine"):

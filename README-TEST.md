@@ -11,6 +11,11 @@ in the "iam-proxy-italia" project.
 3. [TEST_CALLBACK_HANDLER](#test_callback_handler)
    1. [Dependencies](#Dependencies)
    2. [RUN](#run)
+4. [TEST_AUTHORIZATION_HANDLER](#test_authorization_handler)
+   1. [Dependencies](#TAH-Dependencies)
+   2. [RUN](#TAH-run)
+   3. [US01](#TAH-US01)
+   4. [US02](#TAH-US02)
 
 ### Prerequisites
 
@@ -63,7 +68,7 @@ pytest backends/cieoidc/tests/test_callback_handler.py -v
 ```` 
 
 ### test_authorization_handler
-#### Dependencies
+#### TAH-Dependencies
 To test the following class, we need to install the dependencies listed below.
 After activating our virtual environment ([test_venv]), install the following packages:
 ````
@@ -78,8 +83,14 @@ pip install git+https://github.com/italia/eudi-wallet-it-python
 ```` 
 pip install pymongo==4.10.1
 ````
-#### run
+#### TAH-run
 To execute the test cases, run the following command:
 ```` 
 pytest backends/cieoidc/tests/test_authorization_handler.py -v
 ```` 
+
+#### TAH-US01
+This use case, US01, is used to test the validate_configs method. We expect a successful result.
+
+#### TAH-US02
+This use case (US02) is used to test a missing field in the validate_configs method. We expect an exception to be raised.
