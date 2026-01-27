@@ -10,13 +10,21 @@ in the "iam-proxy-italia" project.
 2. [Virtual Environment](#test_venv)
 3. [TEST_CALLBACK_HANDLER](#test_callback_handler)
    1. [Dependencies](#Dependencies)
-   2. [RUN](#run)
+   2. [RUN](#TCH-run)
+   3. [TEST-COVERAGE](#TCH-Test-Coverage)
+      1. [US01-Happy path–Authorization callback](#TCH-US01)
+   4. [NOTES](#Notes-TCH)
 4. [TEST_AUTHORIZATION_HANDLER](#test_authorization_handler)
    1. [Dependencies](#TAH-Dependencies)
    2. [RUN](#TAH-run)
-   3. [US01](#TAH-US01)
-   4. [US02](#TAH-US02)
-   5. [US03](#TAH-US03)
+   3. [TEST-COVERAGE](#TAH-Test-Coverage)
+      1. [US01-Configuration validation (success)](#TAH-US01)
+      2. [US02-Configuration validation (failure)](#TAH-US02)
+      3. [US03-Happy path](#TAH-US03)
+      4. [US04-PKCE configuration](#TAH-US04)
+      5. [US05-URI generation](#TAH-US05)
+      6. [US06-Private insert method](#TAH-US06)
+   4. [NOTES](#Notes-TAH)
 
 ### Prerequisites
 
@@ -24,32 +32,36 @@ Each unit test requires the installation of specific dependencies.
 Below, each unit test will be described along with the dependencies that need to be installed.
 It is recommended to remove the related environment every time a test is completed.
 
-To run the following tests, pytest is required:
+Pytest is required:
  ````
 pip install pytest
  ````
 ### test_venv
 
-We need to install the virtual environment, as follows:
+Install virtual environment support:
 ````
  sudo apt install python3.12-venv
  ````
-Create our test_venv:
+Create the virtual environment, for example test_venv:
 ````
- python3.12 -m venv test_env
+ python3.12 -m venv test_venv
  ````
-Activate the environment:
+Activate it:
 ````
- source test_env/bin/activate
+ source test_venv/bin/activate
 ````
-Inside it, we will install the required dependencies for each reference class.
-This is delegated to the class under test.
+All dependencies must be installed inside this environment.
+It is recommended to recreate the environment for each test session to avoid conflicts.
  
 
 ### test_callback_handler
+
+This test suite validates the authorization callback endpoint logic, simulating a full OIDC callback flow.
+The endpoint behavior is tested by mocking all external dependencies (JWKS retrieval, JWT verification, token exchange, and 
+userinfo retrieval).
+
 #### Dependencies
-To test the following class, we need to install the dependencies listed below.
-After activating our virtual environment ([test_venv]), install the following packages:
+Activate the virtual environment, then install:
 ````
 pip install git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2
 ````
@@ -62,16 +74,41 @@ pip install git+https://github.com/italia/eudi-wallet-it-python
 ```` 
 pip install pymongo==4.10.1
 ````
-#### run
-To execute the test cases, run the following command:
+#### TCH-run
+run:
 ```` 
 pytest backends/cieoidc/tests/test_callback_handler.py -v
 ```` 
 
+#### TCH-Test-Coverage
+##### TCH-US01
+
+This test validates the successful execution of the authorization callback endpoint.
+
+Covered aspects:
+
+- Query string parameter handling (state, code, iss)
+- JWKS retrieval and key resolution
+- JWT signature verification
+- ID Token payload validation
+- Access token request handling
+- UserInfo retrieval
+- Attribute processing
+- Final response generation
+
+All external interactions are mocked to isolate endpoint logic.
+
+#### Notes-TCH
+
+- This test simulates an OIDC authorization callback flow.
+- Cryptographic validation and HTTP calls are mocked.
+- The test validates endpoint orchestration rather than cryptographic correctness.
+- Intended as an integration-style unit test.
+
+
 ### test_authorization_handler
 #### TAH-Dependencies
-To test the following class, we need to install the dependencies listed below.
-After activating our virtual environment ([test_venv]), install the following packages:
+Activate the virtual environment, then install:
 ````
 pip install git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2
 ````
@@ -85,18 +122,32 @@ pip install git+https://github.com/italia/eudi-wallet-it-python
 pip install pymongo==4.10.1
 ````
 #### TAH-run
-To execute the test cases, run the following command:
+run:
 ```` 
 pytest backends/cieoidc/tests/test_authorization_handler.py -v
 ```` 
+#### TAH-Test-Coverage
+##### TAH-US01
+Validates the validate_configs method with a correct configuration.
 
-#### TAH-US01
-This use case, US01, is used to test the validate_configs method. We expect a successful result.
+##### TAH-US02
+Validates behavior when a required configuration field is missing.
+An exception is expected.
 
-#### TAH-US02
-This use case (US02) is used to test a missing field in the validate_configs method. We expect an exception to be raised.
+##### TAH-US03
+Tests the standard authorization flow.
 
-#### TAH-US03
-This use case (US03) is used to test a happy path.
+##### TAH-US04
+Validates PKCE length configuration.
 
+##### TAH-US05
+Tests the URI generation logic.
 
+##### TAH-US06
+Tests the internal insert method.
+
+#### Notes-TAH
+
+- Tests rely on real dependencies (SATOSA, MongoDB driver, cryptography stack).
+- These tests should be treated as integration-level tests.
+- Suitable for local execution and CI pipelines.

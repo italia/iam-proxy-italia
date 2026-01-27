@@ -120,7 +120,7 @@ def test_us02(minimal_config):
 @patch("backends.cieoidc.utils.helpers.jwtse.create_jws")
 @patch("backends.cieoidc.utils.helpers.misc.get_key")
 @patch("satosa.response.Redirect")
-def test_endpoint_happy_path(
+def test_us03(
     redirect_mock,
     get_key_mock,
     create_jws_mock,
@@ -139,14 +139,14 @@ def test_endpoint_happy_path(
 
 
 
-def test_pkce_generation_missing_length(handler):
+def test_us04(handler):
     handler.config["metadata"]["openid_relying_party"]["code_challenge"]["length"] = None
 
     with pytest.raises(ValueError):
         handler._AuthorizationHandler__pkce_generation({})
 
 
-def test_generate_uri():
+def test_us05():
     authz_data = {
         "client_id": "client123",
         "scope": "openid",
@@ -165,7 +165,7 @@ def test_generate_uri():
 
 
 @patch("backends.cieoidc.models.oidc_auth.OidcAuthentication")
-def test_insert_called(mock_auth, handler):
+def test_us06(mock_auth, handler):
     handler._db_engine.add_session = MagicMock(return_value=1)
 
     auth_obj = {
