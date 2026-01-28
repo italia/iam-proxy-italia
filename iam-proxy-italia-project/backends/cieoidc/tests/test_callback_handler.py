@@ -7,6 +7,28 @@ from ..utils.clients.oidc import OidcUserInfo
 
 
 
+@pytest.fixture(autouse=True)
+def mock_db_engine():
+    with patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.OidcDbEngine"
+    ) as mock_engine:
+        instance = mock_engine.return_value
+        instance.connect.return_value = None
+        instance.is_connected.return_value = True
+        instance.get_sessions.return_value = [{
+            "state": "dummy_state",
+            "provider_id": "http:/localhost:8002/oidc/op",
+            "client_id": "client123",
+            "data": '{"redirect_uri":"http://localhost/cb"}',
+            "provider_configuration": {
+                "openid_provider": {
+                    "token_endpoint": "http://op/token"
+                }
+            }
+        }]
+        instance.update_session.return_value = True
+        yield
+
 
 @pytest.fixture
 def handler():
@@ -34,9 +56,21 @@ def handler():
         trust_evaluator=trust_evaluator
     )
 
+
+@pytest.mark.parametrize("qs_params", [
+    {"error": "invalid_request"},
+    {"state": None},
+    {"code": None},
+])
+def test_us02(handler, qs_params):
+    context = Context()
+    context.qs_params = qs_params
+    with pytest.raises(Exception):
+        handler.endpoint(context)
+
 @patch.object(OidcUserInfo, "get_userinfo", return_value={"email": "test@example.com"})
 @pytest.mark.parametrize("state, code, iss", [("dummy_state", "dummy_code", "http:/localhost:8002/oidc/op")])
-def test_endpoint_happy_path(handler, state, code, iss):
+def test_us01(handler, state, code, iss):
     context = Context()
     context.qs_params = {"state": state, "code": code, "iss": iss}
 
@@ -57,4 +91,5 @@ def test_endpoint_happy_path(handler, state, code, iss):
          }):
         response = handler.endpoint(context)
         assert response
+
 

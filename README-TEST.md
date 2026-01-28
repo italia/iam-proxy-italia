@@ -13,6 +13,7 @@ in the "iam-proxy-italia" project.
    2. [RUN](#TCH-run)
    3. [TEST-COVERAGE](#TCH-Test-Coverage)
       1. [US01-Happy path–Authorization callback](#TCH-US01)
+      2. [US02-Invalid requeste](#TCH-US02)
    4. [NOTES](#Notes-TCH)
 4. [TEST_AUTHORIZATION_HANDLER](#test_authorization_handler)
    1. [Dependencies](#TAH-Dependencies)
@@ -97,6 +98,11 @@ Covered aspects:
 - Final response generation
 
 All external interactions are mocked to isolate endpoint logic.
+
+##### TCH-US02
+
+Validates request.
+An exception is expected.
 
 #### Notes-TCH
 
