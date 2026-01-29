@@ -12,7 +12,7 @@ We assume that the project eudi-wallet-it-python has been cloned in the folder `
 
 ## Step 1: Set environment variable
 
-Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the terminal with the command `export SATOSA_DEBUG=true`, or by updating the file [.env](Docker-compose/.env) by appending the entry `SATOSA_DEBUG=true`.
+Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the terminal with the command `export SATOSA_DEBUG=true`, or by updating the file `.env` in the `Docker-compose` directory (create it from [env.example](Docker-compose/env.example)) by appending the entry `SATOSA_DEBUG=true`.
 
 **Note:** The `.env` file does not exist by default. From the `Docker-compose` directory run `cp env.example .env`, then edit `.env` as needed.
 

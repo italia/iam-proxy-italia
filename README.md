@@ -174,10 +174,7 @@ Here something that you should know before start.
 - [aws-saml-proxy](https://github.com/senorkrabs/aws-saml-proxy)
 - [satosa-oidc-to-sam](https://github.com/daserzw/satosa-oidc-to-saml)
 - [SaToSa training aarc project](https://aarc-project.eu/wp-content/uploads/2019/03/SaToSa_Training.pdf)
-- [IDP/SP Discovery service](https://medium.com/@sagarag/reloading-saml-idp-discovery-693b6bff45f0)
 - [SATOSA frontend documentation](https://github.com/IdentityPython/SATOSA/blob/master/doc/README.md#frontend)
-- [saml2.0 IdP and SP for tests](https://samltest.id/)
-- [SPID QAD (Quadro di Riferimento)](https://www.spid.gov.it/assets/download/SPID_QAD.pdf)
 
 ## Authors
 

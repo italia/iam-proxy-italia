@@ -69,7 +69,7 @@ db.client.insertOne(
 
 ### Using Docker
 
-When using docker-compose in [Docker-compose](./Docker-compose) all operations described in section  [Install and configure](#install-and-configure) are executed  by the init script [init-mongo.sh](./compose-Satosa-Saml2Spid/init-mongo.sh) at the first start o the container.
+When using docker-compose in [Docker-compose](./Docker-compose) all operations described in section  [Install and configure](#install-and-configure) are executed  by the init script [init-mongo.sh](./Docker-compose/mongo/init-mongo.sh) at the first start o the container.
 
 #### set environment in .env
 

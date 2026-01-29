@@ -50,7 +50,7 @@ The [run-docker-compose.sh](./run-docker-compose.sh.md) script can start all pro
 | mongo       | satosa-mongo, satosa-nginx, iam-proxy-italia
 | mongexpress | satosa-mongo, satosa-mongo-express, satosa-nginx, iam-proxy-italia
 
-#### Profile by option in [run-docker-compose.sh](./run-docker-compose.sh)
+#### Profile by option in [run-docker-compose.sh](../Docker-compose/run-docker-compose.sh)
 
 | Option | Profile
 | ------ | -------
