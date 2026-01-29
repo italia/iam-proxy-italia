@@ -20,5 +20,5 @@ jobs:
       - name: Lychee link checker
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --verbose --no-progress README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
+          args: --verbose --no-progress --exclude 'localhost' README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
           fail: true
