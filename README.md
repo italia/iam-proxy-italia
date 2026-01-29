@@ -90,19 +90,19 @@ connection for the download of the docker images.
 
 For the setup of this project, the following dependency must be installed in your machine:
   
-  - Python 3.10 or higher
+  - Python 3.10 or higher (see `pyproject.toml` for `requires-python`)
   - Git
   - Docker
 
 ### Setup
 
-If you want to deploy IAM Proxy Italia without using Docker, all the setup instructions for your configuration are available in [README-SETUP.md](README-Setup.md).
+If you want to deploy IAM Proxy Italia without using Docker, all the setup instructions for your configuration are available in [README-Setup.md](README-Setup.md).
 
 ### Docker Compose
 
 This project uses Docker, all the instructions to configure this project using the official docker images are available [here](Docker-compose/README.md).
 
-The docker compose uses the enviroment variables as documented [here](README-Setup.md#configuration-by-environment-variables).
+The docker compose uses the environment variables as documented [here](README-Setup.md#configuration-by-environment-variables).
 
 <img src="gallery/docker-design.svg" width="512">
 
@@ -133,7 +133,10 @@ If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
 
 If you are using this project as a testing tool or playground for [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) or any other of its Python dependencies, take a look [here](README-Python-Dev.md)
 
-Additional information can be found [here](README-DEV.md).
+Additional information for developers: [README-SAML2-DEV.md](README-SAML2-DEV.md) (SAML2/IdentityPython forks), [README-Python-Dev.md](README-Python-Dev.md) (Python package development with Docker).
+
+Technical documentation (Docker, NGINX, systemd, SATOSA): [docs/](docs/README.md).  
+Contributing (including documentation checklist): [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Warnings
 
@@ -172,9 +175,9 @@ Here something that you should know before start.
 - [satosa-oidc-to-sam](https://github.com/daserzw/satosa-oidc-to-saml)
 - [SaToSa training aarc project](https://aarc-project.eu/wp-content/uploads/2019/03/SaToSa_Training.pdf)
 - [IDP/SP Discovery service](https://medium.com/@sagarag/reloading-saml-idp-discovery-693b6bff45f0)
-- https://github.com/IdentityPython/SATOSA/blob/master/doc/README.md#frontend
+- [SATOSA frontend documentation](https://github.com/IdentityPython/SATOSA/blob/master/doc/README.md#frontend)
 - [saml2.0 IdP and SP for tests](https://samltest.id/)
-- https://www.spid.gov.it/assets/download/SPID_QAD.pdf
+- [SPID QAD (Quadro di Riferimento)](https://www.spid.gov.it/assets/download/SPID_QAD.pdf)
 
 ## Authors
 

@@ -47,11 +47,11 @@ The result is represented by the following services:
 * Django SAML2 SP is published on https://localhost:8000
 * Spid-samlcheck is published on https://localhost:8443
 
-More details ad start option are avable on [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+More details and start options are available on [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
 
 ### Run the Composition for Production Use
 
-Enter in `Docker-compose` directory and make required direcotries for local mounts:
+Enter in `Docker-compose` directory and make required directories for local mounts:
 ```bash
 cd Docker-compose
 mkdir -p ./mongo/db          # DB Data directory
@@ -90,9 +90,10 @@ Run the full demo
 docker compose --profile demo up
 ```
 
-Read the [profiles guide](../docs/docker_compose_profiles.md) for more informations 
+Read the [profiles guide](../docs/docker_compose_profiles.md) for more information 
 
 ### Insights
 
-* More details on prodiles read the [Docker Compose Profiles](../docs/docker_compose_profiles.md) page
-* More details on run-docker-compose,sh read the [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+* More details on profiles read the [Docker Compose Profiles](../docs/docker_compose_profiles.md) page
+* More details on run-docker-compose.sh read the [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+* For common issues (containers, certificates, MongoDB): [docs/TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)

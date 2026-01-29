@@ -1,0 +1,24 @@
+# Check markdown documentation for broken links
+# See https://github.com/lycheeverse/lychee-action
+
+name: Docs link check
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths: [ '**.md', 'docs/**' ]
+  pull_request:
+    branches: [ master, dev ]
+    paths: [ '**.md', 'docs/**' ]
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lychee link checker
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --verbose --no-progress README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
+          fail: true

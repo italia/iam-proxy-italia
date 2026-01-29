@@ -1,6 +1,6 @@
 # Setup
 
-In this section there are all the required information to install, configure and run iam-proxy-italia.
+In this section there are all the required information to install, configure and run iam-proxy-italia. For common issues and solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ### NGINX setup
 
@@ -10,13 +10,13 @@ A valid ssl certificate is needed, to add your certificate you have to override 
 
 ###### Dependencies Ubuntu
 
-```
+```bash
 sudo apt install -y libffi-dev libssl-dev python3-pip xmlsec1 procps libpcre3 libpcre3-dev
 ```
 
 ###### Dependencies Centos/RHEL
 
-```
+```bash
 sudo yum install -y libffi-devel openssl-devel python3-pip xmlsec1 procps pcre pcre-devel
 sudo yum groupinstall "Development Tools"
 sudo yum install -y python3-wheel python3-devel
@@ -26,7 +26,7 @@ sudo yum install -y python3-wheel python3-devel
 
 Within the directory `/{your path}/iam-proxy-italia` execute the following commands:
 
-```
+```bash
 pip install --upgrade pip
 pip install flake8 pipx poetry
 pip install --upgrade packaging
@@ -43,6 +43,8 @@ cd repository
 poetry install
 poetry env info
 ```
+
+**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [README-TEST.md](README-TEST.md)).
 
 ## Configure the Proxy
 
@@ -127,14 +129,14 @@ You can override the configuration of the proxy by settings one or more of the f
 
 If you want to handle metadata file manually create the `metadata/idp` and `metadata/sp` directories, then copy the required metadata:
 
-```
+```bash
 mkdir -p metadata/idp metadata/sp
 wget https://registry.spid.gov.it/metadata/idp/spid-entities-idps.xml -O metadata/idp/spid-entities-idps.xml
 ```
 
 Copy your SP metadata to your Proxy
 
-```
+```bash
 wget https://sp.fqdn.org/saml2/metadata -O metadata/sp/my-sp.xml
 ```
 
@@ -145,7 +147,7 @@ See `iam-proxy-italia-project/conf/{backends,frontends}/$filename` as example.
 
 The proxy backend exposes its SPID metadata at the following url (customizable):
 
-```
+```text
 https://localhost/spidSaml2/metadata
 ```
 
@@ -153,7 +155,7 @@ https://localhost/spidSaml2/metadata
 
 The Proxy metadata must be configured in your SP. Your SP is an entity that's external from this Proxy, eg: shibboleth sp, djangosaml2, another ...
 
-```
+```bash
 wget https://localhost/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid.xml --no-check-certificate
 ```
 
@@ -161,9 +163,9 @@ wget https://localhost/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid
 
 Load spid-saml-check metadata:
 
-````
+```bash
 wget https://localhost:8443/metadata.xml -O metadata/idp/spid-saml-check.xml --no-check-certificate
-````
+```
 
 Start an authentication from your SP.
 
@@ -176,7 +178,7 @@ Load metadata from `https://satosa-nginx/spidSaml2/metadata`.
 
 That's the stdout log of a working instance of SATOSA in uwsgi
 
-```
+```text
 *** Starting uWSGI 2.0.19.1 (64bit) on [Tue Mar 30 17:08:49 2021] ***
 compiled with version: 9.3.0 on 11 September 2020 23:11:42
 os: Linux-5.4.0-70-generic #78-Ubuntu SMP Fri Mar 19 13:29:52 UTC 2021

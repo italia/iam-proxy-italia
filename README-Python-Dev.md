@@ -14,9 +14,11 @@ We assume that the project eudi-wallet-it-python has been cloned in the folder `
 
 Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the terminal with the command `export SATOSA_DEBUG=true`, or by updating the file [.env](Docker-compose/.env) by appending the entry `SATOSA_DEBUG=true`.
 
+**Note:** The `.env` file does not exist by default. From the `Docker-compose` directory run `cp env.example .env`, then edit `.env` as needed.
+
 ## Step 2: Update the docker volume by binding the local development directory
 
-In the file [docker-compose.yml](Docker-example/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
+In the file [docker-compose.yml](Docker-compose/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
     
     volumes:
         - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
@@ -64,7 +66,7 @@ This enables fast updates to your code, that would only require the respawn of t
   - respawn process by touching the uwsgi respawn file (/satosa_proxy/proxy_conf.yaml) through an attached shell
 
 This can be easily achieved by doing a configuration like the one below,
-in the documer compose section about the container iam-proxy-italia
+in the docker compose section about the container iam-proxy-italia
 
 ````
     volumes:

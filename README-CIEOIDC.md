@@ -24,8 +24,8 @@ This backend is designed to integrate cleanly with the SATOSA proxy, enabling le
 4. [Supported Identity Providers](#supported-identity-providers)
 5. [Security Operations](#security-operations)
    1. [Hashing](#hashing)
-   2. [JWS Signing](#JWS-signing)
-   3. [JWE Encryption](#JWE-encryption)
+   2. [JWS Signing](#jws-signing)
+   3. [JWE Encryption](#jwe-encryption)
 6. [JWKS Configuration](#JWKS-configuration)
    1. [Federation JWKS](#federation-jwks)
    2. [Core JWKS](#core-jwks)
@@ -50,6 +50,10 @@ This backend is designed to integrate cleanly with the SATOSA proxy, enabling le
     4. [Additional Notes](#additional-notes)
 12. [Troubleshooting](#troubleshooting)
 13. [Diagram (Mermaid)](#diagram-mermaid)
+
+### General Settings
+
+The following sections describe the CIE OIDC backend configuration options.
 
 ### Configuration File Explained in Detail
 

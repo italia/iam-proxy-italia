@@ -101,6 +101,6 @@ If you want save the NGINX log for this host you can add this directive in the v
 For docker instance the logs are sent to STDOUT and going in docker logs. This directive is normally not needed.
 
 ### Insights
-* For more details on satosa-nginx compose service read [satosa-nginx_compose doc](./satosa-nginx_compose.md)
-* For more details on iam-proxy-italia docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
+* For more details on satosa-nginx compose service read [satosa-nginx_compose_service](./satosa-nginx_compose_service.md)
+* For more details on iam-proxy-italia docker compose profiles read [docker_compose_profiles](./docker_compose_profiles.md)
 * For more details on NGINX try_files directive read the [official docs](https://www.slingacademy.com/article/nginx-try_files-directive-explained-with-examples/)

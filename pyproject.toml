@@ -27,6 +27,14 @@ dependencies = [
     "pydantic (>=2.10.6,<3.0.0)",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "flake8",
+    "spid-sp-test",
+]
+
 [tool.poetry]
 package-mode = false
 
@@ -41,3 +49,16 @@ pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", extras = ["s
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+source = ["backends.cieoidc"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+]
+show_missing = true
+skip_covered = false

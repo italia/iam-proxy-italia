@@ -26,7 +26,7 @@ You can specify one or more profiles with environments:
 COMPOSE_PROFILES=dev,mongo docker compose up
 ```
 
-The [run-docker-compose.sh](./run-docker-compose.sh.md) script can be start all profiles with his options
+The [run-docker-compose.sh](./run-docker-compose.sh.md) script can start all profiles with its options
 
 ### summary tables
 #### Profile by service
@@ -58,8 +58,8 @@ The [run-docker-compose.sh](./run-docker-compose.sh.md) script can be start all 
 | `-m`   | mongo
 | `-M`   | mongoexpress
 | `-d`   | dev
-|        | demo
+| (none) | demo
 
 ### Insights
-* For more details on iam-proxy-italia docker compose read [docker-compose readme page](./docker-compose.md)
-* For more details on iam-proxy-italia docker run-docker-compose.sh read [run-docker-compose.sh page](./run-docker-compose.sh.md)
+* For more details on iam-proxy-italia docker compose read [Docker Compose readme](../Docker-compose/README.md)
+* For more details on run-docker-compose.sh read [run-docker-compose.sh](./run-docker-compose.sh.md)

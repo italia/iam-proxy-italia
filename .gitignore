@@ -46,3 +46,12 @@ Docker-compose/spid_cie_oidc_django
 *.log.*
 *.log
 *.sqlite3
+
+# Local test virtual environment (README-TEST)
+test_venv/
+test_env/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml

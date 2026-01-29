@@ -29,30 +29,47 @@ in the "iam-proxy-italia" project.
 
 ### Prerequisites
 
-Each unit test requires the installation of specific dependencies.
-Below, each unit test will be described along with the dependencies that need to be installed.
-It is recommended to remove the related environment every time a test is completed.
+All runtime dependencies are defined in `pyproject.toml`. Test-related tools (pytest, pytest-cov, flake8, spid-sp-test) are in the optional dependency group `test`, aligned with the [GitHub Actions workflow](.github/workflows/python-app.yml).
 
-Pytest is required:
- ````
-pip install pytest
- ````
+From the project root, install dependencies with Poetry (recommended, same as [README-Setup.md](README-Setup.md)):
+
+```bash
+poetry install --extras test
+```
+
+This installs all dependencies from `pyproject.toml` plus the test extras. Use a dedicated virtual environment (e.g. `poetry config virtualenvs.in-project true` then `poetry install`) and recreate it for each test session to avoid conflicts.
+
+**Optional (for CI-aligned SPID tests):** install system dependency `xmlsec1` if you run spid-sp-test locally:
+
+```bash
+sudo apt install -y xmlsec1
+```
+
 ### test_venv
 
-Install virtual environment support:
-````
- sudo apt install python3.12-venv
- ````
-Create the virtual environment, for example test_venv:
-````
- python3.12 -m venv test_venv
- ````
+Install virtual environment support (example on Debian/Ubuntu):
+
+```bash
+sudo apt install python3.12-venv
+```
+
+Create the virtual environment (Python 3.10+ as per `pyproject.toml`), for example `test_venv`:
+
+```bash
+python3.12 -m venv test_venv
+```
+
 Activate it:
-````
- source test_venv/bin/activate
-````
-All dependencies must be installed inside this environment.
-It is recommended to recreate the environment for each test session to avoid conflicts.
+
+```bash
+source test_venv/bin/activate
+```
+
+Then install the project and test dependencies as in [Prerequisites](#Prerequisites):
+
+```bash
+poetry install --extras test
+```
  
 
 ### test_callback_handler
@@ -62,24 +79,14 @@ The endpoint behavior is tested by mocking all external dependencies (JWKS retri
 userinfo retrieval).
 
 #### Dependencies
-Activate the virtual environment, then install:
-````
-pip install git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2
-````
-````
-pip install pydantic aiohttp cryptography
-````
-````
-pip install git+https://github.com/italia/eudi-wallet-it-python
-````
-```` 
-pip install pymongo==4.10.1
-````
+
+Use the same setup as [Prerequisites](#Prerequisites): activate the virtual environment and ensure dependencies are installed with test extras (`poetry install --extras test`). All required dependencies (SATOSA, pydantic, aiohttp, pymongo, pyeudiw, etc.) are defined in `pyproject.toml`.
+
 #### TCH-run
-run:
-```` 
+
+```bash
 pytest backends/cieoidc/tests/test_callback_handler.py -v
-```` 
+``` 
 
 #### TCH-Test-Coverage
 ##### TCH-US01
@@ -113,25 +120,16 @@ An exception is expected.
 
 
 ### test_authorization_handler
+
 #### TAH-Dependencies
-Activate the virtual environment, then install:
-````
-pip install git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2
-````
-````
-pip install pydantic aiohttp cryptography
-````
-````
-pip install git+https://github.com/italia/eudi-wallet-it-python
-````
-```` 
-pip install pymongo==4.10.1
-````
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
 #### TAH-run
-run:
-```` 
+
+```bash
 pytest backends/cieoidc/tests/test_authorization_handler.py -v
-```` 
+``` 
 #### TAH-Test-Coverage
 ##### TAH-US01
 Validates the validate_configs method with a correct configuration.
