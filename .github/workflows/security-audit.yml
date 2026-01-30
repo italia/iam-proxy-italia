@@ -41,6 +41,19 @@ jobs:
           # satosa is from git (peppelinux/SATOSA in pyproject.toml), not PyPI.
           # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
           # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
-          poetry run pip-audit --desc
+          # ecdsa CVE-2024-23342: not fixable (python-ecdsa considers side-channel out of scope); whitelist per pymdoccbor docs.
+          echo ""
+          echo "##############################################################################"
+          echo "#  ⚠️  WARNING: CVE-2024-23342 (ecdsa) IS WHITELISTED IN THIS AUDIT  ⚠️       #"
+          echo "#  ecdsa Minerva timing side-channel has NO upstream fix.                   #"
+          echo "#  python-ecdsa considers side-channel attacks out of scope.                #"
+          echo "#  Whitelisted per pymdoccbor documentation — risk is accepted.             #"
+          echo "##############################################################################"
+          echo ""
+          poetry run pip-audit --desc --ignore-vuln CVE-2024-23342
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ WARNING: CVE-2024-23342 (ecdsa) whitelisted" >> $GITHUB_STEP_SUMMARY
+          echo "ecdsa Minerva timing side-channel has **no upstream fix**. python-ecdsa considers side-channel attacks out of scope. Whitelisted per pymdoccbor documentation — **risk is accepted**." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
