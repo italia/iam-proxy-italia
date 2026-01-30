@@ -57,7 +57,8 @@ for BRANCH in "${BRANCH_CANDIDATES[@]}"; do
   echo "Checking if branch '$BRANCH' exists in '$PYEUDIW_REPO_NAME'..."
   if git ls-remote --heads "$PYEUDIW_REPO_GIT" "$BRANCH" | grep -q "$BRANCH"; then
     echo "Branch '$BRANCH' found! Patching pyproject.toml..."
-    sed -i "s|git+${PYEUDIW_REPO_URL}|git+${PYEUDIW_REPO_GIT}@${BRANCH}|g" pyproject.toml
+    # Replace git+URL (with or without existing @ref) so we get a single ref, e.g. git+...@2.0.1 -> git+....git@dev
+    sed -i "s|git+${PYEUDIW_REPO_URL}\([^\" ]*\)|git+${PYEUDIW_REPO_GIT}@${BRANCH}|g" pyproject.toml
     sed -i "s|git = \"${PYEUDIW_REPO_URL}\"|git = \"${PYEUDIW_REPO_GIT}\", rev = \"${BRANCH}\"|g" pyproject.toml
     rm -f poetry.lock
     exit 0
