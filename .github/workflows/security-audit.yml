@@ -37,4 +37,10 @@ jobs:
         run: poetry run pip install pip-audit
 
       - name: Audit dependencies for vulnerabilities
-        run: poetry run pip-audit --desc
+        run: |
+          # satosa is from git (peppelinux/SATOSA in pyproject.toml), not PyPI.
+          # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
+          # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
+          poetry run pip-audit --desc
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
