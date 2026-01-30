@@ -28,13 +28,6 @@ test = [
 [tool.poetry]
 package-mode = false
 
-
-[tool.poetry.group.extras.dependencies]
-pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", rev = "2.0.1", extras = ["satosa"]}
-
-[tool.poetry.group.satosa.dependencies]
-pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", rev = "2.0.1", extras = ["satosa"]}
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
