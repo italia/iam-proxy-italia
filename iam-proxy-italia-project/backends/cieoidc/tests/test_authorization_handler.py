@@ -84,11 +84,11 @@ def handler(minimal_config, trust_chain):
         h = AuthorizationHandler(
             config=minimal_config,
             internal_attributes={},
-            base_url="https://proxy",
+            base_url="https://satosa-nginx.example.org",
             name="authz",
             auth_callback_func=MagicMock(),
             converter=MagicMock(),
-            trust_chains={"https://op.example": trust_chain}
+            trust_chains={"http://trust-anchor.example.org:5002": trust_chain}
         )
         return h
 
