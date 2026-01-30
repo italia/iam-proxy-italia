@@ -1,0 +1,40 @@
+# Audit Python dependencies for known vulnerabilities (pip-audit).
+# Runs on push/PR to master and dev; fails if any CVEs are found.
+
+name: Security audit
+
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+    branches: [master, dev]
+
+jobs:
+  audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
+        env:
+          CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+          DEPTH_COMMITS: 50
+        run: bash .github/scripts/patch-pyeudiw-branch.sh
+
+      - name: Install dependencies with Poetry
+        run: |
+          pip install poetry
+          poetry install --extras test
+
+      - name: Install pip-audit
+        run: poetry run pip install pip-audit
+
+      - name: Audit dependencies for vulnerabilities
+        run: poetry run pip-audit --desc

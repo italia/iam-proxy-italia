@@ -1,7 +1,7 @@
 [project]
 name = "iam-proxy-italia"
 version = "3.0"
-description = "IAM Proxy"
+description = "IAM Proxy Italia"
 authors = [
     {name = "Giuseppe De Marco",email = "demarcog83@gmail.com"}
 ]
@@ -11,20 +11,10 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
-    "pymongo (>=4.10.1,<5.0.0)",
-    "satosa-oidcop (>=2.0.0)",
-    "uwsgi (>=2.0.28,<3.0.0)",
-    "jinja2 (>=3.1.5,<4.0.0)",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python",
-    "pillow (>=11.1.0,<12.0.0)",
-    "device-detector (>=5.0,<6)",
-    "satosa (>=8.4,<8.6)",
-    "pymongo (>=4.10.1,<5.0.0)",
-    "requests (>=2.32.3,<3.0.0)",
-    "asyncio (>=3.4.3,<4.0.0)",
+    "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@v4.0.0",
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.0.1",
     "aiohttp (>=3.11.11,<4.0.0)",
-    "pymdoccbor @ git+https://github.com/IdentityPython/pyMDOC-CBOR",
-    "pydantic (>=2.10.6,<3.0.0)",
+    "uwsgi (>=2.0.28,<3.0.0)",
 ]
 
 [project.optional-dependencies]
@@ -40,11 +30,10 @@ package-mode = false
 
 
 [tool.poetry.group.extras.dependencies]
-pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", extras = ["satosa"]}
-
+pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", rev = "2.0.1", extras = ["satosa"]}
 
 [tool.poetry.group.satosa.dependencies]
-pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", extras = ["satosa"]}
+pyeudiw = {git = "https://github.com/italia/eudi-wallet-it-python", rev = "2.0.1", extras = ["satosa"]}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
