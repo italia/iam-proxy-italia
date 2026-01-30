@@ -67,7 +67,24 @@ This solution configures multiple proxy _frontends_ and _backends_
 to get communicating systems facilitating their integrations.
 
 
-## Demo components
+## Demo Components Distributed in this Project
+
+The demo components distributed in this project are used by the [Docker Compose](Docker-compose/README.md) setup.
+
+IAM Proxy Italia demos use [Docker Compose profiles](docs/docker_compose_profiles.md) to choose which services are started.
+
+They live in **`iam-proxy-italia-project-demo-examples`** and are wired in [Docker-compose/docker-compose.yml](Docker-compose/docker-compose.yml) as follows:
+
+| Component | Path | Docker service | Profiles | Description |
+| --------- | -----|----------------|----------|------------- |
+| **Django SAML2 SP** | `djangosaml2_sp/` | `django_sp` | demo, dev | Django-based SAML2 Service Provider to test SPID/SAML2 login via the proxy. |
+| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor` | demo, mongo | CIE OIDC federation authority. |
+| **CIE OIDC provider** | `spid_cie_oidc_django/provider/` | `cie-provider` | demo, mongo | CIE OIDC Identity Provider for CIE OIDC backend flows. |
+| **MongoDB** | — | `satosa-mongo` | demo, mongo, mongoexpress | Session storage for OIDC and OpenID4VC. |
+| **Mongo Express** | — | `satosa-mongo-express` | demo, mongoexpress | Web UI for MongoDB. |
+| **SPID SAML checker** | — | `spid-samlcheck` | demo, dev | SPID metadata and flow checker. |
+
+Additional examples (not run as Compose services): **PySAML2** SP examples (`pysaml2/`, sp-repoze and sp-wsgi) and **JWT/OIDC RP** config (`jwtconnect_python_oidcrp/satosa.json`) for integration reference. See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) for profile options and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh) for startup.
 
 The example project comes with some preconfigured static pages.
 
