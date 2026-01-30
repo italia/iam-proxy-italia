@@ -116,6 +116,8 @@ you can use the command `docker attach iam-proxy-italia` in a new terminal.
 By setting the ENV variable `SATOSA_DEBUG` to `true` you may be able to evaluate the ENV variables in the docker container and check
 that your configuration was succesfully applied, as shown in the picture below.
 
+The following screenshots show container management using **lazydocker** (a terminal UI for Docker).
+
 <img src="docs/images/SATOSA_DEBUG_true.png" width="512">
 
 `SATOSA_DEBUG=true` makes iam-proxy-italia be executed with a debug configuration of uwsgi.
@@ -125,6 +127,21 @@ container, as shown in the picture below.
 
 <img src="docs/images/SATOSA_DEBUG_false.png" width="512">
 
+### Lazydocker
+
+**Lazydocker** is a simple terminal UI for managing Docker containers and Docker Compose projects. Instead of remembering `docker compose` and `docker` CLI options, you can browse stacks, view logs, attach to a container’s stdin, and start/stop/restart services from a single interface.
+
+**Why it matters for this project:** when developing with `SATOSA_DEBUG=true`, you often need to attach to the `iam-proxy-italia` container to hit breakpoints or inspect state. Lazydocker makes it easy to select the container and attach (as in the screenshots above), and to switch between logs, stats, and the shell without leaving the terminal.
+
+**How to get it:**
+
+- **Linux (generic):** download the latest release from [GitHub](https://github.com/jesseduffield/lazydocker/releases) and put the binary in your `PATH`.
+- **Using a package manager:**
+  - **Homebrew (macOS/Linux):** `brew install lazydocker`
+  - **Scoop (Windows):** `scoop install lazydocker`
+- **Docker:** run the official image, e.g.  
+  `docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock lazyteam/lazydocker`  
+  (you need access to the host’s Docker socket).
 
 ### Reload iam-proxy-italia using UWSGI
 

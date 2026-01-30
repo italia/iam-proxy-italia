@@ -114,6 +114,8 @@ this Service Provider is executed by default in the Docker Compose.
 
 For any further detail about the configuration, see [iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md](iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md).
 
+#### Wallet authentication example using OpenID4VP
+
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
 <img src="gallery/wallet-demo.gif" width="768">
@@ -138,7 +140,7 @@ Additional information for developers: [README-SAML2-DEV.md](README-SAML2-DEV.md
 Technical documentation (Docker, NGINX, systemd, SATOSA): [docs/](docs/README.md).  
 Contributing (including documentation checklist): [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### Warnings
+### Recommendations about SAML2
 
 Here something that you should know before start.
 
