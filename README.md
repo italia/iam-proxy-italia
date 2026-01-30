@@ -11,9 +11,10 @@ with the  **Italian Digital Identity Systems**.
 3. [Introduction](#introduction)
 4. [Demo components](#demo-components)
 5. [Setup](#setup)
-6. [For Developers](#for-developers)
-7. [Author](#authors)
-8. [Credits](#credits)
+6. [Configuring Proxy: Backends and Frontends](#configuring-proxy-backends-and-frontends)
+7. [For Developers](#for-developers)
+8. [Author](#authors)
+9. [Credits](#credits)
 
 ## Glossary
 
@@ -106,15 +107,48 @@ The docker compose uses the environment variables as documented [here](README-Se
 
 <img src="gallery/docker-design.svg" width="512">
 
+### Configuring Proxy: Backends and Frontends
 
-### Setup a Djangosaml2 example Service Provider
+The proxy’s behaviour is defined by which **backends** and **frontends** are enabled. The active set is configured in `iam-proxy-italia-project/proxy_conf.yaml` via `BACKEND_MODULES` and `FRONTEND_MODULES`. Comment or uncomment the corresponding lines to enable or disable each module. The configuration files for each component live under `iam-proxy-italia-project/conf/`.
+
+```mermaid
+flowchart LR
+  A[Third party authentication services]
+  B[IAM Proxy Backend]
+  C[IAM Proxy]
+  D[IAM Proxy Frontend]
+  E[SAML2 SP]
+  A --- B --- C --- D --- E
+```
+
+**Backends** (protocol/IdP side; SP/RP facing the proxy):
+
+| Backend | Config file | Notes |
+|--------|-------------|--------|
+| SAML2 Generic | `conf/backends/saml2_backend.yaml` | Generic SAML2 Service Provider. |
+| SAML2 SPID | `conf/backends/spidsaml2_backend.yaml` | SAML2 SP for SPID. |
+| SAML2 CIE | `conf/backends/ciesaml2_backend.yaml` | SAML2 SP for CIE. |
+| OIDC CIE | `conf/backends/cieoidc_backend.yaml` | OIDC RP for SPID/CIE OPs (OpenID Federation). See [README-CIEOIDC.md](README-CIEOIDC.md). |
+| IT-Wallet (OpenID4VP) | `conf/backends/pyeudiw_backend.yaml` | Wallet Relying Party using [pyeudiw](https://github.com/italia/eudi-wallet-it-python). |
+
+**Frontends** (protocol/IdP side; clients talk to the proxy as IdP/OP):
+
+| Frontend | Config file | Notes |
+|----------|-------------|--------|
+| SAML2 Generic | `conf/frontends/saml2_frontend.yaml` | Generic SAML2 Identity Provider. |
+| OIDC-OP (SATOSA-oidcop) | `conf/frontends/oidcop_frontend.yaml` | OAuth2/OIDC Provider via [SATOSA-oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop). Enable by uncommenting its entry in `proxy_conf.yaml` under `FRONTEND_MODULES`. Requires MongoDB; see [README-Setup.md](README-Setup.md) (OIDC and env vars) and [README.mongo.md](README.mongo.md). |
+
+Full setup and customisation (certificates, keys, metadata, environment variables) are described in [README-Setup.md](README-Setup.md).
+
+#### Setup a Djangosaml2 example Service Provider
 
 This project provides an example SAML2 Service Provider for demo purposes, 
 this Service Provider is executed by default in the Docker Compose.
+It requires the [SAML2 frontend](#configuring-backends-and-frontends) to be configured.
 
 For any further detail about the configuration, see [iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md](iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md).
 
-#### Wallet authentication example using OpenID4VP
+##### Wallet authentication example using OpenID4VP
 
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
@@ -123,8 +157,7 @@ Below the demo using the djangosaml2 Service Provider with the Wallet authentica
 
 ## For Developers
 
-If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it.
-Below an example using a djangosaml2 Service Provider:
+If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it. Below an example using a djangosaml2 Service Provider:
 
 ```
 https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080

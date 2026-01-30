@@ -69,6 +69,7 @@ Remember to:
 ### OIDC
 
 This project uses [SATOSA_oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) as OAuth2/OIDC frontend module.
+
 Comment/uncomment the following statement in the proxy_configuration to enable it.
 
 
