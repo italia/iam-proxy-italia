@@ -86,7 +86,9 @@ They live in **`iam-proxy-italia-project-demo-examples`** and are wired in [Dock
 
 Additional examples (not run as Compose services): **PySAML2** SP examples (`pysaml2/`, sp-repoze and sp-wsgi) and **JWT/OIDC RP** config (`jwtconnect_python_oidcrp/satosa.json`) for integration reference. See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) for profile options and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh) for startup.
 
-The example project comes with some preconfigured static pages.
+### Static HTML Pages
+
+The example project comes with some preconfigured static pages, like to one below implementing the Discovery Page Service used to allow users to select the authentication endpoint (which IAM Proxy Italia Backend to use).
 
 <img src="gallery/disco_page.png" width="768">
 
