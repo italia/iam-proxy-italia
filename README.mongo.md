@@ -67,6 +67,8 @@ db.client.insertOne(
 )
 ````
 
+For configuring **additional OIDC clients** (new RPs), the full client document schema, and how to add redirect URIs to an existing client, see [docs/satosa_oidcop_oidc_client_registration.md](docs/satosa_oidcop_oidc_client_registration.md) (aligned with satosa-oidcop unit tests).
+
 ### Using Docker
 
 When using docker-compose in [Docker-compose](./Docker-compose) all operations described in section  [Install and configure](#install-and-configure) are executed  by the init script [init-mongo.sh](./Docker-compose/mongo/init-mongo.sh) at the first start o the container.
