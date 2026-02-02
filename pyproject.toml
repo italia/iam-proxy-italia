@@ -22,8 +22,8 @@ test = [
     "pytest",
     "pytest-cov",
     "flake8",
-    "spid-sp-test",
-    "pytest-asyncio"
+    "spid-sp-test"
+#    "pytest-asyncio"
 ]
 
 [tool.poetry]
