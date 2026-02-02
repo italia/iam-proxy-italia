@@ -17,12 +17,12 @@ def mock_db_engine():
         instance.is_connected.return_value = True
         instance.get_sessions.return_value = [{
             "state": "dummy_state",
-            "provider_id": "http:/localhost:8002/oidc/op",
+            "provider_id": "http://cie-provider.example.org:8002/oidc/op",
             "client_id": "client123",
-            "data": '{"redirect_uri":"http://localhost/cb"}',
+            "data": '{"redirect_uri":"http://satosa-nginx.example.org/cb"}',
             "provider_configuration": {
                 "openid_provider": {
-                    "token_endpoint": "http://op/token"
+                    "token_endpoint": "http:/cie-provider.example.org/op/token"
                 }
             }
         }]
@@ -69,7 +69,7 @@ def test_us02(handler, qs_params):
         handler.endpoint(context)
 
 @patch.object(OidcUserInfo, "get_userinfo", return_value={"email": "test@example.com"})
-@pytest.mark.parametrize("state, code, iss", [("dummy_state", "dummy_code", "http:/localhost:8002/oidc/op")])
+@pytest.mark.parametrize("state, code, iss", [("dummy_state", "dummy_code", "http://cie-provider.example.org:8002/oidc/op")])
 def test_us01(handler, state, code, iss):
     context = Context()
     context.qs_params = {"state": state, "code": code, "iss": iss}
