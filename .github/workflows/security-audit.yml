@@ -1,0 +1,59 @@
+# Audit Python dependencies for known vulnerabilities (pip-audit).
+# Runs on push/PR to master and dev; fails if any CVEs are found.
+
+name: Security audit
+
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+    branches: [master, dev]
+
+jobs:
+  audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
+        env:
+          CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+          DEPTH_COMMITS: 50
+        run: bash .github/scripts/patch-pyeudiw-branch.sh
+
+      - name: Install dependencies with Poetry
+        run: |
+          pip install poetry
+          poetry install --extras test
+
+      - name: Install pip-audit
+        run: poetry run pip install pip-audit
+
+      - name: Audit dependencies for vulnerabilities
+        run: |
+          # satosa is from git (peppelinux/SATOSA in pyproject.toml), not PyPI.
+          # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
+          # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
+          # ecdsa CVE-2024-23342: not fixable (python-ecdsa considers side-channel out of scope); whitelist per pymdoccbor docs.
+          echo ""
+          echo "##############################################################################"
+          echo "#  ⚠️  WARNING: CVE-2024-23342 (ecdsa) IS WHITELISTED IN THIS AUDIT  ⚠️       #"
+          echo "#  ecdsa Minerva timing side-channel has NO upstream fix.                   #"
+          echo "#  python-ecdsa considers side-channel attacks out of scope.                #"
+          echo "#  Whitelisted per pymdoccbor documentation — risk is accepted.             #"
+          echo "##############################################################################"
+          echo ""
+          poetry run pip-audit --desc --ignore-vuln CVE-2024-23342
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ WARNING: CVE-2024-23342 (ecdsa) whitelisted" >> $GITHUB_STEP_SUMMARY
+          echo "ecdsa Minerva timing side-channel has **no upstream fix**. python-ecdsa considers side-channel attacks out of scope. Whitelisted per pymdoccbor documentation — **risk is accepted**." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
