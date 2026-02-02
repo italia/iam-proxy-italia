@@ -55,6 +55,14 @@ in the "iam-proxy-italia" project.
       2. [US02-create_jws](#TJWT-US02)
       3. [US03-verify_at_hash (success)](#TJWT-US03)
       4. [US04-verify_at_hash (failure)](#TJWT-US04)
+      5. [US05-base64url decoding](#TJWT-US05)
+      6. [US06-JWE creation (JSON)](#TJWT-US06)
+      7. [US07-JWE creation (None)](#TJWT-US07)
+      8. [US08-JWE creation (non-JSON-serializable)](#TJWT-US08)
+      9. [US09-JWE decryption (success)](#TJWT-US09)
+      10. [US10-JWE decryption (failure)](#TJWT-US10)
+      11. [US11-at_hash generation (success)](#TJWT-US11)
+      12. [US12-access token verification (failure)](#TJWT-US12)
    4. [NOTES](#Notes-TJWT)
 8. [TEST_MISC_UTILS](#test_misc_utils)
    1. [Dependencies](#TMSC-Dependencies)
@@ -66,7 +74,6 @@ in the "iam-proxy-italia" project.
       4. [US04-get_pkce generates code_verifier and code_challenge](#TMSC-US04)
       5. [US05-http_dict_to_redirect_uri_path converts dictionary to query string](#TMSC-US05)
    4.[NOTES](#Notes-TMSC)
-
 
 ### Prerequisites
 
@@ -280,6 +287,30 @@ pytest backends/cieoidc/tests/utils/test_jwt.py -v
 
 ##### TJWT-US04
 `verify_at_hash` failure process return exception
+
+##### TJWT-US05
+Verifies correct base64url decoding and padding handling for JWT headers and payloads.
+
+##### TJWT-US06
+Ensures JWE creation succeeds with a valid JSON payload and RSA public key.
+
+##### TJWT-US07
+Confirms JWE creation works with a None payload.
+
+##### TJWT-US08
+Validates JWE creation with non-JSON-serializable inputs (e.g. set), ensuring graceful handling.
+
+##### TJWT-US09
+Tests successful JWE decryption using supported encryption algorithms.
+
+##### TJWT-US10
+Verifies that JWE decryption fails when the encryption algorithm is not supported.
+
+##### TJWT-US11
+Confirms correct at_hash generation and validation for access tokens.
+
+##### TJWT-US12
+Ensures access token hash verification fails on invalid at_hash values.
 
 #### Notes-TJWT
 - Tests JWT manipulation and verification.
