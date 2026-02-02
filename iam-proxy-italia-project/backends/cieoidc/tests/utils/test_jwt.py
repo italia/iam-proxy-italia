@@ -1,4 +1,8 @@
 import pytest
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptojwt.jwk.rsa import RSAKey
+from cryptojwt.jwk.ec import ECKey
 from unittest.mock import patch
 from backends.cieoidc.utils.helpers.jwtse import decrypt_jwe
 from cryptojwt.exception import UnsupportedAlgorithm
@@ -8,6 +12,39 @@ from backends.cieoidc.utils.helpers.jwtse import (
     create_jws,
     verify_at_hash,
 )
+
+from backends.cieoidc.utils.helpers.jwtse import (
+    unpad_jwt_head,
+    unpad_jwt_payload,
+    create_jwe,
+    decrypt_jwe,
+    create_jws,
+    verify_jws,
+    verify_at_hash,
+)
+
+from cryptojwt.jws.utils import left_hash
+
+@pytest.fixture
+def rsa_jwk():
+    priv = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+    )
+    key = RSAKey(priv_key=priv, kid="rsa1")
+    return key.serialize(private=True)
+
+
+@pytest.fixture
+def rsa_pub_jwk(rsa_jwk):
+    return {k: v for k, v in rsa_jwk.items() if k != "d"}
+
+
+@pytest.fixture
+def ec_jwk():
+    priv = ec.generate_private_key(ec.SECP256R1())
+    key = ECKey(priv_key=priv, kid="ec1")
+    return key.serialize(private=True)
 
 def test_us01():
     jwt = (
@@ -47,3 +84,104 @@ def test_us04():
         with pytest.raises(Exception):
             verify_at_hash(id_token, "access_token")
 
+
+def test_us05():
+    header = {"alg": "none"}
+    payload = {"a": 1}
+
+    import base64, json
+    jwt = (
+        base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
+        + "."
+        + base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
+        + ".sig"
+    )
+
+    assert unpad_jwt_head(jwt) == header
+    assert unpad_jwt_payload(jwt) == payload
+
+
+def test_us06(rsa_jwk):
+    jwe = create_jwe(
+        {"foo": "bar"},
+        rsa_jwk,
+        default_jwe_alg="RSA-OAEP",
+        default_jwe_enc="A256GCM",
+    )
+    assert isinstance(jwe, str)
+
+
+def test_us07(rsa_jwk):
+    jwe = create_jwe(
+        None,
+        rsa_jwk,
+        default_jwe_alg="RSA-OAEP",
+        default_jwe_enc="A256GCM",
+    )
+    assert isinstance(jwe, str)
+
+
+def test_us08(rsa_jwk):
+    jwe = create_jwe(
+        set([1, 2]),
+        rsa_jwk,
+        default_jwe_alg="RSA-OAEP",
+        default_jwe_enc="A256GCM",
+    )
+    assert isinstance(jwe, str)
+
+
+def test_us09(rsa_jwk):
+    jwe = create_jwe(
+        {"x": 1},
+        rsa_jwk,
+        "RSA-OAEP",
+        "A256GCM",
+    )
+
+    out = decrypt_jwe(
+        jwe,
+        rsa_jwk,
+        "RSA-OAEP",
+        "A256GCM",
+        encryption_alg_values_supported=["RSA-OAEP"],
+    )
+
+    assert out == {"x": 1}
+
+
+def test_us10(rsa_jwk):
+    jwe = create_jwe(
+        {"x": 1},
+        rsa_jwk,
+        "RSA-OAEP",
+        "A256GCM",
+    )
+
+    import pytest
+    from cryptojwt.exception import UnsupportedAlgorithm
+
+    with pytest.raises(UnsupportedAlgorithm):
+        decrypt_jwe(
+            jwe,
+            rsa_jwk,
+            "RSA-OAEP",
+            "A256GCM",
+            encryption_alg_values_supported=[],
+        )
+
+
+def test_us11():
+    access_token = "access"
+    at_hash = left_hash(access_token, "HS256")
+
+    id_token = {"at_hash": at_hash}
+
+    assert verify_at_hash(id_token, access_token) is True
+
+
+def test_us12():
+    import pytest
+
+    with pytest.raises(Exception):
+        verify_at_hash({"at_hash": "wrong"}, "access")
