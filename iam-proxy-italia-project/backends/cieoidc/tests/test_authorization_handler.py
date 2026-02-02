@@ -28,7 +28,7 @@ def minimal_config():
         "metadata": {
             "openid_relying_party": {
                 "client_id": "client123",
-                "redirect_uris": ["https://client/callback"],
+                "redirect_uris": ["https://localhost/callback"],
                 "scope": "openid",
                 "claim": {"userinfo": {"email": None}},
                 "response_types": ["code"],
@@ -44,7 +44,7 @@ def minimal_config():
                     "metadata": {
                         "openid_relying_party": {
                             "client_id": "client123",
-                            "redirect_uris": ["https://client/callback"]
+                            "redirect_uris": ["https://localhost/callback"]
                         }
                     }
                 }
@@ -56,18 +56,18 @@ def minimal_config():
 @pytest.fixture
 def context():
     ctx = MagicMock()
-    ctx.internal_data = {"target_entity_id": "https://op.example"}
+    ctx.internal_data = {"target_entity_id": "http://trust-anchor.example.org:5002"}
     return ctx
 
 
 @pytest.fixture
 def trust_chain():
     tc = MagicMock()
-    tc.subject = "https://op.example"
+    tc.subject = "http://trust-anchor.example.org:5002"
     tc.subject_configuration.payload = {
         "metadata": {
             "openid_provider": {
-                "authorization_endpoint": "https://op.example/auth"
+                "authorization_endpoint": "http://trust-anchor.example.org:5002/auth"
             }
         }
     }
