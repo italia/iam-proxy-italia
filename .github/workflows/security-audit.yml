@@ -16,14 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Upgrade pip to safe version
-        run: |
-          python -m pip install --upgrade "pip>=26.0"
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          
+      - name: Upgrade pip to safe version
+        run: |
+          python -m pip install --upgrade "pip>=26.0"
 
       - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
         env:
