@@ -26,6 +26,54 @@ in the "iam-proxy-italia" project.
       5. [US05-URI generation](#TAH-US05)
       6. [US06-Private insert method](#TAH-US06)
    4. [NOTES](#Notes-TAH)
+5. [TEST_HTTP_UTILS](#test_http_utils)
+   1. [Dependencies](#THTTP-Dependencies)
+   2. [RUN](#THTTP-run)
+   3. [TEST-COVERAGE](#THTTP-Test-Coverage)
+      1. [US01-http_get_sync (success)](#THTTP-US01)
+      2. [US02-http_get_sync (failure)](#THTTP-US02)
+      3. [US03-http_get_sync (failure)](#THTTP-US03)
+      4. [US04-http_get_sync (success)](#THTTP-US04)
+      5. [US05-http_get_async (failure)](#THTTP-US05)
+      6. [US06-cacheable_get_http_url (success)](#THTTP-US06)
+      7. [US07-cacheable_get_http_url (failure)](#THTTP-US07)
+   4. [NOTES](#Notes-THTTP)
+6. [TEST_JWK_UTILS](#test_jwk_utils)
+   1. [Dependencies](#TJWK-Dependencies)
+   2. [RUN](#TJWK-run)
+   3. [TEST-COVERAGE](#TJWK-Test-Coverage)
+      1. [US01-create_jwk](#TJWK-US01)
+      2. [US02-public_jwk_from_private_jwk](#TJWK-US02)
+      3. [US03-private_pem_from_jwk](#TJWK-US03)
+      4. [US04-public_pem_from_jwk](#TJWK-US04)
+   4. [NOTES](#Notes-TJWK)
+7. [TEST_JWT_UTILS](#test_jwt_utils)
+   1. [Dependencies](#TJWT-Dependencies)
+   2. [RUN](#TJWT-run)
+   3. [TEST-COVERAGE](#TJWT-Test-Coverage)
+      1. [US01-unpad_jwt_payload](#TJWT-US01)
+      2. [US02-create_jws](#TJWT-US02)
+      3. [US03-verify_at_hash (success)](#TJWT-US03)
+      4. [US04-verify_at_hash (failure)](#TJWT-US04)
+      5. [US05-base64url decoding](#TJWT-US05)
+      6. [US06-JWE creation (JSON)](#TJWT-US06)
+      7. [US07-JWE creation (None)](#TJWT-US07)
+      8. [US08-JWE creation (non-JSON-serializable)](#TJWT-US08)
+      9. [US09-JWE decryption (success)](#TJWT-US09)
+      10. [US10-JWE decryption (failure)](#TJWT-US10)
+      11. [US11-at_hash generation (success)](#TJWT-US11)
+      12. [US12-access token verification (failure)](#TJWT-US12)
+   4. [NOTES](#Notes-TJWT)
+8. [TEST_MISC_UTILS](#test_misc_utils)
+   1. [Dependencies](#TMSC-Dependencies)
+   2. [RUN](#TMSC-run)
+   3. [TEST-COVERAGE](#TMSC-Test-Coverage)
+      1. [US01-make_timezone_aware (success)](#TMSC-US01)
+      2. [US02-make_timezone_aware (failure)](#TMSC-US02)
+      3. [US03-random_token generates string](#TMSC-US03)
+      4. [US04-get_pkce generates code_verifier and code_challenge](#TMSC-US04)
+      5. [US05-http_dict_to_redirect_uri_path converts dictionary to query string](#TMSC-US05)
+   4.[NOTES](#Notes-TMSC)
 
 ### Prerequisites
 
@@ -112,7 +160,6 @@ Validates request.
 An exception is expected.
 
 #### Notes-TCH
-
 - This test simulates an OIDC authorization callback flow.
 - Cryptographic validation and HTTP calls are mocked.
 - The test validates endpoint orchestration rather than cryptographic correctness.
@@ -151,7 +198,150 @@ Tests the URI generation logic.
 Tests the internal insert method.
 
 #### Notes-TAH
-
 - Tests rely on real dependencies (SATOSA, MongoDB driver, cryptography stack).
 - These tests should be treated as integration-level tests.
 - Suitable for local execution and CI pipelines.
+
+
+### test_http_utils
+### THTTP-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### THTTP-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_http.py -v
+``` 
+#### THTTP-Test-Coverage
+##### THTTP-US01
+`http_get_sync` process success
+
+##### THTTP-US02
+`http_get_sync` get 404 return `HttpError`
+
+##### THTTP-US03
+`http_get_sync` get ConnectionError return `HttpError`
+
+##### THTTP-US04
+`http_get_async` process success
+
+##### THTTP-US05
+`http_get_async` connection error return `HttpError`
+
+##### THTTP-US06
+`cacheable_get_http_url` OK
+
+##### THTTP-US07
+`cacheable_get_http_url` invalid parameters return `ValueError`
+
+#### Notes-THTTP
+- Tests synchronous and asynchronous HTTP handling.
+- Tests the cacheable URL function.
+
+### test_jwk_utils
+### TJWK-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TJWK-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_jwk.py -v
+``` 
+#### TJWK-Test-Coverage
+##### TJWK-US01
+`create_jwk` generates RSA JWK with `kid`
+
+##### TJWK-US02
+`public_jwk_from_private_jwk` removes d, keeps `kid`
+
+##### TJWK-US03
+`private_pem_from_jwk` generates private PEM
+
+##### TJWK-US04
+`public_pem_from_jwk` generates public PEM
+
+#### Notes-TJWK
+- Tests RSA key creation and conversion.
+
+### test_jwt_utils
+### TJWT-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TJWT-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_jwt.py -v
+``` 
+#### TJWT-Test-Coverage
+##### TJWT-US01
+`unpad_jwt_payload` extracts JWT payload
+
+##### TJWT-US02
+`create_jws` generates JWS
+
+##### TJWT-US03
+`verify_at_hash` process success
+
+##### TJWT-US04
+`verify_at_hash` failure process return exception
+
+##### TJWT-US05
+Verifies correct base64url decoding and padding handling for JWT headers and payloads.
+
+##### TJWT-US06
+Ensures JWE creation succeeds with a valid JSON payload and RSA public key.
+
+##### TJWT-US07
+Confirms JWE creation works with a None payload.
+
+##### TJWT-US08
+Validates JWE creation with non-JSON-serializable inputs (e.g. set), ensuring graceful handling.
+
+##### TJWT-US09
+Tests successful JWE decryption using supported encryption algorithms.
+
+##### TJWT-US10
+Verifies that JWE decryption fails when the encryption algorithm is not supported.
+
+##### TJWT-US11
+Confirms correct at_hash generation and validation for access tokens.
+
+##### TJWT-US12
+Ensures access token hash verification fails on invalid at_hash values.
+
+#### Notes-TJWT
+- Tests JWT manipulation and verification.
+
+### test_misc_utils
+### TMSC-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TMSC-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_misc.py -v
+``` 
+#### TMSC-Test-Coverage
+##### TMSC-US01
+`make_timezone_aware` (success, tzinfo set)
+
+##### TMSC-US02
+`make_timezone_aware` (failure, ValueError)
+
+##### TMSC-US03
+`random_token` generates string
+
+##### TMSC-US04
+`get_pkce` generates `code_verifier` and `code_challenge`
+
+##### TMSC-US05
+`http_dict_to_redirect_uri_path` converts dictionary to query string
+
+#### Notes-TMSC
+- Tests general utility functions.
+- No network or cryptography required.
+- Supports OIDC flows and internal data handling.
