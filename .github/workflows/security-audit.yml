@@ -21,40 +21,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Update pip and setuptools (NEW) 
-      - name: Upgrade pip and setuptools
-        run: |
-          python -m pip install --upgrade "pip>=26.0" "setuptools>=70.1" wheel
-
-      # Update dipendenze di sistema per uWSGI (NEW)
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential python3-dev libssl-dev libxml2-dev zlib1g-dev
-
       - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
         env:
           CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
           TARGET_BRANCH: ${{ github.base_ref || 'master' }}
           DEPTH_COMMITS: 50
         run: bash .github/scripts/patch-pyeudiw-branch.sh
-      
-      #  OLD
-      # - name: Install dependencies with Poetry
-      #   run: |
-      #     pip install poetry
-      #     poetry install --extras test
 
-      # - name: Install pip-audit
-      #   run: poetry run python -m pip install --upgrade "pip>=26.0"
-
-      # NEW FLOW FOR TESTING
       - name: Install dependencies with Poetry
         run: |
-          python -m pip install --upgrade poetry
+          pip install poetry
           poetry install --extras test
-          # Upgrade pip in Poetry virtualenv to avoid pip vulnerabilities
-          poetry run python -m pip install --upgrade "pip>=26.0"
 
       - name: Install pip-audit
         run: poetry run pip install pip-audit

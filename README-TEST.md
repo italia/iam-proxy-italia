@@ -26,7 +26,25 @@ in the "iam-proxy-italia" project.
       5. [US05-URI generation](#TAH-US05)
       6. [US06-Private insert method](#TAH-US06)
    4. [NOTES](#Notes-TAH)
-5. [TEST_HTTP_UTILS](#test_http_utils)
+5. [TEST_FEDERATION](#test_federation)
+   1. [Dependencies](#TFD-Dependencies)
+   2. [RUN](#TFD-run)
+   3. [TEST-COVERAGE](#TFD-Test-Coverage)
+      1. [US01-is_leaf (success)](#TFD-US01)
+      2. [US02-is_leaf (failure)](#TFD-US02)
+      3. [US03-public_jwks](#TFD-US03)
+      4. [US04-pems_as_dict](#TFD-US04)
+      5. [US05-pems_as_json](#TFD-US05)
+      6. [US06-kids](#TFD-US06)
+      7. [US07-type_property](#TFD-US07)
+      8. [US08-is_leaf_property](#TFD-US08)
+      9. [US09-entity_configuration_as_dict](#TFD-US09)
+      10. [US10-entity_configuration_as_json](#TFD-US10)
+      11. [US11-entity_configuration_as_jws](#TFD-US11)
+      12. [US12-fetch_endpoint](#TFD-US12)
+      13. [US13-set_jwks_as_array](#TFD-US13)
+   4. [NOTES](#Notes-TFD)
+6. [TEST_HTTP_UTILS](#test_http_utils)
    1. [Dependencies](#THTTP-Dependencies)
    2. [RUN](#THTTP-run)
    3. [TEST-COVERAGE](#THTTP-Test-Coverage)
@@ -38,7 +56,7 @@ in the "iam-proxy-italia" project.
       6. [US06-cacheable_get_http_url (success)](#THTTP-US06)
       7. [US07-cacheable_get_http_url (failure)](#THTTP-US07)
    4. [NOTES](#Notes-THTTP)
-6. [TEST_JWK_UTILS](#test_jwk_utils)
+7. [TEST_JWK_UTILS](#test_jwk_utils)
    1. [Dependencies](#TJWK-Dependencies)
    2. [RUN](#TJWK-run)
    3. [TEST-COVERAGE](#TJWK-Test-Coverage)
@@ -47,7 +65,7 @@ in the "iam-proxy-italia" project.
       3. [US03-private_pem_from_jwk](#TJWK-US03)
       4. [US04-public_pem_from_jwk](#TJWK-US04)
    4. [NOTES](#Notes-TJWK)
-7. [TEST_JWT_UTILS](#test_jwt_utils)
+8. [TEST_JWT_UTILS](#test_jwt_utils)
    1. [Dependencies](#TJWT-Dependencies)
    2. [RUN](#TJWT-run)
    3. [TEST-COVERAGE](#TJWT-Test-Coverage)
@@ -64,7 +82,7 @@ in the "iam-proxy-italia" project.
       11. [US11-at_hash generation (success)](#TJWT-US11)
       12. [US12-access token verification (failure)](#TJWT-US12)
    4. [NOTES](#Notes-TJWT)
-8. [TEST_MISC_UTILS](#test_misc_utils)
+9. [TEST_MISC_UTILS](#test_misc_utils)
    1. [Dependencies](#TMSC-Dependencies)
    2. [RUN](#TMSC-run)
    3. [TEST-COVERAGE](#TMSC-Test-Coverage)
@@ -74,30 +92,30 @@ in the "iam-proxy-italia" project.
       4. [US04-get_pkce generates code_verifier and code_challenge](#TMSC-US04)
       5. [US05-http_dict_to_redirect_uri_path converts dictionary to query string](#TMSC-US05)
    4. [NOTES](#Notes-TMSC)
-9. [TEST_MONGO_STORAGE](#test_mongo_storage)
-   1. [Dependencies](#TMSTO-Dependencies)
-   2. [RUN](#TMSTO-run)
-   3. [TEST-COVERAGE](#TMSTO-Test-Coverage)
-      1. [US01-connect](#TMSTO-US01)
-      2. [US02-close](#TMSTO-US02)
-      3. [US03-is_connected (failure)](#TMSTO-US03)
-      4. [US04-is_connected (failure)](#TMSTO-US04)
-      5. [US05-is_connected (success)](#TMSTO-US05)
-      6. [US06-to_doc_with_uuid](#TMSTO-US06)
-      7. [US07-from_doc_with_binary_id](#TMSTO-US07)
-      8. [US08-add (success)](#TMSTO-US08)
-      9. [US09-add (failure)](#TMSTO-US09)
-      10. [US10-update (failure)](#TMSTO-US10)
-      11. [US11-update (success)](#TMSTO-US11)
-      12. [US12-remove_with_objectid](#TMSTO-US12)
-      13. [US13-find_by_id (failure)](#TMSTO-US13)
-      14. [US14-find_all](#TMSTO-US14)
-      15. [US15-add_session](#TMSTO-US15)
-      16. [US16-update_session](#TMSTO-US16)
-      17. [US17-to_uuid (success)](#TMSTO-US17)
-      18. [US18-to_uuid (failure)](#TMSTO-US18)
-   4. [NOTES](#Notes-TMSTO)
-10. [TEST_OIDC_DB_ENGINE](#test_oidc_db_engine)
+10. [TEST_MONGO_STORAGE](#test_mongo_storage)
+    1. [Dependencies](#TMSTO-Dependencies)
+    2. [RUN](#TMSTO-run)
+    3. [TEST-COVERAGE](#TMSTO-Test-Coverage)
+       1. [US01-connect](#TMSTO-US01)
+       2. [US02-close](#TMSTO-US02)
+       3. [US03-is_connected (failure)](#TMSTO-US03)
+       4. [US04-is_connected (failure)](#TMSTO-US04)
+       5. [US05-is_connected (success)](#TMSTO-US05)
+       6. [US06-to_doc_with_uuid](#TMSTO-US06)
+       7. [US07-from_doc_with_binary_id](#TMSTO-US07)
+       8. [US08-add (success)](#TMSTO-US08)
+       9. [US09-add (failure)](#TMSTO-US09)
+       10. [US10-update (failure)](#TMSTO-US10)
+       11. [US11-update (success)](#TMSTO-US11)
+       12. [US12-remove_with_objectid](#TMSTO-US12)
+       13. [US13-find_by_id (failure)](#TMSTO-US13)
+       14. [US14-find_all](#TMSTO-US14)
+       15. [US15-add_session](#TMSTO-US15)
+       16. [US16-update_session](#TMSTO-US16)
+       17. [US17-to_uuid (success)](#TMSTO-US17)
+       18. [US18-to_uuid (failure)](#TMSTO-US18)
+    4. [NOTES](#Notes-TMSTO)
+11. [TEST_OIDC_DB_ENGINE](#test_oidc_db_engine)
     1. [Dependencies](#TDBE-Dependencies)
     2. [RUN](#TDBE-run)
     3. [TEST-COVERAGE](#TDBE-Test-Coverage)
@@ -110,7 +128,7 @@ in the "iam-proxy-italia" project.
        7. [US07-get_sessions](#TDBE-US07)
        8. [US08-prepare_for_insert](#TDBE-US08)
     4. [NOTES](#Notes-TDBE)
-11. [TEST_ENTITY_CONFIGURATION](#test_entity_configuration)
+12. [TEST_ENTITY_CONFIGURATION](#test_entity_configuration)
     1. [Dependencies](#TEC-Dependencies)
     2. [RUN](#TEC-run)
     3. [TEST-COVERAGE](#TEC-Test-Coverage)
@@ -250,6 +268,137 @@ Tests the internal insert method.
 - These tests should be treated as integration-level tests.
 - Suitable for local execution and CI pipelines.
 
+
+
+### test_federation
+### TFD-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TFD-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_jwt.py -v
+``` 
+#### TFD-Test-Coverage
+##### TFD-US01
+Validates that the `is_leaf` helper function returns `True` when metadata contains a valid OpenID leaf entity type (e.g. openid_relying_party).
+
+##### TFD-US02
+Validates that the `is_leaf` helper function returns `None` when metadata does not represent a leaf entity.
+
+##### TFD-US03
+Validates the `public_jwks` property:
+- Private RSA JWKs are converted to public keys
+- Only public key material is exposed
+- The `kid` value is preserved
+All key conversion and serialization logic is mocked.
+
+##### TFD-US04
+Validates the `pems_as_dict` property:
+- PEMs are indexed by `kid`
+- Each key contains both `private` and `public` PEM values
+PEM generation helpers are mocked.
+
+##### TFD-US05
+Validates JSON serialization of PEM data:
+- `pems_as_json` returns a valid JSON string
+- The JSON payload matches the dictionary returned by `pems_as_dict`
+
+##### TFD-US06
+Validates the `kids` property:
+- Returns the list of key identifiers extracted from the configured JWKS
+
+##### TFD-US07
+Validates the `type` property:
+- Returns the list of entity types derived from metadata keys
+
+##### TFD-US08
+Validates the `is_leaf` property on the entity instance:
+- Correctly reflects leaf entity status based on metadata
+
+##### TFD-US09
+Validates `entity_configuration_as_dict`:
+- `exp` is generated via `exp_from_now`
+- `iat` is generated via `iat_now`
+- `iss` matches the entity subject (sub)
+- Public JWKS are included
+- Metadata is preserved
+Time helpers are mocked for deterministic output.
+##### TFD-US10
+Validates JSON serialization of the entity configuration:
+- Returned value is valid JSON
+- JSON content matches the source dictionary
+
+##### TFD-US11
+Validates signed entity configuration generation:
+- Signing is delegated to the create_jws helper
+- A non-empty JWS string is returned
+- The signing helper is invoked exactly once
+No real cryptographic signing is performed.
+
+##### TFD-US12
+Validates federation metadata handling:
+- fetch_endpoint is correctly extracted from federation_entity metadata when present
+
+##### TFD-US13
+Validates JWKS normalization logic:
+- `jwks_core` is converted to a list when provided as a dictionary
+- `jwks_fed` is converted to a list when provided as a dictionary
+
+
+#### Notes-TFD
+- Tests JWT manipulation and verification.
+
+### test_jwt_utils
+### TJWT-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TJWT-run
+
+```bash
+pytest backends/cieoidc/tests/utils/test_jwt.py -v
+``` 
+#### TJWT-Test-Coverage
+##### TJWT-US01
+`unpad_jwt_payload` extracts JWT payload
+
+##### TJWT-US02
+`create_jws` generates JWS
+
+##### TJWT-US03
+`verify_at_hash` process success
+
+##### TJWT-US04
+`verify_at_hash` failure process return exception
+
+##### TJWT-US05
+Verifies correct base64url decoding and padding handling for JWT headers and payloads.
+
+##### TJWT-US06
+Ensures JWE creation succeeds with a valid JSON payload and RSA public key.
+
+##### TJWT-US07
+Confirms JWE creation works with a None payload.
+
+##### TJWT-US08
+Validates JWE creation with non-JSON-serializable inputs (e.g. set), ensuring graceful handling.
+
+##### TJWT-US09
+Tests successful JWE decryption using supported encryption algorithms.
+
+##### TJWT-US10
+Verifies that JWE decryption fails when the encryption algorithm is not supported.
+
+##### TJWT-US11
+Confirms correct at_hash generation and validation for access tokens.
+
+##### TJWT-US12
+Ensures access token hash verification fails on invalid at_hash values.
+
+#### Notes-TJWT
+- Tests JWT manipulation and verification.
 
 ### test_http_utils
 ### THTTP-Dependencies
