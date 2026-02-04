@@ -27,9 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install xmlsec1
-        run: sudo apt-get install -y xmlsec1
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -39,7 +36,6 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install flake8
-          pip install spid-sp-test
 
       - name: Inspect Python dependencies
         run: |
@@ -86,19 +82,25 @@ jobs:
 
       - name: spid-sp-test SPID metadata, requests and responses
         run: |
-          cd Docker-compose/iam-proxy-italia-project
-          spid_sp_test --idp-metadata > metadata/idp/spid-sp-test.xml
-          spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+          mkdir -p Docker-compose/iam-proxy-italia-project/metadata/idp
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --idp-metadata > Docker-compose/iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
 
       - name: spid-sp-test CIE id metadata
         run: |
-          cd Docker-compose/iam-proxy-italia-project
-          spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
 
       - name: spid-sp-test eIDAS FiCEP metadata
         run: |
-          cd Docker-compose/iam-proxy-italia-project
-          spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
 
   coverage:
     name: Coverage (CIE OIDC backend)
