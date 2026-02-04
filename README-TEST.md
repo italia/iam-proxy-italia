@@ -73,7 +73,55 @@ in the "iam-proxy-italia" project.
       3. [US03-random_token generates string](#TMSC-US03)
       4. [US04-get_pkce generates code_verifier and code_challenge](#TMSC-US04)
       5. [US05-http_dict_to_redirect_uri_path converts dictionary to query string](#TMSC-US05)
-   4.[NOTES](#Notes-TMSC)
+   4. [NOTES](#Notes-TMSC)
+9. [TEST_MONGO_STORAGE](#test_mongo_storage)
+   1. [Dependencies](#TMSTO-Dependencies)
+   2. [RUN](#TMSTO-run)
+   3. [TEST-COVERAGE](#TMSTO-Test-Coverage)
+      1. [US01-connect](#TMSTO-US01)
+      2. [US02-close](#TMSTO-US02)
+      3. [US03-is_connected (failure)](#TMSTO-US03)
+      4. [US04-is_connected (failure)](#TMSTO-US04)
+      5. [US05-is_connected (success)](#TMSTO-US05)
+      6. [US06-to_doc_with_uuid](#TMSTO-US06)
+      7. [US07-from_doc_with_binary_id](#TMSTO-US07)
+      8. [US08-add (success)](#TMSTO-US08)
+      9. [US09-add (failure)](#TMSTO-US09)
+      10. [US10-update (failure)](#TMSTO-US10)
+      11. [US11-update (success)](#TMSTO-US11)
+      12. [US12-remove_with_objectid](#TMSTO-US12)
+      13. [US13-find_by_id (failure)](#TMSTO-US13)
+      14. [US14-find_all](#TMSTO-US14)
+      15. [US15-add_session](#TMSTO-US15)
+      16. [US16-update_session](#TMSTO-US16)
+      17. [US17-to_uuid (success)](#TMSTO-US17)
+      18. [US18-to_uuid (failure)](#TMSTO-US18)
+   4. [NOTES](#Notes-TMSTO)
+10. [TEST_OIDC_DB_ENGINE](#test_oidc_db_engine)
+    1. [Dependencies](#TDBE-Dependencies)
+    2. [RUN](#TDBE-run)
+    3. [TEST-COVERAGE](#TDBE-Test-Coverage)
+       1. [US01-connect](#TDBE-US01)
+       2. [US02-close](#TDBE-US02)
+       3. [US03-is_connected](#TDBE-US03)
+       4. [US04-add_session](#TDBE-US04)
+       5. [US05-update_session (failure)](#TDBE-US05)
+       6. [US06-update_session (success)](#TDBE-US06)
+       7. [US07-get_sessions](#TDBE-US07)
+       8. [US08-prepare_for_insert](#TDBE-US08)
+    4. [NOTES](#Notes-TDBE)
+11. [TEST_ENTITY_CONFIGURATION](#test_entity_configuration)
+    1. [Dependencies](#TEC-Dependencies)
+    2. [RUN](#TEC-run)
+    3. [TEST-COVERAGE](#TEC-Test-Coverage)
+       1. [US01-initialization and validation](#TEC-US01)
+       2. [US02-metadata property](#TEC-US02)
+       3. [US03-get_entity_configuration (JSON)](#TEC-US03)
+       4. [US04-get_entity_configuration (JWS)](#TEC-US04)
+       5. [US05-federation entity configuration integration](#TEC-US05)
+       6. [US06-JWKS exposure](#TEC-US06)
+    4. [NOTES](#Notes-TEC)
+
 
 ### Prerequisites
 
@@ -345,3 +393,178 @@ pytest backends/cieoidc/tests/utils/test_misc.py -v
 - Tests general utility functions.
 - No network or cryptography required.
 - Supports OIDC flows and internal data handling.
+- 
+### test_mongo_storage
+### TMSTO-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TMSTO-run
+
+```bash
+pytest backends/cieoidc/tests/utils/storage/test_mongo_storage.py -v
+``` 
+#### TMSTO-Test-Coverage
+#### TMSTO-US01
+Validates that the MongoDB client initialization logic is correctly invoked by mocking pymongo.MongoClient.
+
+#### TMSTO-US02
+Ensures that the MongoDB client is properly closed and the internal client reference is reset to None.
+
+#### TMSTO-US03
+Verifies that is_connected() returns False when no MongoDB client is initialized.
+
+#### TMSTO-US04
+Checks that is_connected() returns False when the MongoDB client raises an InvalidOperation exception.
+
+#### TMSTO-US05
+Confirms that is_connected() returns True when the MongoDB client responds correctly to server_info().
+
+#### TMSTO-US06
+Validates the conversion of an entity containing a UUID string into a MongoDB document:
+- UUID is converted into a BSON Binary
+- id field is removed
+- _id field is correctly populated
+
+#### TMSTO-US07
+Ensures that a MongoDB document containing a BSON Binary UUID is correctly converted back into a domain entity,
+with the UUID restored as a string.
+
+#### TMSTO-US08
+Tests successful insertion of a document into MongoDB and verifies that a string ID is returned.
+
+#### TMSTO-US09
+Validates graceful failure handling when MongoDB raises a PyMongoError during insert operations.
+
+#### TMSTO-US10
+Ensures that update operations fail when the entity does not contain an id.
+
+#### TMSTO-US11
+Validates successful update behavior when a valid UUID is provided and at least one document is modified.
+
+#### TMSTO-US12
+Confirms correct handling of delete operations when removing a document by ObjectId.
+
+#### TMSTO-US13
+Ensures that None is returned when a document with the given ID does not exist.
+
+#### TMSTO-US14
+Tests retrieval of multiple documents matching a query filter and correct conversion into domain entities.
+
+#### TMSTO-US15
+Validates the high-level add_session wrapper method, ensuring it correctly delegates to the internal _add method.
+
+#### TMSTO-US16
+Validates the high-level update_session wrapper method and correct propagation of update results.
+
+#### TMSTO-US17
+Ensures that valid UUID strings are correctly parsed and converted into UUID objects.
+
+#### TMSTO-US18
+Validates that invalid UUID strings are safely rejected and return None.
+
+#### Notes-TMSTO
+- All MongoDB operations are fully mocked using unittest.mock.
+- No real database connection is required.
+- Tests focus on data conversion, error handling, and repository logic.
+- This suite provides high-confidence unit coverage for the MongoDB storage abstraction layer.
+
+### test_oidc_db_engine
+### TDBE-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TDBE-run
+
+```bash
+pytest backends/cieoidc/tests/utils/storage/test_oidc_db_engine.py -v
+``` 
+#### TDBE-Test-Coverage
+#### TDBE-US01
+Validates that the `connect()` method correctly delegates the call to the underlying storage backend.
+
+#### TDBE-US02
+Ensures that the `close()` method invokes the corresponding storage backend cleanup logic.
+
+#### TDBE-US03
+Confirms that the engine correctly reflects the connection status reported by the storage backend.
+
+#### TDBE-US04
+Tests the insertion of a new OIDC authentication session:
+- The session is delegated to the storage backend
+- A numeric result is returned
+- The entity id is generated and assigned if missing
+
+#### TDBE-US05
+Ensures that update operations are rejected when the entity does not contain an id,
+returning 0 without invoking the storage backend.
+
+#### TDBE-US06
+Validates successful update behavior when the entity contains a valid UUID.
+
+#### TDBE-US07
+Tests retrieval of sessions by state, verifying correct delegation to the storage backend
+and propagation of results.
+
+#### TDBE-US08
+Validates entity preprocessing before persistence:
+- created timestamp is set if missing
+- modified timestamp is always updated
+- Both fields are valid datetime instances
+- 
+#### Notes-TDBE
+- The storage backend is dynamically loaded and fully mocked using unittest.mock.
+- No real database or external services are required.
+- Tests focus on delegation logic, entity lifecycle handling, and defensive checks.
+- This suite ensures correctness of the persistence orchestration layer independently from storage implementations.
+
+### test_entity_configuration
+### TEC-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TEC-run
+
+```bash
+pytest backends/cieoidc/tests/test_entity_configuration.py -v
+``` 
+#### TEC-Test-Coverage
+#### TEC-US01
+Validates that, during handler initialization:
+- Private JWKS are validated
+- Entity metadata is validated
+- No exception is raised for a minimal valid configuration
+All validation logic is mocked to isolate handler behavior.
+
+#### TEC-US02
+Tests the internal metadata generation logic:
+- Ensures the correct entity type is present
+- Confirms client_id propagation
+- Verifies that private JWKS are converted into public JWKS
+- Ensures only public key material is exposed in metadata
+
+#### TEC-US03
+Validates generation of the entity configuration as a plain JSON document:
+- Returned value is JSON-serializable
+- Document structure conforms to expected format
+
+#### TEC-US04
+Validates generation of the entity configuration as a JWS-signed document:
+- Cryptographic signing is delegated to helper utilities
+- A non-empty JWS string is returned
+
+#### TEC-US05
+Ensures that federation-specific entity configuration handling is correctly invoked
+when building the final entity configuration document.
+
+#### TEC-US06
+Validates correct handling of OpenID JWKS:
+- Private keys are never exposed
+- Public keys are correctly derived and included
+- Key identifiers `(kid)` are preserved
+
+#### Notes-TEC
+- All cryptographic operations (JWKS validation, JWS creation) are fully mocked.
+- No real cryptographic signing or federation resolution is performed.
+- Tests focus on correctness of metadata composition and handler orchestration.
+- This suite provides high-confidence unit coverage for OpenID Federation entity configuration generation.
