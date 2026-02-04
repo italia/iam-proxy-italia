@@ -32,7 +32,12 @@ jobs:
         run: |
           cd Docker-compose
           ./run-docker-compose.sh
-          docker ps -a
+
+      - name: List Docker containers
+        run: docker ps -a
+
+      - name: iam-proxy-italia container logs
+        run: docker container logs iam-proxy-italia
 
       - name: djangosaml2 SP metadata to Proxy
         run: |
