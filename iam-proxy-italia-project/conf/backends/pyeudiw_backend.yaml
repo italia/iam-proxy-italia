@@ -42,6 +42,9 @@ config:
   response_code:
     sym_key: "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" # hex string of 64 characters
 
+  security:
+    wallet_attestation_required: true # enable wallet attestation interoperability; if missing it will be set to true by default
+
   jwt:
     default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
     default_enc_alg: RSA-OAEP
@@ -109,13 +112,43 @@ config:
             - path:
               - "$.given_name"
 
-  duckle:
-    dcql_query: '{"credentials":[{"id":"personal id data","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}'
+  dcql_query: |
+    {
+      "credentials": [
+        {
+          "id": "personal id data",
+          "format": "dc+sd-jwt",
+          "meta": {
+            "vct_values": [
+              "https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"
+            ]
+          },
+          "claims": [
+            {"path": ["given_name"]},
+            {"path": ["family_name"]}
+          ]
+        },
+        {
+          "id": "wallet attestation",
+          "format": "mso_mdoc",
+          "meta": {
+            "vct_values": [
+              "https://itwallet.registry.example.it/WalletAttestation"
+            ]
+          },
+          "claims": [
+            {"path": ["wallet_link"]},
+            {"path": ["wallet_name"]}
+          ]
+        }
+      ]
+    }
 
   user_attributes:
     unique_identifiers:
     - tax_id_code
     - unique_id
+    - personal_administrative_number
     subject_id_random_value: CHANGEME!
 
   network:
@@ -201,6 +234,16 @@ config:
         kb-jwt_alg_values:
           - ES256
           - ES384
+    token_endpoint_auth_methods_supported:
+      - attest_jwt_client_auth
+    client_attestation_signing_alg_values_supported:
+      - ES256
+      - ES384
+      - ES512
+    client_attestation_pop_signing_alg_values_supported:
+      - ES256
+      - ES384
+      - ES512
 
   credential_presentation_handlers:
     max_submission_size: 4096
