@@ -1,7 +1,7 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# Docker Compose integration tests (SAML / spid-sp-test).
+# Lint runs in a separate workflow: .github/workflows/lint.yml
 
-name: iam-proxy-italia
+name: Docker Compose test
 
 on:
   push:
@@ -10,42 +10,16 @@ on:
     branches: [ master, dev ]
 
 jobs:
-  build:
-
+  docker-compose:
+    name: Docker Compose (SAML / spid-sp-test)
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version:
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
-          - '3.14'
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Python dependencies
-        run: |
-          pip install --upgrade pip
-          pip install flake8
-
-      - name: Inspect Python dependencies
-        run: |
-          pip list
-      - name: Lint with flake8
-        run: |
-          ## stop the build if there are Python syntax errors or undefined names
-          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics iam-proxy-italia-project
-          ## exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 --max-line-length 120 --count --exit-zero --statistics iam-proxy-italia-project
+          python-version: '3.12'
 
       - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
         env:
