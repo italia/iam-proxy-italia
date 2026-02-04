@@ -112,7 +112,7 @@ config:
             - path:
               - "$.given_name"
 
-  dcql_query: |
+  dcql_query: &dcql_query |
     {
       "credentials": [
         {
@@ -257,6 +257,8 @@ config:
       - module: pyeudiw.duckle_ql.handler
         class: DuckleHandler
         format: jwt_vc_json
+        config:
+          dcql_query: *dcql_query
 
   trust:
     direct_trust_sd_jwt_vc:
