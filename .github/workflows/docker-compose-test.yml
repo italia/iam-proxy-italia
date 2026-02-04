@@ -36,8 +36,13 @@ jobs:
       - name: List Docker containers
         run: docker ps -a
 
-      - name: iam-proxy-italia container logs
-        run: docker container logs iam-proxy-italia
+      - name: Inspect Satosa status
+        run: |
+          docker container inspect iam-proxy-italia
+          docker container logs iam-proxy-italia
+
+      - name: djangosaml2_sp container logs
+        run: docker container logs django_sp
 
       - name: djangosaml2 SP metadata to Proxy
         run: |
@@ -46,13 +51,6 @@ jobs:
       - name: Inspect djangosaml2 SP metadata
         run: |
           cat Docker-compose/iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
-      - name: Inspect Satosa status
-        run: |
-          docker container inspect iam-proxy-italia
-          docker container logs iam-proxy-italia
-
-      - name: djangosaml2_sp container logs
-        run: docker container logs django_sp
 
       - name: Copy Satosa IDP Metadata to djangosaml2 SP
         run: |
