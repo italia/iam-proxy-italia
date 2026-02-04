@@ -2,6 +2,8 @@
 # Run: pip-audit -r requirements.txt
 Django>=4.2.17,<5.0
 cffi>=1.17.0
+# CVE-2024-12797: OpenSSL in wheels 42.0.0-44.0.0; fixed in 44.0.1
+cryptography>=44.0.1
 
 # django saml2 SP (requires Django>=4.2, defusedxml, pysaml2)
 djangosaml2>=1.11.1
