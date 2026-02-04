@@ -65,6 +65,7 @@ services:
     profiles:
       - demo
       - dev
+    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:latest
     build:
       context: ../
       args:
