@@ -278,7 +278,7 @@ Same as [Prerequisites](#Prerequisites): activate the virtual environment and in
 #### TFD-run
 
 ```bash
-pytest backends/cieoidc/tests/utils/test_jwt.py -v
+pytest backends/cieoidc/tests/utils/models/test_federation.py
 ``` 
 #### TFD-Test-Coverage
 ##### TFD-US01

@@ -1,5 +1,7 @@
 import uuid
 import pytest
+import os
+from backends.cieoidc.tests import settings_test
 from unittest.mock import MagicMock, patch
 from bson.binary import Binary
 from bson import ObjectId
@@ -12,18 +14,18 @@ from backends.cieoidc.models.oidc_auth import OidcAuthentication
 @pytest.fixture
 def mongo_conf():
     return {
-        "db_name": "cie_oidc",
+        "url": settings_test.MONGO_URL,
+        "db_name": settings_test.MONGO_DB_NAME,
         "data_ttl": 3600,
-        "db_auth_collection": "authentication",
-        "db_token_collection":"authentication_token",
-        "db_user_collection":"users"
+        "db_auth_collection": settings_test.MONGO_AUTH_COLLECTION,
+        "db_token_collection": settings_test.MONGO_TOKEN_COLLECTION,
+        "db_user_collection": settings_test.MONGO_USER_COLLECTION,
 
     }
 
-
 @pytest.fixture
 def storage(mongo_conf):
-    return MongoStorage(mongo_conf, url="mongodb://satosa-mongo:27017")
+    return MongoStorage(mongo_conf, mongo_conf["url"])
 
 
 def test_us01(storage):
