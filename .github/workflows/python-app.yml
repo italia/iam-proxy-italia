@@ -76,6 +76,13 @@ jobs:
           docker container inspect iam-proxy-italia
           docker container logs iam-proxy-italia
 
+      - name: Print latest logs (django_sp and iam-proxy-italia)
+        run: |
+          echo "=== Last 150 lines: django_sp ==="
+          docker logs --tail 150 django_sp 2>&1 || true
+          echo "=== Last 150 lines: iam-proxy-italia ==="
+          docker logs --tail 150 iam-proxy-italia 2>&1 || true
+
       - name: Copy Satosa IDP Metadata to djangosaml2 SP
         run: |
           wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
