@@ -3,8 +3,8 @@ FROM ghcr.io/italia/spid-cie-oidc-django:latest
 ARG RUNNING_PORT
 ARG MODULE_NAME
 
-RUN apt update
-RUN apt install -y wget
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y wget
 
 COPY iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/prepare.sh /
 COPY iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/healthcheck.sh /

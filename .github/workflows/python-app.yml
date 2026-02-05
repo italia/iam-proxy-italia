@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install xmlsec1
-        run: sudo apt-get install -y xmlsec1
+        run: sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xmlsec1
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -75,6 +75,13 @@ jobs:
         run: |
           docker container inspect iam-proxy-italia
           docker container logs iam-proxy-italia
+
+      - name: Print latest logs (django_sp and iam-proxy-italia)
+        run: |
+          echo "=== Last 150 lines: django_sp ==="
+          docker logs --tail 150 django_sp 2>&1 || true
+          echo "=== Last 150 lines: iam-proxy-italia ==="
+          docker logs --tail 150 iam-proxy-italia 2>&1 || true
 
       - name: Copy Satosa IDP Metadata to djangosaml2 SP
         run: |
