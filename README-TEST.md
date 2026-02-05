@@ -139,6 +139,19 @@ in the "iam-proxy-italia" project.
        5. [US05-federation entity configuration integration](#TEC-US05)
        6. [US06-JWKS exposure](#TEC-US06)
     4. [NOTES](#Notes-TEC)
+13. [TEST_CIEOIDC](#test_cieoidc)
+     1. [Dependencies](#TCOB-Dependencies)
+     2. [RUN](#TCOB-run)
+     3. [TEST-COVERAGE](#TCOB-Test-Coverage)
+        1. [US01-backend initialization sets client_id](#TCOB-US01)
+        2. [US02-trust chain generation is triggered on initialization](#TCOB-US02)
+        3. [US03-start_auth without authorization endpoint (failure)](#TCOB-US03)
+        4. [US04-start_auth delegates to authorization endpoint](#TCOB-US04)
+        5. [US05-endpoint registration via EndpointsLoader](#TCOB-US05)
+        6. [US06-metadata descriptor generation](#TCOB-US06)
+        7. [US07-trust chains generation for providers](#TCOB-US07)
+        8. [US08-single trust chain generation logic](#TCOB-US08)
+     4. [NOTES](#Notes-TCOB)
 
 
 ### Prerequisites
@@ -717,3 +730,96 @@ Validates correct handling of OpenID JWKS:
 - No real cryptographic signing or federation resolution is performed.
 - Tests focus on correctness of metadata composition and handler orchestration.
 - This suite provides high-confidence unit coverage for OpenID Federation entity configuration generation.
+
+### test_cieoidc
+### TCOB-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TCOB-run
+
+```bash
+pytest backends/cieoidc/tests/test_entity_configuration.py -v
+``` 
+#### TEC-Test-Coverage
+#### TCOB-US01
+Validates that the backend correctly extracts and stores the `client_id` from the
+OpenID relying party metadata during initialization.
+Covered aspects:
+- Metadata parsing
+- Internal 'client_id` attribute initialization
+
+#### TCOB-US02
+Ensures that `generate_trust_chains` is invoked exactly once during backend construction.
+Covered aspects:
+- Initialization side effects
+- Trust chain bootstrap logic
+The trust chain generation method is fully mocked.
+
+#### TCOB-US03
+Validates that calling `start_auth` without a registered authorization endpoint
+raises a ValueError.
+Covered aspects:
+- Defensive checks
+- Error handling when mandatory endpoints are missing
+
+#### TCOB-US04
+Tests the happy path of the `authorization` flow orchestration.
+Covered aspects:
+- Delegation to the authorization endpoint
+- Correct propagation of the returned response
+- The authorization endpoint is mocked.
+
+#### TCOB-US05
+Validates that backend endpoints are correctly registered using the
+`EndpointsLoader`.
+Covered aspects:
+- Dynamic `endpoint` loading
+- Population of the internal endpoints dictionary
+All endpoint loading logic is mocked.
+
+#### TCOB-US06
+Ensures that `get_metadata_desc` correctly delegates metadata generation
+to the helper function.
+Covered aspects:
+- Proper propagation of `client_id` and backend configuration
+- Correct return value handling
+The metadata helper is mocked.
+
+#### TCOB-US07
+Validates the full `_generate_trust_chain`s logic for configured providers.
+Covered aspects:
+- Retrieval of entity configurations
+- EntityStatement instantiation
+- Self-validation of trust anchor entity configuration
+- Trust chain generation per provider
+- Correct mapping between provider URL and generated trust chain
+All federation resolution and cryptographic validation logic is mocked.
+
+#### TCOB-US08
+Validates the static `generate_trust_chain` method.
+Covered aspects:
+- Correct instantiation of `TrustChainBuilder`
+- Invocation of:
+  -  `start`
+  - `apply_metadata_policy`
+- Correct return of the built trust chain object
+No real federation resolution is performed.
+
+#### Notes-TCOB
+- All cryptographic operations (JWKS validation, JWS creation) are fully mocked.
+- No real cryptographic signing or federation resolution is performed.
+- Tests focus on correctness of metadata composition and handler orchestration.
+- This suite provides high-confidence unit coverage for OpenID Federation entity configuration generation.
+
+
+
+All cryptographic operations and federation resolution steps are fully mocked.
+
+No real HTTP calls, JWT validation, or trust anchor resolution is performed.
+
+Tests focus on backend orchestration logic and correct interaction between components.
+
+This suite provides high-confidence unit coverage for the CieOidcBackend core behavior.
+
+Intended as unit-level tests, not integration or end-to-end federation tests.
