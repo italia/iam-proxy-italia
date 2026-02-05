@@ -9,6 +9,7 @@ license = {text = "Apache 2.0"}
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
 dependencies = [
+    "pip>=26.0",  # CVE-2026-1703: path traversal when extracting wheels; fixed in 26.0
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
     "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@v4.0.0",
@@ -23,6 +24,7 @@ test = [
     "pytest-cov",
     "flake8",
     "spid-sp-test",
+    "pyOpenSSL>=24.0",
 ]
 
 [tool.poetry]
