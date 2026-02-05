@@ -30,8 +30,11 @@ def test_init_without_endpoints_raises():
 
 def test_init_with_invalid_endpoints_type_raises():
     with pytest.raises(ValueError, match="Endpoints configuration must be a dictionary"):
+        config_example={
+            "endpoints": [1,2,3]
+        }
         EndpointsLoader(
-            config={"endpoints": []},
+            config=config_example,
             internal_attributes={},
             base_url="http://example.org",
             name="test",
