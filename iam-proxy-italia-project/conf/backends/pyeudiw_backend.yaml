@@ -8,7 +8,7 @@ config:
     template_folder: "templates" # project root
     qrcode_template: "qr_code.html"
     error_template: "error.html"
-    error_url: "https://localhost/static/error_page.html"
+    error_url: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
     authorization_error_template: "authorization_error.html"
 
   endpoints:
@@ -280,7 +280,7 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
-        client_id: 'openid_federation:https://localhost/OpenID4VP' # this MUST be configured with the RP's HTTPS URI where the backed is made available for discovery
+        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://localhost/OpenID4VP'
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
@@ -322,7 +322,7 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        client_id: "x509_san_dns:localhost"
+        client_id: !ENV PYEUDIW_X509_CLIENT_ID # "x509_san_dns:localhost"
         certificate_authorities:
           ca.example.com: |
             -----BEGIN CERTIFICATE-----
@@ -397,7 +397,7 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vp
           connection_params:
@@ -407,7 +407,7 @@ config:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vp
             db_sessions_collection: sessions

@@ -120,7 +120,7 @@ config:
   #This is the configuration for the relaying party metadata
   metadata:
     oauth_authorization_server:
-      issuer: https://eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      issuer: https://DO-NOT-CHANGEME.eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       pushed_authorization_request_endpoint: /as/par
       authorization_endpoint: /authorize
       token_endpoint: /token
@@ -161,7 +161,7 @@ config:
         - ES512
       jwks: *metadata_jwks
     openid_credential_issuer: &openid_credential_issuer_metadata
-      credential_issuer: https://eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      credential_issuer: https://DO-NOT-CHANGEME.eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
       credential_endpoint: /credential
       nonce_endpoint: /nonce-endpoint
       deferred_credential_endpoint: /deferred-credential
@@ -495,14 +495,13 @@ config:
       evidence_supported:
         - vouch
     federation_entity: &federation_entity_metadata
-      organization_name: Organization Name
-      homepage_uri: https://eaa-provider.example.org/
-      policy_uri: https://eaa-provider.example.org/public/privacy_policy.html
-      tos_uri: https://eaa-provider.example.org/public/info_policy.html
-      logo_uri: https://eaa-provider.example.org/public/logo.svg
+      organization_name: !ENV SATOSA_ORGANIZATION_NAME_IT
+      homepage_uri: !ENV SATOSA_ORGANIZATION_URL_EN
+      policy_uri: !ENV SATOSA_UI_PRIVACY_URL_EN
+      tos_uri: !ENV SATOSA_UI_INFORMATION_URL_EN
+      logo_uri: !ENV SATOSA_UI_LOGO_URL
       contacts:
-        - informazioni@example.it
-        - protocollo@pec.example.it
+        - !ENV SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
 
   # this is the custom configuration for credential management.
   credential_configurations:
@@ -675,7 +674,7 @@ config:
         module: pyeudiw.storage.user_storage
         class: UserStorage
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_users_collection: users
@@ -692,7 +691,7 @@ config:
         module: pyeudiw.storage.credential_storage
         class: CredentialStorage
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_credentials_collection: credentials
@@ -708,7 +707,7 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vci
           connection_params:
@@ -718,7 +717,7 @@ config:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: mongodb://satosa-mongo:27017
+          url: mongodb://!ENV MONGO_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_sessions_collection: sessions
