@@ -249,11 +249,8 @@ pytest backends/cieoidc/tests/test_callback_handler.py -v
 
 #### TCH-Test-Coverage
 ##### TCH-US01
-
 This test validates the successful execution of the authorization callback endpoint.
-
 Covered aspects:
-
 - Query string parameter handling (state, code, iss)
 - JWKS retrieval and key resolution
 - JWT signature verification
@@ -262,13 +259,13 @@ Covered aspects:
 - UserInfo retrieval
 - Attribute processing
 - Final response generation
-
 All external interactions are mocked to isolate endpoint logic.
 
 ##### TCH-US02
-
-Validates request.
-An exception is expected.
+Validates request failure scenarios. An exception is expected when:
+- Query string parameters are missing or invalid
+- Issuer does not match the expected provider
+- Authorization state is missing from storage
 
 #### Notes-TCH
 - This test simulates an OIDC authorization callback flow.

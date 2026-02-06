@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from backends.cieoidc.endpoints.authorization_callback_endpoint import AuthorizationCallBackHandler
 from satosa.context import Context
 from satosa.response import Response
+from backends.cieoidc.endpoints.authorization_callback_endpoint import AuthorizationCallBackHandler
 from ..utils.clients.oidc import OidcUserInfo
-
+from satosa.exception import SATOSAAuthenticationError, SATOSABadRequestError
 
 
 @pytest.fixture(autouse=True)
@@ -15,7 +15,7 @@ def mock_db_engine():
         instance = mock_engine.return_value
         instance.connect.return_value = None
         instance.is_connected.return_value = True
-        instance.get_sessions.return_value = [{
+        instance.get_sessions.return_value = [MagicMock(model_dump=lambda mode: {
             "state": "dummy_state",
             "provider_id": "http://cie-provider.example.org:8002/oidc/op",
             "client_id": "client123",
@@ -25,7 +25,7 @@ def mock_db_engine():
                     "token_endpoint": "http:/cie-provider.example.org/op/token"
                 }
             }
-        }]
+        })]
         instance.update_session.return_value = True
         yield
 
@@ -38,7 +38,8 @@ def handler():
         "jwks_core": {},
         "httpc_params": {"connection": {"ssl": False}, "session": {"timeout": 5}},
         "claims": {},
-        "db_config": {"mongo_db":{"module":"backends.cieoidc.storage.impl.mongo_storage","class":"MongoStorage","init_params":{"url":"mongodb://localhost:27017","conf":{"db_name":"cie_oidc","db_auth_collection":"authentication","db_token_collection":"authentication_token","db_user_collection":"users","data_ttl":63072000},"connection_params":{"username":"satosa","password":"thatpassword"}}}}
+        "metadata": {"openid_relying_party": {"client_id": "client123"}},
+        "db_config": {"mongo_db":{"module":"backends.cieoidc.storage.impl.mongo_storage","class":"MongoStorage","init_params":{"url":"mongodb://localhost:27017"}}}
     }
 
     auth_callback_func = MagicMock(return_value=Response("OK"))
@@ -56,21 +57,36 @@ def handler():
         trust_evaluator=trust_evaluator
     )
 
-
 @pytest.mark.parametrize("qs_params", [
     {"error": "invalid_request"},
     {"state": None},
     {"code": None},
 ])
-def test_us02(handler, qs_params):
+def test_us01(handler, qs_params):
     context = Context()
     context.qs_params = qs_params
     with pytest.raises(Exception):
         handler.endpoint(context)
 
+
+def test_us02(handler):
+    context = Context()
+    context.qs_params = {"state": "dummy_state", "code": "code123", "iss": "http://other-provider"}
+    with pytest.raises(SATOSABadRequestError):
+        handler.endpoint(context)
+
+
+def test_us03(handler):
+    context = Context()
+    context.state = MagicMock()
+    context.qs_params = {"state": "nonexistent_state", "code": "code123", "iss": "http://cie-provider.example.org:8002/oidc/op"}
+    with patch.object(handler, "_AuthorizationCallBackHandler__get_authorization", return_value=None):
+        with pytest.raises(SATOSAAuthenticationError):
+            handler.endpoint(context)
+
 @patch.object(OidcUserInfo, "get_userinfo", return_value={"email": "test@example.com"})
 @pytest.mark.parametrize("state, code, iss", [("dummy_state", "dummy_code", "http://cie-provider.example.org:8002/oidc/op")])
-def test_us01(handler, state, code, iss):
+def test_us04(handler, state, code, iss):
     context = Context()
     context.qs_params = {"state": state, "code": code, "iss": iss}
 
@@ -93,3 +109,45 @@ def test_us01(handler, state, code, iss):
         assert response
 
 
+def test_us05(handler):
+    context = Context()
+    context.state = MagicMock()
+    context.qs_params = {"state": "dummy_state", "code": "dummy_code",
+                         "iss": "http://cie-provider.example.org:8002/oidc/op"}
+
+    with patch("backends.cieoidc.utils.clients.oidc.OidcUserInfo.get_userinfo", return_value=None), \
+         patch("backends.cieoidc.utils.clients.oauth2.OAuth2AuthorizationCodeGrant.access_token_request",
+               return_value={"access_token": "t", "id_token": "t", "token_type": "Bearer", "expires_in": 1}), \
+         patch("backends.cieoidc.endpoints.authorization_callback_endpoint.get_jwks", return_value={"keys": []}), \
+         patch("backends.cieoidc.endpoints.authorization_callback_endpoint.get_jwk_from_jwt", return_value={"kid": "k"}), \
+         patch("backends.cieoidc.endpoints.authorization_callback_endpoint.verify_jws", return_value=True), \
+         patch("backends.cieoidc.endpoints.authorization_callback_endpoint.unpad_jwt_payload",
+               return_value={"sub": "user123", "at_hash": "dummy"}):
+        with pytest.raises(SATOSAAuthenticationError):
+            handler.endpoint(context)
+
+
+
+def test_us06(handler):
+    user_attrs = {"invalid": "data"}  # non rispetta schema OidcUser
+    result = handler._AuthorizationCallBackHandler__add_user(user_attrs)
+    assert result is None
+
+
+def test_us07(handler):
+    assert handler._AuthorizationCallBackHandler__check_provider(
+        "https://example.org/", "https://example.org"
+    )
+    assert handler._AuthorizationCallBackHandler__check_provider(
+        "https://example.org", "https://example.org/"
+    )
+
+def test_us08(handler):
+    attributes = {"sub": "user123"}
+    internal = handler._translate_response(attributes, "issuer123", "sub123")
+    assert internal.subject_id == "sub123"
+    assert hasattr(internal, "attributes")
+
+def test_us09(handler):
+    plugin = handler.generate_configuration_plugin(handler.config)
+    assert plugin is not None
