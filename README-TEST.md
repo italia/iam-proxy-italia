@@ -580,11 +580,22 @@ pytest backends/cieoidc/tests/utils/test_misc.py -v
 ##### TMSC-US05
 `http_dict_to_redirect_uri_path` converts dictionary to query string
 
+#### TMSC-US06
+`datetime/timestamp roundtrip`
+- Validates conversion between `datetime` and UNIX timestamp:
+  - `timestamp_from_datetime` correctly produces integer timestamps
+  - `datetime_from_timestamp` produces UTC-aware `datetime`
+  - Roundtrip conversions are consistent and timezone-aware
+- Covers naive and UTC-aware `datetime` objects
+- Ensures no offset discrepancies due to local timezone
+
 #### Notes-TMSC
 - Tests general utility functions.
 - No network or cryptography required.
 - Supports OIDC flows and internal data handling.
-- 
+
+
+
 ### test_mongo_storage
 ### TMSTO-Dependencies
 
