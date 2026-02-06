@@ -172,6 +172,20 @@ in the "iam-proxy-italia" project.
         4. [US04-refresh_token_without_token_endpoint](#TOACG-US04)
         5. [US05-get_rp_conf_returns_dict](#TOACG-US05)
      4. [NOTES](#Notes-TOACG)
+16. [TEST_VALIDATOR](#test_validator)
+     1. [Dependencies](#TVAL-Dependencies)
+     2. [RUN](#TVAL-run)
+     3. [TEST-COVERAGE](#TVAL-Test-Coverage)
+        1. [US01-validate_public_jwks (success)](#TVAL-US01)
+        2. [US02-validate_public_jwks_private_key_rejected (failure)](#TVAL-US02)
+        3. [US03-validate_public_jwks_invalid_jwk (failure)](#TVAL-US03)
+        4. [US04-validate_private_jwks (success)](#TVAL-US04)
+        5. [US05-validate_private_jwks_public_key_rejected (failure)](#TVAL-US05)
+        6. [US06-validate_private_jwks_invalid_jwk (failure)](#TVAL-US06)
+        7. [US07-validate_metadata_algs (success)](#TVAL-US07)
+        8. [US08-single trust chain generation logic](#TVAL-US08)
+     4. [NOTES](#Notes-TVAL)
+
 ### Prerequisites
 
 All runtime dependencies are defined in `pyproject.toml`. Test-related tools (pytest, pytest-cov, flake8, spid-sp-test) are in the optional dependency group `test`, aligned with the [GitHub Actions workflow](.github/workflows/python-app.yml).
@@ -954,3 +968,78 @@ Covered aspects:
 - Defensive handling of misconfigurations and error responses
 - Intended as unit-level tests, not integration or end-to-end OAuth2/OIDC flows.
 - This suite provides high-confidence coverage for the `OAuth2AuthorizationCodeGrant` client logic.
+
+### test_validator
+### TVAL-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TVAL-run
+
+```bash
+pytest backends/cieoidc/tests/test_validator.py
+``` 
+#### TVAL-Test-Coverage
+#### TVAL-US01
+Validates successful validation of public JWKS.
+Covered aspects:
+- Acceptance of public RSA JWKs
+- Support for both dictionary and list input formats
+- No exception raised when all keys are public
+
+#### TVAL-US02
+Validates rejection of private JWKS when public keys are expected.
+Covered aspects:
+- Detection of private key material
+- Generation of a helpful validation error message
+- Defensive handling of invalid public JWKS input
+
+#### TVAL-US03
+Validates behavior when invalid JWK structures are provided.
+Covered aspects:
+- Exception handling during JWK parsing
+- Conversion of low-level errors into `ValidationError`
+
+#### TVAL-US04
+Validates successful validation of private JWKS.
+Covered aspects:
+- Acceptance of private RSA JWKs
+- Support for both dictionary and list input formats
+
+#### TVAL-US05
+Validates rejection of public JWKS when private keys are required.
+Covered aspects:
+- Detection of missing private key material
+- Proper error propagation via `ValidationError`
+
+#### TVAL-US06
+Validates metadata algorithm constraints using default supported algorithms.
+Covered aspects:
+- Validation of signing algorithms
+- Validation of encryption algorithms and encodings
+- Proper handling of OpenID Provider metadata
+- Rejection of unsupported algorithm values
+
+#### TVAL-US07
+Validates metadata algorithm constraints using custom supported algorithm lists (`v1`).
+Covered aspects:
+- Enforcement of caller-provided signing algorithms
+- Enforcement of caller-provided encryption algorithms
+- Rejection of unsupported algorithm values
+- Backward-compatible behavior with partial metadata
+
+#### TVAL-US08
+Validates defensive behavior when OpenID Provider metadata is missing.
+Covered aspects:
+- Metadata is ignored if `openid_provider` is not present
+- No exception is raised for unrelated entity metadata
+- 
+#### Notes-TVAL
+- All cryptographic operations (cryptojwt, key parsing, serialization) are fully mocked.
+- No real JWKS parsing, validation, or cryptographic computation is performed.
+- Tests focus on:
+  - Validation logic correctness
+  - Defensive error handling
+- Strict enforcement of supported algorithm policies
+- Intended as unit-level tests, not integration or federation validation tests.
+- This suite provides high-confidence unit coverage for metadata and JWKS validation helpers.
