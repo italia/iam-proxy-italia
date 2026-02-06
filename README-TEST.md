@@ -152,8 +152,26 @@ in the "iam-proxy-italia" project.
         7. [US07-trust chains generation for providers](#TCOB-US07)
         8. [US08-single trust chain generation logic](#TCOB-US08)
      4. [NOTES](#Notes-TCOB)
-
-
+14. [TEST_OIDC](#test_oidc)
+     1. [Dependencies](#TOIDC-Dependencies)
+     2. [RUN](#TOIDC-run)
+     3. [TEST-COVERAGE](#TOIDC-Test-Coverage)
+        1. [US01-get_userinfo_plain_json](#TOIDC-US01)
+        2. [US02-get_userinfo_http (failure)](#TOIDC-US02)
+        3. [US03-get_userinfo_jwe_jws](#TOIDC-US03)
+        4. [US04-get_userinfo_unknown_kid](#TOIDC-US04)
+        5. [US05-get_userinfo_key_error](#TOIDC-US05)
+     4. [NOTES](#Notes-TOIDC)
+15. [TEST_OAUTH2_AUTHORIZATION](#test_oauth2_authorization)
+     1. [Dependencies](#TOACG-Dependencies)
+     2. [RUN](#TOACG-run)
+     3. [TEST-COVERAGE](#TOACG-Test-Coverage)
+        1. [US01-access_token_request (success)](#TOACG-US01)
+        2. [US02-access_token_request (failure)](#TOACG-US02)
+        3. [US03-refresh_token (success)](#TOACG-US03)
+        4. [US04-refresh_token_without_token_endpoint](#TOACG-US04)
+        5. [US05-get_rp_conf_returns_dict](#TOACG-US05)
+     4. [NOTES](#Notes-TOACG)
 ### Prerequisites
 
 All runtime dependencies are defined in `pyproject.toml`. Test-related tools (pytest, pytest-cov, flake8, spid-sp-test) are in the optional dependency group `test`, aligned with the [GitHub Actions workflow](.github/workflows/python-app.yml).
@@ -813,13 +831,126 @@ No real federation resolution is performed.
 - This suite provides high-confidence unit coverage for OpenID Federation entity configuration generation.
 
 
+### test_oidc
+### TOIDC-Dependencies
 
-All cryptographic operations and federation resolution steps are fully mocked.
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
 
-No real HTTP calls, JWT validation, or trust anchor resolution is performed.
+#### TOIDC-run
 
-Tests focus on backend orchestration logic and correct interaction between components.
+```bash
+pytest backends/cieoidc/tests/client/test_oidc.py
+``` 
+#### TOIDC-Test-Coverage
+#### TOIDC-US01
+Validates successful retrieval of UserInfo when the endpoint returns plain JSON.
+Covered aspects:
+-HTTP GET request execution
+-Authorization header generation (`Bearer <access_token>`)
+-JSON response parsing
+-Correct propagation of the UserInfo payload
+All external calls are mocked.
 
-This suite provides high-confidence unit coverage for the CieOidcBackend core behavior.
+#### TOIDC-US02
+Validates behavior when the UserInfo endpoint responds with an HTTP error status.
+Covered aspects:
+- Detection of non-200 HTTP responses
+- Graceful failure handling
+Method returns `False` on HTTP error
 
-Intended as unit-level tests, not integration or end-to-end federation tests.
+#### TOIDC-US03
+Validates handling of JWE + JWS protected UserInfo responses.
+Covered aspects:
+- Detection of non-JSON response body
+- JWE header extraction via `unpad_jwt_head`
+- JWE decryption
+- JWS header extraction
+- JWKS retrieval for signature verification
+- JWS verification
+- Correct extraction of the decrypted UserInfo payload
+All cryptographic helpers and JWKS retrieval are fully mocked.
+
+#### TOIDC-US04
+Validates behavior when an unknown `kid` is encountered during key resolution.
+Covered aspects:
+- Handling of `UnknownKid` exception
+- Defensive error handling
+- Method returns `False` when key lookup fails
+
+#### TOIDC-US05
+Validates behavior when malformed or incomplete JWT/JWE headers are encountered.
+Covered aspects:
+- Handling of `KeyError` during header parsing
+- Graceful failure without exception propagation
+- Method returns `False`
+
+#### Notes-TOIDC
+All HTTP calls are fully mocked using `unittest.mock`.
+- No real JWT verification, JWE decryption, or JWKS resolution is performed.
+- Tests focus on:
+  - UserInfo response format detection (JSON vs encrypted)
+  - Orchestration logic
+- Error handling and defensive behavior
+- Intended as unit-level tests, not integration or end-to-end OIDC tests.
+- This suite provides high-confidence coverage for the `OidcUserInfo` client behavior.
+
+### test_oauth2_authorization
+### TOACG-Dependencies
+
+Same as [Prerequisites](#Prerequisites): activate the virtual environment and install dependencies with test extras (`poetry install --extras test`). Dependencies are defined in `pyproject.toml`.
+
+#### TOACG-run
+
+```bash
+pytest backends/cieoidc/tests/client/test_oauth2_authorization.py
+``` 
+#### TOACG-Test-Coverage
+#### TOACG-US01
+Validates successful access token request using the Authorization Code grant.
+Covered aspects:
+- Client assertion generation (JWS creation)
+- `iat` and `exp` claim generation
+- Signing key resolution from core JWKS
+- HTTP POST request execution to the token endpoint
+- Correct handling of a 200 OK response
+- JSON parsing of the access token response
+All external interactions and cryptographic helpers are mocked.
+
+#### TOACG-US02
+Validates behavior when the token endpoint returns an HTTP error response.
+Covered aspects:
+- Detection of non-200 HTTP responses
+- No JSON parsing attempt on error payload
+Raw HTTP response is returned to the caller
+
+#### TOACG-US03
+Validates successful refresh token request flow.
+Covered aspects:
+- Client assertion generation for refresh token grant
+- Retrieval of token endpoint from provider configuration
+- HTTP POST request execution
+Correct propagation of the HTTP response
+
+#### TOACG-US04
+Validates behavior when the token endpoint is missing from the provider configuration.
+Covered aspects:
+- Defensive checks on provider configuration
+- No HTTP request execution
+Method returns `None` when the token endpoint is not available
+
+#### TOACG-US05
+Validates internal relying party configuration retrieval.
+Covered aspects:
+- Invocation of the private `get_rp_conf` method
+- Returned value is a dictionary
+- Ensures default RP configuration structure is correctly generated
+
+#### Notes-TOACG
+- All HTTP requests are fully mocked using `unittest.mock`.
+- No real JWT signing, key lookup, or OAuth2 server interaction is performed.
+- Tests focus on:
+  - OAuth2 Authorization Code grant orchestration
+  - Client authentication via JWT assertion
+- Defensive handling of misconfigurations and error responses
+- Intended as unit-level tests, not integration or end-to-end OAuth2/OIDC flows.
+- This suite provides high-confidence coverage for the `OAuth2AuthorizationCodeGrant` client logic.
