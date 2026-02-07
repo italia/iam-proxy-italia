@@ -158,3 +158,26 @@ def test_endpoint_openid_jwks_json(mock_get_jwks, handler):
     context.qs_params = {}
     response = handler.endpoint(context)
     assert response
+
+@patch("backends.cieoidc.endpoints.entity_configuration.public_jwk_from_private_jwk")
+def test_get_openid_jwks_json(mock_pub, handler):
+    mock_pub.side_effect = lambda k: {"kid": k["kid"], "kty": k["kty"]}
+    result = handler.get_openid_jwks(jws=False)
+    data = json.loads(result)
+    assert "keys" in data
+    assert len(data["keys"]) == 1
+    assert data["keys"][0]["kid"] == "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+    assert mock_pub.call_count == 1
+
+@patch("backends.cieoidc.endpoints.entity_configuration.create_jws")
+@patch("backends.cieoidc.endpoints.entity_configuration.public_jwk_from_private_jwk")
+def test_get_openid_jwks_jws(mock_pub, mock_create_jws, handler):
+    mock_pub.side_effect = lambda k: {"kid": k["kid"]}
+    mock_create_jws.return_value = "signed-jws"
+    result = handler.get_openid_jwks(jws=True)
+    assert result == "signed-jws"
+    mock_create_jws.assert_called_once()
+    args, kwargs = mock_create_jws.call_args
+    payload, signing_key = args
+    assert "keys" in payload
+    assert signing_key["kid"] == "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
