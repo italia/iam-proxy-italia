@@ -37,7 +37,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.coverage.run]
 source = ["backends.cieoidc"]
-omit = ["*/endpoints/extend_session_endpoint*","*/utils/handlers/*", "*/tests/*", "*/__pycache__/*"]
+omit = ["*/endpoints/extend_session_endpoint*", "*/storage/interfaces/storage*","*/utils/handlers/*", "*/tests/*", "*/__pycache__/*"]
 
 [tool.coverage.report]
 exclude_lines = [
