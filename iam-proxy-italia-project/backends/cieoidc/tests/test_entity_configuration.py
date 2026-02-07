@@ -116,3 +116,45 @@ def test_get_entity_configuration_dict(mock_fed_conf, handler):
 @patch("backends.cieoidc.utils.helpers.jwks.public_jwk_from_private_jwk")
 def test_get_openid_jwks(mock_pub, mock_create_jws, handler):
     mock_pub.s_
+
+
+def test_endpoint_well_known_json(handler):
+    context = Context()
+    context.target_backend = "/auth"
+    context.path = "auth/.well-known/openid-federation"
+    context.qs_params = {"format": "json"}
+    response = handler.endpoint(context)
+    assert response
+
+
+@patch("backends.cieoidc.endpoints.entity_configuration.EntityConfigHandler.get_entity_configuration")
+def test_endpoint_well_known_jws(mock_get_entity, handler):
+    mock_get_entity.return_value = "signed-jws"
+
+    context = Context()
+    context.target_backend = "/auth"
+    context.path = "auth/.well-known/openid-federation"
+    context.qs_params = {}
+    response = handler.endpoint(context)
+    assert response
+
+@patch("backends.cieoidc.endpoints.entity_configuration.EntityConfigHandler.get_openid_jwks")
+def test_endpoint_openid_jwks_jose(mock_get_jwks, handler):
+    mock_get_jwks.return_value = "jwks-jws"
+    context = Context()
+    context.target_backend = "/auth"
+    context.path = "auth/openid_relying_party/jwks.jose"
+    context.qs_params = {}
+    response = handler.endpoint(context)
+    assert response
+
+
+@patch("backends.cieoidc.endpoints.entity_configuration.EntityConfigHandler.get_openid_jwks")
+def test_endpoint_openid_jwks_json(mock_get_jwks, handler):
+    mock_get_jwks.return_value = json.dumps({"keys": []})
+    context = Context()
+    context.target_backend = "/auth"
+    context.path = "auth/openid_relying_party/jwks.json"
+    context.qs_params = {}
+    response = handler.endpoint(context)
+    assert response
