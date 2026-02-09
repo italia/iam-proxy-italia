@@ -15,12 +15,7 @@ from backends.cieoidc.models.oidc_auth import OidcAuthentication
 def mongo_conf():
     return {
         "url": settings_test.MONGO_URL,
-        "db_name": settings_test.MONGO_DB_NAME,
-        "data_ttl": 3600,
-        "db_auth_collection": settings_test.MONGO_AUTH_COLLECTION,
-        "db_token_collection": settings_test.MONGO_TOKEN_COLLECTION,
-        "db_user_collection": settings_test.MONGO_USER_COLLECTION,
-
+        "data_ttl": 3600
     }
 
 @pytest.fixture
