@@ -153,7 +153,7 @@ These variables control MongoDB storage used by the CIE OIDC backend and OIDC fr
 #### pyeudiw (OpenID4VP backend / OpenID4VCI frontend)
 
 These variables are specific to pyeudiw-based components: the OpenID4VP backend and the OpenID4VCI frontend.  
-For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/OPENID4VP-SATOSA-BACKEND.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/OPENID4VCI-SATOSA-FRONTEND.html).
+For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
 
 
 
