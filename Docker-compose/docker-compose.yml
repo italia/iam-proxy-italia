@@ -56,7 +56,7 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
       ME_CONFIG_MONGODB_ADMINUSERNAME: "${MONGO_DBUSER:-satosa}"
       ME_CONFIG_MONGODB_ADMINPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@${MONGO_HOST:-satosa-mongo}:{MONGO_PORT:-27017}/
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@${MONGO_URL:-satosa-mongo}:${MONGO_PORT:-27017}/
       TZ: "${TZ:-Europe/Rome}"
     networks:
       - iam-proxy-italia
@@ -121,7 +121,7 @@ services:
 
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
-      - MONGO_HOST=${MONGO_HOST:-satosa-mongo}:${MONGO_PORT:-27017}
+      - MONGO_HOST=${MONGO_URL:-satosa-mongo}:${MONGO_PORT:-27017}
 
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
       - SATOSA_SALT=${SATOSA_SALT:-CHANGE_ME!}
