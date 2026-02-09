@@ -61,3 +61,21 @@ jobs:
           echo "ecdsa Minerva timing side-channel has **no upstream fix**. python-ecdsa considers side-channel attacks out of scope. Whitelisted per pymdoccbor documentation — **risk is accepted**." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
+
+  audit-djangosaml2-sp:
+    name: pip-audit (djangosaml2_sp)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Audit djangosaml2_sp dependencies for vulnerabilities
+        run: |
+          pip-audit -r iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt --desc

@@ -1,10 +1,16 @@
-django>3.0,<4.0
-cffi
+# Security-pinned versions (Django 4.2 LTS, djangosaml2 1.11.x).
+# Run: pip-audit -r requirements.txt
+Django>=4.2.17,<5.0
+cffi>=1.17.0
+# CVE-2024-12797: OpenSSL in wheels 42.0.0-44.0.0; fixed in 44.0.1
+cryptography>=44.0.1
+# pyOpenSSL 25.x uses X509_V_FLAG_NOTIFY_POLICY (OpenSSL 3 only); pin to 24.x for cryptography 44.x
+pyOpenSSL>=24.0.0,<25.0.0
 
-# django saml2 SP
-djangosaml2>=1.0.0
-importlib-resources<6.0.0
+# django saml2 SP (requires Django>=4.2, defusedxml, pysaml2)
+djangosaml2>=1.11.1
+importlib-resources>=5.12.0,<6.0.0
 
-# design-django-theme
+# design-django-theme (bootstrap_italia_template)
 design-django-theme>=2.7.0
 django-sass-processor>=1.2.2

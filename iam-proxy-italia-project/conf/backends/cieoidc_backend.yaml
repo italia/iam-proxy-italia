@@ -12,12 +12,12 @@ config:
       module: backends.cieoidc.storage.impl.mongo_storage
       class: MongoStorage
       init_params:
-        url: mongodb://satosa-mongo:27017
+        url: mongodb://!ENV MONGO_HOST
         conf:
-          db_name: cie_oidc
-          db_auth_collection: authentication
-          db_token_collection: authentication_token
-          db_user_collection: users
+          db_name: !ENV MONGO_DB_NAME
+          db_auth_collection: !ENV MONGO_AUTH_COLLECTION # cie_oidc_authentication
+          db_token_collection: !ENV MONGO_TOKEN_COLLECTION # cie_oidc_authentication_token
+          db_user_collection: !ENV MONGO_USER_COLLECTION # cie_oidc_users
           data_ttl: 63072000 # 2 years
         connection_params:
           username: !ENV MONGODB_USERNAME
@@ -93,22 +93,22 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: https://satosa-nginx.example.org/CieOidcRp/resolve
+      federation_resolve_endpoint: https://!ENV SATOSA_HOSTNAME/CieOidcRp/resolve
       organization_name: Example RP
-      homepage_uri: https://satosa-nginx.example.org/CieOidcRp
-      policy_uri: https://satosa-nginx.example.org/CieOidcRp/en/website/legal-information
-      logo_uri: https://satosa-nginx.example.org/static/cie/sample-cie-logo.png
+      homepage_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp
+      policy_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/en/website/legal-information
+      logo_uri: https://!ENV SATOSA_HOSTNAME/static/cie/sample-cie-logo.png
       contacts:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  https://satosa-nginx.example.org/CieOidcRp # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
+      client_id:  https://!ENV SATOSA_HOSTNAME/CieOidcRp # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: https://satosa-nginx.example.org/CieOidcRp/openid_relying_party/jwks.json
-      signed_jwks_uri: https://satosa-nginx.example.org/CieOidcRp/openid_relying_party/jwks.jose
+      jwks_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/openid_relying_party/jwks.json
+      signed_jwks_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/openid_relying_party/jwks.jose
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it
@@ -116,7 +116,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - https://satosa-nginx.example.org/CieOidcRp/oidc/callback
+        - https://!ENV SATOSA_HOSTNAME/CieOidcRp/oidc/callback
       response_types:
         - code
       subject_type: pairwise

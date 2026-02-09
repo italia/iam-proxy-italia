@@ -56,7 +56,7 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
       ME_CONFIG_MONGODB_ADMINUSERNAME: "${MONGO_DBUSER:-satosa}"
       ME_CONFIG_MONGODB_ADMINPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@satosa-mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@${MONGO_HOST:-satosa-mongo}:27017/
       TZ: "${TZ:-Europe/Rome}"
     networks:
       - iam-proxy-italia
@@ -121,6 +121,8 @@ services:
 
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
+      - MONGO_HOST=${MONGO_HOST:-satosa-mongo:27017}
+
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
       - SATOSA_SALT=${SATOSA_SALT:-CHANGE_ME!}
       - SATOSA_STATE_ENCRYPTION_KEY=${SATOSA_STATE_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -149,6 +151,9 @@ services:
       - SATOSA_UI_PRIVACY_URL_EN=${SATOSA_UI_PRIVACY_URL_EN:-https://example_organization.org/privacy}
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
       - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
+
+      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-localhost}/OpenID4VP}
+      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-localhost}}
     expose:
       - 10000
     ports:
