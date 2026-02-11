@@ -32,7 +32,7 @@ jobs:
         run: |
           pip install poetry
           poetry install --extras test
-#          NEW CODE
+
       - name: Upgrade pip inside Poetry venv
         run: |
           poetry run python -m pip install --upgrade "pip>=26.0"
@@ -54,7 +54,8 @@ jobs:
           echo "#  Whitelisted per pymdoccbor documentation — risk is accepted.             #"
           echo "##############################################################################"
           echo ""
-          poetry run pip-audit --desc --ignore-vuln CVE-2024-23342
+          # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings from pip's incompatible http cache
+          poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc --ignore-vuln CVE-2024-23342
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "### ⚠️ WARNING: CVE-2024-23342 (ecdsa) whitelisted" >> $GITHUB_STEP_SUMMARY
@@ -78,4 +79,5 @@ jobs:
 
       - name: Audit djangosaml2_sp dependencies for vulnerabilities
         run: |
-          pip-audit -r iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt --desc
+          # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings
+          pip-audit --cache-dir /tmp/pip-audit-cache -r iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt --desc
