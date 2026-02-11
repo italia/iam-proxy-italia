@@ -75,54 +75,85 @@ Comment/uncomment the following statement in the proxy_configuration to enable i
 
 ### Configuration by environment variables
 
-You can override the configuration of the proxy by settings one or more of the following environment variables:
+You can override the configuration of the proxy by setting one or more of the following environment variables, grouped by scope.
 
-| **Environment var**                              | **Description**                                            | **Example Value**                                                  |
-|--------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|
-| **BASE_DIR**                                     | Base directory for satosa proxy                            | /satosa_proxy                                              |
-| **SATOSA_BY_DOCKER**                             | Satosa configuration when run by Docker                    | 1                                                          |
-| **SATOSA_BASE**                                  | Base URL of Satosa server                                  | https://$HOSTNAME                                          |
-| **SATOSA_BASE_STATIC**                           | Base URL of Satosa server static folder                    | https://$HOSTNAME/static                                   |
-| **SATOSA_DISCO_SRV**                             | Discovery page URL for all backends                        | https://$HOSTNAME/static/disco.html                        |
-| **SATOSA_UNKNOW_ERROR_REDIRECT_PAGE**            | Redirect page for unknown errors                           | https://$HOSTNAME/static/error_page.html                   |
-| **MONGODB_PASSWORD**                             | MongoDB password for oidc_op frontend                      | ${MONGO_DBPASSWORD}                                       |
-| **MONGODB_USERNAME**                             | MongoDB username for oidc_op frontend                      | ${MONGO_DBUSER}                                           |
-| **SATOSA_CONTACT_PERSON_EMAIL_ADDRESS**          | Metadata Contact person email                              | support.example@organization.org                          |
-| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER**       | Metadata Contact person telephone number for SPID / CIE Backend | +3906123456789                                        |
-| **SATOSA_CONTACT_PERSON_FISCALCODE**             | Metadata Contact person fiscal code for SPID / CIE Backend | 01234567890                                               |
-| **SATOSA_CONTACT_PERSON_GIVEN_NAME**             | Metadata Contact person name                               | Name                                                       |
-| **SATOSA_CONTACT_PERSON_IPA_CODE**               | Metadata Contact person IPA code for SPID / CIE Backend    | ipa00c                                                   |
-| **SATOSA_CONTACT_PERSON_MUNICIPALITY**           | Metadata Contact person municipality code for CIE Backend  | H501                                                       |
-| **SATOSA_ENCRYPTION_KEY**                        | Encryption key for state                                   | CHANGE_ME!                                                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**          | Metadata English organization display name                 | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**          | Metadata Italian organization display name                 | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_NAME_EN**                  | Metadata English full organization name                    | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_NAME_IT**                  | Metadata Italian full organization name                    | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_URL_EN**                   | Metadata English organization URL                          | https://example_organization.org                           |
-| **SATOSA_ORGANIZATION_URL_IT**                   | Metadata Italian organization URL                          | https://example_organization.org                           |
-| **SATOSA_PRIVATE_KEY**                           | Private key for SAML2 / SPID backends                      | ${KEYS_FOLDER}/privkey.pem                                |
-| **SATOSA_PUBLIC_KEY**                            | Public key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/cert.pem                                   |
-| **SATOSA_SALT**                                  | Encryption salt                                            | CHANGE_ME!                                                 |
-| **SATOSA_STATE_ENCRYPTION_KEY**                  | State encryption key                                       | CHANGE_ME!                                                 |
-| **SATOSA_UI_DESCRIPTION_EN**                     | Metadata English UI description                            | Resource description                                       |
-| **SATOSA_UI_DESCRIPTION_IT**                     | Metadata Italian UI description                            | Resource description                                       |
-| **SATOSA_UI_DISPLAY_NAME_EN**                    | Metadata English UI display name                           | Resource Display Name                                      |
-| **SATOSA_UI_DISPLAY_NAME_IT**                    | Metadata Italian UI display name                           | Resource Display Name                                      |
-| **SATOSA_UI_INFORMATION_URL_EN**                 | Metadata English UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_INFORMATION_URL_IT**                 | Metadata Italian UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_LOGO_HEIGHT**                        | Metadata logo height                                       | 60                                                         |
-| **SATOSA_UI_LOGO_URL**                           | Metadata Logo URL                                          | https://example_organization.org/logo.png                  |
-| **SATOSA_UI_LOGO_WIDTH**                         | Metadata Logo width                                        | 80                                                         |
-| **SATOSA_UI_PRIVACY_URL_EN**                     | Metadata English UI privacy URL                            | https://example_organization.org/privacy_en               |
-| **SATOSA_UI_PRIVACY_URL_IT**                     | Metadata Italian UI privacy URL                            | https://example_organization.org/privacy_en               |
-| **SATOSA_USER_ID_HASH_SALT**                     | User ID hash salt                                          | CHANGE_ME!                                                 |
-| **SATOSA_REQUESTED_ATTRIBUTES**                  | Requested attributes                                       | []                                                         |
-| **SATOSA_GET_IDEM_MDQ_KEY**                      | Flag for getting idem MDQ key                              | true                                                       |
-| **GET_SPID_IDP_METADATA**                        | Flag for getting SPID IDP metadata                         | true                                                       |
-| **GET_CIE_IDP_METADATA**                         | Flag for getting CIE IDP metadata                          | true                                                       |
-| **GET_FICEP_IDP_METADATA**                       | Flag for getting ficep (eIDAS) IDP metadata                | true                                                       |
-| **SATOSA_SAML2_REQUESTED_ATTRIBUTES**            | SAML2 required attributes                                  | name, surname                                              |
-| **SATOSA_SPID_REQUESTED_ATTRIBUTES**             | SPID required attributes                                   | spidCode, name, familyName, fiscalNumber, email              |
+#### General proxy configuration
+
+| **Environment var**                   | **Description**                                            | **Example Value**              |
+|--------------------------------------|------------------------------------------------------------|--------------------------------|
+| **BASE_DIR**                         | Base directory for SATOSA proxy                            | /satosa_proxy                  |
+| **SATOSA_BY_DOCKER**                 | SATOSA configuration when run by Docker                    | 1                              |
+| **SATOSA_BASE**                      | Base URL of SATOSA server                                  | https://$HOSTNAME              |
+| **SATOSA_BASE_STATIC**               | Base URL of SATOSA static assets                           | https://$HOSTNAME/static       |
+| **SATOSA_DISCO_SRV**                 | Discovery page URL for all backends                        | https://$HOSTNAME/static/disco.html |
+| **SATOSA_UNKNOW_ERROR_REDIRECT_PAGE**| Redirect page for unknown errors                           | https://$HOSTNAME/static/error_page.html |
+| **MONGODB_USERNAME**                 | MongoDB username (shared across components)                | ${MONGO_DBUSER}                |
+| **MONGODB_PASSWORD**                 | MongoDB password (shared across components)                | ${MONGO_DBPASSWORD}            |
+| **MONGO_HOST**                       | MongoDB host:port used by SATOSA/pyeudiw/CIE OIDC (code prepends `mongodb://`) | satosa-mongo:27017 |
+| **SATOSA_ENCRYPTION_KEY**            | Encryption key for state and OIDC tokens                   | CHANGE_ME!                     |
+| **SATOSA_SALT**                      | General-purpose salt for hashing/encryption                | CHANGE_ME!                     |
+| **SATOSA_STATE_ENCRYPTION_KEY**      | State encryption key                                       | CHANGE_ME!                     |
+| **SATOSA_USER_ID_HASH_SALT**         | User ID hash salt                                          | CHANGE_ME!                     |
+
+#### SAML2 / SPID / CIE backends
+
+These variables configure organization and contact metadata, SAML keys, and metadata download flags for SAML2, SPID and CIE backends.
+
+| **Environment var**                         | **Description**                                            | **Example Value**               |
+|--------------------------------------------|------------------------------------------------------------|---------------------------------|
+| **SATOSA_PRIVATE_KEY**                     | Private key for SAML2 / SPID backends                      | ${KEYS_FOLDER}/privkey.pem      |
+| **SATOSA_PUBLIC_KEY**                      | Public key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/cert.pem         |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**    | English organization display name                          | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**    | Italian organization display name                          | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_NAME_EN**            | English full organization name                             | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_NAME_IT**            | Italian full organization name                             | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_URL_EN**             | English organization URL                                   | https://example_organization.org |
+| **SATOSA_ORGANIZATION_URL_IT**             | Italian organization URL                                   | https://example_organization.org |
+| **SATOSA_CONTACT_PERSON_EMAIL_ADDRESS**    | Contact person email                                       | support.example@organization.org |
+| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER** | Contact person telephone number for SPID / CIE backends    | +3906123456789                  |
+| **SATOSA_CONTACT_PERSON_FISCALCODE**       | Contact person fiscal code for SPID / CIE backends         | 01234567890                     |
+| **SATOSA_CONTACT_PERSON_GIVEN_NAME**       | Contact person name                                        | Name                            |
+| **SATOSA_CONTACT_PERSON_IPA_CODE**         | Contact person IPA code for SPID / CIE backends            | ipa00c                          |
+| **SATOSA_CONTACT_PERSON_MUNICIPALITY**     | Contact person municipality code for CIE backend           | H501                            |
+| **SATOSA_GET_IDEM_MDQ_KEY**                | Flag for getting IDEM MDQ key                              | true                            |
+| **SATOSA_GET_SPID_IDP_METADATA**           | Flag for getting SPID IdP metadata                         | true                            |
+| **SATOSA_GET_CIE_IDP_METADATA**            | Flag for getting CIE IdP metadata                          | true                            |
+| **SATOSA_GET_FICEP_IDP_METADATA**          | Flag for getting FICEP (eIDAS) IdP metadata                | true                            |
+
+#### SAML2 frontends (UI metadata and keys)
+
+These variables control UI-related metadata (names, descriptions, URLs, logo) exposed by SAML2 frontends.  
+SAML2 frontends also rely on the same SAML keys configured for backends (`SATOSA_PRIVATE_KEY`, `SATOSA_PUBLIC_KEY`).
+
+| **Environment var**                   | **Description**                           | **Example Value**                               |
+|--------------------------------------|-------------------------------------------|-------------------------------------------------|
+| **SATOSA_UI_DESCRIPTION_EN**         | English UI description                    | Resource description                            |
+| **SATOSA_UI_DESCRIPTION_IT**         | Italian UI description                    | Resource description                            |
+| **SATOSA_UI_DISPLAY_NAME_EN**        | English UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_DISPLAY_NAME_IT**        | Italian UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_INFORMATION_URL_EN**     | English UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_INFORMATION_URL_IT**     | Italian UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_PRIVACY_URL_EN**         | English UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_PRIVACY_URL_IT**         | Italian UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_LOGO_URL**               | Logo URL                                  | https://example_organization.org/logo.png       |
+| **SATOSA_UI_LOGO_HEIGHT**            | Logo height                               | 60                                              |
+| **SATOSA_UI_LOGO_WIDTH**             | Logo width                                | 80                                              |
+
+#### OIDC frontends / backends (SATOSA-oidcop and CIE OIDC backend)
+
+These variables control MongoDB storage used by the CIE OIDC backend and OIDC frontend components.
+
+| **Environment var**                   | **Description**                                            | **Example Value**      |
+|--------------------------------------|------------------------------------------------------------|------------------------|
+| **MONGO_DB_NAME**                    | MongoDB database name for CIE OIDC backend                 | cie_oidc               |
+| **MONGO_AUTH_COLLECTION**            | MongoDB authentication collection for CIE OIDC backend     | authentication         |
+| **MONGO_TOKEN_COLLECTION**           | MongoDB token collection for CIE OIDC backend              | authentication_token   |
+| **MONGO_USER_COLLECTION**            | MongoDB user collection for CIE OIDC backend               | users                  |
+
+#### pyeudiw (OpenID4VP backend / OpenID4VCI frontend)
+
+These variables are specific to pyeudiw-based components: the OpenID4VP backend and the OpenID4VCI frontend.  
+For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
 
 
 

@@ -9,10 +9,10 @@ config:
   storage:
     class: "satosa_oidcop.core.storage.mongo.Mongodb"
     kwargs:
-      url: mongodb://satosa-mongo:27017/oidcop
+      url: !ENV MONGO_FRONTEND_HOST
       connection_params:
-        username: !ENV MONGODB_USERNAME
-        password: !ENV MONGODB_PASSWORD
+        username: !ENV MONGODB_FRONTEND_USERNAME
+        password: !ENV MONGODB_FRONTEND_PASSWORD
         connectTimeoutMS: 5000
         socketTimeoutMS: 5000
         serverSelectionTimeoutMS: 5000
@@ -277,30 +277,3 @@ config:
             lifetime: 3600
       userinfo:
         class: satosa_oidcop.core.user_info.SatosaOidcUserInfo
-        #kwargs:
-        #whatever:
-        #key: value
-      # until SATOSA won't support logout the oidcop cookies are quite useless
-      #cookie_handler:
-      #class: idpyoidc.server.cookie_handler.CookieHandler
-      #kwargs:
-      #flags:
-      #httponly: true
-      #samesite: None
-      #secure: true
-      #keys:
-      #key_defs:
-      #- kid: enc
-      #type: OCT
-      #use:
-      #- enc
-      #- kid: sig
-      #type: OCT
-      #use:
-      #- sig
-      #private_path: data/oidc_op/private/cookie_jwks.json
-      #read_only: false
-      #name:
-      #register: oidc_op_rp
-      #session: oidc_op
-      #session_management: sman

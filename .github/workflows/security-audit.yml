@@ -32,6 +32,10 @@ jobs:
         run: |
           pip install poetry
           poetry install --extras test
+#          NEW CODE
+      - name: Upgrade pip inside Poetry venv
+        run: |
+          poetry run python -m pip install --upgrade "pip>=26.0"
 
       - name: Install pip-audit
         run: poetry run pip install pip-audit
