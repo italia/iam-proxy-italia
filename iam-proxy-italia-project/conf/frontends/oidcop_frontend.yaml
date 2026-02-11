@@ -9,10 +9,10 @@ config:
   storage:
     class: "satosa_oidcop.core.storage.mongo.Mongodb"
     kwargs:
-      url: mongodb://!ENV MONGO_HOST
+      url: !ENV MONGO_FRONTEND_HOST
       connection_params:
-        username: !ENV MONGODB_USERNAME
-        password: !ENV MONGODB_PASSWORD
+        username: !ENV MONGODB_FRONTEND_USERNAME
+        password: !ENV MONGODB_FRONTEND_PASSWORD
         connectTimeoutMS: 5000
         socketTimeoutMS: 5000
         serverSelectionTimeoutMS: 5000

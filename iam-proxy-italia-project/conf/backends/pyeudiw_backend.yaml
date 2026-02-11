@@ -112,37 +112,10 @@ config:
             - path:
               - "$.given_name"
 
-  dcql_query: &dcql_query |
-    {
-      "credentials": [
-        {
-          "id": "personal id data",
-          "format": "dc+sd-jwt",
-          "meta": {
-            "vct_values": [
-              "https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"
-            ]
-          },
-          "claims": [
-            {"path": ["given_name"]},
-            {"path": ["family_name"]}
-          ]
-        },
-        {
-          "id": "wallet attestation",
-          "format": "mso_mdoc",
-          "meta": {
-            "vct_values": [
-              "https://itwallet.registry.example.it/WalletAttestation"
-            ]
-          },
-          "claims": [
-            {"path": ["wallet_link"]},
-            {"path": ["wallet_name"]}
-          ]
-        }
-      ]
-    }
+  duckle:
+    dcql_query: &dcql_query >
+      {"credentials":[{"id":"personal id data","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
+
 
   user_attributes:
     unique_identifiers:
@@ -397,17 +370,17 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: mongodb://!ENV MONGO_HOST
+          url: !ENV MONGO_BACKEND_HOST
           conf:
             db_name: pyeudiw_openid4vp
           connection_params:
-            username: !ENV MONGODB_USERNAME
-            password: !ENV MONGODB_PASSWORD
+            username: !ENV MONGODB_BACKEND_USERNAME
+            password: !ENV MONGODB_BACKEND_PASSWORD
       storage:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: mongodb://!ENV MONGO_HOST
+          url: !ENV MONGO_BACKEND_HOST
           conf:
             db_name: pyeudiw_openid4vp
             db_sessions_collection: sessions
@@ -416,5 +389,5 @@ config:
             db_trust_sources_collection: trust_sources
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_USERNAME
-            password: !ENV MONGODB_PASSWORD
+            username: !ENV MONGODB_BACKEND_USERNAME
+            password: !ENV MONGODB_BACKEND_PASSWORD
