@@ -125,30 +125,69 @@ These variables configure organization and contact metadata, SAML keys, and meta
 These variables control UI-related metadata (names, descriptions, URLs, logo) exposed by SAML2 frontends.  
 SAML2 frontends also rely on the same SAML keys configured for backends (`SATOSA_PRIVATE_KEY`, `SATOSA_PUBLIC_KEY`).
 
-| **Environment var**                   | **Description**                           | **Example Value**                               |
-|--------------------------------------|-------------------------------------------|-------------------------------------------------|
-| **SATOSA_UI_DESCRIPTION_EN**         | English UI description                    | Resource description                            |
-| **SATOSA_UI_DESCRIPTION_IT**         | Italian UI description                    | Resource description                            |
-| **SATOSA_UI_DISPLAY_NAME_EN**        | English UI display name                   | Resource Display Name                           |
-| **SATOSA_UI_DISPLAY_NAME_IT**        | Italian UI display name                   | Resource Display Name                           |
-| **SATOSA_UI_INFORMATION_URL_EN**     | English UI information URL                | https://example_organization.org/information_url_en |
-| **SATOSA_UI_INFORMATION_URL_IT**     | Italian UI information URL                | https://example_organization.org/information_url_en |
-| **SATOSA_UI_PRIVACY_URL_EN**         | English UI privacy URL                    | https://example_organization.org/privacy_en     |
-| **SATOSA_UI_PRIVACY_URL_IT**         | Italian UI privacy URL                    | https://example_organization.org/privacy_en     |
-| **SATOSA_UI_LOGO_URL**               | Logo URL                                  | https://example_organization.org/logo.png       |
-| **SATOSA_UI_LOGO_HEIGHT**            | Logo height                               | 60                                              |
-| **SATOSA_UI_LOGO_WIDTH**             | Logo width                                | 80                                              |
+| **Environment var**                    | **Description**                           | **Example Value**                               |
+|----------------------------------------|-------------------------------------------|-------------------------------------------------|
+| **SATOSA_UI_DESCRIPTION_EN**           | English UI description                    | Resource description                            |
+| **SATOSA_UI_DESCRIPTION_IT**           | Italian UI description                    | Resource description                            |
+| **SATOSA_UI_DISPLAY_NAME_EN**          | English UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_DISPLAY_NAME_IT**          | Italian UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_INFORMATION_URL_EN**       | English UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_INFORMATION_URL_IT**       | Italian UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_PRIVACY_URL_EN**           | English UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_PRIVACY_URL_IT**           | Italian UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_LOGO_URL**                 | Logo URL                                  | https://example_organization.org/logo.png       |
+| **SATOSA_UI_LOGO_HEIGHT**              | Logo height                               | 60                                              |
+| **SATOSA_UI_LOGO_WIDTH**               | Logo width                                | 80                                              |
 
 #### OIDC frontends / backends (SATOSA-oidcop and CIE OIDC backend)
 
 These variables control MongoDB storage used by the CIE OIDC backend and OIDC frontend components.
 
-| **Environment var**                   | **Description**                                            | **Example Value**      |
-|--------------------------------------|------------------------------------------------------------|------------------------|
-| **MONGO_DB_NAME**                    | MongoDB database name for CIE OIDC backend                 | cie_oidc               |
-| **MONGO_AUTH_COLLECTION**            | MongoDB authentication collection for CIE OIDC backend     | authentication         |
-| **MONGO_TOKEN_COLLECTION**           | MongoDB token collection for CIE OIDC backend              | authentication_token   |
-| **MONGO_USER_COLLECTION**            | MongoDB user collection for CIE OIDC backend               | users                  |
+#### General configuration
+These variables control  generic configuration for MongoDB
+
+| **Environment var**  | **Description**           | **Example Value**      |
+|----------------------|---------------------------|------------------------|
+| **MONGO_HOST**       | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_URL**        | MongoDB connection URL    | example-mongo          |
+| **MONGO_PORT**       | MongoDB connection port   | 27017                  |
+| **MONGO_DBUSER**     | MongoDB user              | users                  |  
+| **MONGO_DBPASSWORD** | MongoDB password for user | P4$$w0rD!              |
+
+#### Backend configuration
+These variables control backend configuration for MongoDB 
+
+| **Environment var**           | **Description**           | **Example Value**      |
+|-------------------------------|---------------------------|------------------------|
+| **MONGO_BACKEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_BACKEND_URL**         | MongoDB connection URL    | example-mongo          |
+| **MONGO_BACKEND_PORT**        | MongoDB connection port   | 27017                  |
+| **MONGO_BACKEND_DBUSER**      | MongoDB user              | users                  |  
+| **MONGO_BACKEND_DBPASSWORD**  | MongoDB password for user | P4$$w0rD!              |
+
+#### Frontend configuration
+These variables control frontend configuration for MongoDB 
+
+| **Environment var**            | **Description**           | **Example Value**      |
+|--------------------------------|---------------------------|------------------------|
+| **MONGO_FRONTEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_FRONTEND_URL**         | MongoDB connection URL    | example-mongo          |
+| **MONGO_FRONTEND_PORT**        | MongoDB connection port   | 27017                  |
+| **MONGO_FRONTEND_DBUSER**      | MongoDB user              | users                  |  
+| **MONGO_FRONTEND_DBPASSWORD ** | MongoDB password for user | P4$$w0rD!              |
+
+#### Frontend configuration
+These variables are specific to the backend and frontend modules. 
+
+#### OIDC
+
+| **Environment var**                     | **Description**          | **Example Value**             |
+|-----------------------------------------|--------------------------|-------------------------------|
+| **MONGO_DB_BACKEND_OIDC_NAME**          | MongoDB schema name      | example_schema                |
+| **MONGO_BACKEND_AUTH_OIDC_COLLECTION**  | MongoDB auth collection  | cie_oidc_authentication       |
+| **MONGO_BACKEND_TOKEN_OIDC_COLLECTION** | MongoDB token connection | cie_oidc_authentication_token |
+| **MONGO_BACKEND_USER_OIDC_COLLECTION**  | MongoDB user collection  | cie_oidc_users                |  
+ 
 
 #### pyeudiw (OpenID4VP backend / OpenID4VCI frontend)
 
