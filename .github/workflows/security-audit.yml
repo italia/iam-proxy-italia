@@ -10,7 +10,20 @@ on:
     branches: [master, dev]
 
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
   audit:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     name: pip-audit
     runs-on: ubuntu-latest
     steps:
@@ -71,6 +84,8 @@ jobs:
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
 
   audit-djangosaml2-sp:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     name: pip-audit (djangosaml2_sp)
     runs-on: ubuntu-latest
     steps:
