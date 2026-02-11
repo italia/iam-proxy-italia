@@ -80,6 +80,8 @@ This two environment variable are used in 3 of our container.
 
 #### docker-compose.yml environments for MONGODB
 
+Before run the docker-compose, please configure all environment [here](README-Setup.md#configuration-by-environment-variables) 
+
 ##### satosa-mongo
 
 ````
