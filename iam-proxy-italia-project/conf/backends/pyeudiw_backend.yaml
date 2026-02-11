@@ -231,7 +231,10 @@ config:
         class: DuckleHandler
         format: jwt_vc_json
         config:
+          # Top-level dcql_query for pyeudiw that accepts it; duckle.dcql_query for older pyeudiw (e.g. 2.0.1)
           dcql_query: *dcql_query
+          duckle:
+            dcql_query: *dcql_query
 
   trust:
     direct_trust_sd_jwt_vc:
