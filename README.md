@@ -183,7 +183,7 @@ https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/sam
 ```
 
 If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
-[.github/workflows/lint.yml](.github/workflows/lint.yml) and [.github/workflows/docker-compose-test.yml](.github/workflows/docker-compose-test.yml).
+[.github/workflows/docker-compose-test.yml](.github/workflows/docker-compose-test.yml) (SAML / spid-sp-test) and [.github/workflows/lint.yml](.github/workflows/lint.yml) (flake8).
 
 If you are using this project as a testing tool or playground for [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) or any other of its Python dependencies, take a look [here](README-Python-Dev.md)
 

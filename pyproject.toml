@@ -10,10 +10,11 @@ readme = "README.md"
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "pip>=26.0",  # CVE-2026-1703: path traversal when extracting wheels; fixed in 26.0
+    "setuptools>=78.1.1",  # PYSEC-2022-43012, PYSEC-2025-49, CVE-2024-6345
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
     "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@v4.0.0",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.0.1",
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.1.0",
     "aiohttp (>=3.11.11,<4.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)",
 ]
