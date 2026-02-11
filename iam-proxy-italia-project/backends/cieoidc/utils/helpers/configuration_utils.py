@@ -1,6 +1,5 @@
 import logging
 from typing import Union
-from xml.sax.handler import property_encoding
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +18,18 @@ class ConfigurationPlugin(object):
         "ECDH-ES+A256KW",
     ]
 
-
-    def __init__(self, default_jwe_alg: str, default_jwe_enc: str, signing_alg_values_supported: Union[list[str],None], encryption_alg_values_supported: Union[list[str],None] ):
+    def __init__(
+        self,
+        default_jwe_alg: str,
+        default_jwe_enc: str,
+        signing_alg_values_supported: Union[list[str], None],
+        encryption_alg_values_supported: Union[list[str], None],
+    ):
         logger.debug(
-            f"Initializing: {self.__class__.__name__}. Params [default_jwe_alg: {default_jwe_alg}, default_jwe_enc: {default_jwe_enc}"
-            f"encryption_alg_values_supported: {encryption_alg_values_supported}, signing_alg_values_supported: {signing_alg_values_supported}]"
+            f"Initializing: {self.__class__.__name__}. Params "
+            f"[default_jwe_alg: {default_jwe_alg}, default_jwe_enc: {default_jwe_enc}, "
+            f"encryption_alg_values_supported: {encryption_alg_values_supported}, "
+            f"signing_alg_values_supported: {signing_alg_values_supported}]"
         )
         self.default_jwe_alg = default_jwe_alg
         self.default_jwe_enc = default_jwe_enc

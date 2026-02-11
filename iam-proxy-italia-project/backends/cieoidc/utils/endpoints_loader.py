@@ -9,7 +9,6 @@ from satosa.attribute_mapping import AttributeMapper
 from .helpers.misc import get_dynamic_class
 
 
-
 class EndpointsLoader:
     """
     A dynamic backend/frontend module.
@@ -48,10 +47,10 @@ class EndpointsLoader:
 
         if not endpoints:
             raise ValueError("No endpoints configured in the OpenID4VCI config")
-        
+
         if not isinstance(endpoints, dict):
             raise ValueError("Endpoints configuration must be a dictionary")
-        
+
         endpoint_instances = {}
         for e in endpoints.values():
             module = e.get("module", None)
@@ -74,4 +73,3 @@ class EndpointsLoader:
                     endpoint_instances[path.lstrip("/")] = _handler_instance
 
         self.endpoint_instances = endpoint_instances
-

@@ -5,7 +5,7 @@ from cryptojwt.jwk.rsa import RSAKey
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 
-def create_jwk(key = None, hash_func="SHA-256"):
+def create_jwk(key=None, hash_func="SHA-256"):
     key = key or new_rsa_key()
     thumbprint = key.thumbprint(hash_function=hash_func)
     jwk = key.to_dict()
@@ -58,7 +58,7 @@ def serialize_rsa_key(rsa_key, kind="public", hash_func="SHA-256"):
         data = {"pub_key": rsa_key}
     elif isinstance(rsa_key, rsa.RSAPrivateKey):
         data = {"priv_key": rsa_key}
-    elif isinstance(rsa_key, (str, bytes)): # pragma: no cover
+    elif isinstance(rsa_key, (str, bytes)):  # pragma: no cover
         if kind == "private":
             data = {
                 "priv_key": private_jwk_from_pem(rsa_key)
@@ -74,14 +74,13 @@ def serialize_rsa_key(rsa_key, kind="public", hash_func="SHA-256"):
     return jwk
 
 
-def private_jwk_from_pem(content:str, password:str = None):
+def private_jwk_from_pem(content: str, password: str = None):
     content = content.encode() if isinstance(content, str) else content
     key = serialization.load_pem_private_key(content, password=password)
     return serialize_rsa_key(key, kind='private')
 
 
-def public_jwk_from_pem(content:str, password:str = None):
+def public_jwk_from_pem(content: str, password: str = None):
     content = content.encode() if isinstance(content, str) else content
     key = serialization.load_pem_public_key(content)
     return serialize_rsa_key(key, kind='public')
-

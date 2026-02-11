@@ -6,6 +6,7 @@ from backends.cieoidc.utils.clients.oidc import OidcUserInfo
 from backends.cieoidc.utils.exceptions import UnknownKid
 from backends.cieoidc.utils.helpers.configuration_utils import ConfigurationPlugin
 
+
 @pytest.fixture
 def provider_config():
     return {"userinfo_endpoint": "http://cie-provider.example.org:8002/oidc/op/userinfo"}
@@ -34,6 +35,8 @@ def configuration_utils():
 @pytest.fixture
 def userinfo(provider_config, jwks_core, httpc_params):
     return OidcUserInfo(provider_config, jwks_core, httpc_params)
+
+
 @patch("backends.cieoidc.utils.clients.oidc.requests.get")
 def test_us01(mock_get, userinfo, configuration_utils):
     response_payload = {"sub": "user123"}
@@ -59,6 +62,7 @@ def test_us01(mock_get, userinfo, configuration_utils):
         timeout=5,
     )
 
+
 @patch("backends.cieoidc.utils.clients.oidc.requests.get")
 def test_us02(mock_get, userinfo, configuration_utils):
     mock_response = MagicMock()
@@ -74,6 +78,7 @@ def test_us02(mock_get, userinfo, configuration_utils):
     )
 
     assert result is False
+
 
 @patch("backends.cieoidc.utils.clients.oidc.requests.get")
 @patch("backends.cieoidc.utils.clients.oidc.unpad_jwt_head")
@@ -105,6 +110,7 @@ def test_us03(mock_verify, mock_get_jwks, mock_decrypt, mock_unpad, mock_get, us
     assert mock_decrypt.called
     assert mock_verify.called
 
+
 @patch("backends.cieoidc.utils.clients.oidc.requests.get")
 def test_us04(mock_get, userinfo, configuration_utils):
     mock_response = MagicMock()
@@ -123,6 +129,7 @@ def test_us04(mock_get, userinfo, configuration_utils):
     )
 
     assert result is False
+
 
 @patch("backends.cieoidc.utils.clients.oidc.requests.get")
 @patch("backends.cieoidc.utils.clients.oidc.unpad_jwt_head")

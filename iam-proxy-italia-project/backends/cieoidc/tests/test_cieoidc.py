@@ -22,49 +22,51 @@ def minimal_config():
         "providers": [
             "http://cie-provider.example.org"
         ],
-        "endpoints":{
+        "endpoints": {
             "test_endpoint": {
-                "module":"backends.cieoidc.endpoints.extend_session_endpoint",
-                "class":"ExtendSessionHandler",
-                "routes":"/extend_session",
+                "module": "backends.cieoidc.endpoints.extend_session_endpoint",
+                "class": "ExtendSessionHandler",
+                "routes": "/extend_session",
                 "config": {
                     "httpc_params": {
-                    "connection": "false",
-                    "session": "6"
+                        "connection": "false",
+                        "session": "6"
                     }
                 }
             }
         }
     }
 
+
 @pytest.fixture
-def internal_attributes ():
+def internal_attributes():
     return {
-            "attributes": {
-                "username": {
-                    "oidc": ["preferred_username", "sub"],
-                    "spid": ["spid_code"]
-                },
-                "first_name": {
-                    "oidc": ["given_name"],
-                    "ldap": ["cn"]
-                },
-                "last_name": {
-                    "oidc": ["family_name"],
-                    "ldap": ["sn"]
-                },
-                "email": {
-                    "oidc": ["email"],
-                    "ldap": ["mail"]
-                },
-                "fiscal_number": {
-                    "oidc": ["https://attributes.eid.gov.it/fiscal_number"]
-                }
+        "attributes": {
+            "username": {
+                "oidc": ["preferred_username", "sub"],
+                "spid": ["spid_code"]
             },
-            "template_attributes": {
-                "full_name": "{first_name} {last_name}"
+            "first_name": {
+                "oidc": ["given_name"],
+                "ldap": ["cn"]
+            },
+            "last_name": {
+                "oidc": ["family_name"],
+                "ldap": ["sn"]
+            },
+            "email": {
+                "oidc": ["email"],
+                "ldap": ["mail"]
+            },
+            "fiscal_number": {
+                "oidc": ["https://attributes.eid.gov.it/fiscal_number"]
             }
+        },
+        "template_attributes": {
+            "full_name": "{first_name} {last_name}"
         }
+    }
+
 
 @pytest.fixture
 def backend(minimal_config, internal_attributes):
@@ -80,8 +82,10 @@ def backend(minimal_config, internal_attributes):
         )
         return backend
 
+
 def test_initialization_sets_client_id(backend):
     assert backend._client_id == "client123"
+
 
 def test_initialization_calls_generate_trust_chains(minimal_config, internal_attributes):
     with patch.object(
@@ -96,9 +100,11 @@ def test_initialization_calls_generate_trust_chains(minimal_config, internal_att
         )
         mock_tc.assert_called_once()
 
+
 def test_start_auth_without_authorization_endpoint_raises(backend):
     with pytest.raises(ValueError):
         backend.start_auth(Context(), MagicMock())
+
 
 def test_start_auth_calls_authorization_endpoint(backend):
     mock_auth = MagicMock(return_value="response")
@@ -134,16 +140,17 @@ def test_get_metadata_desc(mock_meta, backend):
     mock_meta.assert_called_once_with(backend._client_id, backend.config)
     assert res == "metadata-desc"
 
+
 @patch("backends.cieoidc.cieoidc.get_entity_configurations")
 @patch("backends.cieoidc.cieoidc.EntityStatement")
 @patch("backends.cieoidc.cieoidc.CieOidcBackend.generate_trust_chain")
 def test_generate_trust_chains(
-    mock_gen_tc,
-    mock_entity_statement,
-    mock_get_ec,
-    minimal_config,
-    internal_attributes,
-    backend):
+        mock_gen_tc,
+        mock_entity_statement,
+        mock_get_ec,
+        minimal_config,
+        internal_attributes,
+        backend):
     mock_get_ec.return_value = ["jwt"]
     mock_ec = MagicMock()
     mock_ec.sub = "ta"

@@ -56,7 +56,7 @@ class MongoStorage(OidcStorage):
     def _to_doc(self, entity: E, include_unset=True) -> dict[str, Any]:
         d = entity.model_dump(mode="json", exclude_unset=not include_unset)
         if "id" in d:
-            if _uuid := self._to_uuid(d["id"]): #convert to uuid if it is
+            if _uuid := self._to_uuid(d["id"]):  # convert to uuid if it is
                 d["_id"] = Binary.from_uuid(_uuid)
             d.pop("id", None)
         return d
@@ -111,14 +111,16 @@ class MongoStorage(OidcStorage):
             return None
 
     def _find_by_id(self, collection: str, entity_id: str, entity_cls: type[BaseModel]) -> Optional[E]:
-        if entity_id is not str: return None
+        if entity_id is not str:
+            return None
 
         if not (_uuid := self._to_uuid(entity_id)):
             oid = ObjectId(entity_id)
         else:
             oid = Binary.from_uuid(_uuid)
         doc = self._db[collection].find_one({"_id": oid})
-        if doc is None: return None
+        if doc is None:
+            return None
         return self._from_doc(doc, entity_cls)
 
     def _find_all(self, collection: str, filters: dict[str, Any], entity_cls: type[BaseModel]) -> List[E]:
@@ -134,7 +136,6 @@ class MongoStorage(OidcStorage):
         if self._update(self._auth_collection, entity) is not None:
             return 1
         return 0
-
 
     def get_sessions(self, state: str) -> list[OidcAuthentication]:
         return self._find_all(self._auth_collection, {"state": state}, OidcAuthentication)

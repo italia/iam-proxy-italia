@@ -1,6 +1,5 @@
 import os
 
-MONGO_URL = os.environ.get("ME_CONFIG_MONGODB_URL","")
+MONGO_URL = os.environ.get("ME_CONFIG_MONGODB_URL", "")
 MONGO_USER = os.getenv("ME_CONFIG_BASICAUTH_USERNAME", "")
 MONGO_PASSWORD = os.getenv("ME_CONFIG_BASICAUTH_PASSWORD", "")
-

@@ -11,15 +11,14 @@ from ..base_logger import BaseLogger
 from ..handlers.base_http_response_handler import BaseHTTPResponseHandler
 
 
-
 class BaseEndpoint(BaseHTTPResponseHandler, BaseLogger):
 
     def __init__(
-            self, 
-            config: dict, 
-            internal_attributes: dict[str, dict[str, str | list[str]]], 
-            base_url: str, 
-            name: str, 
+            self,
+            config: dict,
+            internal_attributes: dict[str, dict[str, str | list[str]]],
+            base_url: str,
+            name: str,
             auth_callback: Callable[[Context, Any], Response] | None = None,
             converter: AttributeMapper | None = None):
         """

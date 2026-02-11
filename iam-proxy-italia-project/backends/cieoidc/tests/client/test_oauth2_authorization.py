@@ -6,6 +6,7 @@ from backends.cieoidc.utils.clients.oauth2 import (
     OAuth2AuthorizationCodeGrant
 )
 
+
 @pytest.fixture
 def grant():
     return OAuth2AuthorizationCodeGrant(
@@ -17,6 +18,7 @@ def grant():
             "session": {"timeout": 5},
         },
     )
+
 
 @patch("backends.cieoidc.utils.clients.oauth2.requests.post")
 @patch("backends.cieoidc.utils.clients.oauth2.create_jws")
@@ -58,6 +60,7 @@ def test_us01(
     assert args[0] == "http://cie-provider.example.org:8002/oidc/op/token"
     assert kwargs["timeout"] == 5
 
+
 @patch("backends.cieoidc.utils.clients.oauth2.requests.post")
 @patch("backends.cieoidc.utils.clients.oauth2.create_jws")
 @patch("backends.cieoidc.utils.clients.oauth2.get_key")
@@ -84,6 +87,7 @@ def test_us02(
     )
 
     assert result == mock_response
+
 
 @patch("backends.cieoidc.utils.clients.oauth2.requests.post")
 @patch("backends.cieoidc.utils.clients.oauth2.create_jws")
@@ -119,6 +123,7 @@ def test_us03(
     assert result == mock_response
     mock_post.assert_called_once()
 
+
 @patch("backends.cieoidc.utils.clients.oauth2.create_jws")
 @patch("backends.cieoidc.utils.clients.oauth2.get_key")
 def test_us04(
@@ -136,6 +141,7 @@ def test_us04(
     mock_create_jws.return_value = "jwt"
     result = grant.refresh_token(authorization, "client123")
     assert result is None
+
 
 def test_us05(grant):
     conf = grant._OAuth2AuthorizationCodeGrant__get_rp_conf("client123")
