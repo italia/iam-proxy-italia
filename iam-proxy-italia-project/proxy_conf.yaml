@@ -34,7 +34,7 @@ BACKEND_MODULES:
 
 FRONTEND_MODULES:
   - "conf/frontends/saml2_frontend.yaml"
-  # - "conf/frontends/oidcop_frontend.yaml"
+  # - "conf/frontends/oidcop_frontend.yaml"  # SATOSA-oidcop (submodule frontends/)
   - "conf/frontends/openid4vci_frontend.yaml"
 MICRO_SERVICES:
   # - "conf/microservices/spid_unical_account_linking.yaml"
@@ -112,6 +112,11 @@ LOGGING:
       formatter: simple
       handlers: [console]
       propagate: no
+    # satosa_oidcop:
+    #  level: DEBUG
+    #  formatter: simple
+    #  handlers: [console]
+    #  propagate: no
     backends.spidsaml2:
       level: INFO
       formatter: simple

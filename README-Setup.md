@@ -1,6 +1,6 @@
 # Setup
 
-In this section there are all the required information to install, configure and run iam-proxy-italia.
+In this section there are all the required information to install, configure and run iam-proxy-italia. For common issues and solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ### NGINX setup
 
@@ -10,13 +10,13 @@ A valid ssl certificate is needed, to add your certificate you have to override 
 
 ###### Dependencies Ubuntu
 
-```
+```bash
 sudo apt install -y libffi-dev libssl-dev python3-pip xmlsec1 procps libpcre3 libpcre3-dev
 ```
 
 ###### Dependencies Centos/RHEL
 
-```
+```bash
 sudo yum install -y libffi-devel openssl-devel python3-pip xmlsec1 procps pcre pcre-devel
 sudo yum groupinstall "Development Tools"
 sudo yum install -y python3-wheel python3-devel
@@ -26,7 +26,7 @@ sudo yum install -y python3-wheel python3-devel
 
 Within the directory `/{your path}/iam-proxy-italia` execute the following commands:
 
-```
+```bash
 pip install --upgrade pip
 pip install flake8 pipx poetry
 pip install --upgrade packaging
@@ -43,6 +43,9 @@ cd repository
 poetry install
 poetry env info
 ```
+
+**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [README-TEST.md](README-TEST.md)).
+
 
 ## Configure the Proxy
 
@@ -67,59 +70,130 @@ Remember to:
 ### OIDC
 
 This project uses [SATOSA_oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) as OAuth2/OIDC frontend module.
+
 Comment/uncomment the following statement in the proxy_configuration to enable it.
 
 
 ### Configuration by environment variables
 
-You can override the configuration of the proxy by settings one or more of the following environment variables:
+You can override the configuration of the proxy by setting one or more of the following environment variables, grouped by scope.
 
-| **Environment var**                              | **Description**                                            | **Example Value**                                                  |
-|--------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------|
-| **BASE_DIR**                                     | Base directory for satosa proxy                            | /satosa_proxy                                              |
-| **SATOSA_BY_DOCKER**                             | Satosa configuration when run by Docker                    | 1                                                          |
-| **SATOSA_BASE**                                  | Base URL of Satosa server                                  | https://$HOSTNAME                                          |
-| **SATOSA_BASE_STATIC**                           | Base URL of Satosa server static folder                    | https://$HOSTNAME/static                                   |
-| **SATOSA_DISCO_SRV**                             | Discovery page URL for all backends                        | https://$HOSTNAME/static/disco.html                        |
-| **SATOSA_UNKNOW_ERROR_REDIRECT_PAGE**            | Redirect page for unknown errors                           | https://$HOSTNAME/static/error_page.html                   |
-| **MONGODB_PASSWORD**                             | MongoDB password for oidc_op frontend                      | ${MONGO_DBPASSWORD}                                       |
-| **MONGODB_USERNAME**                             | MongoDB username for oidc_op frontend                      | ${MONGO_DBUSER}                                           |
-| **SATOSA_CONTACT_PERSON_EMAIL_ADDRESS**          | Metadata Contact person email                              | support.example@organization.org                          |
-| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER**       | Metadata Contact person telephone number for SPID / CIE Backend | +3906123456789                                        |
-| **SATOSA_CONTACT_PERSON_FISCALCODE**             | Metadata Contact person fiscal code for SPID / CIE Backend | 01234567890                                               |
-| **SATOSA_CONTACT_PERSON_GIVEN_NAME**             | Metadata Contact person name                               | Name                                                       |
-| **SATOSA_CONTACT_PERSON_IPA_CODE**               | Metadata Contact person IPA code for SPID / CIE Backend    | ipa00c                                                   |
-| **SATOSA_CONTACT_PERSON_MUNICIPALITY**           | Metadata Contact person municipality code for CIE Backend  | H501                                                       |
-| **SATOSA_ENCRYPTION_KEY**                        | Encryption key for state                                   | CHANGE_ME!                                                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**          | Metadata English organization display name                 | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**          | Metadata Italian organization display name                 | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_NAME_EN**                  | Metadata English full organization name                    | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_NAME_IT**                  | Metadata Italian full organization name                    | Resource provided by Example Organization                 |
-| **SATOSA_ORGANIZATION_URL_EN**                   | Metadata English organization URL                          | https://example_organization.org                           |
-| **SATOSA_ORGANIZATION_URL_IT**                   | Metadata Italian organization URL                          | https://example_organization.org                           |
-| **SATOSA_PRIVATE_KEY**                           | Private key for SAML2 / SPID backends                      | ${KEYS_FOLDER}/privkey.pem                                |
-| **SATOSA_PUBLIC_KEY**                            | Public key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/cert.pem                                   |
-| **SATOSA_SALT**                                  | Encryption salt                                            | CHANGE_ME!                                                 |
-| **SATOSA_STATE_ENCRYPTION_KEY**                  | State encryption key                                       | CHANGE_ME!                                                 |
-| **SATOSA_UI_DESCRIPTION_EN**                     | Metadata English UI description                            | Resource description                                       |
-| **SATOSA_UI_DESCRIPTION_IT**                     | Metadata Italian UI description                            | Resource description                                       |
-| **SATOSA_UI_DISPLAY_NAME_EN**                    | Metadata English UI display name                           | Resource Display Name                                      |
-| **SATOSA_UI_DISPLAY_NAME_IT**                    | Metadata Italian UI display name                           | Resource Display Name                                      |
-| **SATOSA_UI_INFORMATION_URL_EN**                 | Metadata English UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_INFORMATION_URL_IT**                 | Metadata Italian UI information URL                        | https://example_organization.org/information_url_en       |
-| **SATOSA_UI_LOGO_HEIGHT**                        | Metadata logo height                                       | 60                                                         |
-| **SATOSA_UI_LOGO_URL**                           | Metadata Logo URL                                          | https://example_organization.org/logo.png                  |
-| **SATOSA_UI_LOGO_WIDTH**                         | Metadata Logo width                                        | 80                                                         |
-| **SATOSA_UI_PRIVACY_URL_EN**                     | Metadata English UI privacy URL                            | https://example_organization.org/privacy_en               |
-| **SATOSA_UI_PRIVACY_URL_IT**                     | Metadata Italian UI privacy URL                            | https://example_organization.org/privacy_en               |
-| **SATOSA_USER_ID_HASH_SALT**                     | User ID hash salt                                          | CHANGE_ME!                                                 |
-| **SATOSA_REQUESTED_ATTRIBUTES**                  | Requested attributes                                       | []                                                         |
-| **SATOSA_GET_IDEM_MDQ_KEY**                      | Flag for getting idem MDQ key                              | true                                                       |
-| **GET_SPID_IDP_METADATA**                        | Flag for getting SPID IDP metadata                         | true                                                       |
-| **GET_CIE_IDP_METADATA**                         | Flag for getting CIE IDP metadata                          | true                                                       |
-| **GET_FICEP_IDP_METADATA**                       | Flag for getting ficep (eIDAS) IDP metadata                | true                                                       |
-| **SATOSA_SAML2_REQUESTED_ATTRIBUTES**            | SAML2 required attributes                                  | name, surname                                              |
-| **SATOSA_SPID_REQUESTED_ATTRIBUTES**             | SPID required attributes                                   | spidCode, name, familyName, fiscalNumber, email              |
+#### General proxy configuration
+
+| **Environment var**                   | **Description**                                            | **Example Value**              |
+|--------------------------------------|------------------------------------------------------------|--------------------------------|
+| **BASE_DIR**                         | Base directory for SATOSA proxy                            | /satosa_proxy                  |
+| **SATOSA_BY_DOCKER**                 | SATOSA configuration when run by Docker                    | 1                              |
+| **SATOSA_BASE**                      | Base URL of SATOSA server                                  | https://$HOSTNAME              |
+| **SATOSA_BASE_STATIC**               | Base URL of SATOSA static assets                           | https://$HOSTNAME/static       |
+| **SATOSA_DISCO_SRV**                 | Discovery page URL for all backends                        | https://$HOSTNAME/static/disco.html |
+| **SATOSA_UNKNOW_ERROR_REDIRECT_PAGE**| Redirect page for unknown errors                           | https://$HOSTNAME/static/error_page.html |
+| **MONGODB_USERNAME**                 | MongoDB username (shared across components)                | ${MONGO_DBUSER}                |
+| **MONGODB_PASSWORD**                 | MongoDB password (shared across components)                | ${MONGO_DBPASSWORD}            |
+| **MONGO_HOST**                       | MongoDB host:port used by SATOSA/pyeudiw/CIE OIDC (code prepends `mongodb://`) | satosa-mongo:27017 |
+| **SATOSA_ENCRYPTION_KEY**            | Encryption key for state and OIDC tokens                   | CHANGE_ME!                     |
+| **SATOSA_SALT**                      | General-purpose salt for hashing/encryption                | CHANGE_ME!                     |
+| **SATOSA_STATE_ENCRYPTION_KEY**      | State encryption key                                       | CHANGE_ME!                     |
+| **SATOSA_USER_ID_HASH_SALT**         | User ID hash salt                                          | CHANGE_ME!                     |
+
+#### SAML2 / SPID / CIE backends
+
+These variables configure organization and contact metadata, SAML keys, and metadata download flags for SAML2, SPID and CIE backends.
+
+| **Environment var**                         | **Description**                                            | **Example Value**               |
+|--------------------------------------------|------------------------------------------------------------|---------------------------------|
+| **SATOSA_PRIVATE_KEY**                     | Private key for SAML2 / SPID backends                      | ${KEYS_FOLDER}/privkey.pem      |
+| **SATOSA_PUBLIC_KEY**                      | Public key for SAML2 / SPID backends                       | ${KEYS_FOLDER}/cert.pem         |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_EN**    | English organization display name                          | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_DISPLAY_NAME_IT**    | Italian organization display name                          | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_NAME_EN**            | English full organization name                             | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_NAME_IT**            | Italian full organization name                             | Resource provided by Example Organization |
+| **SATOSA_ORGANIZATION_URL_EN**             | English organization URL                                   | https://example_organization.org |
+| **SATOSA_ORGANIZATION_URL_IT**             | Italian organization URL                                   | https://example_organization.org |
+| **SATOSA_CONTACT_PERSON_EMAIL_ADDRESS**    | Contact person email                                       | support.example@organization.org |
+| **SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER** | Contact person telephone number for SPID / CIE backends    | +3906123456789                  |
+| **SATOSA_CONTACT_PERSON_FISCALCODE**       | Contact person fiscal code for SPID / CIE backends         | 01234567890                     |
+| **SATOSA_CONTACT_PERSON_GIVEN_NAME**       | Contact person name                                        | Name                            |
+| **SATOSA_CONTACT_PERSON_IPA_CODE**         | Contact person IPA code for SPID / CIE backends            | ipa00c                          |
+| **SATOSA_CONTACT_PERSON_MUNICIPALITY**     | Contact person municipality code for CIE backend           | H501                            |
+| **SATOSA_GET_IDEM_MDQ_KEY**                | Flag for getting IDEM MDQ key                              | true                            |
+| **SATOSA_GET_SPID_IDP_METADATA**           | Flag for getting SPID IdP metadata                         | true                            |
+| **SATOSA_GET_CIE_IDP_METADATA**            | Flag for getting CIE IdP metadata                          | true                            |
+| **SATOSA_GET_FICEP_IDP_METADATA**          | Flag for getting FICEP (eIDAS) IdP metadata                | true                            |
+
+#### SAML2 frontends (UI metadata and keys)
+
+These variables control UI-related metadata (names, descriptions, URLs, logo) exposed by SAML2 frontends.  
+SAML2 frontends also rely on the same SAML keys configured for backends (`SATOSA_PRIVATE_KEY`, `SATOSA_PUBLIC_KEY`).
+
+| **Environment var**                    | **Description**                           | **Example Value**                               |
+|----------------------------------------|-------------------------------------------|-------------------------------------------------|
+| **SATOSA_UI_DESCRIPTION_EN**           | English UI description                    | Resource description                            |
+| **SATOSA_UI_DESCRIPTION_IT**           | Italian UI description                    | Resource description                            |
+| **SATOSA_UI_DISPLAY_NAME_EN**          | English UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_DISPLAY_NAME_IT**          | Italian UI display name                   | Resource Display Name                           |
+| **SATOSA_UI_INFORMATION_URL_EN**       | English UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_INFORMATION_URL_IT**       | Italian UI information URL                | https://example_organization.org/information_url_en |
+| **SATOSA_UI_PRIVACY_URL_EN**           | English UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_PRIVACY_URL_IT**           | Italian UI privacy URL                    | https://example_organization.org/privacy_en     |
+| **SATOSA_UI_LOGO_URL**                 | Logo URL                                  | https://example_organization.org/logo.png       |
+| **SATOSA_UI_LOGO_HEIGHT**              | Logo height                               | 60                                              |
+| **SATOSA_UI_LOGO_WIDTH**               | Logo width                                | 80                                              |
+
+#### OIDC frontends / backends (SATOSA-oidcop and CIE OIDC backend)
+
+These variables control MongoDB storage used by the CIE OIDC backend and OIDC frontend components.
+
+#### General configuration
+These variables control  generic configuration for MongoDB
+
+| **Environment var**  | **Description**           | **Example Value**      |
+|----------------------|---------------------------|------------------------|
+| **MONGO_HOST**       | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_URL**        | MongoDB connection URL    | example-mongo          |
+| **MONGO_PORT**       | MongoDB connection port   | 27017                  |
+| **MONGO_DBUSER**     | MongoDB user              | users                  |  
+| **MONGO_DBPASSWORD** | MongoDB password for user | P4$$w0rD!              |
+
+#### Backend configuration
+These variables control backend configuration for MongoDB 
+
+| **Environment var**           | **Description**           | **Example Value**      |
+|-------------------------------|---------------------------|------------------------|
+| **MONGO_BACKEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_BACKEND_URL**         | MongoDB connection URL    | example-mongo          |
+| **MONGO_BACKEND_PORT**        | MongoDB connection port   | 27017                  |
+| **MONGO_BACKEND_DBUSER**      | MongoDB user              | users                  |  
+| **MONGO_BACKEND_DBPASSWORD**  | MongoDB password for user | P4$$w0rD!              |
+
+#### Frontend configuration
+These variables control frontend configuration for MongoDB 
+
+| **Environment var**            | **Description**           | **Example Value**      |
+|--------------------------------|---------------------------|------------------------|
+| **MONGO_FRONTEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
+| **MONGO_FRONTEND_URL**         | MongoDB connection URL    | example-mongo          |
+| **MONGO_FRONTEND_PORT**        | MongoDB connection port   | 27017                  |
+| **MONGO_FRONTEND_DBUSER**      | MongoDB user              | users                  |  
+| **MONGO_FRONTEND_DBPASSWORD ** | MongoDB password for user | P4$$w0rD!              |
+
+#### Frontend configuration
+These variables are specific to the backend and frontend modules. 
+
+#### OIDC
+
+| **Environment var**                     | **Description**          | **Example Value**             |
+|-----------------------------------------|--------------------------|-------------------------------|
+| **MONGO_DB_BACKEND_OIDC_NAME**          | MongoDB schema name      | example_schema                |
+| **MONGO_BACKEND_AUTH_OIDC_COLLECTION**  | MongoDB auth collection  | cie_oidc_authentication       |
+| **MONGO_BACKEND_TOKEN_OIDC_COLLECTION** | MongoDB token connection | cie_oidc_authentication_token |
+| **MONGO_BACKEND_USER_OIDC_COLLECTION**  | MongoDB user collection  | cie_oidc_users                |  
+ 
+
+#### pyeudiw (OpenID4VP backend / OpenID4VCI frontend)
+
+These variables are specific to pyeudiw-based components: the OpenID4VP backend and the OpenID4VCI frontend.  
+For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
 
 
 
@@ -127,14 +201,14 @@ You can override the configuration of the proxy by settings one or more of the f
 
 If you want to handle metadata file manually create the `metadata/idp` and `metadata/sp` directories, then copy the required metadata:
 
-```
+```bash
 mkdir -p metadata/idp metadata/sp
 wget https://registry.spid.gov.it/metadata/idp/spid-entities-idps.xml -O metadata/idp/spid-entities-idps.xml
 ```
 
 Copy your SP metadata to your Proxy
 
-```
+```bash
 wget https://sp.fqdn.org/saml2/metadata -O metadata/sp/my-sp.xml
 ```
 
@@ -145,7 +219,7 @@ See `iam-proxy-italia-project/conf/{backends,frontends}/$filename` as example.
 
 The proxy backend exposes its SPID metadata at the following url (customizable):
 
-```
+```text
 https://localhost/spidSaml2/metadata
 ```
 
@@ -153,7 +227,7 @@ https://localhost/spidSaml2/metadata
 
 The Proxy metadata must be configured in your SP. Your SP is an entity that's external from this Proxy, eg: shibboleth sp, djangosaml2, another ...
 
-```
+```bash
 wget https://localhost/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid.xml --no-check-certificate
 ```
 
@@ -161,9 +235,9 @@ wget https://localhost/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid
 
 Load spid-saml-check metadata:
 
-````
+```bash
 wget https://localhost:8443/metadata.xml -O metadata/idp/spid-saml-check.xml --no-check-certificate
-````
+```
 
 Start an authentication from your SP.
 
@@ -176,7 +250,7 @@ Load metadata from `https://satosa-nginx/spidSaml2/metadata`.
 
 That's the stdout log of a working instance of SATOSA in uwsgi
 
-```
+```text
 *** Starting uWSGI 2.0.19.1 (64bit) on [Tue Mar 30 17:08:49 2021] ***
 compiled with version: 9.3.0 on 11 September 2020 23:11:42
 os: Linux-5.4.0-70-generic #78-Ubuntu SMP Fri Mar 19 13:29:52 UTC 2021

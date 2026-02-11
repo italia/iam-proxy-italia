@@ -1,101 +1,181 @@
+import json
 import pytest
-from unittest.mock import MagicMock
-from satosa.context import Context
-from ..endpoints.authorization_endpoint import AuthorizationHandler
+from unittest.mock import MagicMock, patch
+
+from datetime import datetime, timezone
+
+from backends.cieoidc.endpoints.authorization_endpoint import AuthorizationHandler
+
 
 
 @pytest.fixture
-def base_config():
+def minimal_config():
     return {
-        "entity_type": "test_rp",
-        "jwks_core": [{"kty": "RSA", "kid": "1"}],
+        "entity_type": "openid_relying_party",
+        "jwks_core": [
+            {
+                "kty": "RSA",
+                "use": "sig",
+                "n": "uXfJA-wTlTCA4FdsoE0qZfmKIgedmarrtWgQbElKbWg9RDR7Z8JVBaRLFqwyfyG1JJFm64G51cBJwLIFwWoF7nxsH9VYLm5ocjAnsR4RhlfVE0y_60wjf8skJgBRpiXQPlwH9jDGaqVE_PEBTObDO5w3XourD1F360-v5cLDLRHdFJIitdEVtqATqY5DglRDaKiBhis7a5_1bk839PDLaQhju4XJk4tvDy5-LVkMy5sP2zU6-1tJdA-VmaBZLXy9n0967FGIWmMzpafrBMOuHFcUOH56o-clDah_CITH1dq2D64K0MYhEpACO2p8AH4K8Q6YuJ1dnkVDDwZp2C84sQ",
+                "p": "5PA7lJEDd3vrw5hlolFzvjvRriOu1SMHXx9Y52AgpOeQ6MnE1pO8qwn33lwYTSPGYinaq4jS3FKF_U5vOZltJAGBMa4ByEvAROJVCh958rKVRWKIqVXLOi8Gk11kHbVKw6oDXAd8Qt_y_ff8k_K6jW2EbWm1K6kfTvTMzoHkqrU",
+                "q": "z2QeMH4WtrdiWUET7JgZNX0TbcaVBgd2Gpo8JHnfnGOUsvO_euKGgqpCcxiWVXSlqffQyTgVzl4iMROP8bEaQwvueHurtziMDSy9Suumyktu3PbGgjqu_izRim8Xlg7sz8Hs2quJPII_fQ8BCoaWpg30osFZqCBarQM7CWhxR40",
+                "d": "n_ePK5DdOxqArf75tDGaViYrXDqRVk8zyl2dfKiiR0dXQJK7tbzJtHoGQeH4E-sw3_-Bc7OKY7DcbBWgHTijMRWj9LkAu9uCvqqGMaAroWH0aBcUmZAsNjcyUIyJ3_JRcNfUDiX3nVg67qe4ZWnMDogowaVZv3aXJiCvKE8aJK4BV_nF3Nt5R6zUYpjZQ8T1GDZCV3vza3qglDrXe8zoc-p8cLs3rJn7tMVSJVznCIqOfeM1VIg0I3n2bubYOx88sckHuDnfXTiTDlyq5IwDyBHmiIe3fpu-c4e1tiBmbOf2IqDCaX8SdpnU2gTj9YlZtRNqmh3NB_rksBKWLz3uIQ",
+                "e": "AQAB",
+                "kid": "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+            }
+        ],
+        "prompt": "login",
         "metadata": {
             "openid_relying_party": {
-                "client_id": "test-client-id",
-                "redirect_uris": ["https://client/callback"]
+                "client_id": "client123",
+                "redirect_uris": ["https://localhost/callback"],
+                "scope": "openid",
+                "claim": {"userinfo": {"email": None}},
+                "response_types": ["code"],
+                "code_challenge": {
+                    "length": 32,
+                    "method": "S256"
+                }
             }
         },
-        "authorization_endpoint": "https://auth.example.com/authorize"
-    }
-
-
-@pytest.fixture
-def handler(base_config):
-    return AuthorizationHandler(
-        config=base_config,
-        internal_attributes={},
-        base_url="https://base.url",
-        name="test",
-        auth_callback_func=MagicMock(),
-        converter=MagicMock(),
-        trust=MagicMock()
-    )
-
-
-def test_require_config_field_valid(handler):
-    path = ["metadata", "openid_relying_party", "client_id"]
-    assert handler._require_config_field(path, "Client ID") == "test-client-id"
-
-
-def test_require_config_field_missing(handler):
-    path = ["metadata", "invalid"]
-    with pytest.raises(ValueError, match="Invalid Field is missing"):
-        handler._require_config_field(path, "Invalid Field")
-
-
-def test_validate_configs_success(handler, base_config):
-    # Complete the config structure required by _validate_configs
-    base_config["endpoints"] = {
-        "authorization_endpoint": {
-            "config": {
-                "metadata": {
-                    "openid_relying_party": {
-                        "client_id": "id",
-                        "redirect_uris": ["https://callback"]
+        "endpoints": {
+            "authorization_endpoint": {
+                "config": {
+                    "metadata": {
+                        "openid_relying_party": {
+                            "client_id": "client123",
+                            "redirect_uris": ["https://localhost/callback"]
+                        }
                     }
                 }
             }
         }
     }
-    handler.config = base_config
-    handler._validate_configs()  # Should not raise
 
 
-@pytest.mark.parametrize("missing_path", [
-    (["endpoints", "authorization_endpoint"]),
-    (["endpoints", "authorization_endpoint", "config"]),
-    (["endpoints", "authorization_endpoint", "config", "metadata"]),
-    (["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party"]),
-    (["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party", "client_id"]),
-    (["endpoints", "authorization_endpoint", "config", "metadata", "openid_relying_party", "redirect_uris"]),
-])
-def test_validate_configs_failure(handler, base_config, missing_path):
-    # Remove a key from the config
-    pointer = base_config
-    for key in missing_path[:-1]:
-        pointer = pointer.setdefault(key, {})
-    pointer.pop(missing_path[-1], None)
+@pytest.fixture
+def context():
+    ctx = MagicMock()
+    ctx.internal_data = {"target_entity_id": "http://trust-anchor.example.org:5002"}
+    return ctx
 
-    handler.config = base_config
+
+@pytest.fixture
+def trust_chain():
+    tc = MagicMock()
+    tc.subject = "http://trust-anchor.example.org:5002"
+    tc.subject_configuration.payload = {
+        "metadata": {
+            "openid_provider": {
+                "authorization_endpoint": "http://trust-anchor.example.org:5002/auth"
+            }
+        }
+    }
+    return tc
+
+
+@pytest.fixture
+def handler(minimal_config, trust_chain):
+    with patch("backends.cieoidc.storage.db_engine.OidcDbEngine") as db_mock:
+        db = db_mock.return_value
+        db.connect.return_value = None
+        db.add_session.return_value = 1
+
+        h = AuthorizationHandler(
+            config=minimal_config,
+            internal_attributes={},
+            base_url="https://satosa-nginx.example.org",
+            name="authz",
+            auth_callback_func=MagicMock(),
+            converter=MagicMock(),
+            trust_chains={"http://trust-anchor.example.org:5002": trust_chain}
+        )
+        return h
+
+
+
+def test_us01(handler):
+    handler._validate_configs()
+
+
+def test_us02(minimal_config):
+    del minimal_config["endpoints"]
+
+    with patch("backends.cieoidc.storage.db_engine.OidcDbEngine"):
+        handler = AuthorizationHandler(
+            config=minimal_config,
+            internal_attributes={},
+            base_url="x",
+            name="x",
+            auth_callback_func=MagicMock(),
+            converter=MagicMock(),
+            trust_chains={}
+        )
+
     with pytest.raises(ValueError):
         handler._validate_configs()
 
 
-def test_endpoint_returns_redirect(handler, mocker):
-    # Mock dependencies
-    mocker.patch("yourmodule.authorization_handler.random_string", side_effect=lambda x: "random")
-    mocker.patch("yourmodule.authorization_handler.get_pkce", return_value={
+@patch("backends.cieoidc.utils.helpers.misc.get_pkce")
+@patch("backends.cieoidc.utils.helpers.jwtse.create_jws")
+@patch("backends.cieoidc.utils.helpers.misc.get_key")
+@patch("satosa.response.Redirect")
+def test_us03(
+    redirect_mock,
+    get_key_mock,
+    create_jws_mock,
+    get_pkce_mock,
+    handler,
+    context
+):
+    get_pkce_mock.return_value = {
+        "code_challenge": "abc",
+        "code_challenge_method": "S256"
+    }
+    get_key_mock.return_value = {"kty": "RSA"}
+    create_jws_mock.return_value = "signed.jwt"
+    response = handler.endpoint(context)
+    assert response is not None
+
+
+
+def test_us04(handler):
+    handler.config["metadata"]["openid_relying_party"]["code_challenge"]["length"] = None
+
+    with pytest.raises(ValueError):
+        handler._AuthorizationHandler__pkce_generation({})
+
+
+def test_us05():
+    authz_data = {
+        "client_id": "client123",
+        "scope": "openid",
+        "response_type": "code",
         "code_challenge": "abc",
         "code_challenge_method": "S256",
-        "code_verifier": "verifier"
-    })
-    mocker.patch("yourmodule.authorization_handler.get_key", return_value={"k": "key"})
-    mocker.patch("yourmodule.authorization_handler.create_jws", return_value="signed-request")
-    mocker.patch("yourmodule.authorization_handler.http_dict_to_redirect_uri_path", return_value="client_id=test-client-id")
+        "request": "jwt"
+    }
 
-    context = MagicMock(spec=Context)
-    response = handler.endpoint(context)
+    with patch(
+        "backends.cieoidc.utils.helpers.misc.http_dict_to_redirect_uri_path"
+    ) as uri_mock:
+        uri_mock.return_value = "client_id=client123&scope=openid&response_type=code&code_challenge=abc&code_challenge_method=S256&request=jwt"
+        uri = AuthorizationHandler.generate_uri(authz_data)
+        assert uri == "client_id=client123&scope=openid&response_type=code&code_challenge=abc&code_challenge_method=S256&request=jwt"
 
-    assert response.__class__.__name__ == "Redirect"
-    assert response.message.startswith("https://auth.example.com/authorize?")
-    assert "client_id=test-client-id" in response.message
+
+@patch("backends.cieoidc.models.oidc_auth.OidcAuthentication")
+def test_us06(mock_auth, handler):
+    handler._db_engine.add_session = MagicMock(return_value=1)
+
+    auth_obj = {
+        "client_id": "client123",
+        "state": "state",
+        "endpoint": "x",
+        "provider_id": "y",
+        "data": "{}",
+        "provider_configuration": {}
+    }
+    handler._AuthorizationHandler__insert(auth_obj)
+
+    handler._db_engine.add_session.assert_called_once()

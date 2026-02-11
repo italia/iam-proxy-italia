@@ -1,6 +1,6 @@
 ## run-docker-compose.sh
 
-[This scritp](https://github.com/italia/iam-proxy-italia/blob/master/Docker-compose/run-docker-compose.sh) is a simple uility to initialize, update and start the iam-proxy-italia compose structure.
+[This script](https://github.com/italia/iam-proxy-italia/blob/master/Docker-compose/run-docker-compose.sh) is a simple utility to initialize, update and start the iam-proxy-italia compose structure.
 
 ### Script Options
 * `-f` Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP
@@ -29,10 +29,10 @@ After the script test if the required directories are populated and if isn't cop
 | nginx/html/static | disco.html | ../iam-proxy-italia-project/static/*            |
 
 Unless `-s` options is enabled, on every start the script try to:
-* Download the new versione of each required images
+* Download the new version of each required images
 * Compile the new local image (django_sp)
 
-If `-c` option is enables, before each, the script remove all data from theese directories:
+If `-c` option is enables, before each, the script remove all data from these directories:
 * mongo/db/*
 * iam-proxy-italia-project/*
 * djangosaml2_sp/*
@@ -41,6 +41,6 @@ If `-c` option is enables, before each, the script remove all data from theese d
 The empty directories are populated with the default data
 
 ### Insights
-* For more details on iam-proxy-italia docker compose read [docker-compose readme page](./docker-compose.md)
-* For more details on iam-proxy-italia docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
-* For more details on MongoDB for iam-proxy-italia read [MongoDB page](./mongo.md)
+* For more details on iam-proxy-italia docker compose read [Docker Compose readme](../Docker-compose/README.md)
+* For more details on iam-proxy-italia docker compose profiles read [docker_compose_profiles](./docker_compose_profiles.md)
+* For more details on MongoDB for iam-proxy-italia read [README.mongo](../README.mongo.md)

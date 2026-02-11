@@ -1,19 +1,19 @@
 ## satosa-nginx Compose service
 
 This service run a container with the last version of [Docker official Alpine NGINX](https://hub.docker.com/_/nginx/) image. 
-This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to [iam-proxy-italia](./iam-proxy-italia_compose_service.md) containers and serve static file like the discovery page.
+This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to the [iam-proxy-italia composition](../Docker-compose/README.md) and serve static file like the discovery page.
 
 ### Environments
 | Environment | from            | Default value | Description
 | ----------- | --------------- | ------------- | -----------
 | NGINX_HOST  | SATOSA_HOSTNAME | localhost     | Hostname in satosa virtualhost
-| TZ          | TZ              | Europe/Rome   | Set Time Zone for the istance
+| TZ          | TZ              | Europe/Rome   | Set Time Zone for the instance
 
 ### Volumes
 | from           | to                    | mode | Description
 | -------------- | --------------------- | ---- | ------------
-| ./nginx/conf.d | /etc/nginx/conf.d     | ro   | this directory contain all NGINX virtualst, read [Virtual Sost section](#vitual-host) 
-| ./nginx/certs  | /etx/nginx/certs      | ro   | This directory contain the https cerificates, read [Satosa Virtual Host section](#satosa-vitual-host)
+| ./nginx/conf.d | /etc/nginx/conf.d     | ro   | this directory contain all NGINX virtual hosts, read [Virtual Hosts section](#virtual-hosts) 
+| ./nginx/certs  | /etc/nginx/certs      | ro   | This directory contain the https certificates, read [Satosa Virtual Host section](#satosa-virtual-host)
 | ./nginx/html   | /usr/share/nginx/html | ro   | This directory contain the html static file for default virtual host, read [Static files section](#static-files)
 
 *All `from path` are relative to Docker-compose directory*
@@ -21,7 +21,7 @@ This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to [ia
 ### Virtual Hosts
 Default NGINX conf import the additional configurations from `/etc/nginx/conf.d/*.conf`. The Path `Docker-compose/nginx/conf.d` is mounted in `/etc/nginx/conf.d` of NGINX container. Each `*.conf` file present in these directory is included in the NGINX configuration.
 
-In `Docker-compose/nginx/conf.d` is preconfigured the file `default.conf` with [Satosa Virtual Host][#satosa-vitual-host]. You can add more `.conf` file and more virtual host, buth generally is not clever.
+In `Docker-compose/nginx/conf.d` is preconfigured the file `default.conf` with [Satosa Virtual Host](#satosa-virtual-host). You can add more `.conf` file and more virtual host, but generally is not clever.
 
 #### Satosa Virtual host
 The Satosa Virtual Host listen exclusively on port 443 over protocol https.
@@ -57,6 +57,6 @@ The proxy test if the request is sended to a existent file. If the file not exis
 3. Send the request to `@satosa` location
 
 ### Insights
-* For more details and example on NGINX satosa virtual host read [satosa-vitual-host doc](./satosa-virtual-host.md)
-* For more details on iam-proxy-italia docker compose profiles read [docker-compose-profiles page](./docker-compose-profiles.md)
+* For more details and example on NGINX satosa virtual host read [satosa-nginx-vhost](./satosa-nginx-vhost.md)
+* For more details on iam-proxy-italia docker compose profiles read [docker_compose_profiles](./docker_compose_profiles.md)
 

@@ -314,11 +314,11 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
     @staticmethod
     def generate_configuration_plugin(config) -> ConfigurationPlugin:
-        '''
+        """
         method generate_configuration_plugin:
         This method generate a ConfigurationPlugin Object for endpoint.
 
-        '''
+        """
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params: [config: {config}]"
         )

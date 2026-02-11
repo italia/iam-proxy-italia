@@ -11,9 +11,10 @@ with the  **Italian Digital Identity Systems**.
 3. [Introduction](#introduction)
 4. [Demo components](#demo-components)
 5. [Setup](#setup)
-6. [For Developers](#for-developers)
-7. [Author](#authors)
-8. [Credits](#credits)
+6. [Configuring Proxy: Backends and Frontends](#configuring-proxy-backends-and-frontends)
+7. [For Developers](#for-developers)
+8. [Author](#authors)
+9. [Credits](#credits)
 
 ## Glossary
 
@@ -66,9 +67,28 @@ This solution configures multiple proxy _frontends_ and _backends_
 to get communicating systems facilitating their integrations.
 
 
-## Demo components
+## Demo Components Distributed in this Project
 
-The example project comes with some preconfigured static pages.
+The demo components distributed in this project are used by the [Docker Compose](Docker-compose/README.md) setup.
+
+IAM Proxy Italia demos use [Docker Compose profiles](docs/docker_compose_profiles.md) to choose which services are started.
+
+They live in **`iam-proxy-italia-project-demo-examples`** and are wired in [Docker-compose/docker-compose.yml](Docker-compose/docker-compose.yml) as follows:
+
+| Component | Path | Docker service | Profiles | Description |
+| --------- | -----|----------------|----------|------------- |
+| **Django SAML2 SP** | `djangosaml2_sp/` | `django_sp` | demo, dev | Django-based SAML2 Service Provider to test SPID/SAML2 login via the proxy. |
+| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor` | demo, mongo | CIE OIDC federation authority. |
+| **CIE OIDC provider** | `spid_cie_oidc_django/provider/` | `cie-provider` | demo, mongo | CIE OIDC Identity Provider for CIE OIDC backend flows. |
+| **MongoDB** | — | `satosa-mongo` | demo, mongo, mongoexpress | Session storage for OIDC and OpenID4VC. |
+| **Mongo Express** | — | `satosa-mongo-express` | demo, mongoexpress | Web UI for MongoDB. |
+| **SPID SAML checker** | — | `spid-samlcheck` | demo, dev | SPID metadata and flow checker. |
+
+Additional examples (not run as Compose services): **PySAML2** SP examples (`pysaml2/`, sp-repoze and sp-wsgi) and **JWT/OIDC RP** config (`jwtconnect_python_oidcrp/satosa.json`) for integration reference. See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) for profile options and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh) for startup.
+
+### Static HTML Pages
+
+The example project comes with some preconfigured static pages, like to one below implementing the Discovery Page Service used to allow users to select the authentication endpoint (which IAM Proxy Italia Backend to use).
 
 <img src="gallery/disco_page.png" width="768">
 
@@ -90,29 +110,64 @@ connection for the download of the docker images.
 
 For the setup of this project, the following dependency must be installed in your machine:
   
-  - Python 3.10 or higher
+  - Python 3.10 or higher (see `pyproject.toml` for `requires-python`)
   - Git
   - Docker
 
 ### Setup
 
-If you want to deploy IAM Proxy Italia without using Docker, all the setup instructions for your configuration are available in [README-SETUP.md](README-Setup.md).
+If you want to deploy IAM Proxy Italia without using Docker, all the setup instructions for your configuration are available in [README-Setup.md](README-Setup.md).
 
 ### Docker Compose
 
 This project uses Docker, all the instructions to configure this project using the official docker images are available [here](Docker-compose/README.md).
 
-The docker compose uses the enviroment variables as documented [here](README-Setup.md#configuration-by-environment-variables).
+The docker compose uses the environment variables as documented [here](README-Setup.md#configuration-by-environment-variables).
 
 <img src="gallery/docker-design.svg" width="512">
 
+### Configuring Proxy: Backends and Frontends
 
-### Setup a Djangosaml2 example Service Provider
+The proxy’s behaviour is defined by which **backends** and **frontends** are enabled. The active set is configured in `iam-proxy-italia-project/proxy_conf.yaml` via `BACKEND_MODULES` and `FRONTEND_MODULES`. Comment or uncomment the corresponding lines to enable or disable each module. The configuration files for each component live under `iam-proxy-italia-project/conf/`.
+
+```mermaid
+flowchart LR
+  A[Third party authentication services]
+  B[IAM Proxy Backend]
+  C[IAM Proxy]
+  D[IAM Proxy Frontend]
+  E[SAML2 SP]
+  A --- B --- C --- D --- E
+```
+
+**Backends** (protocol/IdP side; SP/RP facing the proxy):
+
+| Backend | Config file | Notes |
+|--------|-------------|--------|
+| SAML2 Generic | `conf/backends/saml2_backend.yaml` | Generic SAML2 Service Provider. |
+| SAML2 SPID | `conf/backends/spidsaml2_backend.yaml` | SAML2 SP for SPID. |
+| SAML2 CIE | `conf/backends/ciesaml2_backend.yaml` | SAML2 SP for CIE. |
+| OIDC CIE | `conf/backends/cieoidc_backend.yaml` | OIDC RP for SPID/CIE OPs (OpenID Federation). See [README-CIEOIDC.md](README-CIEOIDC.md). |
+| IT-Wallet (OpenID4VP) | `conf/backends/pyeudiw_backend.yaml` | Wallet Relying Party using [pyeudiw](https://github.com/italia/eudi-wallet-it-python). |
+
+**Frontends** (protocol/IdP side; clients talk to the proxy as IdP/OP):
+
+| Frontend | Config file | Notes |
+|----------|-------------|--------|
+| SAML2 Generic | `conf/frontends/saml2_frontend.yaml` | Generic SAML2 Identity Provider. |
+| OIDC-OP (SATOSA-oidcop) | `conf/frontends/oidcop_frontend.yaml` | OAuth2/OIDC Provider via [SATOSA-oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop). Enable by uncommenting its entry in `proxy_conf.yaml` under `FRONTEND_MODULES`. Requires MongoDB; see [README-Setup.md](README-Setup.md) (OIDC and env vars) and [README.mongo.md](README.mongo.md). |
+
+Full setup and customisation (certificates, keys, metadata, environment variables) are described in [README-Setup.md](README-Setup.md).
+
+#### Setup a Djangosaml2 example Service Provider
 
 This project provides an example SAML2 Service Provider for demo purposes, 
 this Service Provider is executed by default in the Docker Compose.
+It requires the [SAML2 frontend](#configuring-backends-and-frontends) to be configured.
 
 For any further detail about the configuration, see [iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md](iam-proxy-italia-project-demo-examples/djangosaml2_sp/README.md).
+
+##### Wallet authentication example using OpenID4VP
 
 Below the demo using the djangosaml2 Service Provider with the Wallet authentication [OpenID4VP ](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
@@ -121,21 +176,23 @@ Below the demo using the djangosaml2 Service Provider with the Wallet authentica
 
 ## For Developers
 
-If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it.
-Below an example using a djangosaml2 Service Provider:
+If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it. Below an example using a djangosaml2 Service Provider:
 
 ```
 https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
 ```
 
 If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
-[.github/workflows/python-app.yml](.github/workflows/python-app.yml).
+[.github/workflows/docker-compose-test.yml](.github/workflows/docker-compose-test.yml) (SAML / spid-sp-test) and [.github/workflows/lint.yml](.github/workflows/lint.yml) (flake8).
 
 If you are using this project as a testing tool or playground for [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) or any other of its Python dependencies, take a look [here](README-Python-Dev.md)
 
-Additional information can be found [here](README-DEV.md).
+Additional information for developers: [README-SAML2-DEV.md](README-SAML2-DEV.md) (SAML2/IdentityPython forks), [README-Python-Dev.md](README-Python-Dev.md) (Python package development with Docker).
 
-### Warnings
+Technical documentation (Docker, NGINX, systemd, SATOSA): [docs/](docs/README.md).  
+Contributing (including documentation checklist): [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Recommendations about SAML2
 
 Here something that you should know before start.
 
@@ -171,10 +228,7 @@ Here something that you should know before start.
 - [aws-saml-proxy](https://github.com/senorkrabs/aws-saml-proxy)
 - [satosa-oidc-to-sam](https://github.com/daserzw/satosa-oidc-to-saml)
 - [SaToSa training aarc project](https://aarc-project.eu/wp-content/uploads/2019/03/SaToSa_Training.pdf)
-- [IDP/SP Discovery service](https://medium.com/@sagarag/reloading-saml-idp-discovery-693b6bff45f0)
-- https://github.com/IdentityPython/SATOSA/blob/master/doc/README.md#frontend
-- [saml2.0 IdP and SP for tests](https://samltest.id/)
-- https://www.spid.gov.it/assets/download/SPID_QAD.pdf
+- [SATOSA frontend documentation](https://github.com/IdentityPython/SATOSA/blob/master/doc/README.md#frontend)
 
 ## Authors
 
