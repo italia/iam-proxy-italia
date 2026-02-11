@@ -16,7 +16,7 @@ dependencies = [
     "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@v4.0.0",
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.1.0",
     "aiohttp (>=3.11.11,<4.0.0)",
-    "uwsgi (>=2.0.28,<3.0.0)",
+    "uwsgi (>=2.0.28,<3.0.0)"
 ]
 
 [project.optional-dependencies]
@@ -27,6 +27,7 @@ test = [
     "spid-sp-test",
     "pytest-asyncio",
     "pyOpenSSL>=24.0",
+    "pip-audit (>=2.10.0,<3.0.0)"
 ]
 
 [tool.poetry]

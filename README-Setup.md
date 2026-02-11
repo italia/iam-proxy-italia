@@ -46,6 +46,7 @@ poetry env info
 
 **Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [README-TEST.md](README-TEST.md)).
 
+
 ## Configure the Proxy
 
 - Create certificates for SPID, using [spid-compliant-certificates](https://github.com/italia/spid-compliant-certificates) or [spid-compliant-certificates-python](https://github.com/italia/spid-compliant-certificates-python)
