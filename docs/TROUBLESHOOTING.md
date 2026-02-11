@@ -16,7 +16,7 @@ Common issues and solutions when deploying or running IAM Proxy Italia.
 ## Tests and CI
 
 - **pytest failures**: Install project and test deps with `pip install -e ".[test]"` from the repo root. See [README-TEST.md](../README-TEST.md).
-- **spid-sp-test / flake8 in CI**: The workflow uses the same test extras; see [.github/workflows/python-app.yml](../.github/workflows/python-app.yml). Install system dependency `xmlsec1` if running spid-sp-test locally.
+- **spid-sp-test / flake8 in CI**: See [.github/workflows/docker-compose-test.yml](../.github/workflows/docker-compose-test.yml) (spid-sp-test) and [.github/workflows/lint.yml](../.github/workflows/lint.yml) (flake8). Install system dependency `xmlsec1` if running spid-sp-test locally.
 
 ---
 

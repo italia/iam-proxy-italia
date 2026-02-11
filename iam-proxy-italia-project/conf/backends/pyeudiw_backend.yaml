@@ -258,6 +258,8 @@ config:
         class: DuckleHandler
         format: jwt_vc_json
         config:
+          dcql_config:
+            dcql_query: *dcql_query
           dcql_query: *dcql_query
 
   trust:

@@ -46,6 +46,7 @@ jobs:
           # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
           # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
           # ecdsa CVE-2024-23342: not fixable (python-ecdsa considers side-channel out of scope); whitelist per pymdoccbor docs.
+          # cryptography CVE-2026-26007: pyeudiw requires cryptography<46; blocked until eudi-wallet-it-python updates.
           echo ""
           echo "##############################################################################"
           echo "#  ⚠️  WARNING: CVE-2024-23342 (ecdsa) IS WHITELISTED IN THIS AUDIT  ⚠️       #"
@@ -54,12 +55,20 @@ jobs:
           echo "#  Whitelisted per pymdoccbor documentation — risk is accepted.             #"
           echo "##############################################################################"
           echo ""
+          echo "##############################################################################"
+          echo "#  ⚠️  WARNING: CVE-2026-26007 (cryptography) IS WHITELISTED IN THIS AUDIT   #"
+          echo "#  pyeudiw requires cryptography>=45.0,<46 — blocked until eudi-wallet-it-   #"
+          echo "#  python supports cryptography 46.x. djangosaml2_sp uses cryptography     #"
+          echo "#  46.0.5+ and passes pip-audit.                                            #"
+          echo "##############################################################################"
+          echo ""
           # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings from pip's incompatible http cache
-          poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc --ignore-vuln CVE-2024-23342
+          poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc --ignore-vuln CVE-2024-23342 --ignore-vuln CVE-2026-26007
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "### ⚠️ WARNING: CVE-2024-23342 (ecdsa) whitelisted" >> $GITHUB_STEP_SUMMARY
           echo "ecdsa Minerva timing side-channel has **no upstream fix**. python-ecdsa considers side-channel attacks out of scope. Whitelisted per pymdoccbor documentation — **risk is accepted**." >> $GITHUB_STEP_SUMMARY
+          echo "cryptography CVE-2026-26007: **blocked by pyeudiw** (requires cryptography<46). Will be resolved when eudi-wallet-it-python supports cryptography 46.x." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
 
