@@ -56,7 +56,7 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: "${EXPRESS_PASSWORD:-satosapw}"
       ME_CONFIG_MONGODB_ADMINUSERNAME: "${MONGO_DBUSER:-satosa}"
       ME_CONFIG_MONGODB_ADMINPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@satosa-mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@${MONGO_URL:-satosa-mongo}:${MONGO_PORT:-27017}/
       TZ: "${TZ:-Europe/Rome}"
     networks:
       - iam-proxy-italia
@@ -88,7 +88,7 @@ services:
 
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:3.0
+    image: iam-proxy-italia:3.0.1
     build:
         context: ../
         args:
@@ -121,6 +121,20 @@ services:
 
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
+      - MONGO_HOST=${MONGO_HOST:-satosa-mongo}:${MONGO_PORT:-27017}
+
+      - MONGO_BACKEND_HOST=mongodb://${MONGO_BACKEND_URL:-satosa-mongo}:${MONGO_BACKEND_PORT:-27017}
+      - MONGO_BACKEND_DB_NAME_OIDC_SCHEMA=${MONGO_DB_BACKEND_OIDC_NAME:-cie_oidc}
+      - MONGO_BACKEND_AUTH_OIDC_COLLECTION=${MONGO_BACKEND_AUTH_OIDC_COLLECTION:-cie_oidc_authentication}
+      - MONGO_BACKEND_TOKEN_OIDC_COLLECTION=${MONGO_BACKEND_TOKEN_OIDC_COLLECTION:-cie_oidc_authentication_token}
+      - MONGO_BACKEND_USER_OIDC_COLLECTION=${MONGO_BACKEND_USER_OIDC_COLLECTION:-cie_oidc_users}
+      - MONGODB_BACKEND_USERNAME=${MONGO_BACKEND_DBUSER:-satosa}
+      - MONGODB_BACKEND_PASSWORD=${MONGO_BACKEND_DBPASSWORD:-thatpassword}
+
+      - MONGO_FRONTEND_HOST=mongodb://${MONGO_FRONTEND_URL:-satosa-mongo}:${MONGO_FRONTEND_PORT:-27017}
+      - MONGODB_FRONTEND_USERNAME=${MONGO_FRONTEND_DBUSER:-satosa}
+      - MONGODB_FRONTEND_PASSWORD=${MONGO_FRONTEND_DBPASSWORD:-thatpassword}
+
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
       - SATOSA_SALT=${SATOSA_SALT:-CHANGE_ME!}
       - SATOSA_STATE_ENCRYPTION_KEY=${SATOSA_STATE_ENCRYPTION_KEY:-CHANGE_ME!}
@@ -149,6 +163,9 @@ services:
       - SATOSA_UI_PRIVACY_URL_EN=${SATOSA_UI_PRIVACY_URL_EN:-https://example_organization.org/privacy}
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
       - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
+
+      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-localhost}/OpenID4VP}
+      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-localhost}}
     expose:
       - 10000
     ports:

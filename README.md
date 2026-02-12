@@ -1,6 +1,6 @@
 # IAM Proxy Italia
 
-IAM Proxy Italia is the distribution of the [SATOSA](https://github.com/IdentityPython/SATOSA) SAML2/OIDC IAM Proxy allowing
+IAM Proxy Italia is the distribution of the [SATOSA](https://github.com/IdentityPython/SATOSA) IAM Proxy allowing
 **SAML-to-SAML**, **OIDC-to-SAML**, **SAML-to-Wallet** and **OIDC-to-Wallet** interoperability
 with the  **Italian Digital Identity Systems**.
 
@@ -31,7 +31,7 @@ Backends:
 - SAML2 CIE id SP
 - FICEP SP (eIDAS 1.0)
 - SAML2 SP
-- SPID/CIE OIDC (Work In Progress)
+- CIE OIDC
 - EUDI Wallet (eIDAS 2.0, experimental using [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python))
 
 Frontends:
@@ -183,7 +183,7 @@ https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/sam
 ```
 
 If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
-[.github/workflows/python-app.yml](.github/workflows/python-app.yml).
+[.github/workflows/docker-compose-test.yml](.github/workflows/docker-compose-test.yml) (SAML / spid-sp-test) and [.github/workflows/lint.yml](.github/workflows/lint.yml) (flake8).
 
 If you are using this project as a testing tool or playground for [eudi-wallet-it-python](https://github.com/italia/eudi-wallet-it-python) or any other of its Python dependencies, take a look [here](README-Python-Dev.md)
 

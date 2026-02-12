@@ -10,7 +10,20 @@ on:
     branches: [master, dev]
 
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
   audit:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     name: pip-audit
     runs-on: ubuntu-latest
     steps:
@@ -41,24 +54,38 @@ jobs:
           # satosa is from git (peppelinux/SATOSA in pyproject.toml), not PyPI.
           # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
           # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
-          # ecdsa CVE-2024-23342: not fixable (python-ecdsa considers side-channel out of scope); whitelist per pymdoccbor docs.
+          #
+          # --ignore-vuln rationale:
+          # CVE-2024-23342 (ecdsa): Minerva timing side-channel. python-ecdsa considers
+          #   side-channel attacks out of scope; no upstream fix exists. Whitelisted per
+          #   pymdoccbor documentation — risk accepted.
+          # CVE-2026-26007 (cryptography): SECT curves subgroup validation. Fix: 46.0.5.
+          #   Cannot add to pyproject.toml: pysaml2 pins cryptography==45.0.7; Poetry
+          #   resolver conflicts. Post-install upgrade possible but not in current workflow.
+          # CVE-2026-25990 (pillow): PSD out-of-bounds write. Fix: 12.1.1.
+          #   Cannot add to pyproject.toml: pyeudiw requires Pillow<12; strict conflict.
           echo ""
           echo "##############################################################################"
-          echo "#  ⚠️  WARNING: CVE-2024-23342 (ecdsa) IS WHITELISTED IN THIS AUDIT  ⚠️       #"
-          echo "#  ecdsa Minerva timing side-channel has NO upstream fix.                   #"
-          echo "#  python-ecdsa considers side-channel attacks out of scope.                #"
-          echo "#  Whitelisted per pymdoccbor documentation — risk is accepted.             #"
+          echo "#  ⚠️  Whitelisted CVEs (see workflow comments for rationale)                 #"
           echo "##############################################################################"
           echo ""
-          poetry run pip-audit --desc --ignore-vuln CVE-2024-23342
+          # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings from pip's incompatible http cache
+          poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc \
+            --ignore-vuln CVE-2024-23342 \
+            --ignore-vuln CVE-2026-26007 \
+            --ignore-vuln CVE-2026-25990
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "### ⚠️ WARNING: CVE-2024-23342 (ecdsa) whitelisted" >> $GITHUB_STEP_SUMMARY
-          echo "ecdsa Minerva timing side-channel has **no upstream fix**. python-ecdsa considers side-channel attacks out of scope. Whitelisted per pymdoccbor documentation — **risk is accepted**." >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Whitelisted CVEs" >> $GITHUB_STEP_SUMMARY
+          echo "- **CVE-2024-23342 (ecdsa)**: No upstream fix; side-channel out of scope per python-ecdsa." >> $GITHUB_STEP_SUMMARY
+          echo "- **CVE-2026-26007 (cryptography)**: Blocked by pysaml2 pin (==45.0.7); fix 46.0.5." >> $GITHUB_STEP_SUMMARY
+          echo "- **CVE-2026-25990 (pillow)**: Blocked by pyeudiw (Pillow<12); fix 12.1.1." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
 
   audit-djangosaml2-sp:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     name: pip-audit (djangosaml2_sp)
     runs-on: ubuntu-latest
     steps:
@@ -74,4 +101,5 @@ jobs:
 
       - name: Audit djangosaml2_sp dependencies for vulnerabilities
         run: |
-          pip-audit -r iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt --desc
+          # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings
+          pip-audit --cache-dir /tmp/pip-audit-cache -r iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt --desc
