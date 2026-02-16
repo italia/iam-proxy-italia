@@ -1,0 +1,47 @@
+{{- if .Values.staticFiles.enabled -}}
+{{- $staticFullname := include "iam-proxy-italia.staticFullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $staticFullname }}
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+    app.kubernetes.io/component: static
+spec:
+  replicas: {{ .Values.staticFiles.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "iam-proxy-italia.staticSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "iam-proxy-italia.labels" . | nindent 8 }}
+        {{- include "iam-proxy-italia.staticSelectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: static
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "iam-proxy-italia.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: static
+          image: "{{ .Values.staticFiles.image.repository | default (printf "%s-static" .Values.image.repository) }}:{{ .Values.staticFiles.image.tag | default (.Values.image.tag | default .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.staticFiles.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.staticFiles.service.port }}
+              protocol: TCP
+          {{- with .Values.staticFiles.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
