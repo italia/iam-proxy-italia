@@ -1,0 +1,17 @@
+{{- if not .Values.dataVolume.existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.dataVolume.size }}
+  {{- if .Values.dataVolume.storageClassName }}
+  storageClassName: {{ .Values.dataVolume.storageClassName }}
+  {{- end }}
+{{- end }}

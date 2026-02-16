@@ -68,3 +68,5 @@ iam-proxy-italia-project/static/node_modules/
 iam-proxy-italia-project/static/static
 .node
 .bin
+
+/.direnv
