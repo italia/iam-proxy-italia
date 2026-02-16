@@ -1,0 +1,89 @@
+{{- if not .Values.configVolume.existingConfigMap }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}-backends
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  {{- $root := . }}
+  {{- range $path, $_ := .Files.Glob "config-files/backends/**" }}
+  {{- $filename := trimPrefix "config-files/" $path }}
+  {{- if not (hasSuffix "/" $filename) }}
+  {{ $filename | replace "/" "__" }}: |
+{{ $root.Files.Get $path | indent 4 }}
+  {{- end }}
+  {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  proxy_conf.yaml: |
+    ---
+    #--- SATOSA Proxy_conf.yaml Config ---#
+    BASE: "https://{{ .Values.satosa.hostname }}"
+    INTERNAL_ATTRIBUTES: "internal_attributes.yaml"
+    COOKIE_STATE_NAME: {{ .Values.proxyConf.cookieStateName | quote }}
+    CONTEXT_STATE_DELETE: {{ .Values.proxyConf.contextStateDelete }}
+
+    COOKIE_MAX_AGE: {{ .Values.proxyConf.cookieMaxAge }}
+    {{- if .Values.proxyConf.cookieSecure }}
+    COOKIE_SECURE: {{ .Values.proxyConf.cookieSecure }}
+    {{- end }}
+    {{- if .Values.proxyConf.cookieHttponly }}
+    COOKIE_HTTPONLY: {{ .Values.proxyConf.cookieHttponly }}
+    {{- end }}
+    {{- if .Values.proxyConf.cookieSamesite }}
+    COOKIE_SAMESITE: {{ .Values.proxyConf.cookieSamesite | quote }}
+    {{- end }}
+    STATE_ENCRYPTION_KEY: !ENV SATOSA_STATE_ENCRYPTION_KEY
+
+    cookies_samesite_compat:
+    {{- range .Values.proxyConf.cookiesSamesiteCompat }}
+      - {{ . | toJson }}
+    {{- end }}
+
+    USER_ID_HASH_SALT: !ENV SATOSA_SALT
+
+    ERROR_URL: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
+
+    CUSTOM_PLUGIN_MODULE_PATHS:
+    {{- range .Values.proxyConf.customPluginModulePaths }}
+      - {{ . | quote }}
+    {{- end }}
+    BACKEND_MODULES:
+    {{- range .Values.proxyConf.backendModules }}
+      - {{ . | quote }}
+    {{- end }}
+
+    FRONTEND_MODULES:
+    {{- range .Values.proxyConf.frontendModules }}
+      - {{ . | quote }}
+    {{- end }}
+    MICRO_SERVICES:
+    {{- range .Values.proxyConf.microServices }}
+      - {{ . | quote }}
+    {{- end }}
+    LOGGING:
+{{ .Values.proxyConf.logging | toYaml | indent 6 }}
+
+  internal_attributes.yaml: |
+    attributes:
+{{ .Values.internalAttributes.attributes | toYaml | indent 6 }}
+    user_id_from_attrs: {{ .Values.internalAttributes.userIdFromAttrs | toJson }}
+    user_id_to_attr: {{ .Values.internalAttributes.userIdToAttr }}
+
+  {{- $root := . }}
+  {{- range $path, $_ := .Files.Glob "config-files/**" }}
+  {{- $filename := trimPrefix "config-files/" $path }}
+  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (ne $filename "proxy_conf.yaml") (ne $filename "internal_attributes.yaml") }}
+  {{ $filename | replace "/" "__" }}: |
+{{ $root.Files.Get $path | indent 4 }}
+  {{- end }}
+  {{- end }}
+{{- end }}
