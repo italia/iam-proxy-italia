@@ -159,3 +159,109 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Timezone configuration
+timezone: "Europe/Rome"
+
+# SATOSA configuration
+satosa:
+  # Hostname for the SATOSA service
+  hostname: "localhost"
+  # Enable debug mode
+  debug: false
+  # Running in Docker container
+  byDocker: true
+  # Base directory for SATOSA
+  baseDir: "/satosa_proxy"
+
+  # Metadata fetching flags
+  getIdemMdqKey: true
+  getSpidIdpMetadata: true
+  getFicepIdpMetadata: true
+  getCieIdpMetadata: true
+
+  # Keys configuration
+  keys:
+    folder: "./pki"
+    privateKeyFilename: "privkey.pem"
+    publicKeyFilename: "cert.pem"
+
+  # Encryption configuration
+  encryption:
+    key: "CHANGE_ME!"
+    salt: "CHANGE_ME!"
+    stateKey: "CHANGE_ME!"
+    userIdHashSalt: "CHANGE_ME!"
+
+# MongoDB configuration
+mongodb:
+  host: "satosa-mongo"
+  port: 27017
+  username: "satosa"
+  password: "thatpassword"
+
+# MongoDB Backend configuration (for OIDC)
+mongodbBackend:
+  host: "satosa-mongo"
+  port: 27017
+  username: "satosa"
+  password: "thatpassword"
+  database: "cie_oidc"
+  collections:
+    authentication: "cie_oidc_authentication"
+    token: "cie_oidc_authentication_token"
+    user: "cie_oidc_users"
+
+# MongoDB Frontend configuration
+mongodbFrontend:
+  host: "satosa-mongo"
+  port: 27017
+  username: "satosa"
+  password: "thatpassword"
+
+# Organization information
+organization:
+  name:
+    en: "example_organization"
+    it: "example_organization"
+  displayName:
+    en: "Example Organization"
+    it: "Example Organization"
+  url:
+    en: "https://example_organization.org"
+    it: "https://example_organization.org/it"
+
+# Contact person information
+contactPerson:
+  emailAddress: "support.example@organization.org"
+  telephoneNumber: "+3906123456789"
+  fiscalCode: "XXXXXX00X00X000Y"
+  givenName: "Contact Me"
+  ipaCode: "ipa00c"
+  municipality: "H501"
+
+# UI configuration
+ui:
+  description:
+    en: "Resource description"
+    it: "Resource description"
+  displayName:
+    en: "Resource Display Name"
+    it: "Resource Display Name"
+  informationUrl:
+    en: "https://example_organization.org/information_url"
+    it: "https://example_organization.org/it/information_url"
+  privacyUrl:
+    en: "https://example_organization.org/privacy"
+    it: "https://example_organization.org/it/privacy"
+  logo:
+    url: "https://example_organization.org/logo.png"
+    width: 80
+    height: 60
+
+# PYEUDIW configuration
+pyeudiw:
+  # Federation client ID (leave empty to auto-generate from hostname)
+  federationClientId: ""
+  # X509 client ID (leave empty to auto-generate from hostname)
+  x509ClientId: ""

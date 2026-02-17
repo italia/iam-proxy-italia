@@ -40,7 +40,120 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
+          env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
+            - name: SATOSA_DEBUG
+              value: {{ .Values.satosa.debug | toString | quote }}
+            - name: SATOSA_BY_DOCKER
+              value: {{ .Values.satosa.byDocker | toString | quote }}
+            - name: SATOSA_GET_IDEM_MDQ_KEY
+              value: {{ .Values.satosa.getIdemMdqKey | toString | quote }}
+            - name: SATOSA_GET_SPID_IDP_METADATA
+              value: {{ .Values.satosa.getSpidIdpMetadata | toString | quote }}
+            - name: SATOSA_GET_FICEP_IDP_METADATA
+              value: {{ .Values.satosa.getFicepIdpMetadata | toString | quote }}
+            - name: SATOSA_GET_CIE_IDP_METADATA
+              value: {{ .Values.satosa.getCieIdpMetadata | toString | quote }}
+            - name: BASE_DIR
+              value: {{ .Values.satosa.baseDir | quote }}
+            - name: SATOSA_PRIVATE_KEY
+              value: "{{ .Values.satosa.keys.folder }}/{{ .Values.satosa.keys.privateKeyFilename }}"
+            - name: SATOSA_PUBLIC_KEY
+              value: "{{ .Values.satosa.keys.folder }}/{{ .Values.satosa.keys.publicKeyFilename }}"
+            - name: SATOSA_BASE
+              value: "https://{{ .Values.satosa.hostname }}"
+            - name: SATOSA_BASE_STATIC
+              value: "https://{{ .Values.satosa.hostname }}/static"
+            - name: SATOSA_DISCO_SRV
+              value: "https://{{ .Values.satosa.hostname }}/static/disco.html"
+            - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
+              value: "https://{{ .Values.satosa.hostname }}/static/error_page.html"
+            - name: MONGODB_USERNAME
+              value: {{ .Values.mongodb.username | quote }}
+            - name: MONGODB_PASSWORD
+              value: {{ .Values.mongodb.password | quote }}
+            - name: MONGO_HOST
+              value: "{{ .Values.mongodb.host }}:{{ .Values.mongodb.port }}"
+            - name: MONGO_BACKEND_HOST
+              value: "mongodb://{{ .Values.mongodbBackend.host }}:{{ .Values.mongodbBackend.port }}"
+            - name: MONGO_BACKEND_DB_NAME_OIDC_SCHEMA
+              value: {{ .Values.mongodbBackend.database | quote }}
+            - name: MONGO_BACKEND_AUTH_OIDC_COLLECTION
+              value: {{ .Values.mongodbBackend.collections.authentication | quote }}
+            - name: MONGO_BACKEND_TOKEN_OIDC_COLLECTION
+              value: {{ .Values.mongodbBackend.collections.token | quote }}
+            - name: MONGO_BACKEND_USER_OIDC_COLLECTION
+              value: {{ .Values.mongodbBackend.collections.user | quote }}
+            - name: MONGODB_BACKEND_USERNAME
+              value: {{ .Values.mongodbBackend.username | quote }}
+            - name: MONGODB_BACKEND_PASSWORD
+              value: {{ .Values.mongodbBackend.password | quote }}
+            - name: MONGO_FRONTEND_HOST
+              value: "mongodb://{{ .Values.mongodbFrontend.host }}:{{ .Values.mongodbFrontend.port }}"
+            - name: MONGODB_FRONTEND_USERNAME
+              value: {{ .Values.mongodbFrontend.username | quote }}
+            - name: MONGODB_FRONTEND_PASSWORD
+              value: {{ .Values.mongodbFrontend.password | quote }}
+            - name: SATOSA_ENCRYPTION_KEY
+              value: {{ .Values.satosa.encryption.key | quote }}
+            - name: SATOSA_SALT
+              value: {{ .Values.satosa.encryption.salt | quote }}
+            - name: SATOSA_STATE_ENCRYPTION_KEY
+              value: {{ .Values.satosa.encryption.stateKey | quote }}
+            - name: SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+              value: {{ .Values.contactPerson.emailAddress | quote }}
+            - name: SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER
+              value: {{ .Values.contactPerson.telephoneNumber | quote }}
+            - name: SATOSA_CONTACT_PERSON_FISCALCODE
+              value: {{ .Values.contactPerson.fiscalCode | quote }}
+            - name: SATOSA_CONTACT_PERSON_GIVEN_NAME
+              value: {{ .Values.contactPerson.givenName | quote }}
+            - name: SATOSA_CONTACT_PERSON_IPA_CODE
+              value: {{ .Values.contactPerson.ipaCode | quote }}
+            - name: SATOSA_CONTACT_PERSON_MUNICIPALITY
+              value: {{ .Values.contactPerson.municipality | quote }}
+            - name: SATOSA_ORGANIZATION_DISPLAY_NAME_EN
+              value: {{ .Values.organization.displayName.en | quote }}
+            - name: SATOSA_ORGANIZATION_DISPLAY_NAME_IT
+              value: {{ .Values.organization.displayName.it | quote }}
+            - name: SATOSA_ORGANIZATION_NAME_EN
+              value: {{ .Values.organization.name.en | quote }}
+            - name: SATOSA_ORGANIZATION_NAME_IT
+              value: {{ .Values.organization.name.it | quote }}
+            - name: SATOSA_ORGANIZATION_URL_EN
+              value: {{ .Values.organization.url.en | quote }}
+            - name: SATOSA_ORGANIZATION_URL_IT
+              value: {{ .Values.organization.url.it | quote }}
+            - name: SATOSA_UI_DESCRIPTION_EN
+              value: {{ .Values.ui.description.en | quote }}
+            - name: SATOSA_UI_DESCRIPTION_IT
+              value: {{ .Values.ui.description.it | quote }}
+            - name: SATOSA_UI_DISPLAY_NAME_EN
+              value: {{ .Values.ui.displayName.en | quote }}
+            - name: SATOSA_UI_DISPLAY_NAME_IT
+              value: {{ .Values.ui.displayName.it | quote }}
+            - name: SATOSA_UI_INFORMATION_URL_EN
+              value: {{ .Values.ui.informationUrl.en | quote }}
+            - name: SATOSA_UI_INFORMATION_URL_IT
+              value: {{ .Values.ui.informationUrl.it | quote }}
+            - name: SATOSA_UI_LOGO_HEIGHT
+              value: {{ .Values.ui.logo.height | toString | quote }}
+            - name: SATOSA_UI_LOGO_WIDTH
+              value: {{ .Values.ui.logo.width | toString | quote }}
+            - name: SATOSA_UI_LOGO_URL
+              value: {{ .Values.ui.logo.url | quote }}
+            - name: SATOSA_UI_PRIVACY_URL_EN
+              value: {{ .Values.ui.privacyUrl.en | quote }}
+            - name: SATOSA_UI_PRIVACY_URL_IT
+              value: {{ .Values.ui.privacyUrl.it | quote }}
+            - name: SATOSA_USER_ID_HASH_SALT
+              value: {{ .Values.satosa.encryption.userIdHashSalt | quote }}
+            - name: PYEUDIW_FEDERATION_CLIENT_ID
+              value: {{ .Values.pyeudiw.federationClientId | default (printf "openid_federation:https://%s/OpenID4VP" .Values.satosa.hostname) | quote }}
+            - name: PYEUDIW_X509_CLIENT_ID
+              value: {{ .Values.pyeudiw.x509ClientId | default (printf "x509_san_dns:%s" .Values.satosa.hostname) | quote }}
+          ports
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
