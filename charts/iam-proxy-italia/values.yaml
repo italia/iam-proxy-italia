@@ -187,25 +187,31 @@ satosa:
     publicKeyFilename: "cert.pem"
 
   # Encryption configuration
+  # These values will be stored in a Kubernetes Secret
+  # If left empty, secure random values will be auto-generated
   encryption:
-    key: "CHANGE_ME!"
-    salt: "CHANGE_ME!"
-    stateKey: "CHANGE_ME!"
-    userIdHashSalt: "CHANGE_ME!"
+    key: ""
+    salt: ""
+    stateKey: ""
+    userIdHashSalt: ""
 
 # MongoDB configuration
 mongodb:
   host: "satosa-mongo"
   port: 27017
   username: "satosa"
-  password: "thatpassword"
+  # Password will be stored in a Kubernetes Secret
+  # If left empty, a secure random password will be auto-generated
+  password: ""
 
 # MongoDB Backend configuration (for OIDC)
 mongodbBackend:
   host: "satosa-mongo"
   port: 27017
   username: "satosa"
-  password: "thatpassword"
+  # Password will be stored in a Kubernetes Secret
+  # If left empty, a secure random password will be auto-generated
+  password: ""
   database: "cie_oidc"
   collections:
     authentication: "cie_oidc_authentication"
@@ -217,7 +223,9 @@ mongodbFrontend:
   host: "satosa-mongo"
   port: 27017
   username: "satosa"
-  password: "thatpassword"
+  # Password will be stored in a Kubernetes Secret
+  # If left empty, a secure random password will be auto-generated
+  password: ""
 
 # Organization information
 organization:
@@ -265,3 +273,23 @@ pyeudiw:
   federationClientId: ""
   # X509 client ID (leave empty to auto-generate from hostname)
   x509ClientId: ""
+
+# Secret configuration for sensitive data
+# If existingSecret is not set, a new secret will be created automatically
+# When using an existing secret, it must contain the following keys:
+# - satosa-encryption-key
+# - satosa-salt
+# - satosa-state-encryption-key
+# - satosa-user-id-hash-salt
+# - mongodb-password
+# - mongodb-backend-password
+# - mongodb-frontend-password
+secret:
+  # The name of the secret to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+  # Use an existing secret instead of creating a new one
+  # When set, the secret will not be created and values from the existing secret will be used
+  existingSecret: ""
+  # Annotations to add to the created secret (only used when creating a new secret)
+  annotations: {}
