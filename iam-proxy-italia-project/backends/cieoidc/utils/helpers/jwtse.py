@@ -13,8 +13,7 @@ from cryptojwt.jws.jws import JWS
 from cryptojwt.jws.utils import left_hash
 from typing import Union
 
-#todo read from config
-
+# todo read from config
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,13 @@ def unpad_jwt_payload(jwt: str) -> dict:
     return unpad_jwt_element(jwt, position=1)
 
 
-def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, default_jwe_alg: str, default_jwe_enc: str,  **kwargs) -> str:
+def create_jwe(
+    plain_dict: Union[dict, str, int, None],
+    jwk_dict: dict,
+    default_jwe_alg: str,
+    default_jwe_enc: str,
+    **kwargs,
+) -> str:
     logger.debug(f"Encrypting dict as JWE: " f"{plain_dict}")
     _key = key_from_jwk_dict(jwk_dict)
 
@@ -68,7 +73,13 @@ def create_jwe(plain_dict: Union[dict, str, int, None], jwk_dict: dict, default_
     return jwe
 
 
-def decrypt_jwe(jwe: str, jwk_dict: dict, default_jwe_alg: str, default_jwe_enc: str, encryption_alg_values_supported: list[str]) -> dict:
+def decrypt_jwe(
+    jwe: str,
+    jwk_dict: dict,
+    default_jwe_alg: str,
+    default_jwe_enc: str,
+    encryption_alg_values_supported: list[str],
+) -> dict:
     # get header
     try:
         jwe_header = unpad_jwt_head(jwe)
@@ -98,7 +109,7 @@ def decrypt_jwe(jwe: str, jwk_dict: dict, default_jwe_alg: str, default_jwe_enc:
     return msg_dict
 
 
-def create_jws(payload: dict, jwk_dict: dict, alg: str = "RS256", protected:dict = {}, **kwargs) -> str:
+def create_jws(payload: dict, jwk_dict: dict, alg: str = "RS256", protected: dict = {}, **kwargs) -> str:
     _key = key_from_jwk_dict(jwk_dict)
     _signer = JWS(payload, alg=alg, **kwargs)
 
@@ -106,7 +117,9 @@ def create_jws(payload: dict, jwk_dict: dict, alg: str = "RS256", protected:dict
     return signature
 
 
-def verify_jws(jws: str, pub_jwk: dict, signing_alg_values_supported: list[str],  **kwargs) -> str:
+def verify_jws(
+    jws: str, pub_jwk: dict, signing_alg_values_supported: list[str], **kwargs
+) -> str:
     _key = key_from_jwk_dict(pub_jwk)
 
     _head = unpad_jwt_head(jws)

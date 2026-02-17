@@ -82,6 +82,7 @@ def datetime_from_timestamp(timestamp: int | float) -> datetime.datetime:
 
     return make_timezone_aware(datetime.datetime.fromtimestamp(timestamp))
 
+
 def timestamp_from_datetime(dt: datetime.datetime) -> int:
     """
     Get a timestamp from a datetime.
@@ -93,6 +94,7 @@ def timestamp_from_datetime(dt: datetime.datetime) -> int:
     :rtype: int
     """
     return int(dt.timestamp())
+
 
 def get_http_url(
     urls: list[str] | str, httpc_params: dict, http_async: bool = True
@@ -225,6 +227,7 @@ def cacheable_get_http_url(
         _lru_cached_get_http_url.cache_clear()
     return resp
 
+
 def random_string(n=32):
     return "".join(random.choices(string.ascii_letters + string.digits, k=n))  # nosec
 
@@ -249,14 +252,17 @@ def get_pkce(code_challenge_method: str = "S256", code_challenge_length: int = 6
         "code_challenge_method": code_challenge_method,
     }
 
+
 def get_key(jwks, use=KeyUsage.signature):
-   for jwk in jwks:
+    for jwk in jwks:
         if jwk['use'] == use:
             return jwk
-   return jwks[0]
+    return jwks[0]
+
 
 def http_dict_to_redirect_uri_path(data):
     return urllib.parse.urlencode(data)
+
 
 @lru_cache(maxsize=int(os.getenv("PYEUDIW_LRU_CACHE_MAXSIZE", 2048)))
 def _lru_cached_get_http_url(
@@ -287,6 +293,7 @@ def _lru_cached_get_http_url(
     resp: list[requests.Response] = get_http_url([url], httpc_params, http_async)
     return resp[0]
 
+
 def get_jwks(metadata: dict, httpc_params) -> dict:
     """
     This method is ported from spid-cie-oidc-django because we used into callback method
@@ -315,6 +322,7 @@ def get_jwks(metadata: dict, httpc_params) -> dict:
             logger.error(f"Failed to download jwks from {signed_jwks_uri}: {e}")
     return jwks_list
 
+
 def get_jwk_from_jwt(jwt: str, provider_jwks: dict) -> dict:
     """
         docs here
@@ -329,12 +337,14 @@ def get_jwk_from_jwt(jwt: str, provider_jwks: dict) -> dict:
             return jwk
     return {}
 
+
 def unpad_jwt_head(jwt: str) -> dict:
     """
         docs here
         see get_jwk_from_jwt
     """
     return unpad_jwt_element(jwt, position=0)
+
 
 def unpad_jwt_element(jwt: str, position: int) -> dict:
     """
@@ -346,10 +356,12 @@ def unpad_jwt_element(jwt: str, position: int) -> dict:
     data = json.loads(base64.urlsafe_b64decode(padded))
     return data
 
+
 def issuer_prefixed_sub(
     user_info: dict, client_conf: dict, data: dict = None, kwargs: dict = {}
 ):
     return f"{client_conf['provider_id']}{data.get('sep', '__')}{user_info['sub']}"
+
 
 def import_string(dotted_path):
 

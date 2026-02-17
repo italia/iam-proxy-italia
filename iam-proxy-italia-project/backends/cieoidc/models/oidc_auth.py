@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from .user import OidcUser
 from datetime import datetime
 
+
 class OidcAuthentication(BaseModel):
 
     # --- Authentication info ---
@@ -20,11 +21,11 @@ class OidcAuthentication(BaseModel):
     access_token: Optional[str] = None
     code: Optional[str] = None
     id_token: Optional[str] = None
-    refresh_token: Optional[str] = None #*
+    refresh_token: Optional[str] = None  # *
     scope: Optional[str] = None
     token_type: Optional[str] = None
     expires_in: Optional[int] = None
-    revoked: Optional[str] = None #*
+    revoked: Optional[str] = None  # *
 
     # --- Audit fields ---
     created: Optional[datetime] = None

@@ -3,6 +3,7 @@ class StorageError(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class StorageUnreachable(Exception):
     def __init__(self, message="Connection to database failed. The server is not reachable."):
         self.message = message
@@ -73,6 +74,7 @@ class AuthorizeUnmatchedResponse(Exception):
     Raised when an authorization response cannot be matched to an authentication request
     """
     pass
+
 
 class UnknownKid(Exception):
     """

@@ -19,22 +19,23 @@ from ..utils.exceptions import StorageUnreachable
 from ..utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attributes
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import verify_jws, unpad_jwt_payload, verify_at_hash
-from pyeudiw.trust.dynamic import CombinedTrustEvaluator #todo remove pyeudiw dependency
+from pyeudiw.trust.dynamic import CombinedTrustEvaluator  # todo remove pyeudiw dependency
 
 logger = logging.getLogger(__name__)
+
 
 class AuthorizationCallBackHandler(BaseEndpoint):
 
     def __init__(
-            self,
-            config: dict,
-            internal_attributes: dict[str, dict[str, str | list[str]]],
-            base_url: str,
-            name: str,
-            auth_callback_func: Callable[[Context, InternalData], Response],
-            converter: AttributeMapper,
-            trust_evaluator: CombinedTrustEvaluator
-        ) -> None:
+        self,
+        config: dict,
+        internal_attributes: dict[str, dict[str, str | list[str]]],
+        base_url: str,
+        name: str,
+        auth_callback_func: Callable[[Context, InternalData], Response],
+        converter: AttributeMapper,
+        trust_evaluator: CombinedTrustEvaluator
+    ) -> None:
 
         super().__init__(config, internal_attributes, base_url, name, auth_callback_func, converter)
 
@@ -49,7 +50,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             raise StorageUnreachable
         self.configuration_plugins = self.generate_configuration_plugin(self.config)
 
-
     def endpoint(self, context, *args):
         """
         Handle the authentication response from the OP.
@@ -60,7 +60,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             Response (satosa.response.Response): Satosa Response object.
         """
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [qs_params {context.qs_params}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [qs_params {context.qs_params}]"
         )
         if context.qs_params.get("error"):
             logger.debug(
@@ -91,20 +92,23 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             raise SATOSABadRequestError("Invalid relaying party")
 
         authorization_data = json.loads(authorization.get("data"))
-        oAuth2_authorization = OAuth2AuthorizationCodeGrant(grant_type=self.grant_type,
-                                                            client_assertion_type=self.client_assertion_type,
-                                                            jws_core=self.jws_core,
-                                                            httpc_params=self.httpc_params)
+        oAuth2_authorization = OAuth2AuthorizationCodeGrant(
+            grant_type=self.grant_type,
+            client_assertion_type=self.client_assertion_type,
+            jws_core=self.jws_core,
+            httpc_params=self.httpc_params,
+        )
 
-        token_response = oAuth2_authorization.access_token_request(redirect_uri=authorization_data["redirect_uri"],
-                                                                   state=authorization.get("state"),
-                                                                   code=code,
-                                                                   client_id=authorization.get("client_id"),
-                                                                   token_endpoint_url=
-                                                                   authorization["provider_configuration"][
-                                                                       "openid_provider"].get("token_endpoint"),
-                                                                   code_verifier=authorization_data.get("code_verifier")
-                                                                   )
+        token_response = oAuth2_authorization.access_token_request(
+            redirect_uri=authorization_data["redirect_uri"],
+            state=authorization.get("state"),
+            code=code,
+            client_id=authorization.get("client_id"),
+            token_endpoint_url=authorization["provider_configuration"]["openid_provider"].get(
+                "token_endpoint"
+            ),
+            code_verifier=authorization_data.get("code_verifier"),
+        )
 
         if not token_response:
             logger.debug("Token response is empty")
@@ -149,7 +153,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             authorization.get("access_token"),
             verify=self.httpc_params["connection"].get("ssl"),
             timeout=self.httpc_params["session"].get("timeout"),
-            configuration_utils=self.configuration_plugins
+            configuration_utils=self.configuration_plugins,
         )
 
         if not user_info:
@@ -157,8 +161,11 @@ class AuthorizationCallBackHandler(BaseEndpoint):
                 "User_info request failed for state: "
                 f"{authorization.get('state')} to {authorization.get('provider_id')}"
             )
-            raise SATOSAAuthenticationError(context.state, "User_info request failed for state: "
-                                                           f"{authorization.get('state')} to {authorization.get('provider_id')}")
+            raise SATOSAAuthenticationError(
+                context.state,
+                f"User_info request failed for state: {authorization.get('state')} "
+                f"to {authorization.get('provider_id')}",
+            )
 
         user_attrs = process_user_attributes(user_info, self.claims, authorization)
         if not user_attrs:
@@ -185,7 +192,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         return self._auth_callback(context, internal_data)
 
     def __get_authorization(self, state: str) -> dict:
-
         """
         method __get_authorization:
         This method get the state from DB.
@@ -210,7 +216,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
     def __add_user(self, user_attrs: dict) -> OidcUser | None:
 
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [user_attrs {user_attrs}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [user_attrs {user_attrs}]"
         )
         try:
             user_token = OidcUser(**user_attrs)
@@ -220,8 +227,9 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             logger.debug(e)
             return None
 
-    def __update_authentication_token(self, authorization: dict, access_token: dict, id_token: dict,
-                                      token_response: dict):
+    def __update_authentication_token(
+        self, authorization: dict, access_token: dict, id_token: dict, token_response: dict
+    ):
         """
         method __update_authentication_token:
         This method update the authentication token. Add this properties:
@@ -233,7 +241,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         """
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
-            f"Params [authorization {authorization}, access_token: {access_token}, id_token:{id_token}, token_response:{token_response}]"
+            f"Params [authorization {authorization}, access_token: {access_token}, "
+            f"id_token: {id_token}, token_response: {token_response}]"
         )
         authorization["access_token"] = access_token
         authorization["id_token"] = id_token
@@ -243,7 +252,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         self.__update_authorization(authorization)
 
     def __update_authorization(self, authorization_input: dict):
-
         """
         method __update_authorization:
         This method update the authorization dict.
@@ -256,7 +264,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         """
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [authorization_input {authorization_input}]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [authorization_input {authorization_input}]"
         )
 
         try:
@@ -271,7 +280,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         )
 
     def __check_provider(self, provider_is: str, iss: str) -> bool:
-
         """
         method __check_issuer:
         This method check if provider is equal to iss.
@@ -287,7 +295,8 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         """
         logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [provider_is {provider_is}, iss: {iss} ]"
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params [provider_is {provider_is}, iss: {iss}]"
         )
 
         if provider_is.endswith("/") and not iss.endswith("/"):
@@ -310,8 +319,6 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         internal_resp.subject_id = sub
         return internal_resp
 
-
-
     @staticmethod
     def generate_configuration_plugin(config) -> ConfigurationPlugin:
         """
@@ -327,7 +334,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             config.get("default_enc_alg"),
             config.get("default_enc_enc"),
             config.get("supported_sign_alg"),
-            config.get("supported_enc_alg")
+            config.get("supported_enc_alg"),
         )
 
         return configuration_plugin

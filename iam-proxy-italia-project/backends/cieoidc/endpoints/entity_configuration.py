@@ -39,14 +39,15 @@ class EntityConfigHandler(BaseEndpoint):
         self._trust_marks = self.config.get("trust_marks")
         self._entity_configuration_exp = self.config.get("entity_configuration_exp")
         self._entity_type = self.config.get("entity_type")
-        self._client_id = self.config.get("metadata", {}).get(self._entity_type,{}).get("client_id") or f"{base_url}/{name}"
+        meta = self.config.get("metadata", {}).get(self._entity_type, {})
+        self._client_id = meta.get("client_id") or f"{base_url}/{name}"
         self._validate_configs()
 
     @property
     def _metadata(self) -> dict:
         _meta = copy.deepcopy(self.config.get("metadata", {}))
         _meta[self._entity_type]["client_id"] = self._client_id
-        _meta[self._entity_type]["jwks"]= {}
+        _meta[self._entity_type]["jwks"] = {}
         _meta[self._entity_type]["jwks"]["keys"] = [public_jwk_from_private_jwk(_k) for _k in self._jwks_core]
         return _meta
 
@@ -56,14 +57,17 @@ class EntityConfigHandler(BaseEndpoint):
         validate_entity_metadata(self._metadata)
 
     def get_entity_configuration(self, jws=False) -> str:
-        _entity = FederationEntityConfiguration(self._client_id,
-                        self._entity_configuration_exp,
-                        self._default_sig_alg,
-                        self._jwks_core,
-                        self._jwks_federation,
-                        self._entity_type,
-                        self._metadata,
-                        self._auth_hints, self._trust_marks)
+        _entity = FederationEntityConfiguration(
+            self._client_id,
+            self._entity_configuration_exp,
+            self._default_sig_alg,
+            self._jwks_core,
+            self._jwks_federation,
+            self._entity_type,
+            self._metadata,
+            self._auth_hints,
+            self._trust_marks,
+        )
         return _entity.entity_configuration_as_jws if jws else json.dumps(_entity.entity_configuration_as_dict)
 
     def get_openid_jwks(self, jws=False) -> str:
@@ -72,7 +76,6 @@ class EntityConfigHandler(BaseEndpoint):
         if not jws:
             return json.dumps(res)
         return create_jws(res, self._jwks_federation[0])
-
 
     def endpoint(self, context: Context) -> Redirect | Response:
         """
