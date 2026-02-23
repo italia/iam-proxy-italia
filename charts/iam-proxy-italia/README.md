@@ -2,6 +2,20 @@
 
 Helm chart for deploying IAM Proxy Italia (SATOSA SAML2/SPID proxy) on Kubernetes.
 
+## Prerequisites
+
+Before installing or templating the chart, you need to build the chart dependencies:
+
+```bash
+# Build dependencies (downloads MongoDB chart)
+helm dependency build charts/iam-proxy-italia
+
+# Extract the dependency (required for Helm 3.19+)
+cd charts/iam-proxy-italia/charts && tar -xzf mongodb-*.tgz && cd -
+```
+
+This downloads and extracts the MongoDB subchart required by IAM Proxy Italia.
+
 ## Installation
 
 ### Basic Installation
@@ -22,6 +36,69 @@ helm install myrelease ./charts/iam-proxy-italia -f custom-values.yaml
 helm install myrelease ./charts/iam-proxy-italia \
   --set satosa.hostname=iam.example.com \
   --set mongodb.host=mongodb.default.svc.cluster.local
+```
+
+## Configuration Files
+
+This chart supports mounting custom configuration files from the `iam-proxy-italia-project` directory into the `/satosa_proxy` path in the container.
+
+### Using Configuration Files
+
+#### Option 1: Create ConfigMap Manually (Recommended)
+
+Use the provided helper script to create a ConfigMap from your local `iam-proxy-italia-project` directory:
+
+```bash
+# Create ConfigMap from iam-proxy-italia-project directory
+./charts/iam-proxy-italia/create-configmap.sh iam-proxy-config default
+
+# Install with the ConfigMap
+helm install myrelease ./charts/iam-proxy-italia \
+  --set configVolume.enabled=true \
+  --set configVolume.existingConfigMap=iam-proxy-config
+```
+
+#### Option 2: Create ConfigMap with kubectl
+
+```bash
+# Create ConfigMap directly with kubectl
+kubectl create configmap iam-proxy-config \
+  --from-file=./iam-proxy-italia-project \
+  --namespace=default
+
+# Install with the ConfigMap
+helm install myrelease ./charts/iam-proxy-italia \
+  --set configVolume.enabled=true \
+  --set configVolume.existingConfigMap=iam-proxy-config
+```
+
+#### Option 3: Use values.yaml
+
+Enable configuration volume mounting in your `values.yaml`:
+
+```yaml
+configVolume:
+  enabled: true
+  mountPath: "/satosa_proxy"
+  existingConfigMap: "iam-proxy-config"
+```
+
+Then install:
+
+```bash
+helm install myrelease ./charts/iam-proxy-italia -f custom-values.yaml
+```
+
+### Updating Configuration Files
+
+To update the configuration after making changes:
+
+```bash
+# Update the ConfigMap
+./charts/iam-proxy-italia/create-configmap.sh iam-proxy-config default
+
+# Restart the pods to pick up changes
+kubectl rollout restart deployment/myrelease-iam-proxy-italia
 ```
 
 ## Secret Management
@@ -407,6 +484,29 @@ helm upgrade myrelease ./charts/iam-proxy-italia \
 ```
 
 ## Troubleshooting
+
+### Helm template/install fails with dependency error
+
+```
+Error: An error occurred while checking for chart dependencies. You may need to run `helm dependency build` to fetch missing dependencies: found in Chart.yaml, but missing in charts/ directory: mongodb
+```
+
+**Solution**: Build and extract the chart dependencies:
+
+```bash
+# Build dependencies
+helm dependency build charts/iam-proxy-italia
+
+# Extract the MongoDB chart (required for Helm 3.19+)
+cd charts/iam-proxy-italia/charts
+tar -xzf mongodb-*.tgz
+cd -
+
+# Now you can run helm template or install
+helm template test-release charts/iam-proxy-italia
+```
+
+**Note**: Some versions of Helm (3.19+) require dependency charts to be extracted, not just present as `.tgz` files.
 
 ### Secret not found error
 

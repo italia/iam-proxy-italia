@@ -1,0 +1,34 @@
+{{- if not .Values.configVolume.existingConfigMap }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}-backends
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  {{- $root := . }}
+  {{- range $path, $_ := .Files.Glob "config-files/backends/**" }}
+  {{- $filename := trimPrefix "config-files/" $path }}
+  {{- if not (hasSuffix "/" $filename) }}
+  {{ $filename | replace "/" "__" }}: |
+{{ $root.Files.Get $path | indent 4 }}
+  {{- end }}
+  {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  {{- $root := . }}
+  {{- range $path, $_ := .Files.Glob "config-files/**" }}
+  {{- $filename := trimPrefix "config-files/" $path }}
+  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) }}
+  {{ $filename | replace "/" "__" }}: |
+{{ $root.Files.Get $path | indent 4 }}
+  {{- end }}
+  {{- end }}
+{{- end }}
