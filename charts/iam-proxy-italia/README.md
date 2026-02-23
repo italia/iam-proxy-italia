@@ -82,13 +82,6 @@ secret:
 
 See `examples/existing-secret.yaml` for a complete example.
 
-### Secret Naming Convention
-
-The chart follows Helm best practices for naming:
-
-- **Auto-generated secret**: Uses the release fullname (same as other resources)
-  - Example: If release name is `
-
 ### Required Secret Keys
 
 When using an existing secret, it **must** contain these keys:
@@ -122,9 +115,18 @@ satosa:
 
   # Keys configuration
   keys:
-    folder: "./pki"
+    mountPath: "/app/pki"
     privateKeyFilename: "privkey.pem"
     publicKeyFilename: "cert.pem"
+    
+    # Use existing volume (Secret, PVC, etc.)
+    existingVolume:
+      enabled: false
+      volumeSource: {}
+    
+    # Or provide PEM content inline (creates Secret automatically)
+    privateKey: ""
+    publicKey: ""
 
   # Encryption (stored in Secret)
   encryption:

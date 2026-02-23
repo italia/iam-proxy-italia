@@ -180,11 +180,15 @@ satosa:
   getFicepIdpMetadata: true
   getCieIdpMetadata: true
 
-  # Keys configuration
   keys:
-    folder: "./pki"
+    mountPath: "/app/pki"
     privateKeyFilename: "privkey.pem"
     publicKeyFilename: "cert.pem"
+    # Volume name to mount (leave empty to create Secret from privateKey/publicKey)
+    existingVolume: ""
+    # PEM content (used only if existingVolume is empty)
+    privateKey: ""
+    publicKey: ""
 
   # Encryption configuration
   # These values will be stored in a Kubernetes Secret
