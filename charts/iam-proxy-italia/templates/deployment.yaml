@@ -70,14 +70,19 @@ spec:
             - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
               value: "https://{{ .Values.satosa.hostname }}/static/error_page.html"
             - name: MONGODB_USERNAME
-              value: {{ .Values.mongodb.username | quote }}
+              value: {{ if .Values.mongodb.enabled }}{{ index .Values.mongodb.auth.usernames 0 | quote }}{{ else }}{{ .Values.mongodb.external.username | quote }}{{ end }}
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.mongodb.enabled }}
+                  name: {{ include "iam-proxy-italia.fullname" . }}-mongodb
+                  key: mongodb-passwords
+                  {{- else }}
                   name: {{ include "iam-proxy-italia.secret" . }}
                   key: mongodb-password
+                  {{- end }}
             - name: MONGO_HOST
-              value: "{{ .Values.mongodb.host }}:{{ .Values.mongodb.port }}"
+              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"{{ .Values.mongodb.external.host }}:{{ .Values.mongodb.external.port }}"{{ end }}
             - name: MONGO_BACKEND_HOST
               value: "mongodb://{{ .Values.mongodbBackend.host }}:{{ .Values.mongodbBackend.port }}"
             - name: MONGO_BACKEND_DB_NAME_OIDC_SCHEMA
@@ -200,6 +205,12 @@ spec:
               mountPath: {{ .Values.satosa.keys.mountPath }}
               readOnly: true
             {{- end }}
+            - name: config
+              mountPath: {{ .Values.configVolume.mountPath }}
+              readOnly: true
+            - name: config-backends
+              mountPath: {{ .Values.configVolume.mountPath }}/backends
+              readOnly: true
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -210,6 +221,32 @@ spec:
             secretName: {{ include "iam-proxy-italia.fullname" . }}-keys
             defaultMode: 0400
         {{- end }}
+        - name: config
+          configMap:
+            name: {{ .Values.configVolume.existingConfigMap | default (include "iam-proxy-italia.fullname" .) }}
+            {{- if not .Values.configVolume.existingConfigMap }}
+            items:
+            {{- range $path, $_ := .Files.Glob "config-files/**" }}
+            {{- $filename := trimPrefix "config-files/" $path }}
+            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) }}
+            - key: {{ $filename | replace "/" "__" }}
+              path: {{ $filename }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+        - name: config-backends
+          configMap:
+            name: {{ .Values.configVolume.existingConfigMap | default (printf "%s-backends" (include "iam-proxy-italia.fullname" .)) }}
+            {{- if not .Values.configVolume.existingConfigMap }}
+            items:
+            {{- range $path, $_ := .Files.Glob "config-files/backends/**" }}
+            {{- $filename := trimPrefix "config-files/backends/" $path }}
+            {{- if not (hasSuffix "/" $filename) }}
+            - key: {{ printf "backends__%s" ($filename | replace "/" "__") }}
+              path: {{ $filename }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

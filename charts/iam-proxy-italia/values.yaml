@@ -154,6 +154,15 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
+# Configuration files volume
+# If existingConfigMap is set, uses that ConfigMap
+# If empty, auto-generates ConfigMap from files in config-files/ directory
+configVolume:
+  # Mount path in the container
+  mountPath: "/satosa_proxy"
+  # Name of existing ConfigMap to use (leave empty for auto-generated)
+  existingConfigMap: ""
+
 nodeSelector: {}
 
 tolerations: []
@@ -172,7 +181,7 @@ satosa:
   # Running in Docker container
   byDocker: true
   # Base directory for SATOSA
-  baseDir: "/satosa_proxy"
+  baseDir: /satosa_proxy
 
   # Metadata fetching flags
   getIdemMdqKey: true
@@ -181,9 +190,9 @@ satosa:
   getCieIdpMetadata: true
 
   keys:
-    mountPath: "/app/pki"
-    privateKeyFilename: "privkey.pem"
-    publicKeyFilename: "cert.pem"
+    mountPath: /satosa_proxy/pki
+    privateKeyFilename: privkey.pem
+    publicKeyFilename: cert.pem
     # Volume name to mount (leave empty to create Secret from privateKey/publicKey)
     existingVolume: ""
     # PEM content (used only if existingVolume is empty)
@@ -201,12 +210,40 @@ satosa:
 
 # MongoDB configuration
 mongodb:
-  host: "satosa-mongo"
-  port: 27017
-  username: "satosa"
-  # Password will be stored in a Kubernetes Secret
-  # If left empty, a secure random password will be auto-generated
-  password: ""
+  enabled: true
+  auth:
+    enabled: true
+    usernames:
+      - satosa
+    databases:
+      - oidcop
+  initdbScripts:
+    init-indexes.js: |
+      const rootUser = process.env.MONGODB_ROOT_USER;
+      const rootPassword = process.env.MONGODB_ROOT_PASSWORD;
+
+      const admin = db.getSiblingDB('admin');
+
+      admin.auth(rootUser, rootPassword);
+
+      // make client_id unique
+      db.client.createIndex( { "client_id": 1 }, { unique: true } )
+      db.client.createIndex( { "registration_access_token": 1 }, { unique: true } )
+
+      // make access_token and sid unique
+      db.session.createIndex( { "sid": 1 }, { unique: true } )
+
+      // create expired session deletion
+      db.session.createIndex(
+        { expires_at: 1 },
+        { expireAfterSeconds: 0, partialFilterExpression: { count: { $gt: 2 } } }
+      );
+  # External MongoDB (used when enabled: false)
+  external:
+    host: "satosa-mongo"
+    port: 27017
+    username: "satosa"
+    password: ""
 
 # MongoDB Backend configuration (for OIDC)
 mongodbBackend:
