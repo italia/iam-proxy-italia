@@ -44,7 +44,7 @@ podSecurityContext: {}
 securityContext:
   capabilities:
     drop:
-    - ALL
+      - ALL
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
@@ -226,9 +226,15 @@ mongodb:
 
       admin.auth(rootUser, rootPassword);
 
+      use oidcop
+
+      db.createCollection('client')
+
       // make client_id unique
       db.client.createIndex( { "client_id": 1 }, { unique: true } )
       db.client.createIndex( { "registration_access_token": 1 }, { unique: true } )
+
+      db.createCollection('session')
 
       // make access_token and sid unique
       db.session.createIndex( { "sid": 1 }, { unique: true } )

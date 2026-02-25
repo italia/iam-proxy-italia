@@ -20,6 +20,7 @@
             helm-docs
             helm-ls
             kubernetes-helm
+            openssl
           ];
         };
 
