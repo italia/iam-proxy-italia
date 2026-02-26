@@ -5,7 +5,7 @@ description: |
   SAML-to-SAML, OIDC-to-SAML, SAML-to-Wallet and OIDC-to-Wallet
   interoperability with the  Italian Digital Identity Systems.
 version: 0.1.0
-appVersion: "v3.0.0-rc"
+appVersion: "v3.0.1"
 
 dependencies:
   - name: mongodb
