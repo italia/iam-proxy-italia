@@ -13,6 +13,17 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# Container command and args configuration
+# This overrides the default entrypoint and command of the container
+# More information: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
+container:
+  # Command to run in the container (overrides ENTRYPOINT)
+  # Example: ["/bin/sh", "-c"]
+  command: ["/bin/bash", "/satosa_proxy/entrypoint.sh"]
+  # Arguments to pass to the command (overrides CMD)
+  # Example: ["echo", "hello"]
+  args: []
+
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 # This is to override the chart name.
@@ -184,10 +195,10 @@ satosa:
   baseDir: /satosa_proxy
 
   # Metadata fetching flags
-  getIdemMdqKey: true
-  getSpidIdpMetadata: true
-  getFicepIdpMetadata: true
-  getCieIdpMetadata: true
+  getIdemMdqKey: false
+  getSpidIdpMetadata: false
+  getFicepIdpMetadata: false
+  getCieIdpMetadata: false
 
   keys:
     mountPath: /satosa_proxy/pki
