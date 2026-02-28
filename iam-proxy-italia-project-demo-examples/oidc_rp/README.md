@@ -24,7 +24,7 @@ cp .env.example .env
 ## Run
 
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8090
+uvicorn main:app --reload --host 0.0.0.0 --port 8090 
 # or: python main.py  (uses PORT=8090 by default)
 ```
 

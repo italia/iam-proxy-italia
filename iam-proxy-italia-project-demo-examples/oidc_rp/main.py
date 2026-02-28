@@ -5,16 +5,29 @@ For use with satosa-oidcop frontend (pre-registered client in MongoDB).
 """
 from __future__ import annotations
 
+from dotenv import load_dotenv, find_dotenv
+
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+
 import base64
 import hashlib
 import logging
 import os
 import secrets
 from urllib.parse import urlencode
-
+import gettext
 import httpx
-from fastapi import Cookie, FastAPI, HTTPException
+import json
+import jwt
+from fastapi import Cookie, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from settings import settings
+
 
 # Required env vars
 ENV_VARS = {
@@ -23,8 +36,9 @@ ENV_VARS = {
     "URL_OIDC",
     "URL_CALLBACK",
     "URL_REDIRECT",
-    "SCOPE",
+    "SCOPE"
 }
+
 CONFIG: dict[str, str] = {k: os.environ.get(k, "") for k in ENV_VARS}
 CONFIG.setdefault("DEBUG", "false")
 
@@ -63,19 +77,49 @@ _load_oidc_config()
 
 app = FastAPI(title="OIDC RP (auth code + PKCE)")
 
+# JINJA2
+templates = Jinja2Templates(directory="templates")
+templates.env.add_extension("jinja2.ext.i18n")
+translations = gettext.translation(
+    "messages",
+    localedir="i18n",
+    languages=["it"],
+    fallback=True
+)
+templates.env.install_gettext_translations(translations)
+# END JINJA2
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+def render_template(template_name: str, request: Request, context: dict = {}):
+    context.update({"request": request, "settings": settings})
+    return templates.TemplateResponse(template_name, context)
 
 @app.get("/", response_class=HTMLResponse)
-async def index(id_token: str = Cookie("")):
-    if id_token:
-        return HTMLResponse(
-            "<p>Logged in.</p>"
-            '<p><a href="/token">token</a> | <a href="/userinfo">userinfo</a> | <a href="/logout">logout</a></p>'
-        )
-    return HTMLResponse('<p><a href="/login">login</a></p>')
+async def index(request: Request):
+    id_token = request.cookies.get("id_token")
+    logging.info(f"Entering method: index.")
+    access_token = request.cookies.get("access_token")
+    user = None
+    if access_token:
+        if CONFIG["url_userinfo"]:
+            async with httpx.AsyncClient(headers={"Authorization": f"Bearer {access_token}"},
+                                         verify=False,
+                                         timeout=HTTPX_TIMEOUT, ) as userinfo_client:
+                response = await userinfo_client.post(CONFIG["url_userinfo"])
+        if response.status_code != 200:
+            LOG.error("url_userinfo error: %s %s", response.status_code, response.text)
+            raise HTTPException(502, f"url_userinfo failed: {response.status_code}")
+        user = response.json()
+        return render_template("echo_attributes.html", request=request, context={"id_token": id_token, "user": user})
+
+    return render_template("base.html", request=request, context={"id_token": id_token, "user": user})
+
 
 
 @app.get("/login")
 async def login():
+    logging.info(f"Enterin method: login.")
     state = secrets.token_urlsafe(32)
     code_verifier = _pkce_code_verifier()
     code_challenge = _pkce_code_challenge(code_verifier)
@@ -87,6 +131,7 @@ async def login():
         "state": state,
         "code_challenge": code_challenge,
         "code_challenge_method": "S256",
+        "prompt": "consent"
     }
     url = CONFIG["url_auth"] + ("&" if "?" in CONFIG["url_auth"] else "?") + urlencode(params)
     resp = RedirectResponse(url)
@@ -101,6 +146,9 @@ async def _handle_callback(
     oidc_state: str,
     oidc_code_verifier: str,
 ):
+    logging.info(f"Enterin method: _handle_callback. "
+                 f"Params [state: {state}, code: {code}, oidc_state:{oidc_state}, oidc_code_verifier:{oidc_code_verifier} ]")
+
     if not oidc_state or not secrets.compare_digest(oidc_state, state):
         raise HTTPException(403, "state mismatch")
     if not code:
@@ -115,6 +163,7 @@ async def _handle_callback(
         "code_verifier": oidc_code_verifier,
     }
     auth = httpx.BasicAuth(CONFIG["CLIENT_ID"], CONFIG["CLIENT_SECRET"])
+
     async with httpx.AsyncClient(auth=auth, verify=False, timeout=HTTPX_TIMEOUT) as client:
         r = await client.post(CONFIG["url_token"], data=data)
     if r.status_code != 200:
@@ -148,16 +197,27 @@ async def callback(
     oidc_state: str = Cookie(""),
     oidc_code_verifier: str = Cookie(""),
 ):
+    logging.info(f"Entering method: callback. "
+                 f"Params [state: {state}, code: {code}, oidc_state:{oidc_state}, oidc_code_verifier:{oidc_code_verifier} ]")
     return await _handle_callback(state, code, oidc_state, oidc_code_verifier)
+
+
 
 
 @app.get("/token")
 async def token(id_token: str = Cookie(""), access_token: str = Cookie("")):
+    logging.info(f"Enterin method: token. "
+                 f"Params [id_token: {id_token}, access_token: {access_token}]")
     return JSONResponse({"id_token": id_token, "access_token": access_token})
 
 
 @app.get("/userinfo")
 async def userinfo(access_token: str = Cookie("")):
+    logging.info(f"Enterin method: token. "
+                 f"Params [access_token: {access_token}]")
+
+
+    logging.info(f"CONFIG[url_userinfo]: {CONFIG["url_userinfo"]}]")
     if not access_token:
         raise HTTPException(401, "not logged in")
     async with httpx.AsyncClient(
@@ -176,6 +236,8 @@ async def logout(
     id_token: str = Cookie(""),
     access_token: str = Cookie(""),
 ):
+    logging.info(f"Enterin method: token. "
+                 f"Params [id_token: {access_token}, access_token: {access_token}]")
     if CONFIG.get("url_revoke"):
         auth = httpx.BasicAuth(CONFIG["CLIENT_ID"], CONFIG["CLIENT_SECRET"])
         async with httpx.AsyncClient(auth=auth, verify=False, timeout=HTTPX_TIMEOUT) as client:
