@@ -33,7 +33,7 @@ from settings import settings
 ENV_VARS = {
     "CLIENT_ID",
     "CLIENT_SECRET",
-    "URL_OIDC",
+    "WELL_KNOW_OPENID_CONFIGURATION",
     "URL_CALLBACK",
     "URL_REDIRECT",
     "SCOPE"
@@ -62,7 +62,7 @@ def _pkce_code_challenge(verifier: str) -> str:
 
 def _load_oidc_config() -> None:
     with httpx.Client(verify=False, timeout=HTTPX_TIMEOUT) as client:
-        r = client.get(CONFIG["URL_OIDC"])
+        r = client.get(CONFIG["WELL_KNOW_OPENID_CONFIGURATION"])
     if r.status_code != 200:
         raise RuntimeError(f"OIDC discovery failed: {r.status_code}")
     data = r.json()
@@ -70,7 +70,7 @@ def _load_oidc_config() -> None:
     CONFIG["url_token"] = data.get("token_endpoint", "")
     CONFIG["url_revoke"] = data.get("revocation_endpoint", "")
     CONFIG["url_userinfo"] = data.get("userinfo_endpoint", "")
-    LOG.info("OIDC config loaded from %s", CONFIG["URL_OIDC"])
+    LOG.info("OIDC config loaded from %s", CONFIG["WELL_KNOW_OPENID_CONFIGURATION"])
 
 
 _load_oidc_config()
