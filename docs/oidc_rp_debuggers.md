@@ -42,7 +42,7 @@ To run the simulation, simply open your browser and go to::
 
 #### Demo
 
-![result](./gallery/rp_demo.gif)
+![result](../gallery/rp_demo.gif)
 
 #### Conclusion
 
