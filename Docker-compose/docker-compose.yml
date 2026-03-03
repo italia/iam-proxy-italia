@@ -137,7 +137,7 @@ services:
       - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID}
       - OPENID_RP_JWKS_URI=${SATOSA_BASE}/${OPENID_RP_JWKS_URI}
       - OPENID_RP_SIGNED_JWKS_URI=${SATOSA_BASE}/${OPENID_RP_SIGNED_JWKS_URI}
-      - OIDC_CALLBACK_URI=${SATOSA_BASE}/${OIDC_CALLBACK_URI}
+      - OPENID_RP_CALLBACK_URI=${SATOSA_BASE}/${OPENID_RP_CALLBACK_URI}
       # END CONFIGURATION ENDPOINT
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
@@ -248,6 +248,7 @@ services:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
       - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - CERT_METHOD=${CERT_METHOD:-local}
       - TZ=${TZ:-Europe/Rome}
     volumes:
       - ./certbot:/etc/letsencrypt
@@ -341,7 +342,7 @@ services:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
       WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
-      URL_CALLBACK: "http://${RELYING_PARTY_DEMO:-localhost}/authz_cb/satosa"
+      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost}/authz_cb/satosa"
 
 
 networks:

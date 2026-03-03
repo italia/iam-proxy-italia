@@ -116,7 +116,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - !ENV OIDC_CALLBACK_URI
+        - !ENV OPENID_RP_CALLBACK_URI
       response_types:
         - code
       subject_type: pairwise

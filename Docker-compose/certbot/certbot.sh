@@ -1,16 +1,34 @@
-if [[ "$CERTBOT_ENABLED" == "true" && "${CERTBOT_HOST}" != "localhost" && -n "${CERTBOT_HOST}" && -n "${CERTBOT_EMAIL}" ]]; then
-  echo "Run CertBot for ${CERTBOT_HOST}"
-  certbot certonly --standalone --agree-tos --non-interactive -d ${CERTBOT_HOST} -m ${CERTBOT_EMAIL}
+case "$CERT_METHOD" in
+  certbot)
+    if [[ "$CERTBOT_HOST" == "localhost" || -z "$CERTBOT_HOST" || -z "$CERTBOT_EMAIL" ]]; then
+      echo "Invalid CERTBOT configuration"
+      exit 1
+    fi
 
-#    mkdir -p /etc/letsencrypt/live/$CERTBOT_HOST
-#
-#  openssl req -x509 -nodes -days 365 \
-#    -newkey rsa:2048 \
-#    -keyout /etc/letsencrypt/live/$CERTBOT_HOST/privkey.pem \
-#    -out /etc/letsencrypt/live/$CERTBOT_HOST/fullchain.pem \
-#    -subj "/CN=$CERTBOT_HOST"
+    echo "Run CertBot for ${CERTBOT_HOST}"
+    certbot certonly --standalone --agree-tos --non-interactive \
+      -d "$CERTBOT_HOST" \
+      -m "$CERTBOT_EMAIL"
+    ;;
 
-else
-  echo "CertBot skipped"
-fi
-exit 0
+  local)
+    if [[ -z "$CERTBOT_HOST" ]]; then
+      echo "CERTBOT_HOST not set"
+      exit 1
+    fi
+
+    mkdir -p "/etc/letsencrypt/live/${CERTBOT_HOST}"
+
+    openssl req -x509 -nodes -days 3650 \
+      -newkey rsa:3072 \
+      -keyout "/etc/letsencrypt/live/${CERTBOT_HOST}/privkey.pem" \
+      -out "/etc/letsencrypt/live/${CERTBOT_HOST}/fullchain.pem" \
+      -subj "/CN=${CERTBOT_HOST}"
+    ;;
+
+  *)
+    echo "Manual certificate mode active, no cert generated"
+    ;;
+esac
+
+
