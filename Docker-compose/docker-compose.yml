@@ -247,7 +247,7 @@ services:
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
-      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - HOSTNAME=${SATOSA_HOSTNAME:-satosa-nginx.example.org}
       - CERT_METHOD=${CERT_METHOD:-local}
       - TZ=${TZ:-Europe/Rome}
     volumes:
