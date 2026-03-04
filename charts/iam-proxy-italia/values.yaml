@@ -14,15 +14,8 @@ image:
   tag: ""
 
 # Container command and args configuration
-# This overrides the default entrypoint and command of the container
-# More information: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
 container:
-  # Command to run in the container (overrides ENTRYPOINT)
-  # Example: ["/bin/sh", "-c"]
-  command: ["/bin/bash", "/satosa_proxy/entrypoint.sh"]
-  # Arguments to pass to the command (overrides CMD)
-  # Example: ["echo", "hello"]
-  args: []
+  command: ["/bin/bash", "-ec"]
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
@@ -170,7 +163,7 @@ volumeMounts: []
 # If empty, auto-generates ConfigMap from files in config-files/ directory
 configVolume:
   # Mount path in the container
-  mountPath: "/satosa_proxy"
+  mountPath: /satosa_proxy
   # Name of existing ConfigMap to use (leave empty for auto-generated)
   existingConfigMap: ""
 
@@ -331,6 +324,16 @@ pyeudiw:
   federationClientId: ""
   # X509 client ID (leave empty to auto-generate from hostname)
   x509ClientId: ""
+
+# uWSGI configuration
+uwsgi:
+  socket: "0.0.0.0:10000"
+  processes: "%k"
+  listen: 2048
+  maxRequests: 512
+  harakiri: 20
+  bufferSize: 32768
+  logMasterBufsize: 128000
 
 # Secret configuration for sensitive data
 # If existingSecret is not set, a new secret will be created automatically

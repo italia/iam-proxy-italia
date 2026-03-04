@@ -7,7 +7,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/iam-proxy-italia-project"
 TARGET_DIR="$SCRIPT_DIR/config-files"
 
-EXCLUDE_DIRS=("logs" "static" "pki")
+EXCLUDE_DIRS=("logs" "static" "pki" "uwsgi_setup" "entrypoint.sh")
 
 if [ ! -d "$SOURCE_DIR" ]; then
     echo "Error: Source directory not found: $SOURCE_DIR"

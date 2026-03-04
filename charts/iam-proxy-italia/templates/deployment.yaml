@@ -40,14 +40,28 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.container.command }}
           command:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.container.args }}
+            {{- toYaml .Values.container.command | nindent 12 }}
           args:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            - |
+              . /.venv/bin/activate
+              wsgi_file="/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py"
+              exec uwsgi \
+                --wsgi-file "$wsgi_file" \
+                --socket {{ .Values.uwsgi.socket }} \
+                --master \
+                --processes {{ .Values.uwsgi.processes }} \
+                --listen {{ .Values.uwsgi.listen }} \
+                --callable app \
+                --log-master-bufsize {{ .Values.uwsgi.logMasterBufsize }} \
+                --vacuum \
+                --max-requests {{ .Values.uwsgi.maxRequests }} \
+                --harakiri {{ .Values.uwsgi.harakiri }} \
+                --buffer-size={{ .Values.uwsgi.bufferSize }} \
+                --uid satosa \
+                --gid satosa \
+                --chdir {{ .Values.satosa.baseDir }} \
+                --touch-reload {{ .Values.satosa.baseDir }}/proxy_conf.yaml
           env:
             - name: TZ
               value: {{ .Values.timezone | quote }}
