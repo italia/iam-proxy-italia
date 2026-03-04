@@ -7,7 +7,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SOURCE_DIR="$PROJECT_ROOT/iam-proxy-italia-project"
 TARGET_DIR="$SCRIPT_DIR/config-files"
 
-EXCLUDE_DIRS=("logs" "static" "pki" "uwsgi_setup" "entrypoint.sh")
+INCLUDE_DIRS=("attributes-map" "backends" "conf" "metadata" "templates")
 
 if [ ! -d "$SOURCE_DIR" ]; then
     echo "Error: Source directory not found: $SOURCE_DIR"
@@ -17,21 +17,22 @@ fi
 echo "Syncing config files..."
 echo "Source: $SOURCE_DIR"
 echo "Target: $TARGET_DIR"
-echo "Excluding: ${EXCLUDE_DIRS[*]}"
+echo "Including: ${INCLUDE_DIRS[*]}"
 
 mkdir -p "$TARGET_DIR"
 
 # Clean target directory
 find "$TARGET_DIR" -mindepth 1 -not -name '.gitkeep' -delete
 
-# Build rsync exclude arguments
-EXCLUDE_ARGS=()
-for dir in "${EXCLUDE_DIRS[@]}"; do
-    EXCLUDE_ARGS+=(--exclude="$dir/")
+# Copy only specified directories
+for dir in "${INCLUDE_DIRS[@]}"; do
+    if [ -d "$SOURCE_DIR/$dir" ]; then
+        echo "Copying $dir..."
+        rsync -av "$SOURCE_DIR/$dir/" "$TARGET_DIR/$dir/"
+    else
+        echo "Warning: Directory not found: $SOURCE_DIR/$dir"
+    fi
 done
-
-# Copy all files except excluded directories
-rsync -av "${EXCLUDE_ARGS[@]}" "$SOURCE_DIR/" "$TARGET_DIR/"
 
 FILE_COUNT=$(find "$TARGET_DIR" -type f | wc -l)
 echo "✅ Synced $FILE_COUNT files"

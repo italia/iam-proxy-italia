@@ -325,6 +325,216 @@ pyeudiw:
   # X509 client ID (leave empty to auto-generate from hostname)
   x509ClientId: ""
 
+# SATOSA proxy_conf.yaml configuration
+proxyConf:
+  cookieStateName: "SATOSA_STATE"
+  contextStateDelete: true
+  cookieMaxAge: 600
+  # Optional cookie settings (only included if set)
+  cookieSecure: ""
+  cookieHttponly: ""
+  cookieSamesite: ""
+  cookiesSamesiteCompat:
+    - ["SATOSA_STATE", "SATOSA_STATE_LEGACY"]
+  customPluginModulePaths:
+    - "conf/backends"
+    - "conf/frontends"
+    - "conf/micro_services"
+  backendModules:
+    - "conf/backends/saml2_backend.yaml"
+    - "conf/backends/spidsaml2_backend.yaml"
+    - "conf/backends/ciesaml2_backend.yaml"
+    - "conf/backends/pyeudiw_backend.yaml"
+    - "conf/backends/cieoidc_backend.yaml"
+  frontendModules:
+    - "conf/frontends/saml2_frontend.yaml"
+    - "conf/frontends/openid4vci_frontend.yaml"
+  microServices:
+    - "conf/microservices/idp_hinting.yaml"
+    - "conf/microservices/disco_to_target_issuer.yaml"
+    - "conf/microservices/target_based_routing.yaml"
+  logging:
+    version: 1
+    formatters:
+      simple:
+        format: "[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s [%(name)s.%(funcName)s:%(lineno)s]"
+      syslog:
+        format: "[SATOSA] [%(name)s] [%(levelname)s]: %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+    loggers:
+      satosa:
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      saml2:
+        level: ERROR
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.frontends.saml2":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.backends.saml2":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.frontends.idpy_oidcop":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.spidsaml2":
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.ciesaml2":
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "pyeudiw.satosa.backend":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.cieoidc":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+
+# SATOSA internal_attributes.yaml configuration
+internalAttributes:
+  attributes:
+    address:
+      openid: [address.street_address]
+      orcid: [addresses.str]
+      saml: [postaladdress, address]
+      openid4vp: [address]
+    displayname:
+      openid: [nickname]
+      orcid: [name.credit-name]
+      github: [login]
+      saml: [displayName, familyname, FamilyName, familyName]
+      cie_oidc: [first_name]
+    edupersontargetedid:
+      facebook: [id]
+      linkedin: [id]
+      orcid: [orcid]
+      github: [id]
+      openid: [sub]
+      saml: [eduPersonTargetedID, eduPersonTargetedId, spidCode, sub, id, fiscalNumber]
+      openid4vp: [sub]
+      cie_oidc: [sub]
+    edupersonprincipalname:
+      saml: [eduPersonPrincipalName]
+    edupersonscopedaffiliation:
+      saml: [eduPersonScopedAffiliation]
+    edupersonentilement:
+      saml: [eduPersonEntitlement]
+    schacpersonaluniqueid:
+      saml: [schacPersonalUniqueID, fiscalNumber]
+    schacpersonaluniquecode:
+      saml: [schacPersonalUniqueCode]
+    schachomeorganizationtype:
+      saml: [schacHomeOrganizationType]
+    schachomeorganization:
+      saml: [schacHomeOrganization]
+    givenname:
+      facebook: [first_name]
+      linkedin: [email-address]
+      orcid: [name.given-names.value]
+      openid: [given_name]
+      openid4vp: [given_name]
+      saml: [givenName, name, Name]
+      cie_oidc: [first_name]
+    mail:
+      facebook: [email]
+      linkedin: [email-address]
+      orcid: [emails.str]
+      github: [email]
+      openid: [email]
+      saml: [mail, email]
+      openid4vp: [mail, email]
+      openid4vci: [mail, email]
+      cie_oidc: [email]
+    name:
+      facebook: [name]
+      orcid: [name.credit-name]
+      github: [name]
+      openid: [name]
+      saml: [name, Name]
+      openid4vp: [given_name]
+      openid4vci: [given_name]
+      cie_oidc: [first_name]
+    surname:
+      facebook: [last_name]
+      linkedin: [lastName]
+      orcid: [name.family-name.value]
+      openid: [family_name]
+      saml: [sn, surname, familyName, FamilyName]
+      openid4vp: [family_name]
+      openid4vci: [family_name]
+      cie_oidc: [last_name]
+    spidcode:
+      openid: [spidcode]
+      openid4vp: [sub]
+      saml: [spidCode]
+    email:
+      facebook: [email]
+      linkedin: [email-address]
+      orcid: [emails.str]
+      github: [email]
+      openid: [email]
+      openid4vp: [mail, email]
+      saml: [mail]
+      cie_oidc: [email]
+    familyname:
+      saml: [familyName, familyname, FamilyName]
+      cie_oidc: [last_name]
+    fiscalnumber:
+      saml: [fiscalNumber, fiscalnumber, FiscalNumber]
+      cie_oidc: [fiscal_number]
+    gender:
+      saml: [gender, Gender]
+    companyName:
+      saml: [companyName]
+    registeredOffice:
+      saml: [registeredOffice]
+    ivaCode:
+      saml: [ivaCode]
+    idCard:
+      saml: [idCard]
+    digitalAddress:
+      saml: [digitalAddress]
+    placeOfBirth:
+      saml: [placeOfBirth]
+      openid4vci: [placeOfBirth]
+    countyOfBirth:
+      saml: [countyOfBirth]
+      openid4vci: [countyOfBirth]
+    dateOfBirth:
+      saml: [dateOfBirth]
+      openid4vci: [dateOfBirth]
+    mobilePhone:
+      saml: [mobilePhone]
+    expirationDate:
+      saml: [expirationDate]
+    fiscal_code:
+      openid4vci: [fiscal_code]
+  userIdFromAttrs: [edupersontargetedid]
+  userIdToAttr: spidcode
+
 # uWSGI configuration
 uwsgi:
   socket: "0.0.0.0:10000"
