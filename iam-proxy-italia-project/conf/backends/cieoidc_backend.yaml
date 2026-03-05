@@ -93,22 +93,22 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: !ENV FEDERATION_RESOLVE_ENDPOINT
+      federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
       organization_name: Example RP
-      homepage_uri: !ENV CIEOIDCRP_HOMEPAGE_URI
-      policy_uri: !ENV FEDERATION_LEGAL_INFORMATION_URI
+      homepage_uri: <base_url>/<name>
+      policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
       logo_uri: !ENV SAMPLE_CIE_LOGO_URI
       contacts:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  !ENV OPENID_RP_CLIENT_ID # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
+      client_id:  <base_url>/<name> # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: !ENV OPENID_RP_JWKS_URI
-      signed_jwks_uri: !ENV OPENID_RP_SIGNED_JWKS_URI
+      jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
+      signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it
@@ -116,7 +116,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - !ENV OPENID_RP_CALLBACK_URI
+        - <base_url>/<name>/oidc/callback
       response_types:
         - code
       subject_type: pairwise
