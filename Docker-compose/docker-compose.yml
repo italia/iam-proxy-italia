@@ -249,6 +249,8 @@ services:
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
       - HOSTNAME=${SATOSA_HOSTNAME:-satosa-nginx.example.org}
       - CERT_METHOD=${CERT_METHOD:-local}
+      - CERTBOT_KTY=${CERTBOT_KTY:-3072}
+      - CERTBOT_DAYS=${CERTBOT_DAYS:-365}
       - TZ=${TZ:-Europe/Rome}
     volumes:
       - ./certbot:/etc/letsencrypt

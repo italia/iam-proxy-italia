@@ -19,8 +19,8 @@ case "$CERT_METHOD" in
 
     mkdir -p "/etc/letsencrypt/live/${HOSTNAME}"
 
-    openssl req -x509 -nodes -days 3650 \
-      -newkey rsa:3072 \
+    openssl req -x509 -nodes -days ${CERTBOT_DAYS} \
+      -newkey ${CERTBOT_KTY} \
       -keyout "/etc/letsencrypt/live/${HOSTNAME}/privkey.pem" \
       -out "/etc/letsencrypt/live/${HOSTNAME}/fullchain.pem" \
       -subj "/CN=${HOSTNAME}"

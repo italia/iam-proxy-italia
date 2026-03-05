@@ -76,23 +76,7 @@ db.client.insertOne(
       "profile",
       "email",
       "offline_access"
-   ],
-   "user":{
-      "username":"http://cie-provider.example.org:8002/oidc/op/__109e856dd6c040e936f339d9744c40c8bcf5e7a4be21630e567d0503b0cde4cb",
-      "first_name":"peppe",
-      "last_name":"maradona",
-      "email":"antonio@ema.il",
-      "sub":"109e856dd6c040e936f339d9744c40c8bcf5e7a4be21630e567d0503b0cde4cb",
-      "fiscal_number":"TINIT-AATTTJDFKSKDF89",
-      "attributes":{
-         "sub":"109e856dd6c040e936f339d9744c40c8bcf5e7a4be21630e567d0503b0cde4cb",
-         "username":"http://cie-provider.example.org:8002/oidc/op/__109e856dd6c040e936f339d9744c40c8bcf5e7a4be21630e567d0503b0cde4cb",
-         "first_name":"peppe",
-         "last_name":"maradona",
-         "email":"antonio@ema.il",
-         "fiscal_number":"TINIT-AATTTJDFKSKDF89"
-      }
-   }
+   ]
 }
 )
 
