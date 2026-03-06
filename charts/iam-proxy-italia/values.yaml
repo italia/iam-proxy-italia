@@ -205,24 +205,27 @@ satosa:
 
   # Encryption configuration
   # These values will be stored in a Kubernetes Secret
-  # If left empty, secure random values will be auto-generated
-  encryption:
-    key: ""
-    salt: ""
-    stateKey: ""
-    userIdHashSalt: ""
+  encryptionKey: ""
+  salt: ""
+  stateEncryptionKey: ""
+  userIdHashSalt: ""
 
 # MongoDB configuration
 mongodb:
   enabled: true
   auth:
     enabled: true
+    # User configuration (index 0 = frontend, index 1 = backend)
     usernames:
-      - satosa
-      - satosa
+      - satosa  # Frontend user
+      - satosa  # Backend user
     databases:
-      - oidcop
-      - cie_oidc
+      - oidcop      # Frontend database
+      - cie_oidc    # Backend database
+    # Passwords for users (index 0 = frontend, index 1 = backend)
+    passwords:
+      - CHANGE_ME!
+      - CHANGE_ME!
   initdbScripts:
     init-indexes.js: |
       const rootUser = process.env.MONGODB_ROOT_USER;
@@ -250,48 +253,25 @@ mongodb:
         { expires_at: 1 },
         { expireAfterSeconds: 0, partialFilterExpression: { count: { $gt: 2 } } }
       );
-  # External MongoDB (used when enabled: false)
+  # Backend collection names (shared between internal and external MongoDB)
+  backend:
+    collections:
+      authentication: "cie_oidc_authentication"
+      authenticationToken: "cie_oidc_authentication_token"
+      users: "cie_oidc_users"
+  # External MongoDB configuration (used when enabled: false)
+  # Note: usernames, passwords, and databases are taken from mongodb.auth.* arrays
+  # where index 0 = frontend and index 1 = backend
   external:
     backend:
       host: "satosa-mongo"
       port: 27017
-      username: "satosa"
-      # Password will be stored in a Kubernetes Secret
-      # If left empty, a secure random password will be auto-generated
-      password: ""
-      database: "cie_oidc"
-      collections:
-        authentication: "cie_oidc_authentication"
-        token: "cie_oidc_authentication_token"
-        user: "cie_oidc_users"
     frontend:
       host: "satosa-mongo"
       port: 27017
-      username: "satosa"
-      password: ""
-
-# MongoDB Backend configuration (for OIDC)
-mongodbBackend:
-  host: "satosa-mongo"
-  port: 27017
-  username: "satosa"
-  # Password will be stored in a Kubernetes Secret
-  # If left empty, a secure random password will be auto-generated
-  password: ""
-  database: "cie_oidc"
-  collections:
-    authentication: "cie_oidc_authentication"
-    token: "cie_oidc_authentication_token"
-    user: "cie_oidc_users"
-
-# MongoDB Frontend configuration
-mongodbFrontend:
-  host: "satosa-mongo"
-  port: 27017
-  username: "satosa"
-  # Password will be stored in a Kubernetes Secret
-  # If left empty, a secure random password will be auto-generated
-  password: ""
+      # Username is taken from mongodb.auth.usernames[0]
+      # Password is taken from mongodb.auth.passwords[0]
+      # Database is taken from mongodb.auth.databases[0]
 
 # Organization information
 organization:
@@ -358,12 +338,13 @@ proxyConf:
   backendModules:
     - "conf/backends/saml2_backend.yaml"
     - "conf/backends/spidsaml2_backend.yaml"
-    - "conf/backends/ciesaml2_backend.yaml"
-    - "conf/backends/pyeudiw_backend.yaml"
-    - "conf/backends/cieoidc_backend.yaml"
+    #- "conf/backends/ciesaml2_backend.yaml"
+    #- "conf/backends/pyeudiw_backend.yaml"
+    #- "conf/backends/cieoidc_backend.yaml"
   frontendModules:
     - "conf/frontends/saml2_frontend.yaml"
-    - "conf/frontends/openid4vci_frontend.yaml"
+    - "conf/frontends/oidcop_frontend.yaml"
+    #- "conf/frontends/openid4vci_frontend.yaml"
   microServices:
     - "conf/microservices/idp_hinting.yaml"
     - "conf/microservices/disco_to_target_issuer.yaml"
@@ -403,6 +384,16 @@ proxyConf:
         handlers: [console]
         propagate: false
       "satosa.frontends.idpy_oidcop":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa_oidcop.idpy_oidcop":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa_oidcop.core.storage.mongo":
         level: DEBUG
         formatter: simple
         handlers: [console]
