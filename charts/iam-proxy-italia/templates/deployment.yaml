@@ -89,22 +89,8 @@ spec:
               value: "https://{{ .Values.satosa.hostname }}/static/disco.html"
             - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
               value: "https://{{ .Values.satosa.hostname }}/static/error_page.html"
-            - name: MONGODB_USERNAME
-              value: {{ if .Values.mongodb.enabled }}{{ index .Values.mongodb.auth.usernames 0 | quote }}{{ else }}{{ .Values.mongodb.external.username | quote }}{{ end }}
-            - name: MONGODB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  {{- if .Values.mongodb.enabled }}
-                  name: {{ include "iam-proxy-italia.fullname" . }}-mongodb
-                  key: mongodb-passwords
-                  {{- else }}
-                  name: {{ include "iam-proxy-italia.secret" . }}
-                  key: mongodb-password
-                  {{- end }}
-            - name: MONGO_HOST
-              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"{{ .Values.mongodb.external.host }}:{{ .Values.mongodb.external.port }}"{{ end }}
             - name: MONGO_BACKEND_HOST
-              value: "mongodb://{{ .Values.mongodbBackend.host }}:{{ .Values.mongodbBackend.port }}"
+              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"mongodb://{{ .Values.mongodbBackend.host }}:{{ .Values.mongodbBackend.port }}"{{ end }}
             - name: MONGO_BACKEND_DB_NAME_OIDC_SCHEMA
               value: {{ .Values.mongodbBackend.database | quote }}
             - name: MONGO_BACKEND_AUTH_OIDC_COLLECTION
@@ -114,21 +100,29 @@ spec:
             - name: MONGO_BACKEND_USER_OIDC_COLLECTION
               value: {{ .Values.mongodbBackend.collections.user | quote }}
             - name: MONGODB_BACKEND_USERNAME
-              value: {{ .Values.mongodbBackend.username | quote }}
+              value: {{ if .Values.mongodb.enabled }}{{ index .Values.mongodb.auth.usernames 0 | quote }}{{ else }}{{ .Values.mongodb.external.backend.username | quote }}{{ end }}
             - name: MONGODB_BACKEND_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "iam-proxy-italia.secret" . }}
+                  {{- if .Values.mongodb.enabled }}
+                  name: {{ include "iam-proxy-italia.fullname" . }}-mongodb
+                  key: mongodb-passwords
+                  {{- else }}                  name: {{ include "iam-proxy-italia.secret" . }}
                   key: mongodb-backend-password
+                  {{- end }}
             - name: MONGO_FRONTEND_HOST
-              value: "mongodb://{{ .Values.mongodbFrontend.host }}:{{ .Values.mongodbFrontend.port }}"
+              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"mongodb://{{ .Values.mongodbFrontend.host }}:{{ .Values.mongodbFrontend.port }}"{{ end }}
             - name: MONGODB_FRONTEND_USERNAME
-              value: {{ .Values.mongodbFrontend.username | quote }}
+              value: {{ if .Values.mongodb.enabled }}{{ index .Values.mongodb.auth.usernames 0 | quote }}{{ else }}{{ .Values.mongodb.external.frontend.username | quote }}{{ end }}
             - name: MONGODB_FRONTEND_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "iam-proxy-italia.secret" . }}
+                  {{- if .Values.mongodb.enabled }}
+                  name: {{ include "iam-proxy-italia.fullname" . }}-mongodb
+                  key: mongodb-passwords
+                  {{- else }}
                   key: mongodb-frontend-password
+                  {{- end }}
             - name: SATOSA_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
