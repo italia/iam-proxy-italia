@@ -16,26 +16,40 @@ cd charts/iam-proxy-italia/charts && tar -xzf mongodb-*.tgz && cd -
 
 This downloads and extracts the MongoDB subchart required by IAM Proxy Italia.
 
+## Secret Configuration
+
+### MongoDB Authentication
+MongoDB users, passwords, and databases are configured via `mongodb.auth.*`:
+- `mongodb.auth.usernames[0]` = frontend user
+- `mongodb.auth.usernames[1]` = backend user  
+- `mongodb.auth.passwords[0]` = frontend password
+- `mongodb.auth.passwords[1]` = backend password
+- `mongodb.auth.databases[0]` = frontend database
+- `mongodb.auth.databases[1]` = backend database
+
+Leave `passwords` empty for auto-generation.
+
+### Internal MongoDB
+```bash
+helm install myrelease ./charts/iam-proxy-italia \
+  --set mongodb.auth.existingSecret="myrelease-iam-proxy-italia"
+```
+
+### External MongoDB
+```bash
+helm install myrelease ./charts/iam-proxy-italia \
+  --set mongodb.enabled=false \
+  --set mongodb.external.backend.host=mongodb.example.com \
+  --set mongodb.external.frontend.host=mongodb.example.com
+```
+
 ## Installation
 
 ### Basic Installation
 
 ```bash
-helm install myrelease ./charts/iam-proxy-italia
-```
-
-### Installation with Custom Values
-
-```bash
-helm install myrelease ./charts/iam-proxy-italia -f custom-values.yaml
-```
-
-### Installation with CLI Overrides
-
-```bash
 helm install myrelease ./charts/iam-proxy-italia \
-  --set satosa.hostname=iam.example.com \
-  --set mongodb.host=mongodb.default.svc.cluster.local
+  --set mongodb.auth.existingSecret="myrelease-iam-proxy-italia"
 ```
 
 ## Configuration Files
