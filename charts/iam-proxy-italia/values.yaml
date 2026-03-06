@@ -219,8 +219,10 @@ mongodb:
     enabled: true
     usernames:
       - satosa
+      - satosa
     databases:
       - oidcop
+      - cie_oidc
   initdbScripts:
     init-indexes.js: |
       const rootUser = process.env.MONGODB_ROOT_USER;
@@ -250,10 +252,23 @@ mongodb:
       );
   # External MongoDB (used when enabled: false)
   external:
-    host: "satosa-mongo"
-    port: 27017
-    username: "satosa"
-    password: ""
+    backend:
+      host: "satosa-mongo"
+      port: 27017
+      username: "satosa"
+      # Password will be stored in a Kubernetes Secret
+      # If left empty, a secure random password will be auto-generated
+      password: ""
+      database: "cie_oidc"
+      collections:
+        authentication: "cie_oidc_authentication"
+        token: "cie_oidc_authentication_token"
+        user: "cie_oidc_users"
+    frontend:
+      host: "satosa-mongo"
+      port: 27017
+      username: "satosa"
+      password: ""
 
 # MongoDB Backend configuration (for OIDC)
 mongodbBackend:
