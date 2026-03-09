@@ -221,7 +221,7 @@ See `iam-proxy-italia-project/conf/{backends,frontends}/$filename` as example.
 The proxy backend exposes its SPID metadata at the following url (customizable):
 
 ```text
-https://localhost/spidSaml2/metadata
+https://iam-proxy-italia.example.org/spidSaml2/metadata
 ```
 
 ### Get Proxy Fronted Metadata for your SP
@@ -229,7 +229,7 @@ https://localhost/spidSaml2/metadata
 The Proxy metadata must be configured in your SP. Your SP is an entity that's external from this Proxy, eg: shibboleth sp, djangosaml2, another ...
 
 ```bash
-wget https://localhost/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid.xml --no-check-certificate
+wget https://iam-proxy-italia.example.org/Saml2IDP/metadata -O path/to/your/sp/metadata/satosa-spid.xml --no-check-certificate
 ```
 
 ### spid-saml-check
@@ -242,7 +242,7 @@ wget https://localhost:8443/metadata.xml -O metadata/idp/spid-saml-check.xml --n
 
 Start an authentication from your SP.
 
-Load metadata from `https://satosa-nginx/spidSaml2/metadata`.
+Load metadata from `https://iam-proxy-italia.example.org/spidSaml2/metadata`.
 
 ![result](gallery/screen.gif)
 **Figure 2**: The result using spid-saml-check.

@@ -1,8 +1,10 @@
 #!/bin/bash
+export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}"
 export COMPOSE_PROFILES=demo
 export SATOSA_CLEAN_DATA="false"
 export SKIP_UPDATE=
 export RUN_SPID_TEST=
+
 #export SATOSA_FORCE_ENV="true"
 
 function clean_data {
@@ -14,6 +16,7 @@ function clean_data {
     rm -Rf ./spid_cie_oidc_django/*
 
 #    rm -Rf ./certbot/live/localhost/*
+#    rm -Rf ./certbot/live/iam-proxy-italia.example.org/*
     find ./certbot/live/* -maxdepth 1 -type d -not -path '.' -exec rm -rf {} +
 
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
@@ -26,11 +29,11 @@ function init_files () {
   if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
 }
 
-function add_localhost_cert () {
-  openssl req -x509 -out ./certbot/live/localhost/fullchain.pem -keyout certbot/live/localhost/privkey.pem \
+function add_satosa_cert () {
+  openssl req -x509 -out ./certbot/live/${SATOSA_HOSTNAME}/fullchain.pem -keyout ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem \
   -newkey rsa:2048 -nodes -sha256 \
-  -subj '/CN=localhost' -extensions EXT -config <( \
-   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+  -subj "/CN=${SATOSA_HOSTNAME}" -extensions EXT -config <( \
+   printf "[dn]\nCN=%s\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:%s\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth" "${SATOSA_HOSTNAME}" "${SATOSA_HOSTNAME}")
 }
 
 function add_iam_cert () {
@@ -46,14 +49,14 @@ function initialize_satosa {
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
-  mkdir -p ./certbot/live/localhost
+  mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
-  init_files ./certbot/live/localhost/privkey.pem "Locahost cert" "add_localhost_cert"
+  init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
 
@@ -92,15 +95,15 @@ function start {
     echo -e "\n"
     echo -e "spid-sp-test SPID metadata, requests and responses. \n"
     spid_sp_test --idp-metadata > ./iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
-    spid_sp_test --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+    spid_sp_test --metadata-url https://${SATOSA_HOSTNAME}/spidSaml2/metadata --authn-url "http://${SATOSA_HOSTNAME}:8000/saml2/login/?idp=https://${SATOSA_HOSTNAME}/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%3A%2F%2F${SATOSA_HOSTNAME}%3A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
 
     echo -e "\n"
     echo -e "spid-sp-test CIE id metadata. \n"
-    spid_sp_test --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+    spid_sp_test --profile cie-sp-public --metadata-url https://${SATOSA_HOSTNAME}/cieSaml2/metadata
 
     echo -e "\n"
     echo -e "spid-sp-test SPID metadata, requests and responses. \n"
-    spid_sp_test --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+    spid_sp_test --profile ficep-eidas-sp --metadata-url https://${SATOSA_HOSTNAME}/spidSaml2/metadata
   fi
 
   exit 0

@@ -1,4 +1,5 @@
 #!/bin/bash
+
 function help {
   echo ""
   echo "### stop-docker-compose.sh"

@@ -256,7 +256,7 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
-        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://localhost/OpenID4VP'
+        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600

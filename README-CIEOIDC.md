@@ -267,28 +267,7 @@ As a developer, you typically need to:
 - You can mock the Trust Anchor by hosting a static metadata JSON.
 - Always ensure JWKS signing keys **match the algorithm configured** (ES vs RS).
 
-### Edit env.example
-Modify the following line from:
-````
-SATOSA_HOSTNAME=localhost
-.
-.
-.
-````
-to:
-````
-#SATOSA_HOSTNAME=localhost
-SATOSA_HOSTNAME=satosa-nginx.example.org
-````
-
-### Hosts file section
-
-Add the following entries to the hosts file:
-````
-127.0.0.1		cie-provider.example.org
-127.0.0.1		trust-anchor.example.org
-127.0.0.1		satosa-nginx.example.org
-````
+For host configuration (SATOSA_HOSTNAME, hosts file, certificates) when running the demo, see [Configure your host for the demo](Docker-compose/README.md#configure-your-host-for-the-demo) in the Docker Compose documentation.
 
 ### Windows OS
 
@@ -366,7 +345,7 @@ Explanation:
 
 ### Additional Notes
 
-- Copy all key from path: **Docker-compose/certbot/live/localhost** into  **Docker-compose/certbot/live/satosa-nginx.example.org**
+- Host configuration (including certificate paths for the demo hostname) is documented in [Configure your host for the demo](Docker-compose/README.md#configure-your-host-for-the-demo).
 - Make sure that your MongoDB or storage backend is running and correctly configured. It stores session data, authentication tokens, and user attributes.
 - The `CieOidcBackend` will automatically map incoming OIDC claims to the standard SATOSA attributes for SAML or OIDC responses.
 - Always verify JWKS URIs and certificate chains. Misconfigured JWKS URLs are a common source of errors.

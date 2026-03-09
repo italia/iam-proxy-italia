@@ -594,15 +594,15 @@
   "fields": {
     "created": "2022-03-31T19:42:31.832Z",
     "modified": "2022-03-31T19:42:31.832Z",
-    "iss": "https://satosa-nginx.example.org/CieOidcRp",
-    "sub": "https://satosa-nginx.example.org/CieOidcRp",
+    "iss": "https://iam-proxy-italia.example.org/CieOidcRp",
+    "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
     "exp": "2022-04-23T16:20:28Z",
     "iat": "2022-04-23T15:47:28Z",
     "statement": {
       "exp": 1650730828,
       "iat": 1650728848,
-      "iss": "https://satosa-nginx.example.org/CieOidcRp",
-      "sub": "https://satosa-nginx.example.org/CieOidcRp",
+      "iss": "https://iam-proxy-italia.example.org/CieOidcRp",
+      "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
       "jwks": {
         "keys": [
           {
@@ -616,7 +616,7 @@
       "metadata": {
         "openid_relying_party": {
           "application_type": "web",
-          "client_id": "https://satosa-nginx.example.org/CieOidcRp",
+          "client_id": "https://iam-proxy-italia.example.org/CieOidcRp",
           "client_registration_types": [
             "automatic"
           ],
@@ -640,7 +640,7 @@
             "authorization_code"
           ],
           "redirect_uris": [
-            "https://satosa-nginx.example.org/CieOidcRp/oidc/rp/callback"
+            "https://iam-proxy-italia.example.org/CieOidcRp/oidc/rp/callback"
           ],
           "response_types": [
             "code"
@@ -668,14 +668,14 @@
     "created": "2022-03-31T19:42:31.848Z",
     "modified": "2022-03-31T19:42:31.848Z",
     "iss": "http://trust-anchor.example.org:5002",
-    "sub": "https://satosa-nginx.example.org/CieOidcRp",
+    "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
     "exp": "2022-04-25T15:47:28Z",
     "iat": "2022-04-23T15:47:28Z",
     "statement": {
       "exp": 1650901648,
       "iat": 1650728848,
       "iss": "http://trust-anchor.example.org:5002",
-      "sub": "https://satosa-nginx.example.org/CieOidcRp",
+      "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
       "jwks": {
         "keys": [
           {
@@ -1446,7 +1446,7 @@
   "fields": {
     "created": "2022-03-31T19:42:31.861Z",
     "modified": "2022-03-31T19:42:31.861Z",
-    "sub": "https://satosa-nginx.example.org/CieOidcRp",
+    "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
     "trust_anchor": 117,
     "exp": "2022-04-23T16:20:27Z",
     "iat": "2022-03-31T19:42:31.861Z",
@@ -1470,7 +1470,7 @@
     "metadata": {
       "openid_relying_party": {
         "application_type": "web",
-        "client_id": "https://satosa-nginx.example.org/CieOidcRp",
+        "client_id": "https://iam-proxy-italia.example.org/CieOidcRp",
         "client_registration_types": [
           "automatic"
         ],
@@ -1494,7 +1494,7 @@
           "authorization_code"
         ],
         "redirect_uris": [
-          "https://satosa-nginx.example.org/CieOidcRp/oidc/rp/callback"
+          "https://iam-proxy-italia.example.org/CieOidcRp/oidc/rp/callback"
         ],
         "response_types": [
           "code"
@@ -1504,7 +1504,7 @@
     },
     "trust_marks": [],
     "parties_involved": [
-      "https://satosa-nginx.example.org/CieOidcRp",
+      "https://iam-proxy-italia.example.org/CieOidcRp",
       "http://trust-anchor.example.org:5002"
     ],
     "status": "valid",
@@ -2126,7 +2126,7 @@
     "modified": "2022-04-23T15:30:23.816Z",
     "uid": "autouid-3a6f6af6-9041-4f68-8632-775740fe68f1",
     "name": "tel dei tali org",
-    "sub": "https://satosa-nginx.example.org/CieOidcRp",
+    "sub": "https://iam-proxy-italia.example.org/CieOidcRp",
     "type": "openid_relying_party",
     "jwks": [
       {

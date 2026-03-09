@@ -42,7 +42,7 @@ db.client.insertOne(
    "client_name":"ciro",
    "client_salt":"6flfsj0Z",
    "registration_access_token":"z3PCMmC1HZ1QmXeXGOQMJpWQNQynM4xY",
-   "registration_client_uri":"https://localhost:10000/registration_api?client_id=jbxedfmfyc",
+   "registration_client_uri":"https://iam-proxy-italia.example.org/registration_api?client_id=jbxedfmfyc",
    "client_id_issued_at":1630952311.410208,
    "client_secret":"19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1",
    "client_secret_expires_at":1802908740.410214,

@@ -39,7 +39,7 @@ db.client.insertOne({
   "client_name": "OIDC debugger (leplusorg)",
   "client_salt": "6flfsj0Z",
   "registration_access_token": "CHANGE_ME_RAT",
-  "registration_client_uri": "https://localhost:10000/registration_api?client_id=oidc-debugger",
+  "registration_client_uri": "https://iam-proxy-italia.example.org/registration_api?client_id=oidc-debugger",
   "client_id_issued_at": Math.floor(Date.now()/1000),
   "client_secret_expires_at": Math.floor(Date.now()/1000) + 365*24*3600,
   "application_type": "web",
@@ -58,7 +58,7 @@ Replace:
 
 - `client_id` / `client_secret`: values your RP will use (e.g. for [leplusorg/openid-connect-provider-debugger](https://github.com/leplusorg/openid-connect-provider-debugger), use `oidc-debugger` and a secret you set in the UI).
 - `redirect_uris`: the exact callback URL(s) of your RP (e.g. `http://localhost:8080/login` for the debugger).
-- `registration_client_uri`: use your OP base URL and the same `client_id` (e.g. `https://localhost:10000` if that is your satosa-oidcop base).
+- `registration_client_uri`: use your OP base URL and the same `client_id` (e.g. `https://iam-proxy-italia.example.org` if that is your satosa-oidcop base).
 - `registration_access_token`: optional; only needed if you call the Registration Read endpoint.
 
 Credentials (`MONGO_DBUSER`, `MONGO_DBPASSWORD`) come from your `.env`; defaults are `satosa` / `thatpassword`. The OP does not need a restart; it reads clients from MongoDB at request time.

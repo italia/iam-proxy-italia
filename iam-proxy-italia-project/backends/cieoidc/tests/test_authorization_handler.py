@@ -80,7 +80,7 @@ def handler(minimal_config, trust_chain):
         h = AuthorizationHandler(
             config=minimal_config,
             internal_attributes={},
-            base_url="https://satosa-nginx.example.org",
+            base_url="https://iam-proxy-italia.example.org",
             name="authz",
             auth_callback_func=MagicMock(),
             converter=MagicMock(),

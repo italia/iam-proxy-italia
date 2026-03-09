@@ -179,7 +179,7 @@ Below the demo using the djangosaml2 Service Provider with the Wallet authentica
 If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it. Below an example using a djangosaml2 Service Provider:
 
 ```
-https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
+https://iam-proxy-italia.example.org/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
 ```
 
 If you're going to test IAM Proxy Italia with spid-sp-test, take a look to
