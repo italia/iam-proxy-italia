@@ -99,7 +99,7 @@ services:
 
   iam-proxy-italia:
     # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:3.0.1
+    image: iam-proxy-italia:3.1.0
     build:
         context: ../
         args:
