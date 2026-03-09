@@ -30,8 +30,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: lychee-${{ hashFiles('README.md', 'README-*.md', 'docs/*.md', 'Docker-compose/README.md') }}
+          restore-keys: lychee-
+
       - name: Lychee link checker
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --verbose --no-progress --exclude 'localhost' README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
+          args: --verbose --no-progress --exclude 'localhost' --cache --max-cache-age 1d --max-concurrency 2 --max-retries 0 README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
           fail: true
