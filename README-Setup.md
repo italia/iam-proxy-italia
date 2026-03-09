@@ -63,7 +63,7 @@ Remember to:
 * edit and customize all the values like `"CHANGE_ME!"` in the configuration files, in `proxy_conf.yaml` and in the configurations of the plugins.
 * set the $HOSTNAME environment with the production DNS name
 * set all key and salt with your secret key ($SATOSA_ENCRYPTION_KEY, $SATOSA_SALT)
-* set a new mongodb password ($MONGODB_USERNAME, $MONGODB_PASSWORD)
+* set a new MongoDB password ($MONGO_DBUSER, $MONGO_DBPASSWORD)
 * set a new certificate for SAML / SPID ($SATOSA_PUBLIC_KEYS, $SATOSA_PRIVATE_KEYS)
 * add valid data for  metadata, read [Configurations by environments](#configuration-by-environment-variables)
 
@@ -88,9 +88,6 @@ You can override the configuration of the proxy by setting one or more of the fo
 | **SATOSA_BASE_STATIC**               | Base URL of SATOSA static assets                           | https://$HOSTNAME/static       |
 | **SATOSA_DISCO_SRV**                 | Discovery page URL for all backends                        | https://$HOSTNAME/static/disco.html |
 | **SATOSA_UNKNOW_ERROR_REDIRECT_PAGE**| Redirect page for unknown errors                           | https://$HOSTNAME/static/error_page.html |
-| **MONGODB_USERNAME**                 | MongoDB username (shared across components)                | ${MONGO_DBUSER}                |
-| **MONGODB_PASSWORD**                 | MongoDB password (shared across components)                | ${MONGO_DBPASSWORD}            |
-| **MONGO_HOST**                       | MongoDB host:port used by SATOSA/pyeudiw/CIE OIDC (code prepends `mongodb://`) | satosa-mongo:27017 |
 | **SATOSA_ENCRYPTION_KEY**            | Encryption key for state and OIDC tokens                   | CHANGE_ME!                     |
 | **SATOSA_SALT**                      | General-purpose salt for hashing/encryption                | CHANGE_ME!                     |
 | **SATOSA_STATE_ENCRYPTION_KEY**      | State encryption key                                       | CHANGE_ME!                     |
@@ -140,143 +137,23 @@ SAML2 frontends also rely on the same SAML keys configured for backends (`SATOSA
 | **SATOSA_UI_LOGO_HEIGHT**              | Logo height                               | 60                                              |
 | **SATOSA_UI_LOGO_WIDTH**               | Logo width                                | 80                                              |
 
-#### OIDC frontends / backends (SATOSA-oidcop and CIE OIDC backend)
+#### OIDC (CIE OIDC backend, OIDCOP frontend)
 
-These variables control MongoDB storage used by the CIE OIDC backend and OIDC frontend components.
+MongoDB env vars for OIDC components: `MONGO_CIE_OIDC_BACKEND_*` (CIE OIDC backend), `MONGO_OIDCOP_*` (oidcop frontend). For a single MongoDB, set `MONGO_URL`, `MONGO_PORT`, `MONGO_DBUSER`, `MONGO_DBPASSWORD`; component vars fall back to these. See [docs/mongodb-env.md](docs/mongodb-env.md).
 
-#### General configuration
-These variables control  generic configuration for MongoDB
+**Shared defaults:** `MONGO_URL`, `MONGO_PORT`, `MONGO_DBUSER`, `MONGO_DBPASSWORD`
 
-| **Environment var**  | **Description**           | **Example Value**      |
-|----------------------|---------------------------|------------------------|
-| **MONGO_HOST**       | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
-| **MONGO_URL**        | MongoDB connection URL    | example-mongo          |
-| **MONGO_PORT**       | MongoDB connection port   | 27017                  |
-| **MONGO_DBUSER**     | MongoDB user              | users                  |  
-| **MONGO_DBPASSWORD** | MongoDB password for user | P4$$w0rD!              |
+**OIDC component overrides:** `MONGO_CIE_OIDC_BACKEND_URL`, `MONGO_OIDCOP_URL` (and `_PORT`, `_DBUSER`, `_DBPASSWORD`). CIE OIDC also has `MONGO_CIE_OIDC_BACKEND_DB_NAME`, `MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION`, `MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION`, `MONGO_CIE_OIDC_BACKEND_USER_COLLECTION`.
 
-#### Backend configuration
-These variables control backend configuration for MongoDB 
+#### OpenID4VC (pyeudiw: OpenID4VP backend, OpenID4VCI frontend)
 
-| **Environment var**           | **Description**           | **Example Value**      |
-|-------------------------------|---------------------------|------------------------|
-| **MONGO_BACKEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
-| **MONGO_BACKEND_URL**         | MongoDB connection URL    | example-mongo          |
-| **MONGO_BACKEND_PORT**        | MongoDB connection port   | 27017                  |
-| **MONGO_BACKEND_DBUSER**      | MongoDB user              | users                  |  
-| **MONGO_BACKEND_DBPASSWORD**  | MongoDB password for user | P4$$w0rD!              |
+MongoDB env vars for OpenID4VC (pyeudiw) components: `MONGO_PYEUDIW_OPENID4VP_*` (OpenID4VP backend), `MONGO_PYEUDIW_OPENID4VCI_*` (OpenID4VCI frontend). Same shared defaults as above.
 
-#### Frontend configuration
-These variables control frontend configuration for MongoDB 
+**OpenID4VC component overrides:** `MONGO_PYEUDIW_OPENID4VP_URL`, `MONGO_PYEUDIW_OPENID4VCI_URL` (and `_PORT`, `_DBUSER`, `_DBPASSWORD`).
 
-| **Environment var**            | **Description**           | **Example Value**      |
-|--------------------------------|---------------------------|------------------------|
-| **MONGO_FRONTEND_HOST**        | MongoDB HOST connection   | mongodb://[URL]:[PORT] |
-| **MONGO_FRONTEND_URL**         | MongoDB connection URL    | example-mongo          |
-| **MONGO_FRONTEND_PORT**        | MongoDB connection port   | 27017                  |
-| **MONGO_FRONTEND_DBUSER**      | MongoDB user              | users                  |  
-| **MONGO_FRONTEND_DBPASSWORD ** | MongoDB password for user | P4$$w0rD!              |
+For a complete description of pyeudiw configuration, refer to the upstream `eudi-wallet-it-python` documentation: [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html), [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
 
-#### Frontend configuration
-These variables are specific to the backend and frontend modules. 
 
-#### OIDC
-
-| **Environment var**                     | **Description**          | **Example Value**             |
-|-----------------------------------------|--------------------------|-------------------------------|
-| **MONGO_DB_BACKEND_OIDC_NAME**          | MongoDB schema name      | example_schema                |
-| **MONGO_BACKEND_AUTH_OIDC_COLLECTION**  | MongoDB auth collection  | cie_oidc_authentication       |
-| **MONGO_BACKEND_TOKEN_OIDC_COLLECTION** | MongoDB token connection | cie_oidc_authentication_token |
-| **MONGO_BACKEND_USER_OIDC_COLLECTION**  | MongoDB user collection  | cie_oidc_users                |  
- 
-
-#### pyeudiw (OpenID4VP backend / OpenID4VCI frontend)
-
-These variables are specific to pyeudiw-based components: the OpenID4VP backend and the OpenID4VCI frontend.  
-For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
-
-#### Certificate Generation 
-
-This guide explains how to generate:
-
-* Root CA
-* Leaf certificate for `batman.example.it`
-* X.509 certificate chain
-* JWK for `metadata_jwks`
-* Complete YAML configuration for SATOSA
-
-Configuration assumptions:
-
-* Domain: `batman.example.it`
-* Algorithm: **RSA**
-* JWT signature algorithm: **RS256**
-* PKI structure: **Root CA + Leaf**
-* Usage: **SATOSA / OpenID Federation**
-
-### Generate Root CA: Root private key
-
-```bash
-openssl genrsa -out root.key 4096
-```
-
-### Generate self-signed Root certificate (10 years)
-
-```bash
-openssl req -x509 -new -nodes \
-  -key root.key \
-  -sha256 -days 3650 \
-  -out root.crt \
-  -subj "/C=IT/O=Example Batman Federation/CN=Example Root CA"
-```
-
-### Generate Leaf Certificate (satosa-nginx.example.org)
-
-### Generate Leaf private key
-
-```bash
-openssl genrsa -out leaf.key 3072
-```
-
-### Create Certificate Signing Request (CSR)
-
-```bash
-openssl req -new \
-  -key leaf.key \
-  -out leaf.csr \
-  -subj "/C=IT/O=Example Batman Federation/CN=batman.example.it"
-```
-
-### Add Subject Alternative Name (Required)
-
-Create a file named `san.cnf`:
-
-```
-subjectAltName=DNS:batman.example.it
-```
-
-### Sign the Leaf certificate with the Root CA
-
-```bash
-openssl x509 -req \
-  -in leaf.csr \
-  -CA root.crt \
-  -CAkey root.key \
-  -CAcreateserial \
-  -out leaf.crt \
-  -days 825 \
-  -sha256 \
-  -extfile san.cnf
-```
-
-###  Create Certificate Chain
-
-Correct order:
-```
-Leaf → Root
-```
-```bash
-cat leaf.crt root.crt > chain.pem
-```
 
 ### Generate JWK for metadata_jwks
 
@@ -297,34 +174,6 @@ key_dict["kid"] = "satosa-nginx-rsa"
 print(json.dumps(key_dict, indent=2))
 ```
 Copy the generated output into `metadata_jwks`.
-
-### YAML Configuration: certificate_authorities
-
-```yaml
-trust:
-  x509:
-    config:
-      certificate_authorities:
-        example-root: |
-          -----BEGIN CERTIFICATE-----
-          (content of root.crt)
-          -----END CERTIFICATE-----
-```
-
-### YAML Configuration: leaf_certificate_chains_by_ca
-
-```yaml
-leaf_certificate_chains_by_ca:
-  example-root:
-    - |
-      -----BEGIN CERTIFICATE-----
-      (content of leaf.crt)
-      -----END CERTIFICATE-----
-    - |
-      -----BEGIN CERTIFICATE-----
-      (content of root.crt)
-      -----END CERTIFICATE-----
-```
 
 ### YAML Configuration: metadata_jwks
 

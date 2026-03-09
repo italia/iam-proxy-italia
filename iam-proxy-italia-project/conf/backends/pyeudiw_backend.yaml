@@ -372,17 +372,17 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: !ENV MONGO_BACKEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
           conf:
             db_name: pyeudiw_openid4vp
           connection_params:
-            username: !ENV MONGODB_BACKEND_USERNAME
-            password: !ENV MONGODB_BACKEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD
       storage:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: !ENV MONGO_BACKEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
           conf:
             db_name: pyeudiw_openid4vp
             db_sessions_collection: sessions
@@ -391,5 +391,5 @@ config:
             db_trust_sources_collection: trust_sources
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_BACKEND_USERNAME
-            password: !ENV MONGODB_BACKEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD

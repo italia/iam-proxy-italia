@@ -13,7 +13,7 @@ dependencies = [
     "setuptools>=78.1.1",  # PYSEC-2022-43012, PYSEC-2025-49, CVE-2024-6345
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
-    "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@v4.0.0",
+    "satosa-oidcop @ git+https://github.com/UniversitaDellaCalabria/SATOSA-oidcop@abd97fdb8e201668a10cb3cce8db82e3e0f96aae",  # v4.0.0
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.1.0",
     "aiohttp (>=3.11.11,<4.0.0)",
     "uwsgi (>=2.0.28,<3.0.0)"

@@ -96,4 +96,5 @@ Read the [profiles guide](../docs/docker_compose_profiles.md) for more informati
 
 * More details on profiles read the [Docker Compose Profiles](../docs/docker_compose_profiles.md) page
 * More details on run-docker-compose.sh read the [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+* MongoDB env vars (backend vs frontend, shared defaults): [docs/mongodb-env.md](../docs/mongodb-env.md)
 * For common issues (containers, certificates, MongoDB): [docs/TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)

@@ -12,16 +12,16 @@ config:
       module: backends.cieoidc.storage.impl.mongo_storage
       class: MongoStorage
       init_params:
-        url: !ENV MONGO_BACKEND_HOST
+        url: !ENV MONGO_CIE_OIDC_BACKEND_HOST
         conf:
-          db_name: !ENV MONGO_BACKEND_DB_NAME_OIDC_SCHEMA
-          db_auth_collection: !ENV MONGO_BACKEND_AUTH_OIDC_COLLECTION # cie_oidc_authentication
-          db_token_collection: !ENV MONGO_BACKEND_TOKEN_OIDC_COLLECTION # cie_oidc_authentication_token
-          db_user_collection: !ENV MONGO_BACKEND_USER_OIDC_COLLECTION # cie_oidc_users
+          db_name: !ENV MONGO_CIE_OIDC_BACKEND_DB_NAME
+          db_auth_collection: !ENV MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION
+          db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
+          db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
           data_ttl: 63072000 # 2 years
         connection_params:
-          username: !ENV MONGODB_BACKEND_USERNAME
-          password: !ENV MONGODB_BACKEND_PASSWORD
+          username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
+          password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
 
   providers:
     - http://cie-provider.example.org:8002/oidc/op/

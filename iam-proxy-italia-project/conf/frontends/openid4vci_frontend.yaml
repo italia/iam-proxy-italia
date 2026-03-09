@@ -674,14 +674,14 @@ config:
         module: pyeudiw.storage.user_storage
         class: UserStorage
         init_params:
-          url: !ENV MONGO_FRONTEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VCI_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_users_collection: users
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_FRONTEND_USERNAME
-            password: !ENV MONGODB_FRONTEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
   # Configuration for retrieving credentials data, it's a storage system used by both
   # the `credential` and `status_list` endpoints. It maintains the state of each credential in relation to the corresponding
   # user, supporting status updates such as issuance and revocation.
@@ -691,14 +691,14 @@ config:
         module: pyeudiw.storage.credential_storage
         class: CredentialStorage
         init_params:
-          url: !ENV MONGO_FRONTEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VCI_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_credentials_collection: credentials
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_FRONTEND_USERNAME
-            password: !ENV MONGODB_FRONTEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
 
   # Mongodb database configuration
   storage:
@@ -707,17 +707,17 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: !ENV MONGO_FRONTEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VCI_HOST
           conf:
             db_name: pyeudiw_openid4vci
           connection_params:
-            username: !ENV MONGODB_FRONTEND_USERNAME
-            password: !ENV MONGODB_FRONTEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
       storage:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: !ENV MONGO_FRONTEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VCI_HOST
           conf:
             db_name: pyeudiw_openid4vci
             db_sessions_collection: sessions
@@ -726,5 +726,5 @@ config:
             db_trust_sources_collection: trust_sources
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_FRONTEND_USERNAME
-            password: !ENV MONGODB_FRONTEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
