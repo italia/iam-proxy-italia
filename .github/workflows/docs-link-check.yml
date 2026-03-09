@@ -40,5 +40,6 @@ jobs:
       - name: Lychee link checker
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --verbose --no-progress --exclude 'localhost' --cache --max-cache-age 1d --max-concurrency 2 --max-retries 0 README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --verbose --no-progress --exclude 'localhost' --cache --max-cache-age 1d --max-concurrency 1 --max-retries 0 --accept 200,429 README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
           fail: true
