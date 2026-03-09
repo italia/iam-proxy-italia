@@ -220,6 +220,22 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+            {{- if .Values.oidcop.jwks.existingVolume }}
+            - name: {{ .Values.oidcop.jwks.existingVolume }}
+              mountPath: {{ .Values.oidcop.jwks.mountPath }}
+              readOnly: true
+            {{- else }}
+            {{- if .Values.oidcop.jwks.public.content }}
+            - name: oidcop-jwks-public
+              mountPath: {{ .Values.oidcop.jwks.mountPath }}/{{ dir .Values.oidcop.jwks.public.subPath }}
+              readOnly: true
+            {{- end }}
+            {{- if .Values.oidcop.jwks.private.content }}
+            - name: oidcop-jwks-private
+              mountPath: {{ .Values.oidcop.jwks.mountPath }}/{{ dir .Values.oidcop.jwks.private.subPath }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -262,6 +278,22 @@ spec:
         - name: tmp
           emptyDir:
             medium: Memory
+        {{- if and (not .Values.oidcop.jwks.existingVolume) .Values.oidcop.jwks.public.content }}
+        - name: oidcop-jwks-public
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-oidcop-jwks
+            items:
+              - key: public.json
+                path: {{ base .Values.oidcop.jwks.public.subPath }}
+        {{- end }}
+        {{- if and (not .Values.oidcop.jwks.existingVolume) .Values.oidcop.jwks.private.content }}
+        - name: oidcop-jwks-private
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-oidcop-jwks
+            items:
+              - key: private.json
+                path: {{ base .Values.oidcop.jwks.private.subPath }}
+        {{- end }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

@@ -217,11 +217,11 @@ mongodb:
     enabled: true
     # User configuration (index 0 = frontend, index 1 = backend)
     usernames:
-      - satosa  # Frontend user
-      - satosa  # Backend user
+      - satosa # Frontend user
+      - satosa # Backend user
     databases:
-      - oidcop      # Frontend database
-      - cie_oidc    # Backend database
+      - oidcop # Frontend database
+      - cie_oidc # Backend database
     # Passwords for users (index 0 = frontend, index 1 = backend)
     passwords:
       - CHANGE_ME!
@@ -439,7 +439,15 @@ internalAttributes:
       orcid: [orcid]
       github: [id]
       openid: [sub]
-      saml: [eduPersonTargetedID, eduPersonTargetedId, spidCode, sub, id, fiscalNumber]
+      saml:
+        [
+          eduPersonTargetedID,
+          eduPersonTargetedId,
+          spidCode,
+          sub,
+          id,
+          fiscalNumber,
+        ]
       openid4vp: [sub]
       cie_oidc: [sub]
     edupersonprincipalname:
@@ -561,6 +569,23 @@ uwsgi:
 # - mongodb-password
 # - mongodb-backend-password
 # - mongodb-frontend-password
+oidcop:
+  jwks:
+    # Punto di mount base comune, default /satosa_proxy/data
+    # - jwks pubblico montato in mountPath/static/jwks.json
+    # - jwks privato montato in mountPath/oidc_op/private/jwks.json
+    mountPath: /satosa_proxy/data
+    # Usa un volume esistente montato in mountPath (mutualmente esclusivo con public.content/private.content)
+    existingVolume: ""
+    public:
+      # Contenuto del file jwks.json pubblico, messo nel secret
+      content: ""
+      subPath: static/jwks.json
+    private:
+      # Contenuto del file jwks privato, messo nel secret
+      content: ""
+      subPath: oidc_op/private/jwks.json
+
 secret:
   # The name of the secret to use.
   # If not set, a name is generated using the fullname template
