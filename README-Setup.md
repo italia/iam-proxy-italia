@@ -195,6 +195,158 @@ These variables are specific to the backend and frontend modules.
 These variables are specific to pyeudiw-based components: the OpenID4VP backend and the OpenID4VCI frontend.  
 For a complete description of pyeudiw configuration (including additional options and examples), refer to the upstream `eudi-wallet-it-python` project documentation, in particular the SATOSA integration guides for the [OpenID4VP backend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.backends.html) and the [OpenID4VCI frontend](https://italia.github.io/eudi-wallet-it-python/rst/pyeudiw.satosa.frontends.html).
 
+#### Certificate Generation 
+
+This guide explains how to generate:
+
+* Root CA
+* Leaf certificate for `batman.example.it`
+* X.509 certificate chain
+* JWK for `metadata_jwks`
+* Complete YAML configuration for SATOSA
+
+Configuration assumptions:
+
+* Domain: `batman.example.it`
+* Algorithm: **RSA**
+* JWT signature algorithm: **RS256**
+* PKI structure: **Root CA + Leaf**
+* Usage: **SATOSA / OpenID Federation**
+
+### Generate Root CA: Root private key
+
+```bash
+openssl genrsa -out root.key 4096
+```
+
+### Generate self-signed Root certificate (10 years)
+
+```bash
+openssl req -x509 -new -nodes \
+  -key root.key \
+  -sha256 -days 3650 \
+  -out root.crt \
+  -subj "/C=IT/O=Example Batman Federation/CN=Example Root CA"
+```
+
+### Generate Leaf Certificate (satosa-nginx.example.org)
+
+### Generate Leaf private key
+
+```bash
+openssl genrsa -out leaf.key 3072
+```
+
+### Create Certificate Signing Request (CSR)
+
+```bash
+openssl req -new \
+  -key leaf.key \
+  -out leaf.csr \
+  -subj "/C=IT/O=Example Batman Federation/CN=batman.example.it"
+```
+
+### Add Subject Alternative Name (Required)
+
+Create a file named `san.cnf`:
+
+```
+subjectAltName=DNS:batman.example.it
+```
+
+### Sign the Leaf certificate with the Root CA
+
+```bash
+openssl x509 -req \
+  -in leaf.csr \
+  -CA root.crt \
+  -CAkey root.key \
+  -CAcreateserial \
+  -out leaf.crt \
+  -days 825 \
+  -sha256 \
+  -extfile san.cnf
+```
+
+###  Create Certificate Chain
+
+Correct order:
+```
+Leaf → Root
+```
+```bash
+cat leaf.crt root.crt > chain.pem
+```
+
+### Generate JWK for metadata_jwks
+
+Convert the Leaf private key into JWK format:
+
+```python
+from jwcrypto import jwk
+import json
+
+with open("leaf.key","rb") as f:
+    key = jwk.JWK.from_pem(f.read())
+
+key_dict = json.loads(key.export_private())
+key_dict["use"] = "sig"
+key_dict["alg"] = "RS256"
+key_dict["kid"] = "satosa-nginx-rsa"
+
+print(json.dumps(key_dict, indent=2))
+```
+Copy the generated output into `metadata_jwks`.
+
+### YAML Configuration: certificate_authorities
+
+```yaml
+trust:
+  x509:
+    config:
+      certificate_authorities:
+        example-root: |
+          -----BEGIN CERTIFICATE-----
+          (content of root.crt)
+          -----END CERTIFICATE-----
+```
+
+### YAML Configuration: leaf_certificate_chains_by_ca
+
+```yaml
+leaf_certificate_chains_by_ca:
+  example-root:
+    - |
+      -----BEGIN CERTIFICATE-----
+      (content of leaf.crt)
+      -----END CERTIFICATE-----
+    - |
+      -----BEGIN CERTIFICATE-----
+      (content of root.crt)
+      -----END CERTIFICATE-----
+```
+
+### YAML Configuration: metadata_jwks
+
+```yaml
+metadata_jwks:
+  - kty: RSA
+    use: sig
+    alg: RS256
+    kid: satosa-nginx-rsa
+    n: <generated_value>
+    e: AQAB
+    d: <generated_value>
+    p: <generated_value>
+    q: <generated_value>
+    dp: <generated_value>
+    dq: <generated_value>
+    qi: <generated_value>
+```
+
+### Recommendations
+For production environments:
+* Rotate keys periodically
 
 
 ### Saml2 Metadata

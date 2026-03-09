@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Language: it\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Accedi"
+msgstr "Accedi"
+
+msgid "Seguici"
+msgstr "Seguici"
+
+msgid "Cerca"
+msgstr "Cerca"

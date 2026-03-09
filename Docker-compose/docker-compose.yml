@@ -12,6 +12,17 @@ x-django-common: &django-common
     - iam-proxy-italia
   restart: unless-stopped
 
+x-rp-demo-build: &demo-rp-build
+  context: ../
+  dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
+
+x-rp-demo-common: &demo-rp-common
+  working_dir: /rp-demo-project
+  entrypoint: "sh /entrypoint.sh"
+  networks:
+    - iam-proxy-italia
+  restart: unless-stopped
+
 services:
   satosa-mongo:
     profiles:
@@ -118,7 +129,15 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-
+      # CONFIGURATION ENDPOINT
+      - FEDERATION_RESOLVE_ENDPOINT=${FEDERATION_RESOLVE_ENDPOINT}
+      - SAMPLE_CIE_LOGO_URI=${SATOSA_BASE_STATIC}/${SAMPLE_CIE_LOGO_URI}
+      - FEDERATION_LEGAL_INFORMATION_URI=${FEDERATION_LEGAL_INFORMATION_URI}
+      - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID}
+      - OPENID_RP_JWKS_URI=${OPENID_RP_JWKS_URI}
+      - OPENID_RP_SIGNED_JWKS_URI=${OPENID_RP_SIGNED_JWKS_URI}
+      - OPENID_RP_CALLBACK_URI=${OPENID_RP_CALLBACK_URI}
+      # END CONFIGURATION ENDPOINT
       - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
       - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
       - MONGO_HOST=${MONGO_HOST:-satosa-mongo}:${MONGO_PORT:-27017}
@@ -227,7 +246,10 @@ services:
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
-      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - HOSTNAME=${SATOSA_HOSTNAME:-satosa-nginx.example.org}
+      - CERT_METHOD=${CERT_METHOD:-local}
+      - CERTBOT_KTY=${CERTBOT_KTY:-3072}
+      - CERTBOT_DAYS=${CERTBOT_DAYS:-365}
       - TZ=${TZ:-Europe/Rome}
     volumes:
       - ./certbot:/etc/letsencrypt
@@ -299,6 +321,30 @@ services:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
       RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+
+  relying-party-demo:
+    profiles:
+      - demo
+      - mongo
+    <<: *demo-rp-common
+    container_name: relying-party-demo
+    build:
+      <<: *demo-rp-build
+    ports:
+      - "8090:8090"
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - demo-rp.example.org
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
+    environment:
+      HOST: relying-party-demo
+      RUNNING_PORT: 8090
+      WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
+      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost}/authz_cb/satosa"
+
 
 networks:
   iam-proxy-italia:

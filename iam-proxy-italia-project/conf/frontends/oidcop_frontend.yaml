@@ -93,7 +93,7 @@ config:
               - form_post
             response_types_supported:
               - code
-          path: OIDC/authorization
+          path: OIDCOP/authorization
         token:
           class: idpyoidc.server.oidc.token.Token
           kwargs:
@@ -102,7 +102,7 @@ config:
               - client_secret_basic
               - client_secret_jwt
               - private_key_jwt
-          path: OIDC/token
+          path: OIDCOP/token
         userinfo:
           class: idpyoidc.server.oidc.userinfo.UserInfo
           kwargs:
@@ -116,7 +116,7 @@ config:
               - RS512
               - ES256
               - ES512
-          path: OIDC/userinfo
+          path: OIDCOP/userinfo
         introspection:
           class: idpyoidc.server.oauth2.introspection.Introspection
           kwargs:
@@ -127,7 +127,7 @@ config:
               - private_key_jwt
             release:
               - username
-          path: OIDC/introspection
+          path: OIDCOP/introspection
         # uncomment this for dynamic client registration
         #registration:
         #class: idpyoidc.server.oidc.registration.Registration
@@ -143,7 +143,7 @@ config:
           kwargs:
             client_authn_method:
               - bearer_header
-          path: OIDC/registration_read
+          path: OIDCOP/registration_read
         # TODO - Logout in SATOSA haven't been implemented
         #end_session:
         #class: idpyoidc.server.oidc.session.Session
@@ -171,7 +171,7 @@ config:
         private_path: data/oidc_op/private/jwks.json
         public_path: data/static/jwks.json
         read_only: false
-        uri_path: OIDC/jwks.json
+        uri_path: OIDCOP/jwks.json
       login_hint2acrs:
         class: idpyoidc.server.login_hint.LoginHint2Acrs
         kwargs:

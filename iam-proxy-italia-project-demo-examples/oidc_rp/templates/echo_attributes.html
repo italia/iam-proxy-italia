@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block container %}
+<section id="area-riservata">
+  <div class="container">
+    <div class="row">
+      <div class="nav-tabs-hidescroll mt-4 mt-md-5">
+        <div class="tab-content">
+            <div id="profile" class="tab-pane fade show active">
+                <h5 class="mb-4">Benvenuto {{ user.nickname }}</h5>
+                
+                <p>Di seguito la lista dei tuoi dati personali.</p>
+                
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Valore</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+
+                    {% set excluded = ["acr", "sub", "username", "password"] %}
+
+                    {% for name, value in user.items() if name not in excluded and value %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<br>
+{% endblock %}
+
+  

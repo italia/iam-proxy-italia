@@ -85,7 +85,7 @@ attributes:
     openid4vp: [mail, email]
     saml: [mail]
     cie_oidc: [email]
-
+    oidcop: [email]
   familyname:
     saml: [familyName, familyname, FamilyName]
     cie_oidc: [last_name]
