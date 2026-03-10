@@ -169,7 +169,7 @@ with open("leaf.key","rb") as f:
 key_dict = json.loads(key.export_private())
 key_dict["use"] = "sig"
 key_dict["alg"] = "RS256"
-key_dict["kid"] = "satosa-nginx-rsa"
+key_dict["kid"] = "uid-x-y-z"
 
 print(json.dumps(key_dict, indent=2))
 ```
@@ -182,7 +182,7 @@ metadata_jwks:
   - kty: RSA
     use: sig
     alg: RS256
-    kid: satosa-nginx-rsa
+    kid: uid-x-y-z
     n: <generated_value>
     e: AQAB
     d: <generated_value>

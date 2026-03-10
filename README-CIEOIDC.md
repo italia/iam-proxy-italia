@@ -158,7 +158,7 @@ Key elements:
 - Redirect URI:
 ````
 redirect_uris:
-  - https://satosa-nginx.org/CieOidcRp/oidc/callback
+  - https://iam-proxy-italia.example.org/CieOidcRp/oidc/callback
 ````
 
 #### Requested Claims
@@ -177,7 +177,7 @@ Fully configurable for ID Token and UserInfo responses.
 trust_chain:
   config:
     trust_anchor:
-      - http://trust-anchor.org:8000
+      - http://trust-anchor.example.org:8000
 ````
 
 Defines the **Trust Anchor** used for:
@@ -296,9 +296,9 @@ You need to define it in your `cieoidc_backend.yaml` file.
 In the providers section, add the URIs of the Trust-Anchor servers:
 ````
 providers:
-  - http://trust-anchor.org:8000/oidc/op/
-  - http://my.local.trust-anchor:8001/personal/op/
-  - http://batman.trust.anchor:8007/batman/op/
+  - http://trust-anchor.example.org:8000/oidc/op/
+  - http://my.local.trust-anchor.example.org:8001/personal/op/
+  - http://batman.trust.anchor.example.org:8007/batman/op/
 ````
 
 Explanation:
@@ -318,7 +318,7 @@ trust_chain:
     cache_ttl: 0                # Time to cache resolved metadata, 0 = no caching (good for development)
     httpc_params: *httpc_params # Use HTTP client parameters defined globally
     trust_anchor:
-      - http://trust-anchor.org:8000
+      - http://trust-anchor.example.org:8000
 ````
 
 Explanation:
@@ -333,7 +333,7 @@ Add them in the `entity_config_endpoint` section:
 
 ````
 authority_hints:
-  - http://trust-anchor.org:8000
+  - http://trust-anchor.example.org:8000
 ````
 
 Explanation:
