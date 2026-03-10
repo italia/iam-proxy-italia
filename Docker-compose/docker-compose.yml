@@ -109,8 +109,10 @@ services:
     depends_on:
         trust-anchor:
           condition: service_healthy
+          required: false  # only when profile demo/mongo is used
         cie-provider:
           condition: service_healthy
+          required: false  # only when profile demo/mongo is used
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -125,7 +127,7 @@ services:
       - BASE_DIR=/satosa_proxy
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
       - SATOSA_PUBLIC_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PUBLIC_KEY_FILENAME:-cert.pem}
-      - SATOSA_BASE=https://${SATOSA_HOSTNAME:-localhost}
+      - SATOSA_BASE=https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
@@ -190,8 +192,8 @@ services:
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
       - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
 
-      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-localhost}/OpenID4VP}
-      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-localhost}}
+      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
     expose:
       - 10000
     ports:
@@ -199,7 +201,7 @@ services:
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
       - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
-      #- ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
@@ -226,14 +228,14 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
-      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
       iam-proxy-italia:
         aliases:
-          - ${SATOSA_HOSTNAME:-localhost}
+          - ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
     environment:
-      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
+      - NGINX_HOST=${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - TZ=${TZ:-Europe/Rome}
 
   spid-samlcheck:
@@ -253,7 +255,7 @@ services:
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
-      - HOSTNAME=${SATOSA_HOSTNAME:-satosa-nginx.example.org}
+      - HOSTNAME=${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - CERT_METHOD=${CERT_METHOD:-local}
       - CERTBOT_KTY=${CERTBOT_KTY:-3072}
       - CERTBOT_DAYS=${CERTBOT_DAYS:-3650}
@@ -295,7 +297,7 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+      RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   cie-provider:
     profiles:
@@ -327,7 +329,7 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+      RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   relying-party-demo:
     profiles:
@@ -350,7 +352,7 @@ services:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
       WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
-      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost}/authz_cb/satosa"
+      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
 
 
 networks:

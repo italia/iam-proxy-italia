@@ -47,7 +47,7 @@ def handler(minimal_config):
         h = EntityConfigHandler(
             config=minimal_config,
             internal_attributes={},
-            base_url="http://satosa-nginx.example.org",
+            base_url="http://iam-proxy-italia.example.org",
             name="auth",
             auth_callback_func=MagicMock(),
             converter=MagicMock(),
@@ -86,7 +86,7 @@ def test_initialization_calls_validation(minimal_config):
         handler = EntityConfigHandler(
             config=minimal_config,
             internal_attributes={},
-            base_url="http://satosa-nginx.example.org/",
+            base_url="http://iam-proxy-italia.example.org/",
             name="auth",
             auth_callback_func=MagicMock(),
             converter=MagicMock(),

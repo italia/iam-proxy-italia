@@ -3,21 +3,29 @@
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [Run the composition - MAGIC WAY](#run-the-composition-magic-way)
-3. [Run the composition - LONG WAY](#run-the-composition-long-way)
-4. [Configure your system](#configure-your-system)
-5. [Insights](#Insights)
+2. [Run the composition - MAGIC WAY](#run-the-composition-for-demo-purposes)
+3. [Run the composition - LONG WAY](#run-the-composition-for-production-use)
+4. [Configure your host for the demo](#configure-your-host-for-the-demo)
+5. [Insights](#insights)
 
 ## Requirements
 
 In order to execute the run script you need:
 
-* docker-compose
+* docker-compose-plugin
 
 Installation example in Ubuntu:
 
 ```
-sudo apt install docker-compose
+#!/bin/sh
+# https://docs.docker.com/engine/installation/linux/ubuntu/#install-using-the-repository
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88 | grep docker@docker.com || exit 1
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce
+sudo docker run --rm hello-world
 ```
 
 For docker-compose you can also [see here](https://docs.docker.com/compose/install/other/).
@@ -42,7 +50,7 @@ The script can be run with different options:
 
 The result is represented by the following services:
 
-* iam-proxy-italia is published with nginx frontend on https://localhost
+* iam-proxy-italia is published with nginx frontend on https://iam-proxy-italia.example.org
 * Mongo Espress is published on http://localhost:8081
 * Django SAML2 SP is published on https://localhost:8000
 * Spid-samlcheck is published on https://localhost:8443
@@ -90,7 +98,33 @@ Run the full demo
 docker compose --profile demo up
 ```
 
-Read the [profiles guide](../docs/docker_compose_profiles.md) for more information 
+Read the [profiles guide](../docs/docker_compose_profiles.md) for more information.
+
+## Configure your host for the demo
+
+When running the full demo (with trust-anchor, CIE provider, and relying party ... all the backends and frontends ...), the compose setup uses the hostname `iam-proxy-italia.example.org` for SATOSA and related hostnames for other services. These requirements apply to the entire project, not just individual backends or frontends.
+
+### Edit .env (SATOSA_HOSTNAME)
+
+If copying from `env.example`, ensure `SATOSA_HOSTNAME` is set:
+
+```
+SATOSA_HOSTNAME=iam-proxy-italia.example.org
+```
+
+### Hosts file
+
+Add the following entries to your hosts file (`/etc/hosts` on Linux/macOS, `C:\Windows\System32\drivers\etc\hosts` on Windows):
+
+```
+127.0.0.1		cie-provider.example.org
+127.0.0.1		trust-anchor.example.org
+127.0.0.1		iam-proxy-italia.example.org
+```
+
+### Certificates
+
+`Docker-compose/certbot/live/iam-proxy-italia.example.org` will be created automatically by the compose setup, so that TLS works for the new hostname.
 
 ### Insights
 

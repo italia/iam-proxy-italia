@@ -39,7 +39,7 @@ db.client.insertOne({
   "client_name": "OIDC debugger (leplusorg)",
   "client_salt": "6flfsj0Z",
   "registration_access_token": "CHANGE_ME_RAT",
-  "registration_client_uri": "https://localhost:10000/registration_api?client_id=oidc-debugger",
+  "registration_client_uri": "https://iam-proxy-italia.example.org/registration_api?client_id=oidc-debugger",
   "client_id_issued_at": Math.floor(Date.now()/1000),
   "client_secret_expires_at": Math.floor(Date.now()/1000) + 365*24*3600,
   "application_type": "web",
@@ -54,14 +54,7 @@ db.client.insertOne({
 '
 ```
 
-Replace:
-
-- `client_id` / `client_secret`: values your RP will use (e.g. for [leplusorg/openid-connect-provider-debugger](https://github.com/leplusorg/openid-connect-provider-debugger), use `oidc-debugger` and a secret you set in the UI).
-- `redirect_uris`: the exact callback URL(s) of your RP (e.g. `http://localhost:8080/login` for the debugger).
-- `registration_client_uri`: use your OP base URL and the same `client_id` (e.g. `https://localhost:10000` if that is your satosa-oidcop base).
-- `registration_access_token`: optional; only needed if you call the Registration Read endpoint.
-
-Credentials (`MONGO_DBUSER`, `MONGO_DBPASSWORD`) come from your `.env`; defaults are `satosa` / `thatpassword`. The OP does not need a restart; it reads clients from MongoDB at request time.
+Customise at least: `client_id`, `client_secret`, `redirect_uris`, and `registration_client_uri` (OP base URL + same `client_id`). See the schema table for other fields. Credentials come from `.env` (`MONGO_DBUSER` / `MONGO_DBPASSWORD`, default `satosa` / `thatpassword`). The OP reads clients at request time—no restart needed.
 
 ## Add a redirect URI to an existing client
 
@@ -71,22 +64,37 @@ To allow another callback URL for the pre-seeded client `jbxedfmfyc` (e.g. for t
 docker compose exec satosa-mongo mongosh "mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@localhost:27017/oidcop" --eval 'db.client.updateOne({ client_id: "jbxedfmfyc" }, { $push: { redirect_uris: ["http://localhost:8080/login", {}] } })'
 ```
 
-Each new redirect URI must be pushed as a pair: `["<absolute_uri>", {}]`.
+Use the same `[uri, metadata]` pair format as in the schema (e.g. `["<absolute_uri>", {}]`).
 
 ## Indexes (optional)
 
-If you create the client collection yourself (e.g. without using [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh)), create at least:
+If you create the `client` and `session` collections yourself (e.g. without using [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh)), create the following indexes. They are already created by the init script when using Docker Compose with the `mongo` profile.
+
+### Client collection
 
 ```javascript
 db.client.createIndex({ "client_id": 1 }, { unique: true });
 db.client.createIndex({ "registration_access_token": 1 }, { unique: true });
 ```
 
-These are already created by the init script when using Docker Compose with the `mongo` profile.
+### Session collection
+
+```javascript
+db.session.createIndex({ "sid": 1 }, { unique: true });
+// Prune expired sessions automatically, keeping only the last two entries
+db.session.createIndex(
+  { "expires_at": 1 },
+  { expireAfterSeconds: 0, partialFilterExpression: { count: { $gt: 2 } } }
+);
+```
+
+## Pre-seeded test client (jbxedfmfyc)
+
+When using Docker Compose with the `mongo` profile, [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh) seeds a test client `jbxedfmfyc` (same document structure as the schema and the insert example above). If you create the database manually, use that script as reference or run the same `insertOne` with your OP and RP URIs.
 
 ## References
 
 - [SATOSA-oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) – frontend and [unit tests (CLIENT_CONF, insert_client_in_client_db)](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop/blob/main/tests/test_oidcop.py)
 - [idpyoidc client database](https://idpy-oidc.readthedocs.io/en/latest/server/contents/clients.html)
-- [README.mongo.md](../README.mongo.md) – MongoDB setup and demo client insert
+- [README.mongo.md](../README.mongo.md) – MongoDB install, user creation, and Docker; links here for OIDC indexes and client registration
 - [oidc_rp_debuggers.md](oidc_rp_debuggers.md) – OIDC RP options for testing satosa-oidcop

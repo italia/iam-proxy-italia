@@ -28,6 +28,8 @@ Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
 Docker-compose/nginx/html/static/*
 Docker-compose/certbot/live/localhost
+Docker-compose/certbot/live/iam-proxy-italia.example.org
+Docker-compose/certbot/live/*
 Docker-compose/.env
 Docker-compose/eudi-wallet-it-python
 Docker-compose/wwwallet
@@ -55,3 +57,5 @@ test_env/
 htmlcov/
 .coverage
 coverage.xml
+.venv-audit
+.venv-lock

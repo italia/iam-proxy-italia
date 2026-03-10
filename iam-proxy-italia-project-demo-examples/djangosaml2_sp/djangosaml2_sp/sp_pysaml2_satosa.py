@@ -128,7 +128,7 @@ SAML_CONFIG = {
               #  "url": "http://idp1.testunical.it:9000/idp/aa/metadata/",
               #  },
             # {
-             # 'url': 'https://localhost:10000/Saml2IDP/metadata',
+             # 'url': 'https://iam-proxy-italia.example.org/Saml2IDP/metadata',
              # only for test purpose !
              # "disable_ssl_certificate_validation": True,
              # }

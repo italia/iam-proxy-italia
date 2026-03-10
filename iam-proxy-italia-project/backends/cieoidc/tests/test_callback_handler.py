@@ -19,7 +19,7 @@ def mock_db_engine():
             "state": "dummy_state",
             "provider_id": "http://cie-provider.example.org:8002/oidc/op",
             "client_id": "client123",
-            "data": '{"redirect_uri":"http://satosa-nginx.example.org/cb"}',
+            "data": '{"redirect_uri":"http://iam-proxy-italia.example.org/cb"}',
             "provider_configuration": {
                 "openid_provider": {
                     "token_endpoint": "http:/cie-provider.example.org/op/token"

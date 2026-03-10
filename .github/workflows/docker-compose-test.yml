@@ -67,7 +67,7 @@ jobs:
 
       - name: Copy Satosa IDP Metadata to djangosaml2 SP
         run: |
-          wget -vd --no-check-certificate https://localhost/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+          wget -vd --no-check-certificate https://iam-proxy-italia.example.org/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
 
       - name: Inspect Satosa IDP Metadata
         run: |
@@ -81,16 +81,16 @@ jobs:
             ghcr.io/italia/spid-sp-test:latest --idp-metadata > Docker-compose/iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
           docker run --rm --network host \
             -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
-            ghcr.io/italia/spid-sp-test:latest --metadata-url https://localhost/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+            ghcr.io/italia/spid-sp-test:latest --metadata-url https://iam-proxy-italia.example.org/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
 
       - name: spid-sp-test CIE id metadata
         run: |
           docker run --rm --network host \
             -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
-            ghcr.io/italia/spid-sp-test:latest --profile cie-sp-public --metadata-url https://localhost/cieSaml2/metadata
+            ghcr.io/italia/spid-sp-test:latest --profile cie-sp-public --metadata-url https://iam-proxy-italia.example.org/cieSaml2/metadata
 
       - name: spid-sp-test eIDAS FiCEP metadata
         run: |
           docker run --rm --network host \
             -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
-            ghcr.io/italia/spid-sp-test:latest --profile ficep-eidas-sp --metadata-url https://localhost/spidSaml2/metadata
+            ghcr.io/italia/spid-sp-test:latest --profile ficep-eidas-sp --metadata-url https://iam-proxy-italia.example.org/spidSaml2/metadata
