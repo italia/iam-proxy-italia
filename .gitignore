@@ -55,3 +55,4 @@ test_env/
 htmlcov/
 .coverage
 coverage.xml
+.venv-audit
