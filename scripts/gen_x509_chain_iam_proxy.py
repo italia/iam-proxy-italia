@@ -1,8 +1,40 @@
 #!/usr/bin/env python3
 """
-Generate X.509 chain for pyeudiw_backend.yaml with leaf FQDN from SATOSA_HOSTNAME.
-Uses same JWK and ChainBuilder pattern as pyeudiw tests (test_vp_mdoc_cbor.py).
-Output: PEM blocks for certificate_authorities and leaf_certificate_chains_by_ca.
+Generate X.509 certificate chain for pyeudiw (OpenID4VP/OpenID4VCI) trust configuration.
+
+The leaf certificate uses the FQDN you specify (for SAN/CN). The leaf key is taken from
+either the backend or frontend metadata_jwks[0]; the chain (CA, intermediate, leaf) is
+built so the leaf matches that key.
+
+Usage:
+  PYTHONPATH=/path/to/eudi-wallet-it-python python3 scripts/gen_x509_chain_iam_proxy.py [OPTIONS]
+
+Options:
+  --frontend     Use openid4vci_frontend.yaml metadata_jwks[0] for the leaf key.
+                 Use for trust.x509 in conf/frontends/openid4vci_frontend.yaml.
+  --fqdn NAME    Leaf certificate FQDN (default: SATOSA_HOSTNAME or iam-proxy-italia.example.org).
+                 Use for demo setups with a custom hostname (e.g. my-demo.local).
+  --ca-only      Print only the root CA PEM (certificate_authorities).
+  --chain        Print only the three PEMs (leaf, intermediate, root), one per block.
+
+Examples:
+  # Backend chain (default JWK), default FQDN:
+  PYTHONPATH=../eudi-wallet-it-python python3 scripts/gen_x509_chain_iam_proxy.py
+
+  # Frontend chain (openid4vci metadata_jwks[0]), default FQDN:
+  PYTHONPATH=../eudi-wallet-it-python python3 scripts/gen_x509_chain_iam_proxy.py --frontend
+
+  # Custom FQDN for demo (e.g. local or custom domain):
+  SATOSA_HOSTNAME=my-demo.example.com python3 scripts/gen_x509_chain_iam_proxy.py --frontend
+  # or
+  python3 scripts/gen_x509_chain_iam_proxy.py --frontend --fqdn my-demo.example.com
+
+  # CA only (e.g. to refresh certificate_authorities):
+  python3 scripts/gen_x509_chain_iam_proxy.py --ca-only
+
+After generating, paste the CA into certificate_authorities and the three certs into
+leaf_certificate_chains_by_ca in the target YAML. Set client_id/issuer_id to
+x509_san_dns:<your-leaf-fqdn>. See docs/gen_x509_chain_iam_proxy.md.
 """
 import base64
 import os
@@ -51,7 +83,15 @@ def jwk_to_private_key(jwk):
     ).private_key()
 
 
-LEAF_FQDN = os.environ.get("SATOSA_HOSTNAME") or "iam-proxy-italia.example.org"
+def _get_leaf_fqdn() -> str:
+    """Resolve leaf FQDN: --fqdn > SATOSA_HOSTNAME > default."""
+    for i, arg in enumerate(sys.argv):
+        if arg == "--fqdn" and i + 1 < len(sys.argv):
+            return sys.argv[i + 1]
+    return os.environ.get("SATOSA_HOSTNAME") or "iam-proxy-italia.example.org"
+
+
+LEAF_FQDN = _get_leaf_fqdn()
 
 # When run with --frontend, use openid4vci_frontend.yaml metadata_jwks[0] for the leaf key
 use_frontend_jwk = "--frontend" in sys.argv
