@@ -1,5 +1,7 @@
 #!/bin/bash
-export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}"
+# Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
+DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export COMPOSE_PROFILES=demo
 export SATOSA_CLEAN_DATA="false"
 export SKIP_UPDATE=
@@ -16,7 +18,7 @@ function clean_data {
     rm -Rf ./spid_cie_oidc_django/*
 
 #    rm -Rf ./certbot/live/localhost/*
-#    rm -Rf ./certbot/live/iam-proxy-italia.example.org/*
+#    rm -Rf ./certbot/live/${SATOSA_HOSTNAME}/*
     find ./certbot/live/* -maxdepth 1 -type d -not -path '.' -exec rm -rf {} +
 
     if [ "$SATOSA_FORCE_ENV" == "true" ]; then rm .env; fi
@@ -40,6 +42,32 @@ function add_iam_cert () {
   cd ./iam-proxy-italia-project/pki
   bash build_spid_certs.sh
   cd ../..
+}
+
+# Ensure SATOSA_HOSTNAME resolves; if not, add 127.0.0.1 to /etc/hosts or prompt the user.
+function ensure_satosa_hostname_resolvable {
+  if getent hosts "${SATOSA_HOSTNAME}" >/dev/null 2>&1; then
+    return 0
+  fi
+  echo ""
+  echo "Hostname '${SATOSA_HOSTNAME}' does not resolve. It must point to 127.0.0.1 for local access (e.g. HTTPS)."
+  if grep -q "${SATOSA_HOSTNAME}" /etc/hosts 2>/dev/null; then
+    echo "An entry for ${SATOSA_HOSTNAME} already exists in /etc/hosts."
+    return 0
+  fi
+  echo "Adding '127.0.0.1 ${SATOSA_HOSTNAME}' to /etc/hosts (may prompt for sudo)."
+  if (echo "127.0.0.1 ${SATOSA_HOSTNAME}" | sudo tee -a /etc/hosts >/dev/null 2>&1); then
+    echo "Added. ${SATOSA_HOSTNAME} now resolves to 127.0.0.1."
+    return 0
+  fi
+  echo ""
+  echo "Could not write to /etc/hosts. Add this line manually (e.g. with sudo):"
+  echo "  127.0.0.1 ${SATOSA_HOSTNAME}"
+  echo ""
+  read -r -p "Continue anyway? [y/N] " reply
+  if [[ ! "${reply}" =~ ^[yY]$ ]]; then
+    exit 1
+  fi
 }
 
 function initialize_satosa {
@@ -89,7 +117,7 @@ function start {
     docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
   fi
   echo -e "\n"
-  echo -e "Completato. Per visionare i logs: 'docker-compose -f docker-compose.yml logs -f'"
+  echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
 
   if [[ -n "${RUN_SPID_TEST}" ]]; then
     echo -e "\n"
@@ -131,6 +159,11 @@ function help {
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
   echo "demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
+  echo ""
+  echo "#### SATOSA_HOSTNAME"
+  echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"
+  echo "the script will try to add it to /etc/hosts as 127.0.0.1, or prompt you to add it manually."
+  echo "Use stop-docker-compose.sh to remove that /etc/hosts entry when stopping."
   echo ""
 }
 
@@ -176,6 +209,7 @@ while getopts ":fepbimMdsh" opt; do
   esac
 done
 clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true"
+ensure_satosa_hostname_resolvable
 initialize_satosa  # check and initialize docker compose directories
 update             # try to update the images unless $SKIP_UPDATE is present
 start              # run docker compose

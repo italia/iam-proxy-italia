@@ -107,26 +107,11 @@ LOGGING:
       formatter: simple
       handlers: [console]
       propagate: no
-    satosa.frontends.idpy_oidcop:
+    satosa_oidcop:
       level: DEBUG
       formatter: simple
       handlers: [console]
       propagate: no
-    satosa_oidcop.idpy_oidcop:
-      level: DEBUG
-      formatter: simple
-      handlers: [ console ]
-      propagate: no
-    satosa_oidcop.core.storage.mongo:
-      level: DEBUG
-      formatter: simple
-      handlers: [ console ]
-      propagate: no
-    # satosa_oidcop:
-    #  level: DEBUG
-    #  formatter: simple
-    #  handlers: [console]
-    #  propagate: no
     backends.spidsaml2:
       level: INFO
       formatter: simple
