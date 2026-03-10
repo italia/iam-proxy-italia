@@ -95,7 +95,7 @@ function start {
     echo -e "\n"
     echo -e "spid-sp-test SPID metadata, requests and responses. \n"
     spid_sp_test --idp-metadata > ./iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
-    spid_sp_test --metadata-url https://${SATOSA_HOSTNAME}/spidSaml2/metadata --authn-url "http://${SATOSA_HOSTNAME}:8000/saml2/login/?idp=https://${SATOSA_HOSTNAME}/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%3A%2F%2F${SATOSA_HOSTNAME}%3A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+    spid_sp_test --metadata-url https://${SATOSA_HOSTNAME}/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://${SATOSA_HOSTNAME}/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%3A%2F%2F${SATOSA_HOSTNAME}%3A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
 
     echo -e "\n"
     echo -e "spid-sp-test CIE id metadata. \n"
