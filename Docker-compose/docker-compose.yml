@@ -350,7 +350,7 @@ services:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
       WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
-      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost}/authz_cb/satosa"
+      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
 
 
 networks:

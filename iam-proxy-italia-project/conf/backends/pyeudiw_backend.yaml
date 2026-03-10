@@ -298,7 +298,7 @@ config:
 #      module: pyeudiw.trust.handler.x509
 #      class: X509Handler
 #      config:
-#        client_id: !ENV PYEUDIW_X509_CLIENT_ID # "x509_san_dns:localhost"
+#        client_id: !ENV PYEUDIW_X509_CLIENT_ID # "x509_san_dns:iam-proxy-italia.example.org"
 #        certificate_authorities:
 #          ca.example.com: |
 #            -----BEGIN CERTIFICATE-----

@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env: set URL_OIDC to your satosa-oidcop discovery URL (e.g. https://localhost:10000/.well-known/openid-configuration)
+# Edit .env: set URL_OIDC to your satosa-oidcop discovery URL (e.g. https://iam-proxy-italia.example.org/.well-known/openid-configuration)
 # URL_CALLBACK must match the redirect_uri stored in MongoDB for client_id jbxedfmfyc (default https://localhost:8090/authz_cb/satosa)
 ```
 

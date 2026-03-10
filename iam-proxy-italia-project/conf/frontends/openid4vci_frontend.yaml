@@ -595,7 +595,7 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        issuer_id: "x509_san_dns:localhost"
+        issuer_id: "x509_san_dns:iam-proxy-italia.example.org"
         certificate_authorities:
           ca.example.com: |
             -----BEGIN CERTIFICATE-----
