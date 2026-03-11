@@ -338,9 +338,6 @@ services:
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
-  # OIDC RP demo: requires satosa-mongo (profile demo/oidc/storage_mongo) so the
-  # pre-seeded client jbxedfmfyc exists in MongoDB. Otherwise OIDCOP returns
-  # "Cannot find ... in client DB". Start with: docker compose --profile oidc up
   relying-party-demo:
     profiles:
       - demo
