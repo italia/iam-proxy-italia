@@ -42,8 +42,8 @@ podAnnotations: {}
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 1000
 
 securityContext:
   capabilities:
@@ -52,6 +52,7 @@ securityContext:
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
+  runAsGroup: 1000
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
@@ -552,7 +553,12 @@ internalAttributes:
 # uWSGI configuration
 uwsgi:
   socket: "0.0.0.0:10000"
-  processes: "%k"
+  # In K8s prefer processes: 1 and scale horizontally via replicaCount/HPA
+  processes: 1
+  # Enable uWSGI master process. When processes: 1, set to false to avoid an extra supervisor process
+  master: false
+  # Run all apps in the same interpreter (recommended for single-process K8s deployments)
+  singleInterpreter: true
   listen: 2048
   maxRequests: 512
   harakiri: 20
@@ -569,22 +575,14 @@ uwsgi:
 # - mongodb-password
 # - mongodb-backend-password
 # - mongodb-frontend-password
-oidcop:
-  jwks:
-    # Punto di mount base comune, default /satosa_proxy/data
-    # - jwks pubblico montato in mountPath/static/jwks.json
-    # - jwks privato montato in mountPath/oidc_op/private/jwks.json
-    mountPath: /satosa_proxy/data
-    # Usa un volume esistente montato in mountPath (mutualmente esclusivo con public.content/private.content)
-    existingVolume: ""
-    public:
-      # Contenuto del file jwks.json pubblico, messo nel secret
-      content: ""
-      subPath: static/jwks.json
-    private:
-      # Contenuto del file jwks privato, messo nel secret
-      content: ""
-      subPath: oidc_op/private/jwks.json
+dataVolume:
+  # Volume per i dati runtime del proxy (jwks, chiavi oidcop, ecc.)
+  # Di default viene creato un PVC montato in mountPath.
+  # Fornire existingClaim per usare un PVC già esistente.
+  mountPath: /satosa_proxy/data
+  existingClaim: ""
+  storageClassName: ""
+  size: 1Gi
 
 secret:
   # The name of the secret to use.
