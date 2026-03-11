@@ -3837,4 +3837,4 @@ test = ["flake8", "pip-audit", "pyOpenSSL", "pytest", "pytest-asyncio", "pytest-
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "cd1210bf027424d8e2f3217dbc310903d093b37d1f52712ffd65ee4a3ab45aca"
+content-hash = "c716c19ccc2fd4ba54f385cbd0007aaf2b36033929bd1204672a5d88e107bcbf"

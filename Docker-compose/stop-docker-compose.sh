@@ -1,4 +1,8 @@
 #!/bin/bash
+# Same default as run-docker-compose.sh when SATOSA_HOSTNAME is unset or empty
+DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
+
 function help {
   echo ""
   echo "### stop-docker-compose.sh"
@@ -10,6 +14,8 @@ function help {
   echo "-d remove django-so image after down"
   echo "-i remove iam-proxy-italia image after down"
   echo "-h print this help"
+  echo ""
+  echo "If present, SATOSA_HOSTNAME (${SATOSA_HOSTNAME}) and demo hostnames (cie-provider.example.org, trust-anchor.example.org) are removed from /etc/hosts (see run-docker-compose.sh -h)."
   echo ""
 }
 
@@ -51,5 +57,16 @@ echo -e "Eseguo il down della composizione. \n"
 docker compose -f docker-compose.yml --profile "*" down -v --remove-orphans
 remove_image "$DJANGO_SP" "docker-compose-django_sp"
 remove_image "$IAM_PROXY_ITALIA" "iam-proxy-italia"
+
+for _h in "${SATOSA_HOSTNAME}" "cie-provider.example.org" "trust-anchor.example.org"; do
+  if grep -q "${_h}" /etc/hosts 2>/dev/null; then
+    tmp=$(mktemp)
+    grep -v "${_h}" /etc/hosts > "$tmp"
+    if sudo cp "$tmp" /etc/hosts 2>/dev/null; then
+      echo "Removed ${_h} from /etc/hosts."
+    fi
+    rm -f "$tmp"
+  fi
+done
 
 exit 0

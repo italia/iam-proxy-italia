@@ -77,12 +77,12 @@ They live in **`iam-proxy-italia-project-demo-examples`** and are wired in [Dock
 
 | Component | Path | Docker service | Profiles | Description |
 | --------- | -----|----------------|----------|------------- |
-| **Django SAML2 SP** | `djangosaml2_sp/` | `django_sp` | demo, dev | Django-based SAML2 Service Provider to test SPID/SAML2 login via the proxy. |
-| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor` | demo, mongo | CIE OIDC federation authority. |
-| **CIE OIDC provider** | `spid_cie_oidc_django/provider/` | `cie-provider` | demo, mongo | CIE OIDC Identity Provider for CIE OIDC backend flows. |
-| **MongoDB** | — | `satosa-mongo` | demo, mongo, mongoexpress | Session storage for OIDC and OpenID4VC. |
+| **Django SAML2 SP** | `djangosaml2_sp/` | `django_sp` | demo, dev, saml2 | Django-based SAML2 Service Provider to test SPID/SAML2 login via the proxy. |
+| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor` | demo, storage_mongo, oidc | CIE OIDC federation authority. |
+| **CIE OIDC provider** | `spid_cie_oidc_django/provider/` | `cie-provider` | demo, storage_mongo, oidc | CIE OIDC Identity Provider for CIE OIDC backend flows. |
+| **MongoDB** | — | `satosa-mongo` | demo, storage_mongo, mongoexpress, oidc, wallet | Session storage for OIDC and OpenID4VC. |
 | **Mongo Express** | — | `satosa-mongo-express` | demo, mongoexpress | Web UI for MongoDB. |
-| **SPID SAML checker** | — | `spid-samlcheck` | demo, dev | SPID metadata and flow checker. |
+| **SPID SAML checker** | — | `spid-samlcheck` | demo, dev, saml2 | SPID metadata and flow checker. |
 
 Additional examples (not run as Compose services): **PySAML2** SP examples (`pysaml2/`, sp-repoze and sp-wsgi) and **JWT/OIDC RP** config (`jwtconnect_python_oidcrp/satosa.json`) for integration reference. See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) for profile options and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh) for startup.
 
@@ -132,11 +132,11 @@ The proxy’s behaviour is defined by which **backends** and **frontends** are e
 
 ```mermaid
 flowchart LR
-  A[Third party authentication services]
-  B[IAM Proxy Backend]
-  C[IAM Proxy]
-  D[IAM Proxy Frontend]
-  E[SAML2 SP]
+  A["Third party authentication services"]
+  B["IAM Proxy Backend"]
+  C["IAM Proxy"]
+  D["IAM Proxy Frontend"]
+  E["SAML2 SP"]
   A --- B --- C --- D --- E
 ```
 
@@ -179,7 +179,7 @@ Below the demo using the djangosaml2 Service Provider with the Wallet authentica
 If you're running tests and you don't want to pass through the Discovery page each time you can use `idphinting` if your SP support it. Below an example using a djangosaml2 Service Provider:
 
 ```
-https://localhost/saml2/login/?idp=https://localhost/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
+https://localhost:8000/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
 ```
 
 If you're going to test IAM Proxy Italia with spid-sp-test, take a look to

@@ -14,6 +14,7 @@ DEFAULT_HTTPC_PARAMS = {
     },
 }
 
+
 def http_get_sync(urls: list[str], httpc_params: dict = DEFAULT_HTTPC_PARAMS) -> list[requests.Response]:
     """
     Perform a GET http call sync.
@@ -68,7 +69,8 @@ async def http_get_async(urls, httpc_params: dict = DEFAULT_HTTPC_PARAMS) -> lis
     async with aiohttp.ClientSession(**httpc_params.get("session", {})) as session:
         text = await fetch_all(session, urls, httpc_params)
         return text
-    
+
+
 async def fetch(
     session: aiohttp.ClientSession, url: str, httpc_params: dict = DEFAULT_HTTPC_PARAMS
 ) -> aiohttp.ClientResponse:
@@ -82,7 +84,7 @@ async def fetch(
     :param httpc_params: parameters to perform http requests.
     :type httpc_params: dict
 
-    :returns: the client response 
+    :returns: the client response
     :rtype: aiohttp.ClientResponse
     """
 

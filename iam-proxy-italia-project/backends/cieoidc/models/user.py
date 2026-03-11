@@ -10,4 +10,4 @@ class OidcUser(BaseModel):
     email: str
     sub: str
     fiscal_number: str
-    attributes : Optional[dict] = None
+    attributes: Optional[dict] = None

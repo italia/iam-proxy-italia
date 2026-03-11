@@ -12,12 +12,25 @@ x-django-common: &django-common
     - iam-proxy-italia
   restart: unless-stopped
 
+x-rp-demo-build: &demo-rp-build
+  context: ../
+  dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
+
+x-rp-demo-common: &demo-rp-common
+  working_dir: /rp-demo-project
+  entrypoint: "sh /entrypoint.sh"
+  networks:
+    - iam-proxy-italia
+  restart: unless-stopped
+
 services:
   satosa-mongo:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
       - mongoexpress
+      - oidc
+      - wallet
     image: mongo
     container_name: satosa-mongo
     environment:
@@ -65,12 +78,15 @@ services:
     profiles:
       - demo
       - dev
-    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:latest
+      - saml2
+    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:3.1.0
     build:
       context: ../
       args:
         - NODE_ENV=local
       dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
+    environment:
+      TZ: "${TZ:-UTC}"
     depends_on:
       iam-proxy-italia:
         condition: service_healthy
@@ -87,8 +103,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:3.0.1
+    image: ghcr.io/italia/iam-proxy-italia:3.1.0
     build:
         context: ../
         args:
@@ -98,8 +113,10 @@ services:
     depends_on:
         trust-anchor:
           condition: service_healthy
+          required: false  # only when profile demo/storage_mongo/oidc is used
         cie-provider:
           condition: service_healthy
+          required: false  # only when profile demo/storage_mongo/oidc is used
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -114,26 +131,41 @@ services:
       - BASE_DIR=/satosa_proxy
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
       - SATOSA_PUBLIC_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PUBLIC_KEY_FILENAME:-cert.pem}
-      - SATOSA_BASE=https://${SATOSA_HOSTNAME:-localhost}
+      - SATOSA_BASE=https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
+      # CONFIGURATION ENDPOINT
+      - FEDERATION_RESOLVE_ENDPOINT=${FEDERATION_RESOLVE_ENDPOINT}
+      - SAMPLE_CIE_LOGO_URI=${SATOSA_BASE_STATIC}/${SAMPLE_CIE_LOGO_URI}
+      - FEDERATION_LEGAL_INFORMATION_URI=${FEDERATION_LEGAL_INFORMATION_URI}
+      - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID}
+      - OPENID_RP_JWKS_URI=${OPENID_RP_JWKS_URI}
+      - OPENID_RP_SIGNED_JWKS_URI=${OPENID_RP_SIGNED_JWKS_URI}
+      - OPENID_RP_CALLBACK_URI=${OPENID_RP_CALLBACK_URI}
+      # END CONFIGURATION ENDPOINT
+      # MongoDB: four component-specific env sets (CIE OIDC backend, OpenID4VP backend, oidcop frontend, OpenID4VCI frontend).
+      # For single MongoDB, set MONGO_URL/MONGO_PORT/MONGO_DBUSER/MONGO_DBPASSWORD; component vars fall back to these.
+      # See docs/mongodb-env.md
+      - MONGO_CIE_OIDC_BACKEND_HOST=mongodb://${MONGO_CIE_OIDC_BACKEND_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_CIE_OIDC_BACKEND_PORT:-${MONGO_PORT:-27017}}
+      - MONGO_CIE_OIDC_BACKEND_DB_NAME=${MONGO_CIE_OIDC_BACKEND_DB_NAME:-cie_oidc}
+      - MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION=${MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION:-cie_oidc_authentication}
+      - MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION=${MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION:-cie_oidc_authentication_token}
+      - MONGO_CIE_OIDC_BACKEND_USER_COLLECTION=${MONGO_CIE_OIDC_BACKEND_USER_COLLECTION:-cie_oidc_users}
+      - MONGODB_CIE_OIDC_BACKEND_USERNAME=${MONGO_CIE_OIDC_BACKEND_DBUSER:-${MONGO_DBUSER:-satosa}}
+      - MONGODB_CIE_OIDC_BACKEND_PASSWORD=${MONGO_CIE_OIDC_BACKEND_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
-      - MONGODB_USERNAME=${MONGO_DBUSER:-satosa}
-      - MONGODB_PASSWORD=${MONGO_DBPASSWORD:-thatpassword}
-      - MONGO_HOST=${MONGO_HOST:-satosa-mongo}:${MONGO_PORT:-27017}
+      - MONGO_PYEUDIW_OPENID4VP_HOST=mongodb://${MONGO_PYEUDIW_OPENID4VP_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_PYEUDIW_OPENID4VP_PORT:-${MONGO_PORT:-27017}}
+      - MONGODB_PYEUDIW_OPENID4VP_USERNAME=${MONGO_PYEUDIW_OPENID4VP_DBUSER:-${MONGO_DBUSER:-satosa}}
+      - MONGODB_PYEUDIW_OPENID4VP_PASSWORD=${MONGO_PYEUDIW_OPENID4VP_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
-      - MONGO_BACKEND_HOST=mongodb://${MONGO_BACKEND_URL:-satosa-mongo}:${MONGO_BACKEND_PORT:-27017}
-      - MONGO_BACKEND_DB_NAME_OIDC_SCHEMA=${MONGO_DB_BACKEND_OIDC_NAME:-cie_oidc}
-      - MONGO_BACKEND_AUTH_OIDC_COLLECTION=${MONGO_BACKEND_AUTH_OIDC_COLLECTION:-cie_oidc_authentication}
-      - MONGO_BACKEND_TOKEN_OIDC_COLLECTION=${MONGO_BACKEND_TOKEN_OIDC_COLLECTION:-cie_oidc_authentication_token}
-      - MONGO_BACKEND_USER_OIDC_COLLECTION=${MONGO_BACKEND_USER_OIDC_COLLECTION:-cie_oidc_users}
-      - MONGODB_BACKEND_USERNAME=${MONGO_BACKEND_DBUSER:-satosa}
-      - MONGODB_BACKEND_PASSWORD=${MONGO_BACKEND_DBPASSWORD:-thatpassword}
+      - MONGO_OIDCOP_HOST=mongodb://${MONGO_OIDCOP_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_OIDCOP_PORT:-${MONGO_PORT:-27017}}
+      - MONGODB_OIDCOP_USERNAME=${MONGO_OIDCOP_DBUSER:-${MONGO_DBUSER:-satosa}}
+      - MONGODB_OIDCOP_PASSWORD=${MONGO_OIDCOP_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
-      - MONGO_FRONTEND_HOST=mongodb://${MONGO_FRONTEND_URL:-satosa-mongo}:${MONGO_FRONTEND_PORT:-27017}
-      - MONGODB_FRONTEND_USERNAME=${MONGO_FRONTEND_DBUSER:-satosa}
-      - MONGODB_FRONTEND_PASSWORD=${MONGO_FRONTEND_DBPASSWORD:-thatpassword}
+      - MONGO_PYEUDIW_OPENID4VCI_HOST=mongodb://${MONGO_PYEUDIW_OPENID4VCI_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_PYEUDIW_OPENID4VCI_PORT:-${MONGO_PORT:-27017}}
+      - MONGODB_PYEUDIW_OPENID4VCI_USERNAME=${MONGO_PYEUDIW_OPENID4VCI_DBUSER:-${MONGO_DBUSER:-satosa}}
+      - MONGODB_PYEUDIW_OPENID4VCI_PASSWORD=${MONGO_PYEUDIW_OPENID4VCI_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
       - SATOSA_ENCRYPTION_KEY=${SATOSA_ENCRYPTION_KEY:-CHANGE_ME!}
       - SATOSA_SALT=${SATOSA_SALT:-CHANGE_ME!}
@@ -164,8 +196,8 @@ services:
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
       - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
 
-      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-localhost}/OpenID4VP}
-      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-localhost}}
+      - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+      - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
     expose:
       - 10000
     ports:
@@ -173,7 +205,7 @@ services:
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
       - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
-      #- ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
@@ -200,20 +232,21 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/html:/usr/share/nginx/html:ro
       - ./certbot/archive:/etc/archive:ro
-      - ./certbot/live/${SATOSA_HOSTNAME:-localhost}:/etc/nginx/certs:ro
+      - ./certbot/live/${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}:/etc/nginx/certs:ro
       # - static:/usr/share/nginx/html # to be used for external volumes
     networks:
       iam-proxy-italia:
         aliases:
-          - ${SATOSA_HOSTNAME:-localhost}
+          - ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
     environment:
-      - NGINX_HOST=${SATOSA_HOSTNAME:-localhost}
+      - NGINX_HOST=${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - TZ=${TZ:-Europe/Rome}
 
   spid-samlcheck:
     profiles:
       - demo
       - dev
+      - saml2
     image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
     ports:
@@ -227,7 +260,10 @@ services:
     environment:
       - CERTBOT_ENABLED=${SATOSA_CERTBOT_ENABLED:-true}
       - CERTBOT_EMAIL=${SATOSA_CONTACT_PERSON_EMAIL_ADDRESS:-support.example@organization.org}
-      - CERTBOT_HOST=${SATOSA_HOSTNAME:-localhost}
+      - HOSTNAME=${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
+      - CERT_METHOD=${CERT_METHOD:-local}
+      - CERTBOT_KTY=${CERTBOT_KTY:-3072}
+      - CERTBOT_DAYS=${CERTBOT_DAYS:-3650}
       - TZ=${TZ:-Europe/Rome}
     volumes:
       - ./certbot:/etc/letsencrypt
@@ -241,7 +277,8 @@ services:
   trust-anchor:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
+      - oidc
     <<: *django-common
     container_name: trust-anchor
     build:
@@ -266,12 +303,13 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+      RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   cie-provider:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
+      - oidc
     <<: *django-common
     container_name: cie-provider
     build:
@@ -298,7 +336,34 @@ services:
     environment:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
-      RP_URL: "https://${SATOSA_HOSTNAME:-satosa-nginx.example.org}/CieOidcRp"
+      RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
+
+  relying-party-demo:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+    <<: *demo-rp-common
+    container_name: relying-party-demo
+    build:
+      <<: *demo-rp-build
+    ports:
+      - "8090:8090"
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - demo-rp.example.org
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
+    environment:
+      HOST: relying-party-demo
+      RUNNING_PORT: 8090
+      WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
+      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
+      CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
+      CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
+
 
 networks:
   iam-proxy-italia:

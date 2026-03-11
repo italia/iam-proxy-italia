@@ -24,8 +24,8 @@ class CieOidcBackend(BackendModule):
         self.config = module_config
         self.endpoints = {}
         self.trust_chain = self._generate_trust_chains()
-        self._client_id = self.config.get("metadata", {}).get("openid_relying_party", {}).get("client_id") or f"{base_url}/{name}"
-
+        metadata = self.config.get("metadata", {}).get("openid_relying_party", {})
+        self._client_id = metadata.get("client_id") or f"{base_url}/{name}"
 
     def start_auth(self, context, internal_request):
         """
@@ -50,11 +50,16 @@ class CieOidcBackend(BackendModule):
 
         return authorization_endpoint(context)
 
-
     def register_endpoints(self):
         el = EndpointsLoader(
-            self.config, self.internal_attributes, self.base_url, self.name, self.auth_callback_func, self.converter, self.trust_chain
-            )
+            self.config,
+            self.internal_attributes,
+            self.base_url,
+            self.name,
+            self.auth_callback_func,
+            self.converter,
+            self.trust_chain,
+        )
 
         url_map = []
 
@@ -62,11 +67,11 @@ class CieOidcBackend(BackendModule):
             url_map.append((f"{self.name}/{path}", inst))
 
         for path, inst in url_map:
-            self.endpoints[f"{path.split('/')[-1].replace('-', '_').replace('$', '')}"] = inst
+            key = path.split('/')[-1].replace('-', '_').replace('$', '')
+            self.endpoints[key] = inst
 
         logger.debug(f"Loaded CIE OIDC endpoints: {url_map}")
         return url_map
-
 
     def get_metadata_desc(self):
         """
@@ -79,7 +84,8 @@ class CieOidcBackend(BackendModule):
     def _generate_trust_chains(self) -> dict:
         '''
         private method _generate_trust_chains:
-        This method generate a list of trust-chain. After create a entity statement for Trust Anchor, validate itself, and call the generate_trust_chain
+        This method generate a list of trust-chain. After create a entity statement
+        for Trust Anchor, validate itself, and call the generate_trust_chain
         for all providers into configuration.
         Add all providers into dictionary.
         '''
@@ -89,7 +95,8 @@ class CieOidcBackend(BackendModule):
 
         httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
 
-        jwt = get_entity_configurations(self.config["trust_chain"]["config"]["trust_anchor"][0], httpc_params=httpc_params)[0]
+        ta_url = self.config["trust_chain"]["config"]["trust_anchor"][0]
+        jwt = get_entity_configurations(ta_url, httpc_params=httpc_params)[0]
 
         trust_anchor_ec = EntityStatement(jwt, httpc_params=httpc_params)
 
@@ -101,15 +108,19 @@ class CieOidcBackend(BackendModule):
 
         for provider_url in providers:
             try:
-                trust_chains[provider_url] = CieOidcBackend.generate_trust_chain(trust_anchor_ec, provider_url, httpc_params)
+                trust_chains[provider_url] = CieOidcBackend.generate_trust_chain(
+                    trust_anchor_ec, provider_url, httpc_params)
             except Exception as exception:
-                logger.error(f"Exception {exception} generated from this provider {provider_url}")
-
+                logger.error(
+                    f"Exception {exception} generated from this provider {provider_url}"
+                )
 
         return trust_chains
 
     @staticmethod
-    def generate_trust_chain(trust_anchor_ec: EntityStatement, provider_endpoint: str, httpc_params) -> TrustChainBuilder:
+    def generate_trust_chain(
+        trust_anchor_ec: EntityStatement, provider_endpoint: str, httpc_params
+    ) -> TrustChainBuilder:
         '''
         method _generate_trust_chain:
         This method generate a TrustChain Object from provider endpoint and Trust Anchor.

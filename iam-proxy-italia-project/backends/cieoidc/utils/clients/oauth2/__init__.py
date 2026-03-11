@@ -9,10 +9,7 @@ from backends.cieoidc.utils.helpers.misc import (
     get_key,
     iat_now, exp_from_now
 )
-from backends.cieoidc.utils.helpers.jwtse import (
-    unpad_jwt_payload,
-    verify_at_hash, create_jws
-)
+from backends.cieoidc.utils.helpers.jwtse import create_jws
 
 
 logger = logging.getLogger(__name__)
@@ -24,13 +21,11 @@ class OAuth2AuthorizationCodeGrant(object):
     https://tools.ietf.org/html/rfc6749
     """
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         self.grant_type = kwargs.get("grant_type")
         self.client_assertion_type = kwargs.get("client_assertion_type")
         self.jws_core = kwargs.get("jws_core")
         self.httpc_params = kwargs.get("httpc_params")
-
-
 
     def access_token_request(
         self,
@@ -45,8 +40,12 @@ class OAuth2AuthorizationCodeGrant(object):
         Access Token Request
         https://tools.ietf.org/html/rfc6749#section-4.1.3
         """
-        logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
-                     f"Params[redirect_uri: {redirect_uri}, state: {state}, code: {code}, client_id: {client_id}, token_endpoint: {token_endpoint_url}, code_verifier: {code_verifier}]")
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
+            f"Params[redirect_uri: {redirect_uri}, state: {state}, code: {code}, "
+            f"client_id: {client_id}, token_endpoint: {token_endpoint_url}, "
+            f"code_verifier: {code_verifier}]"
+        )
 
         grant_data = dict(
             grant_type=self.grant_type,
@@ -78,7 +77,7 @@ class OAuth2AuthorizationCodeGrant(object):
             timeout=self.httpc_params["session"].get("timeout"),
         )
 
-        if token_request.status_code != 200: # pragma: no cover
+        if token_request.status_code != 200:  # pragma: no cover
             logger.error(
                 f"Something went wrong with {state}: {token_request.status_code}"
             )
@@ -93,7 +92,6 @@ class OAuth2AuthorizationCodeGrant(object):
 
         logger.debug(f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
                      f"Params[Client_id: {client_id}]")
-
 
         token_request_data = dict(
             client_id=client_id,
@@ -123,7 +121,7 @@ class OAuth2AuthorizationCodeGrant(object):
                 "exp": exp_from_now(),
                 "jti": str(uuid.uuid4())
             },
-            jwk_dict = get_key(rp_conf.get("jwks_core")) #@TODO get RP from DB
+            jwk_dict=get_key(rp_conf.get("jwks_core"))  # @TODO get RP from DB
         )
         token_request_data["client_assertion"] = client_assertion
 

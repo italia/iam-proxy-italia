@@ -2,7 +2,7 @@ import logging
 import requests
 
 from backends.cieoidc.utils.exceptions import UnknownKid
-from backends.cieoidc.utils.helpers.jwtse import  (
+from backends.cieoidc.utils.helpers.jwtse import (
     unpad_jwt_head,
     decrypt_jwe,
     verify_jws
@@ -18,7 +18,7 @@ class OidcUserInfo(object):
     https://openid.net/specs/openid-connect-core-1_0.html#UserInfo
     """
 
-    def __init__(self,provider_configuration: dict, jwks_core: dict, httpc_params: dict):
+    def __init__(self, provider_configuration: dict, jwks_core: dict, httpc_params: dict):
         self.provider_configuration = provider_configuration
         self.jwks_core = jwks_core
         self.httpc_params = httpc_params
@@ -27,7 +27,7 @@ class OidcUserInfo(object):
         for jwk in jwks:
             if jwk.get("kid", None) and jwk["kid"] == kid:
                 return jwk
-        raise UnknownKid() # pragma: no cover
+        raise UnknownKid()  # pragma: no cover
 
     def get_userinfo(
         self, state: str, access_token: str, verify: bool, timeout: int, configuration_utils: ConfigurationPlugin
@@ -44,7 +44,7 @@ class OidcUserInfo(object):
             timeout=timeout
         )
 
-        if authz_userinfo.status_code != 200: # pragma: no cover
+        if authz_userinfo.status_code != 200:  # pragma: no cover
             logger.error(
                 f"Something went wrong with {state}: {authz_userinfo.status_code}"
             )
@@ -71,14 +71,14 @@ class OidcUserInfo(object):
                     jws = jws.decode()
 
                 header = unpad_jwt_head(jws)
-                idp_jwks = get_jwks(self.provider_configuration,self.httpc_params)
+                idp_jwks = get_jwks(self.provider_configuration, self.httpc_params)
                 idp_jwk = self.__get_jwk(header["kid"], idp_jwks)
 
                 decoded_jwt = verify_jws(jws, idp_jwk, configuration_utils.get_signing_alg_values_supported)
                 logger.debug(f"Userinfo endpoint result: {decoded_jwt}")
                 return decoded_jwt
 
-            except KeyError as e: # pragma: no cover
+            except KeyError as e:  # pragma: no cover
                 logger.error(f"Userinfo response error {state}: {e}")
                 return False
             except UnknownKid as e:

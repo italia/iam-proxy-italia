@@ -12,16 +12,16 @@ config:
       module: backends.cieoidc.storage.impl.mongo_storage
       class: MongoStorage
       init_params:
-        url: !ENV MONGO_BACKEND_HOST
+        url: !ENV MONGO_CIE_OIDC_BACKEND_HOST
         conf:
-          db_name: !ENV MONGO_BACKEND_DB_NAME_OIDC_SCHEMA
-          db_auth_collection: !ENV MONGO_BACKEND_AUTH_OIDC_COLLECTION # cie_oidc_authentication
-          db_token_collection: !ENV MONGO_BACKEND_TOKEN_OIDC_COLLECTION # cie_oidc_authentication_token
-          db_user_collection: !ENV MONGO_BACKEND_USER_OIDC_COLLECTION # cie_oidc_users
+          db_name: !ENV MONGO_CIE_OIDC_BACKEND_DB_NAME
+          db_auth_collection: !ENV MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION
+          db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
+          db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
           data_ttl: 63072000 # 2 years
         connection_params:
-          username: !ENV MONGODB_BACKEND_USERNAME
-          password: !ENV MONGODB_BACKEND_PASSWORD
+          username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
+          password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
 
   providers:
     - http://cie-provider.example.org:8002/oidc/op/
@@ -93,22 +93,22 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: https://!ENV SATOSA_HOSTNAME/CieOidcRp/resolve
+      federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
       organization_name: Example RP
-      homepage_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp
-      policy_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/en/website/legal-information
-      logo_uri: https://!ENV SATOSA_HOSTNAME/static/cie/sample-cie-logo.png
+      homepage_uri: <base_url>/<name>
+      policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
+      logo_uri: !ENV SAMPLE_CIE_LOGO_URI
       contacts:
         - ops@rp.example.it
     openid_relying_party:
       application_type: web
-      client_id:  https://!ENV SATOSA_HOSTNAME/CieOidcRp # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
+      client_id:  <base_url>/<name> # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
       client_name: Name of an example organization
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/openid_relying_party/jwks.json
-      signed_jwks_uri: https://!ENV SATOSA_HOSTNAME/CieOidcRp/openid_relying_party/jwks.jose
+      jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
+      signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it
@@ -116,7 +116,7 @@ config:
         - refresh_token
         - authorization_code
       redirect_uris:
-        - https://!ENV SATOSA_HOSTNAME/CieOidcRp/oidc/callback
+        - <base_url>/<name>/oidc/callback
       response_types:
         - code
       subject_type: pairwise

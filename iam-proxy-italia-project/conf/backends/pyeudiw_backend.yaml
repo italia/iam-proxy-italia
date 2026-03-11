@@ -256,7 +256,7 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
-        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://localhost/OpenID4VP'
+        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
@@ -298,72 +298,77 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        client_id: !ENV PYEUDIW_X509_CLIENT_ID # "x509_san_dns:localhost"
+        client_id: !ENV PYEUDIW_X509_CLIENT_ID # e.g. "x509_san_dns:iam-proxy-italia.example.org"; must match leaf cert SAN DNS
         certificate_authorities:
           ca.example.com: |
             -----BEGIN CERTIFICATE-----
-            MIICJzCCAc6gAwIBAgIUFqb+aMtaYydHFIh9qXKzZVz7eQYwCgYIKoZIzj0EAwIw
-            UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
-            VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
-            MTA2WhcNMjYwNjE2MTY1MTA2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
-            bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
-            VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJOfDFsMn2zgJ1Kb5hXU
-            r/dDyOwRjm2LRiVFjgUSnhy/09FapToxjB7FAGZMJb/Q3JyCUc32WOGfXYA5izT+
-            Ul6jgYEwfzASBgNVHRMBAf8ECDAGAQH/AgECMBkGA1UdEQQSMBCCDmNhLmV4YW1w
-            bGUuY29tMA4GA1UdDwEB/wQEAwIBpjA+BgNVHR8ENzA1MDOgMaAvhi1odHRwczov
-            L2NhLmV4YW1wbGUuY29tL2NybC9jYS5leGFtcGxlLmNvbS5jcmwwCgYIKoZIzj0E
-            AwIDRwAwRAIgafkpE88vVHf1AoNrRvqLNaiRwdw569kUbhwVrbXN7dYCIH0OkXvk
-            tX5+FvfFc70mO+2FvYtOV0U4pruy8e807ATO
+            MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
+            XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+            hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+            MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
+            ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
+            LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
+            KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
+            xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
+            AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
+            cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
+            YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
+            PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
+            WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
             -----END CERTIFICATE-----
-        leaf_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
+        leaf_certificate_chains_by_ca: # X.509 chains in PEM format (leaf FQDN: iam-proxy-italia.example.org). Leaf MUST match metadata_jwks[0]
           ca.example.com:
             - |
               -----BEGIN CERTIFICATE-----
-              MIICPTCCAeOgAwIBAgIUHoZHzmND8rCMUj6Rpk8hw1dok+swCgYIKoZIzj0EAwIw
-              TjEpMCcGA1UEAwwgaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5uZXQxFDAS
-              BgNVBAoMC0V4YW1wbGUgSU5UMQswCQYDVQQGEwJJVDAeFw0yNTA2MTUxNjUxMDZa
-              Fw0yNjA2MTYxNjUxMDZaMFgxMjAwBgNVBAMMKUNOPWxlYWYuZXhhbXBsZS5jb20s
-              IE89RXhhbXBsZSBMZWFmLCBDPUlUMRUwEwYDVQQKDAxFeGFtcGxlIExlYWYxCzAJ
-              BgNVBAYTAklUMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ46FDkhMjewZIP9q
-              P8ZKZIP+ZEemctvjxeP0l3vWHMIhPuWwbF0l7CaieT2XX9MBVjH+eLHJ1O0jVJuf
-              QuR8QKOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMCcGA1UdEQQgMB6CCWxvY2Fs
-              aG9zdIYRaHR0cHM6Ly9sb2NhbGhvc3QwDgYDVR0PAQH/BAQDAgGmMEIGA1UdHwQ7
-              MDkwN6A1oDOGMWh0dHBzOi8vbGVhZi5leGFtcGxlLmNvbS9jcmwvbGVhZi5leGFt
-              cGxlLmNvbS5jcmwwCgYIKoZIzj0EAwIDSAAwRQIhAL1kC7cvzWp8T1qx9bB0QL3O
-              1sjHIcKrHttkVrn+DRNgAiAvquUGn5zmpnoNVEzta8W+6po9KP/MfUb7oifqEvR9
-              gQ==
+              MIICpzCCAk2gAwIBAgIUICY5d3bzoF3Hai0jckK5OcxS5oYwCgYIKoZIzj0EAwIw
+              fTEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEsMCoGCSqGSIb3DQEJARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20x
+              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MDMwOTE2NDk0NloX
+              DTI3MDMxMDE2NDk0NlowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
+              bXBsZS5vcmcxCzAJBgNVBAYTAklUMTAwLgYJKoZIhvcNAQkBFiFpbmZvQGlhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcxHjAcBgNVBAoMFUlBTSBQcm94eSBJdGFs
+              aWEgTGVhZjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEOOhQ5ITI3sGSD/aj/G
+              SmSD/mRHpnLb48Xj9Jd71hzCIT7lsGxdJewmonk9l1/TAVYx/nixydTtI1Sbn0Lk
+              fECjgaAwgZ0wDAYDVR0TAQH/BAIwADBNBgNVHREERjBEhiRodHRwczovL2lhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmeCHGlhbS1wcm94eS1pdGFsaWEuZXhhbXBs
+              ZS5vcmcwHQYDVR0OBBYEFEgF7Z+nzUlaMeDcOaS5mwDrxiEnMB8GA1UdIwQYMBaA
+              FKVyVQwLn0dMCkkI0mTl/1n8KEuLMAoGCCqGSM49BAMCA0gAMEUCIHNLPGADAdt4
+              fKUa9XQPcjyg7zRfIxIwwRPElMoJHKw1AiEAufQOQKA9lm1hZZB1uquw04NihLOe
+              GENhnF/mdOC++kY=
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICHDCCAcKgAwIBAgIUacxcub/wg7IelStXNkgaiSS6syowCgYIKoZIzj0EAwIw
-              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
-              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
-              MTA2WhcNMjYwNjE2MTY1MTA2WjBOMSkwJwYDVQQDDCBodHRwczovL2ludGVybWVk
-              aWF0ZS5leGFtcGxlLm5ldDEUMBIGA1UECgwLRXhhbXBsZSBJTlQxCzAJBgNVBAYT
-              AklUMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEZcOJK9fXANy51BFirWXOCipi
-              qFWFH4TlRwbAj8L4eYNV5oCqMiY8sxhtK3qX6BdUBYBiio7IQBIhmeLXFBi+2aN6
-              MHgwEgYDVR0TAQH/BAgwBgEB/wIBATAOBgNVHQ8BAf8EBAMCAaYwUgYDVR0fBEsw
-              STBHoEWgQ4ZBaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZXhhbXBsZS5uZXQvY3JsL2lu
-              dGVybWVkaWF0ZS5leGFtcGxlLm5ldC5jcmwwCgYIKoZIzj0EAwIDSAAwRQIhAJMk
-              C6fSNuhegoI4wQa057vespZDawTeRotGMY/sU3fnAiB3wpPqzLnEIldTJQeztA0f
-              2TqlVlfiUgsTaGDC/rRtbg==
+              MIICfDCCAiOgAwIBAgIUEuIRQvo3vS+MMm2By3wQsFDuOaUwCgYIKoZIzj0EAwIw
+              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowfTEhMB8GA1UEAwwYaW50
+              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJVDEsMCoGCSqGSIb3DQEJ
+              ARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20xHTAbBgNVBAoMFEV4YW1w
+              bGUgSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAD/Ms8fX
+              XwDLr7Lome68ZCRmEyc31bMvnvj5Mpc4NyrljxK0My/Xb1HmM68JXRchJPe6v5/q
+              vYM0IpKi85pDfKOBnjCBmzASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdEQQ+MDyG
+              IGh0dHBzOi8vaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tghhpbnRlcm1lZGlhdGUu
+              ZXhhbXBsZS5jb20wHQYDVR0OBBYEFKVyVQwLn0dMCkkI0mTl/1n8KEuLMB8GA1Ud
+              IwQYMBaAFPxUYnyLWqJnm+vN3UpxiT8yH6ILMAoGCCqGSM49BAMCA0cAMEQCIAjv
+              TXF9zSk4ztvBQweeWRCMB+nWC6ypHVBRz4lPxb7EAiAq+WtiKSY9AXZevTDYgZ1U
+              DH3lMQJPlpJNP0CwLYq6YQ==
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICJzCCAc6gAwIBAgIUFqb+aMtaYydHFIh9qXKzZVz7eQYwCgYIKoZIzj0EAwIw
-              UjEuMCwGA1UEAwwlQ049Y2EuZXhhbXBsZS5jb20sIE89RXhhbXBsZSBDQSwgQz1J
-              VDETMBEGA1UECgwKRXhhbXBsZSBDQTELMAkGA1UEBhMCSVQwHhcNMjUwNjE1MTY1
-              MTA2WhcNMjYwNjE2MTY1MTA2WjBSMS4wLAYDVQQDDCVDTj1jYS5leGFtcGxlLmNv
-              bSwgTz1FeGFtcGxlIENBLCBDPUlUMRMwEQYDVQQKDApFeGFtcGxlIENBMQswCQYD
-              VQQGEwJJVDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJOfDFsMn2zgJ1Kb5hXU
-              r/dDyOwRjm2LRiVFjgUSnhy/09FapToxjB7FAGZMJb/Q3JyCUc32WOGfXYA5izT+
-              Ul6jgYEwfzASBgNVHRMBAf8ECDAGAQH/AgECMBkGA1UdEQQSMBCCDmNhLmV4YW1w
-              bGUuY29tMA4GA1UdDwEB/wQEAwIBpjA+BgNVHR8ENzA1MDOgMaAvhi1odHRwczov
-              L2NhLmV4YW1wbGUuY29tL2NybC9jYS5leGFtcGxlLmNvbS5jcmwwCgYIKoZIzj0E
-              AwIDRwAwRAIgafkpE88vVHf1AoNrRvqLNaiRwdw569kUbhwVrbXN7dYCIH0OkXvk
-              tX5+FvfFc70mO+2FvYtOV0U4pruy8e807ATO
+              MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
+              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
+              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
+              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
+              KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
+              xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
+              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
+              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
+              YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
+              PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
+              WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
               -----END CERTIFICATE-----
-
         private_keys: *metadata_jwks
 
   # Mongodb database configuration
@@ -373,17 +378,17 @@ config:
         module: pyeudiw.storage.mongo_cache
         class: MongoCache
         init_params:
-          url: !ENV MONGO_BACKEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
           conf:
             db_name: pyeudiw_openid4vp
           connection_params:
-            username: !ENV MONGODB_BACKEND_USERNAME
-            password: !ENV MONGODB_BACKEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD
       storage:
         module: pyeudiw.storage.mongo_storage
         class: MongoStorage
         init_params:
-          url: !ENV MONGO_BACKEND_HOST
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
           conf:
             db_name: pyeudiw_openid4vp
             db_sessions_collection: sessions
@@ -392,5 +397,5 @@ config:
             db_trust_sources_collection: trust_sources
             data_ttl: 63072000 # 2 years
           connection_params:
-            username: !ENV MONGODB_BACKEND_USERNAME
-            password: !ENV MONGODB_BACKEND_PASSWORD
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD

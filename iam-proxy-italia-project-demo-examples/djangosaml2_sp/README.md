@@ -13,7 +13,7 @@ source env/bin/activate
 
 cd djangosaml2_sp
 # download idp metadata to sp, not needed if remote options is enabled
-wget https://localhost/Saml2IDP/metadata/ -O saml2_sp/saml2_config/iam-proxy-italia.xml --no-check-certificate
+wget https://iam-proxy-italia.example.org/Saml2IDP/metadata/ -O saml2_sp/saml2_config/iam-proxy-italia.xml --no-check-certificate
 
 # install prerequisite
 pip install -r requirements.txt
@@ -39,5 +39,5 @@ You will be redirect to the Saml2 Service Provider page [Service Provider page](
 ### Add SP metadata to Satosa server
 ```
 # put sp metadata to satosa 
-wget http://localhost:8000/saml2/metadata -O #{Satosa root}/metadata/sp/djangosaml2_sp
+wget http://localhost:8000/saml2/metadata -O iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
 ```

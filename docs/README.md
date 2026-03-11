@@ -20,8 +20,8 @@ Technical documentation for IAM Proxy Italia (deployment, Docker, NGINX, systemd
 | Document | Description |
 | -------- | ----------- |
 | [../Docker-compose/README.md](../Docker-compose/README.md) | Docker Compose overview, run script, profiles |
-| [run-docker-compose.sh.md](run-docker-compose.sh.md) | `run-docker-compose.sh` options and behaviour |
-| [docker_compose_profiles.md](docker_compose_profiles.md) | Compose profiles (demo, dev, mongo, etc.) |
+| [README.run-docker-compose.sh.md](README.run-docker-compose.sh.md) | `run-docker-compose.sh` options and behaviour |
+| [docker_compose_profiles.md](docker_compose_profiles.md) | Compose profiles (demo, dev, storage_mongo, saml2, oidc, wallet, etc.) |
 | [satosa-nginx_compose_service.md](satosa-nginx_compose_service.md) | NGINX service in Compose, virtual hosts |
 | [satosa-nginx-vhost.md](satosa-nginx-vhost.md) | NGINX virtual host examples and configuration |
 
@@ -39,5 +39,6 @@ Technical documentation for IAM Proxy Italia (deployment, Docker, NGINX, systemd
 | Document | Description |
 | -------- | ----------- |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions (Docker, config, tests) |
+| [gen_x509_chain_iam_proxy.md](gen_x509_chain_iam_proxy.md) | X.509 chain generator script for pyeudiw (custom FQDN for demos) |
 
 > When adding new documentation files under `docs/`, add them to this index!

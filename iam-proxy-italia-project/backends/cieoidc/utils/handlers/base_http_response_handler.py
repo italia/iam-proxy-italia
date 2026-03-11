@@ -46,11 +46,11 @@ class BaseHTTPResponseHandler(BaseLogger):
         )
 
     def _handle_500(
-            self, 
-            context: Context, 
-            description: str, 
-            exc: Exception
-        ) -> JsonResponse:
+        self,
+        context: Context,
+        description: str,
+        exc: Exception
+    ) -> JsonResponse:
         """
         Handles a 500 error.
 
@@ -110,9 +110,9 @@ class BaseHTTPResponseHandler(BaseLogger):
         )
 
     def _handle_400(
-        self, 
-        context: Context, 
-        description: str, 
+        self,
+        context: Context,
+        description: str,
         exc: Exception = EmptyHTTPError("")
     ) -> JsonResponse:
         """
@@ -150,9 +150,9 @@ class BaseHTTPResponseHandler(BaseLogger):
         return self._handle_40X("1", "invalid_client", context, description, exc)
 
     def _handle_403(
-        self, 
-        context, 
-        description: str, 
+        self,
+        context,
+        description: str,
         exc: Exception = EmptyHTTPError("")
     ):
         """
@@ -174,4 +174,3 @@ class BaseHTTPResponseHandler(BaseLogger):
     @staticmethod
     def _handle_204():
         return JsonResponse(status=204)
-

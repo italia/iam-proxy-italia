@@ -6,7 +6,7 @@ This container work as [uWSGI](https://en.wikipedia.org/wiki/UWSGI) proxy to the
 ### Environments
 | Environment | from            | Default value | Description
 | ----------- | --------------- | ------------- | -----------
-| NGINX_HOST  | SATOSA_HOSTNAME | localhost     | Hostname in satosa virtualhost
+| NGINX_HOST  | SATOSA_HOSTNAME | iam-proxy-italia.example.org     | Hostname in satosa virtualhost
 | TZ          | TZ              | Europe/Rome   | Set Time Zone for the instance
 
 ### Volumes
@@ -28,14 +28,14 @@ The Satosa Virtual Host listen exclusively on port 443 over protocol https.
 The HTTPS protocol il limited at TLS1.3.
 The older version of TLS and SSL are denyed
 
-NGINX configuration accept configurations from environments. In the default configuration the `server_name` is definied with with `$NGINX_HOST` env. If is not present this variable, Docker Compose assign `localhost` as `NGINX_HOST` value.
+NGINX configuration accept configurations from environments. In the default configuration the `server_name` is definied with with `$NGINX_HOST` env. If is not present this variable, Docker Compose assign `iam-proxy-italia.example.org` as `NGINX_HOST` value.
 
 TLS certificates will be searched in:
 * `ssl_certificate /etc/nginx/certs/proxy_local.pem` - public certificate
 * `ssl_certificate_key /etc/nginx/certs/proxy_local.key` - private key
 
 On default the directory `Docker-compose/nginx/certs` is mounted on `/etc/nginx/certs`.
-An self signed certificate for server name `localhost` is persent in the certs directory. To public the host you must overwrite these file with a valid certificate for you server name.
+An self signed certificate for server name `iam-proxy-italia.example.org` is persent in the certs directory. To public the host you must overwrite these file with a valid certificate for you server name.
 
 The virtual host root is set on `/usr/share/nginx/html`, the `Docker-compose/nginx/html` path is mounted over this directory.
 To update the static file you must edit the files in `Docker-compose/nginx/html` path.

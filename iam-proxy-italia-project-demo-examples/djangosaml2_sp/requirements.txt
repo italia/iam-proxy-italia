@@ -11,6 +11,9 @@ pyOpenSSL>=25.0.0,<26.0.0
 djangosaml2>=1.11.1
 importlib-resources>=5.12.0,<6.0.0
 
+# Required by Python zoneinfo when system tzdata is missing (Docker/slim images)
+tzdata>=2024.1
+
 # design-django-theme (bootstrap_italia_template)
 design-django-theme>=2.7.0
 django-sass-processor>=1.2.2

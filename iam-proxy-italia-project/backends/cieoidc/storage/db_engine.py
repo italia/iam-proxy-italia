@@ -34,16 +34,19 @@ class OidcDbEngine(OidcStorage):
     def __write(self, method, *args, **kwargs) -> Any:
         updates = 0
         for _callable in self.__call_storages(method):
-            if _callable is None: continue
+            if _callable is None:
+                continue
             updates += _callable(*args, **kwargs)
         return updates
 
     def __find(self, method, *args, **kwargs) -> Any:
         result = None
         for _callable in self.__call_storages(method):
-            if _callable is None: continue
+            if _callable is None:
+                continue
             res = _callable(*args, **kwargs)
-            if res is None: continue
+            if res is None:
+                continue
             result = res
             break
         return result
@@ -67,7 +70,6 @@ class OidcDbEngine(OidcStorage):
                 continue
             alive |= _callable()
         return alive
-
 
     def add_session(self, entity: OidcAuthentication) -> int:
         self.prepare_for_insert(entity)
