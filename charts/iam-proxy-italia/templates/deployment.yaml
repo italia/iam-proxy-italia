@@ -48,21 +48,25 @@ spec:
               wsgi_file="/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py"
               exec uwsgi \
                 --wsgi-file "$wsgi_file" \
-                --socket {{ .Values.uwsgi.socket }} \
+                --http-socket {{ .Values.uwsgi.socket }} \
+                {{- if .Values.uwsgi.master }}
                 --master \
+                --log-master-bufsize {{ .Values.uwsgi.logMasterBufsize }} \
+                {{- end }}
                 --processes {{ .Values.uwsgi.processes }} \
                 --listen {{ .Values.uwsgi.listen }} \
                 --callable app \
-                --log-master-bufsize {{ .Values.uwsgi.logMasterBufsize }} \
                 --vacuum \
+                {{- if .Values.uwsgi.master }}
                 --max-requests {{ .Values.uwsgi.maxRequests }} \
                 --harakiri {{ .Values.uwsgi.harakiri }} \
+                {{- end }}
+                {{- if .Values.uwsgi.singleInterpreter }}
+                --single-interpreter \
+                {{- end }}
                 --buffer-size={{ .Values.uwsgi.bufferSize }} \
-                --uid satosa \
-                --gid satosa \
                 --chdir {{ .Values.satosa.baseDir }} \
-                --die-on-term \
-                --touch-reload {{ .Values.satosa.baseDir }}/proxy_conf.yaml
+                --die-on-term
           env:
             - name: TZ
               value: {{ .Values.timezone | quote }}
@@ -220,22 +224,8 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
-            {{- if .Values.oidcop.jwks.existingVolume }}
-            - name: {{ .Values.oidcop.jwks.existingVolume }}
-              mountPath: {{ .Values.oidcop.jwks.mountPath }}
-              readOnly: true
-            {{- else }}
-            {{- if .Values.oidcop.jwks.public.content }}
-            - name: oidcop-jwks-public
-              mountPath: {{ .Values.oidcop.jwks.mountPath }}/{{ dir .Values.oidcop.jwks.public.subPath }}
-              readOnly: true
-            {{- end }}
-            {{- if .Values.oidcop.jwks.private.content }}
-            - name: oidcop-jwks-private
-              mountPath: {{ .Values.oidcop.jwks.mountPath }}/{{ dir .Values.oidcop.jwks.private.subPath }}
-              readOnly: true
-            {{- end }}
-            {{- end }}
+            - name: data
+              mountPath: {{ .Values.dataVolume.mountPath }}
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -278,22 +268,9 @@ spec:
         - name: tmp
           emptyDir:
             medium: Memory
-        {{- if and (not .Values.oidcop.jwks.existingVolume) .Values.oidcop.jwks.public.content }}
-        - name: oidcop-jwks-public
-          secret:
-            secretName: {{ include "iam-proxy-italia.fullname" . }}-oidcop-jwks
-            items:
-              - key: public.json
-                path: {{ base .Values.oidcop.jwks.public.subPath }}
-        {{- end }}
-        {{- if and (not .Values.oidcop.jwks.existingVolume) .Values.oidcop.jwks.private.content }}
-        - name: oidcop-jwks-private
-          secret:
-            secretName: {{ include "iam-proxy-italia.fullname" . }}-oidcop-jwks
-            items:
-              - key: private.json
-                path: {{ base .Values.oidcop.jwks.private.subPath }}
-        {{- end }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.dataVolume.existingClaim | default (include "iam-proxy-italia.fullname" .) }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
