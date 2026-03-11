@@ -358,7 +358,7 @@ class SpidSAMLBackend(SAMLBackend):
             elif entity_id == self.config["sp_config"].get("ficep_entity_id"):
                 value = self.config["sp_config"]["ficep_default_acs_index"]
             else:
-                value = self.config["sp_config"]["spid_default_acs_index"]
+                value = self.config["sp_config"].get("spid_default_acs_index", "0")
 
             authn_req.attribute_consuming_service_index = str(value)
 
