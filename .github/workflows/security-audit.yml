@@ -62,8 +62,6 @@ jobs:
           # CVE-2026-26007 (cryptography): SECT curves subgroup validation. Fix: 46.0.5.
           #   Cannot add to pyproject.toml: pysaml2 pins cryptography==45.0.7; Poetry
           #   resolver conflicts. Post-install upgrade possible but not in current workflow.
-          # CVE-2026-25990 (pillow): PSD out-of-bounds write. Fix: 12.1.1.
-          #   Cannot add to pyproject.toml: pyeudiw requires Pillow<12; strict conflict.
           echo ""
           echo "##############################################################################"
           echo "#  ⚠️  Whitelisted CVEs (see workflow comments for rationale)                 #"
@@ -72,14 +70,12 @@ jobs:
           # --cache-dir: use fresh dir to avoid CacheControl "deserialization failed" warnings from pip's incompatible http cache
           poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc \
             --ignore-vuln CVE-2024-23342 \
-            --ignore-vuln CVE-2026-26007 \
-            --ignore-vuln CVE-2026-25990
+            --ignore-vuln CVE-2026-26007
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "### ⚠️ Whitelisted CVEs" >> $GITHUB_STEP_SUMMARY
           echo "- **CVE-2024-23342 (ecdsa)**: No upstream fix; side-channel out of scope per python-ecdsa." >> $GITHUB_STEP_SUMMARY
           echo "- **CVE-2026-26007 (cryptography)**: Blocked by pysaml2 pin (==45.0.7); fix 46.0.5." >> $GITHUB_STEP_SUMMARY
-          echo "- **CVE-2026-25990 (pillow)**: Blocked by pyeudiw (Pillow<12); fix 12.1.1." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
 
