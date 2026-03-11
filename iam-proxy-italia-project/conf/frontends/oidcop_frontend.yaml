@@ -170,7 +170,7 @@ config:
               - sig
         private_path: data/oidc_op/private/jwks.json
         public_path: data/static/jwks.json
-        read_only: true
+        read_only: false
         uri_path: OIDC/jwks.json
       login_hint2acrs:
         class: idpyoidc.server.login_hint.LoginHint2Acrs
