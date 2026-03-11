@@ -35,7 +35,12 @@ document.getElementById("lang-select")?.addEventListener('change', (e) => {
 
 // ----------------------- Document Loader -----------------------
 function loadDocument(resource) {
-  // header
+  // header (use bundle or i18next.t so it works regardless of bundle structure)
+  const regionEl = document.getElementById('header-region-name');
+  if (regionEl) {
+    const regionName = resource?.header?.region_name ?? i18next.t('header.region_name');
+    regionEl.textContent = regionName || '';
+  }
   document.getElementById('wallet-title').textContent = resource.titles.login_logo;
   // footer
   document.getElementById('footer-legal').textContent = resource.footer.legal_notice;
@@ -43,6 +48,8 @@ function loadDocument(resource) {
   document.getElementById('footer-accessibility').textContent = resource.footer.accessibility_statement;
   // meta
   document.getElementById("tab-title").textContent = resource.titles.page_title;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', resource.titles.page_title);
 }
 
 // ----------------------- Wallets Loader -----------------------
@@ -100,46 +107,43 @@ function createWallet(resource, id_key, container) {
   row.className = 'row';
   Object.entries(resource[id_key]).forEach(([key, wallet]) => {
     const col = document.createElement('div');
-    col.className = 'col-12 col-md-6 mb-3';
+    col.className = 'col-12 col-md-6 mb-3 mb-md-4';
     col.appendChild(createWalletBox(resource, wallet));
     row.appendChild(col);
   });
   container.appendChild(row);
 }
 
-// ----------------------- Wallet Box -----------------------
+// ----------------------- Wallet Box (Bootstrap Italia it-card) -----------------------
 function createWalletBox(resource, wallet) {
-  const box = document.createElement('div');
-  box.className = 'wallet-box border rounded p-3 shadow-sm bg-white d-flex flex-column justify-content-between';
-  box.style.height = '100%';
+  // Bootstrap Italia card: https://italia.github.io/bootstrap-italia/docs/componenti/card/
+  const card = document.createElement('article');
+  card.className = 'it-card rounded shadow-sm border h-100';
 
-  const row = document.createElement('div');
-  row.className = 'd-flex justify-content-between align-items-center';
+  const title = document.createElement('h3');
+  title.className = 'it-card-title';
+  title.textContent = wallet.name;
 
-  const left = document.createElement('div');
-  left.className = 'wallet-info';
-  left.appendChild(createWalletName(wallet.name));
+  const body = document.createElement('div');
+  body.className = 'it-card-body d-flex flex-column';
+  const bodyRow = document.createElement('div');
+  bodyRow.className = 'd-flex justify-content-between align-items-center flex-wrap gap-2';
 
-  row.appendChild(left);
   const withLearnMore = !!wallet.learn_more_link || !!wallet.learn_more_descr;
-  row.appendChild(createLogoButton(wallet, withLearnMore));
-  box.appendChild(row);
+  bodyRow.appendChild(createLogoButton(wallet, withLearnMore));
+  body.appendChild(bodyRow);
 
   if (withLearnMore) {
     const learnMoreElem = createLearnMore(resource, wallet);
     if (learnMoreElem) {
-      learnMoreElem.style.display = "block";
-      box.appendChild(learnMoreElem);
+      learnMoreElem.classList.add('mt-2');
+      body.appendChild(learnMoreElem);
     }
   }
 
-  return box;
-}
-
-function createWalletName(name) {
-  const nameElem = document.createElement('h5');
-  nameElem.textContent = name;
-  return nameElem;
+  card.appendChild(title);
+  card.appendChild(body);
+  return card;
 }
 
 // ----------------------- Logo Button -----------------------
@@ -249,13 +253,13 @@ function createLearnMore(resource, wallet) {
 
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
-      const box = toggle.closest('.wallet-box');
+      const box = toggle.closest('.it-card');
       if (text.style.display === 'none') {
         text.style.display = 'block';
-        box.style.height = 'auto';
+        if (box) box.style.height = 'auto';
       } else {
         text.style.display = 'none';
-        box.style.height = '';
+        if (box) box.style.height = '';
         uniformAll();
       }
     });
@@ -294,13 +298,13 @@ function checkId(id) {
 }
 
 function uniformAll() {
-  setUniformSize(".wallet-box", "height");
-  setUniformSize(".wallet-box .btn", "height");
-  setUniformSize(".wallet-box .btn", "width");
+  setUniformSize(".it-card", "height");
+  setUniformSize(".it-card .btn", "height");
+  setUniformSize(".it-card .btn", "width");
 }
 
 function uniformWalletsAfterImages() {
-  const imgs = document.querySelectorAll(".wallet-box img");
+  const imgs = document.querySelectorAll(".it-card img");
   let loaded = 0;
 
   if (!imgs.length) {

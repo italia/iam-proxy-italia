@@ -1,0 +1,12 @@
+{
+  "name": "iam-proxy-italia-static",
+  "description": "Static assets for IAM Proxy Italia (Bootstrap Italia, i18n). Run from this directory.",
+  "private": true,
+  "scripts": {
+    "update-bootstrap-italia": "node scripts/copy-bootstrap-italia.js",
+    "postinstall": "npm run update-bootstrap-italia"
+  },
+  "devDependencies": {
+    "bootstrap-italia": "^2.18.0"
+  }
+}

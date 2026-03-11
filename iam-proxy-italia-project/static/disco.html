@@ -2,9 +2,9 @@
 <html lang="it">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title id="tab-title">Accedi</title>
-  <meta name="description" content="" id="tab-title">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title id="tab-title"></title>
+  <meta name="description" content="">
 
   <link rel="stylesheet" href="/static/css/style.css">
 
@@ -36,8 +36,7 @@
       flex: 1;
     }
 
-    .wallet-box a:hover {
-      background-color: #f0f8ff;
+    .it-card .btn:hover {
       text-decoration: none;
     }
 
@@ -68,8 +67,7 @@
       #wallets-container .col-12 {
         margin-bottom: 1rem;
       }
-      .wallet-box {
-        padding: 1rem !important;
+      .it-card {
         font-size: 1rem !important;
       }
       footer {
@@ -88,9 +86,7 @@
   <div class="it-header-slim-wrapper bg-primary">
     <div class="container">
       <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
-        <span class="d-none d-lg-block navbar-brand text-white">
-          <strong>Nome della Regione</strong>
-        </span>
+        <span class="navbar-brand text-white"><strong id="header-region-name"></strong></span>
         <!-- Dropdown language -->
         <div>
           <select id="lang-select" class="form-select form-select-sm text-white" style="background-color: #0072CE">

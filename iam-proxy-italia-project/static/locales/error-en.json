@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Authentication Error",
+    "description": "Authentication Error"
+  },
+  "header": {
+    "organization_name": "Organization Name"
+  },
+  "nav": {
+    "main_page": "Main page",
+    "faq": "Frequently asked questions",
+    "this_service": "This service",
+    "assistance": "Assistance",
+    "spid": "SPID",
+    "more_info": "More information",
+    "dont_have_spid": "Don't have SPID?",
+    "need_help": "Need help?",
+    "close": "Close"
+  },
+  "body": {
+    "title": "Authentication Error",
+    "dear_user": "Dear User,",
+    "intro": "There has been an exception in managing your Authentication flow. This cannot depend on your credentials, otherwise it would have been the page where you entered these to provide you with a Failed Authentication notice.",
+    "communicated": "The problem you have encountered has been communicated in real time to the platform administrators, in the event that it was a temporary problem we ask you to:",
+    "try_again": "Try to authenticate again, starting from the page of the service provider website;",
+    "wait_retry": "If the problem occurs again, wait a few minutes and try again;",
+    "support_ticket": "If the problem persists for more than 1 hour, we ask you to open a support ticket at https://ticket.example.org",
+    "in_most_cases": "In most cases, it is a temporary problem that arose following an update of the platforms in progress, an advancement of the software version or a server migration."
+  },
+  "footer": {
+    "organization_name": "Organization Name",
+    "tagline": "Lorem ipsum",
+    "contacts": "Contacts",
+    "contacts_title": "Go to page: Contacts",
+    "address_line1": "via Example 00000 City, Province",
+    "address_line2": "Tax Code 00000000000 - Tel. (+39) xxxx yyyyyy",
+    "pec": "Certified Email",
+    "pec_title": "Go to page: Certified Email",
+    "e_invoicing": "E-invoicing",
+    "e_invoicing_title": "Go to page: E-invoicing",
+    "useful_links": "Useful links",
+    "useful_links_title": "Go to page: Useful links",
+    "contacts_search": "Contacts / Find people",
+    "contacts_search_title": "Go to page: Contacts / Find people",
+    "admin_contacts": "Administration contacts",
+    "admin_contacts_title": "Go to page: Administration contacts",
+    "services_contacts": "Services contacts",
+    "services_contacts_title": "Go to page: Services contacts",
+    "pat": "PAT - Transparent Administration Portal",
+    "pat_title": "Go to page: PAT - Transparent Administration Portal",
+    "follow_us": "Follow us",
+    "follow_us_title": "Go to page: Follow us",
+    "newsletter": "Newsletter",
+    "newsletter_title": "Go to page: Newsletter",
+    "newsletter_form": "Newsletter form",
+    "useful_links_section": "Useful links section",
+    "legal_notes": "Legal notes",
+    "legal_notes_title": "Legal notes",
+    "privacy": "Privacy policy",
+    "privacy_title": "Privacy policy",
+    "accessibility": "Accessibility statement"
+  }
+}
