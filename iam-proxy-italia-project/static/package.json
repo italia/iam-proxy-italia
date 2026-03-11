@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "update-bootstrap-italia": "node scripts/copy-bootstrap-italia.js",
+    "update-wallet-it-assets": "bash scripts/update-wallet-it-assets.sh",
     "postinstall": "npm run update-bootstrap-italia"
   },
   "devDependencies": {
