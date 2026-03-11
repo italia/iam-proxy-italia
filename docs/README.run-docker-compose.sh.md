@@ -7,11 +7,11 @@
 * `-h` Print this help
 * `-s`Skip docker image update
 * `-p` unset compose profile. Run: satosa and nginx. Usefull for production
-* `-m` Set 'mongo' compose profile. Run: satosa, nginx, mongo
+* `-m` Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)
 * `-M` Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express
-* `-d` Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check.
+* `-d` Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2).
    If isn't set any of -p, -m, -M, -d, is used 'demo' compose profile.
-   Demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check
+   Demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo
 
 `run-docker-compose.sh` must be executed from `docker-compose` directory. To run the script the user must have access to the docker system.
 

@@ -44,30 +44,38 @@ function add_iam_cert () {
   cd ../..
 }
 
-# Ensure SATOSA_HOSTNAME resolves; if not, add 127.0.0.1 to /etc/hosts or prompt the user.
-function ensure_satosa_hostname_resolvable {
-  if getent hosts "${SATOSA_HOSTNAME}" >/dev/null 2>&1; then
+# Ensure a hostname resolves to 127.0.0.1; if not, add to /etc/hosts or prompt the user.
+# Usage: ensure_host_resolvable "hostname"
+function ensure_host_resolvable {
+  local hostname="$1"
+  if getent hosts "${hostname}" >/dev/null 2>&1; then
     return 0
   fi
   echo ""
-  echo "Hostname '${SATOSA_HOSTNAME}' does not resolve. It must point to 127.0.0.1 for local access (e.g. HTTPS)."
-  if grep -q "${SATOSA_HOSTNAME}" /etc/hosts 2>/dev/null; then
-    echo "An entry for ${SATOSA_HOSTNAME} already exists in /etc/hosts."
+  echo "Hostname '${hostname}' does not resolve. It must point to 127.0.0.1 for local access (e.g. HTTPS)."
+  if grep -q "${hostname}" /etc/hosts 2>/dev/null; then
+    echo "An entry for ${hostname} already exists in /etc/hosts."
     return 0
   fi
-  echo "Adding '127.0.0.1 ${SATOSA_HOSTNAME}' to /etc/hosts (may prompt for sudo)."
-  if (echo "127.0.0.1 ${SATOSA_HOSTNAME}" | sudo tee -a /etc/hosts >/dev/null 2>&1); then
-    echo "Added. ${SATOSA_HOSTNAME} now resolves to 127.0.0.1."
+  echo "Adding '127.0.0.1 ${hostname}' to /etc/hosts (may prompt for sudo)."
+  if (echo "127.0.0.1 ${hostname}" | sudo tee -a /etc/hosts >/dev/null 2>&1); then
+    echo "Added. ${hostname} now resolves to 127.0.0.1."
     return 0
   fi
   echo ""
   echo "Could not write to /etc/hosts. Add this line manually (e.g. with sudo):"
-  echo "  127.0.0.1 ${SATOSA_HOSTNAME}"
+  echo "  127.0.0.1 ${hostname}"
   echo ""
   read -r -p "Continue anyway? [y/N] " reply
   if [[ ! "${reply}" =~ ^[yY]$ ]]; then
     exit 1
   fi
+}
+
+function ensure_satosa_hostname_resolvable {
+  ensure_host_resolvable "${SATOSA_HOSTNAME}"
+  ensure_host_resolvable "cie-provider.example.org"
+  ensure_host_resolvable "trust-anchor.example.org"
 }
 
 function initialize_satosa {
@@ -118,6 +126,24 @@ function start {
   fi
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
+  echo -e "\n"
+  echo -e "=== Demo RP/SP — start the flow at ==="
+  case "${COMPOSE_PROFILES}" in
+    demo|*demo*)
+      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
+      echo -e "  OIDC RP demo:              http://localhost:8090"
+      ;;
+    dev|*saml2*)
+      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
+      ;;
+    storage_mongo|*oidc*)
+      echo -e "  OIDC RP demo:              http://localhost:8090"
+      ;;
+    *)
+      echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
+      ;;
+  esac
+  echo -e ""
 
   if [[ -n "${RUN_SPID_TEST}" ]]; then
     echo -e "\n"
@@ -150,20 +176,20 @@ function help {
   echo "-h Print this help"
   echo ""
   echo "#### profile options"
-  echo "-m Set 'mongo' compose profile. Run: satosa, nginx, mongo"
+  echo "-m Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)"
   echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
   echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
   echo "-s Skip docker image update"
-  echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check"
+  echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2)"
   echo "-t Run spid_sp_test tests after startup"
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
-  echo "demo compose profile start: satosa, nginx, mongo, mongo-express, django-sp, spid-saml-check"
+  echo "demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo"
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"
   echo "the script will try to add it to /etc/hosts as 127.0.0.1, or prompt you to add it manually."
-  echo "Use stop-docker-compose.sh to remove that /etc/hosts entry when stopping."
+  echo "Use stop-docker-compose.sh to remove those /etc/hosts entries when stopping."
   echo ""
 }
 
@@ -182,7 +208,7 @@ while getopts ":fepbimMdsh" opt; do
      unset COMPOSE_PROFILES
      ;;
    m)
-     COMPOSE_PROFILES="mongo"
+     COMPOSE_PROFILES="storage_mongo"
      ;;
    M)
      COMPOSE_PROFILES="mongoexpress"

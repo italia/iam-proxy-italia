@@ -68,7 +68,7 @@ Use the same `[uri, metadata]` pair format as in the schema (e.g. `["<absolute_u
 
 ## Indexes (optional)
 
-If you create the `client` and `session` collections yourself (e.g. without using [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh)), create the following indexes. They are already created by the init script when using Docker Compose with the `mongo` profile.
+If you create the `client` and `session` collections yourself (e.g. without using [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh)), create the following indexes. They are already created by the init script when using Docker Compose with the `storage_mongo` (or `oidc` / `demo`) profile.
 
 ### Client collection
 
@@ -90,7 +90,7 @@ db.session.createIndex(
 
 ## Pre-seeded test client (jbxedfmfyc)
 
-When using Docker Compose with the `mongo` profile, [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh) seeds a test client `jbxedfmfyc` (same document structure as the schema and the insert example above). If you create the database manually, use that script as reference or run the same `insertOne` with your OP and RP URIs.
+When using Docker Compose with the `storage_mongo` (or `oidc` / `demo`) profile, [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh) seeds a test client `jbxedfmfyc` (same document structure as the schema and the insert example above). If you create the database manually, use that script as reference or run the same `insertOne` with your OP and RP URIs.
 
 ## References
 

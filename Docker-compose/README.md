@@ -55,7 +55,7 @@ The result is represented by the following services:
 * Django SAML2 SP is published on https://localhost:8000
 * Spid-samlcheck is published on https://localhost:8443
 
-More details and start options are available on [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+More details and start options are available on [run-docker-compose.sh](../docs/README.run-docker-compose.sh.md) page
 
 ### Run the Composition for Production Use
 
@@ -129,6 +129,6 @@ Add the following entries to your hosts file (`/etc/hosts` on Linux/macOS, `C:\W
 ### Insights
 
 * More details on profiles read the [Docker Compose Profiles](../docs/docker_compose_profiles.md) page
-* More details on run-docker-compose.sh read the [run-docker-compose.sh](../docs/run-docker-compose.sh.md) page
+* More details on run-docker-compose.sh read the [run-docker-compose.sh](../docs/README.run-docker-compose.sh.md) page
 * MongoDB env vars (backend vs frontend, shared defaults): [docs/mongodb-env.md](../docs/mongodb-env.md)
 * For common issues (containers, certificates, MongoDB): [docs/TROUBLESHOOTING.md](../docs/TROUBLESHOOTING.md)

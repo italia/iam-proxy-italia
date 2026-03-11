@@ -27,8 +27,10 @@ services:
   satosa-mongo:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
       - mongoexpress
+      - oidc
+      - wallet
     image: mongo
     container_name: satosa-mongo
     environment:
@@ -76,6 +78,7 @@ services:
     profiles:
       - demo
       - dev
+      - saml2
     image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:latest
     build:
       context: ../
@@ -98,8 +101,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    # image: ghcr.io/italia/iam-proxy-italia:latest
-    image: iam-proxy-italia:3.1.0
+    image: ghcr.io/italia/iam-proxy-italia:3.1.0
     build:
         context: ../
         args:
@@ -109,10 +111,10 @@ services:
     depends_on:
         trust-anchor:
           condition: service_healthy
-          required: false  # only when profile demo/mongo is used
+          required: false  # only when profile demo/storage_mongo/oidc is used
         cie-provider:
           condition: service_healthy
-          required: false  # only when profile demo/mongo is used
+          required: false  # only when profile demo/storage_mongo/oidc is used
     stdin_open: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     tty: ${SATOSA_DEBUG:-false}   # enables PDB when attach to the compose
     environment:
@@ -242,6 +244,7 @@ services:
     profiles:
       - demo
       - dev
+      - saml2
     image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
     ports:
@@ -272,7 +275,8 @@ services:
   trust-anchor:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
+      - oidc
     <<: *django-common
     container_name: trust-anchor
     build:
@@ -302,7 +306,8 @@ services:
   cie-provider:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
+      - oidc
     <<: *django-common
     container_name: cie-provider
     build:
@@ -334,7 +339,8 @@ services:
   relying-party-demo:
     profiles:
       - demo
-      - mongo
+      - storage_mongo
+      - oidc
     <<: *demo-rp-common
     container_name: relying-party-demo
     build:
