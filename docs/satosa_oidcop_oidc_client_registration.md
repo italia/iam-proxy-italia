@@ -98,8 +98,7 @@ If you create the `client` and `session` collections yourself (e.g. without usin
 
 ```javascript
 db.client.createIndex({ "client_id": 1 }, { unique: true });
-db.client.createIndex({ "registration_access_token": 1 }, { unique: true });
-```
+db.client.createIndex( { "registration_access_token": 1 }, { unique: true, partialFilterExpression: {registration_access_token: {$type: "string" } )```
 
 ### Session collection
 

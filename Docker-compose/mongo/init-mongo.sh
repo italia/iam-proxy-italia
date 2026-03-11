@@ -24,8 +24,7 @@ db.createUser(
 
 // make client_id unique
 db.client.createIndex( { "client_id": 1 }, { unique: true } )
-db.client.createIndex( { "registration_access_token": 1 }, { unique: true } )
-
+db.client.createIndex( { "registration_access_token": 1 }, { unique: true, partialFilterExpression: {registration_access_token: {$type: "string" } )
 // make access_token and sid unique
 db.session.createIndex( { "sid": 1 }, { unique: true } )
 
