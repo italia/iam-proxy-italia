@@ -34,8 +34,8 @@ From the project root, with Docker Compose and Mongo running in `satosa-mongo`:
 ```bash
 docker compose exec satosa-mongo mongosh "mongodb://${MONGO_DBUSER:-satosa}:${MONGO_DBPASSWORD:-thatpassword}@localhost:27017/oidcop" --eval '
 db.client.insertOne({
-  "client_id": "oidc-debugger",
-  "client_secret": "CHANGE_ME_DEBUGGER_SECRET",
+  "client_id": "jbxedfmfyc",
+  "client_secret": "19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1",
   "client_name": "OIDC debugger (leplusorg)",
   "client_salt": "6flfsj0Z",
   "registration_access_token": "CHANGE_ME_RAT",
@@ -91,6 +91,8 @@ db.session.createIndex(
 ## Pre-seeded test client (jbxedfmfyc)
 
 When using Docker Compose with the `storage_mongo` (or `oidc` / `demo`) profile, [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh) seeds a test client `jbxedfmfyc` (same document structure as the schema and the insert example above). If you create the database manually, use that script as reference or run the same `insertOne` with your OP and RP URIs.
+
+**If OIDCOP returns "Cannot find \"jbxedfmfyc\" in client DB":** the OIDCOP frontend reads clients from MongoDB. Either (1) start the stack with a profile that includes MongoDB so the seed runs, e.g. `docker compose --profile oidc up` (or `--profile demo` / `--profile storage_mongo`), or (2) the MongoDB data directory already existed before the seed was added — remove `Docker-compose/mongo/db` and restart so `init-mongo.sh` runs again, or insert the client manually as in the example above.
 
 ## References
 

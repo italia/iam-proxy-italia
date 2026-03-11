@@ -89,7 +89,9 @@ translations = gettext.translation(
 )
 templates.env.install_gettext_translations(translations)
 # END JINJA2
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Resolve static dir relative to this file so it works regardless of CWD (e.g. in Docker)
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 
 def render_template(template_name: str, request: Request, context: dict = {}):
