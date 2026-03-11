@@ -79,12 +79,14 @@ services:
       - demo
       - dev
       - saml2
-    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:latest
+    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:3.1.0
     build:
       context: ../
       args:
         - NODE_ENV=local
       dockerfile: iam-proxy-italia-project-demo-examples/django.Dockerfile
+    environment:
+      TZ: "${TZ:-UTC}"
     depends_on:
       iam-proxy-italia:
         condition: service_healthy

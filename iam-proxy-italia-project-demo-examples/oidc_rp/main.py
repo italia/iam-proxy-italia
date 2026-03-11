@@ -17,6 +17,7 @@ import hashlib
 import logging
 import os
 import secrets
+from pathlib import Path
 from urllib.parse import urlencode
 import gettext
 import httpx

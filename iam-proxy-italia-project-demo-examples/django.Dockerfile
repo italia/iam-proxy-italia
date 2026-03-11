@@ -1,10 +1,11 @@
 FROM alpine:3.19.1
  
 RUN apk update
+# Keep tzdata: Python zoneinfo (3.9+) needs /usr/share/zoneinfo or the tzdata package.
+# Removing it (apk del tzdata) breaks Django timezone handling in slim/minimal images.
 RUN apk add --update --no-cache tzdata
 RUN cp /usr/share/zoneinfo/Europe/Rome /etc/localtime
 RUN echo "Europe/Rome" > /etc/timezone
-RUN apk del tzdata
 
 COPY iam-proxy-italia-project-demo-examples/djangosaml2_sp/requirements.txt /
 COPY iam-proxy-italia-project-demo-examples/entrypoint.sh /
