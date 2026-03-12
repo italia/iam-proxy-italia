@@ -188,7 +188,7 @@ in the "iam-proxy-italia" project.
 
 ### Prerequisites
 
-All runtime dependencies are defined in `pyproject.toml`. Test-related tools (pytest, pytest-cov, flake8, spid-sp-test) are in the optional dependency group `test`, aligned with the [GitHub Actions workflows](.github/workflows/) (lint, docker-compose-test, cie-oidc-backend).
+All runtime dependencies are defined in `pyproject.toml`. Test-related tools (pytest, pytest-cov, flake8, spid-sp-test) are in the optional dependency group `test`, aligned with the [GitHub Actions workflows](../.github/workflows/) (lint, docker-compose-test, cie-oidc-backend).
 
 From the project root, install dependencies with Poetry (recommended, same as [setup](setup.md)):
 

@@ -12,13 +12,13 @@ We assume that the project eudi-wallet-it-python has been cloned in the folder `
 
 ## Step 1: Set environment variable
 
-Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the terminal with the command `export SATOSA_DEBUG=true`, or by updating the file `.env` in the `Docker-compose` directory (create it from [env.example](Docker-compose/env.example)) by appending the entry `SATOSA_DEBUG=true`.
+Set the environment variable `SATOSA_DEBUG=true`. This can be done either in the terminal with the command `export SATOSA_DEBUG=true`, or by updating the file `.env` in the `Docker-compose` directory (create it from [env.example](../Docker-compose/env.example)) by appending the entry `SATOSA_DEBUG=true`.
 
 **Note:** The `.env` file does not exist by default. From the `Docker-compose` directory run `cp env.example .env`, then edit `.env` as needed.
 
 ## Step 2: Update the docker volume by binding the local development directory
 
-In the file [docker-compose.yml](Docker-compose/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
+In the file [docker-compose.yml](../Docker-compose/docker-compose.yml), among the volumes of the container `iam-proxy-italia`, add the entry
     
     volumes:
         - /home/username/my/development/folder/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rw
@@ -30,7 +30,7 @@ This will replace the installed dependency package with your own local code.
 
 ## Step 3: Run the container
 
-Launch the script [run-docker-compose.sh](Docker-compose/run-docker-compose.sh). This will launch the docker composition that includes the container `iam-proxy-italia`.
+Launch the script [run-docker-compose.sh](../Docker-compose/run-docker-compose.sh). This will launch the docker composition that includes the container `iam-proxy-italia`.
 
 ## Step 4 (Optional): Install further dependencies in the container
 
@@ -118,14 +118,14 @@ that your configuration was succesfully applied, as shown in the picture below.
 
 The following screenshots show container management using **lazydocker** (a terminal UI for Docker).
 
-<img src="docs/images/SATOSA_DEBUG_true.png" width="512">
+<img src="./images/SATOSA_DEBUG_true.png" width="512">
 
 `SATOSA_DEBUG=true` makes iam-proxy-italia be executed with a debug configuration of uwsgi.
 
 If you don't have configured it in debug mode, you will not be able to attach to the stdin of the executed
 container, as shown in the picture below.
 
-<img src="docs/images/SATOSA_DEBUG_false.png" width="512">
+<img src="./images/SATOSA_DEBUG_false.png" width="512">
 
 ### Lazydocker
 

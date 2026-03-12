@@ -11,7 +11,7 @@ Common issues and solutions when deploying or running IAM Proxy Italia.
 ## Configuration
 
 - **Metadata or entity ID errors**: Confirm metadata URLs and entity IDs in `proxy_conf.yaml` and backend/frontend configs match your IdP/SP. See [setup.md](setup.md#configuration-by-environment-variables) for environment overrides.
-- **MongoDB connection refused**: If using the `storage_mongo`, `oidc`, `wallet`, or `demo` profile, ensure the MongoDB service is up (`docker compose ps`) and MongoDB env vars in `.env` match the compose configuration (see [docs/mongodb-env.md](mongodb-env.md)).
+- **MongoDB connection refused**: If using the `storage_mongo`, `oidc`, `wallet`, or `demo` profile, ensure the MongoDB service is up (`docker compose ps`) and MongoDB env vars in `.env` match the compose configuration (see [mongodb-env.md](mongodb-env.md)).
 
 ## Tests and CI
 
