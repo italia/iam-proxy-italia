@@ -370,7 +370,8 @@ function createLearnMore(resource, eid) {
         toggle.classList.remove('expanded');
         text.classList.remove('is-open');
         if (box) box.style.height = '';
-        uniformAll();
+        // Restore button dimensions from initial sizing (prevents stretch on collapse)
+        restoreButtonDimensions();
       }
     });
 
@@ -407,10 +408,13 @@ function checkId(id) {
   return id && typeof id === 'object' && Object.keys(id).length > 0;
 }
 
-function uniformAll() {
+function uniformAll(opts = {}) {
+  const { skipButtons = false } = opts;
   setUniformSize(".it-card", "height");
-  setUniformSize(".it-card .btn", "height");
-  setUniformSize(".it-card .btn", "width");
+  if (!skipButtons) {
+    setUniformSize(".it-card .btn", "height");
+    setUniformSize(".it-card .btn", "width");
+  }
 }
 
 function uniformEidCardsAfterImages() {

@@ -616,6 +616,7 @@ footer {
   flex-shrink: 0;
   width: auto;
   display: inline-flex;
+  align-self: flex-start;
 }
 
 .eid-card-btn-center {
