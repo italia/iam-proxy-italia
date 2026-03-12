@@ -4,9 +4,11 @@
  * See: https://italia.github.io/bootstrap-italia/docs/come-iniziare/introduzione/
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'node_modules', 'bootstrap-italia', 'dist');
 
