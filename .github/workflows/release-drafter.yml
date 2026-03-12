@@ -3,8 +3,14 @@ name: Release drafter
 on:
   push:
     branches: [master, dev]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   pull_request:
     types: [opened, reopened, synchronize]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
 
 jobs:
   update_release_draft:
