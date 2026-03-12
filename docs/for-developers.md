@@ -19,7 +19,7 @@ If you're using this project as a testing tool or playground for [eudi-wallet-it
 | Topic | Document |
 | ----- | -------- |
 | SAML2 / IdentityPython forks, SPID patches | [saml2-development.md](saml2-development.md) |
-| SAML2 recommendations (Discovery Service, SLO, policy section, attribute mapping) | [saml2-development.md](saml2-development.md#recommendations-about-saml2) |
+| SAML2 recommendations (Discovery Service, SLO, policy section, attribute mapping) | [saml2-development.md](saml2-development.md#recommendations) |
 | Python package development with Docker | [python-development.md](python-development.md) |
 | SATOSA internals | [satosa-internals.md](satosa-internals.md) |
 | Technical docs (Docker, NGINX, systemd, SATOSA) | [README.md](README.md) |

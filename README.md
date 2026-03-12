@@ -11,7 +11,7 @@ with the  **Italian Digital Identity Systems**.
 1. [Use Cases](#use-cases)
 2. [General Architecture of the Solution](#general-architecture-of-the-solution)
 3. [Demo Components](#demo-components)
-4. [Setup and configuration](#setup-and-configuration)
+4. [Usage, Setup and Documentation](#usage-setup-and-documentation)
 5. [Authors and Contributors](#authors-and-contributors)
 
 ## Use Cases
@@ -61,8 +61,6 @@ flowchart LR
   A["Third party authentication services"]
   E --- D --- C --- B --- A
 ```
-
-
 ### Available Backends
 
 - SAML2 SPID SP
@@ -95,7 +93,6 @@ User may run them via [Docker Compose](docs/docker-compose.md); use [profiles](d
 | **Mongo Express**        | —                                            | `satosa-mongo-express` | demo, mongoexpress                              | MongoDB UI                               |
 | **SPID SAML checker**    | —                                            | `spid-samlcheck`       | demo, dev, saml2                                | SPID backend (metadata & flows)          |
 
-
 See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh).
 
 Tested in CI with [spid-sp-test](https://github.com/italia/spid-sp-test) (metadata, Authn requests, responses).
@@ -112,7 +109,7 @@ To get redirection to these pages, or redirection to third-party services, it is
 
 Other screenshots are available [here](docs/gallery.md).
 
-## Setup and configuration
+## Usage, Setup and Documentation
 
 This project uses [Docker Compose](docs/docker-compose.md); environment variables are documented [here](docs/setup.md#configuration-by-environment-variables).
 
@@ -123,20 +120,5 @@ This project uses [Docker Compose](docs/docker-compose.md); environment variable
 
 ## Authors and Contributors
 
-- Giuseppe De Marco
-- Andrea Ranaldi and his Team @ ISPRA Ambiente
-
-- Nicola Squartini @ Dipartimento per la trasformazione
-- Salvatore Laiso @ E&Y
-- Fulvio Scorza and his Team @ Università del Piemonte Orientale
-- Paolo Smiraglia (SPID certs)
-- Stefano Colagreco @ CNR
-- Elisa Nicolussi Paolaz @ Trentino Digitale
-- Thomas Chiozzi @ Trentino Digitale
-- Identity Python Community (pySAML2 and SATOSA)
-- GARR IDEM Community
-- Pasquale De Rose @ E&Y
-- Sara Longobardi @ Accenture
-- Manuel Pacella @ IPZS
-- Manuel Ciofo @ IPZS
+See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
