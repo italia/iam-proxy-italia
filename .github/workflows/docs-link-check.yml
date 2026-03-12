@@ -38,7 +38,7 @@ jobs:
           restore-keys: lychee-
 
       - name: Lychee link checker
-        uses: lycheeverse/lychee-action@v1
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --verbose --no-progress --exclude 'localhost' --exclude 'iam-proxy-italia.example.org' --cache --max-cache-age 1d --max-concurrency 1 --max-retries 0 --accept 200,429 README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
