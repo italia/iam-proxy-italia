@@ -192,11 +192,11 @@ mdx.certs(entity2check, "spsso", use="signing")
 When it start the only content available on its embedded webserver is a loading WebPage, this will persist until the metadata download and validation finishes, this will be also the only thing you will see if metadata could not be imported (404 on their page).
 
 
-![Loading](gallery/service_request.png)
+![Loading](../pyff_example/gallery/service_request.png)
 **Frontend**: Loading page during metadata importing procedure.
 
 
-![Home](gallery/Selezione_537.png)
+![Home](../pyff_example/gallery/Selezione_537.png)
 **Home page**: All the entitities are now classified by categories, they could be also selected with an agile search engine. All the metadata information are now available. pyFF also exposes the pipelines used, the command used to start the server, in other words _everything_.
 
 Additional resources

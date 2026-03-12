@@ -29,7 +29,7 @@ At the end of the execution, the server will be started at the following link: h
 and you will be able to view the project's demo page (see below)
 
 
-<img src="../../gallery/djangosaml2_sp.png">
+<img src="../gallery/djangosaml2_sp.png">
 
 
 Now click on "Accedi all'area personale" (at the top right of the page header). 
