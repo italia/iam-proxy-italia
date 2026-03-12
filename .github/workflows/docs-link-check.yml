@@ -34,12 +34,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lycheecache
-          key: lychee-${{ hashFiles('README.md', 'README-*.md', 'docs/*.md', 'Docker-compose/README.md') }}
+          key: lychee-${{ hashFiles('README.md', 'CONTRIBUTORS.md', 'CONTRIBUTING.md', 'docs/*.md') }}
           restore-keys: lychee-
 
       - name: Lychee link checker
-        uses: lycheeverse/lychee-action@v1
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --verbose --no-progress --exclude 'localhost' --exclude 'iam-proxy-italia.example.org' --cache --max-cache-age 1d --max-concurrency 1 --max-retries 0 --accept 200,429 README.md README-*.md README.*.md docs/*.md Docker-compose/README.md
+          args: --verbose --no-progress --exclude 'localhost' --exclude 'iam-proxy-italia.example.org' --cache --max-cache-age 1d --max-concurrency 1 --max-retries 2 --accept 200,429 README.md CONTRIBUTORS.md CONTRIBUTING.md docs/*.md
           fail: true

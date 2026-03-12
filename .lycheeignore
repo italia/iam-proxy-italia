@@ -1,0 +1,6 @@
+# External URLs that may be slow, rate-limited, or occasionally unavailable
+https://aarc-project.eu/
+https://github.com/IdentityPython/SATOSA/wiki
+
+# Local demo URLs (not reachable in CI)
+http://0.0.0.0:8000/

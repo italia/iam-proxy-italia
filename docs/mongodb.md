@@ -35,11 +35,11 @@ db.createUser(
 exit
 ````
 
-For **OIDC client and session indexes** and **inserting test clients** (e.g. `jbxedfmfyc`), see [docs/satosa_oidcop_oidc_client_registration.md](docs/satosa_oidcop_oidc_client_registration.md).
+For **OIDC client and session indexes** and **inserting test clients** (e.g. `jbxedfmfyc`), see [satosa_oidcop_oidc_client_registration.md](satosa_oidcop_oidc_client_registration.md).
 
 ### Using Docker
 
-When using docker-compose in [Docker-compose](./Docker-compose) all operations described in section  [Install and configure](#install-and-configure) are executed  by the init script [init-mongo.sh](./Docker-compose/mongo/init-mongo.sh) at the first start o the container.
+When using docker-compose in [docker-compose.md](docker-compose.md) all operations described in section  [Install and configure](#install-and-configure) are executed  by the init script [init-mongo.sh](../Docker-compose/mongo/init-mongo.sh) at the first start o the container.
 
 #### set environment in .env
 
@@ -50,7 +50,7 @@ This two environment variable are used in 3 of our container.
 
 #### docker-compose.yml environments for MONGODB
 
-Before run the docker-compose, please configure all environment [here](README-Setup.md#configuration-by-environment-variables) 
+Before run the docker-compose, please configure all environment [here](setup.md#configuration-by-environment-variables) 
 
 ##### satosa-mongo
 

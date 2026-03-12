@@ -1,44 +1,69 @@
-# Documentation index
+# Documentation
 
-Technical documentation for IAM Proxy Italia (deployment, Docker, NGINX, systemd).
+Technical documentation for IAM Proxy Italia, organized by purpose.
 
-## Root documentation
-
-| Document | Description |
-| -------- | ----------- |
-| [../README.md](../README.md) | Project overview, features, quick start |
-| [../README-Setup.md](../README-Setup.md) | Setup without Docker, configuration, environment variables |
-| [../README-TEST.md](../README-TEST.md) | Unit and integration tests (pytest, CI) |
-| [../README-SAML2-DEV.md](../README-SAML2-DEV.md) | SAML2 / IdentityPython forks and patching |
-| [../README-Python-Dev.md](../README-Python-Dev.md) | Developing Python dependencies with Docker |
-| [../README-GALLERY.md](../README-GALLERY.md) | Screenshots and demo pages |
-| [../README.mongo.md](../README.mongo.md) | MongoDB usage |
-| [../README-CIEOIDC.md](../README-CIEOIDC.md) | CIE OIDC backend configuration |
-
-## Docker and Compose
+## Getting started
 
 | Document | Description |
 | -------- | ----------- |
-| [../Docker-compose/README.md](../Docker-compose/README.md) | Docker Compose overview, run script, profiles |
-| [README.run-docker-compose.sh.md](README.run-docker-compose.sh.md) | `run-docker-compose.sh` options and behaviour |
+| [setup.md](setup.md) | Setup without Docker: installation, configuration, environment variables |
+| [docker-compose.md](docker-compose.md) | Docker Compose overview, run script, demo and production use |
+| [run-docker-compose.md](run-docker-compose.md) | `run-docker-compose.sh` options and behaviour |
 | [docker_compose_profiles.md](docker_compose_profiles.md) | Compose profiles (demo, dev, storage_mongo, saml2, oidc, wallet, etc.) |
-| [satosa-nginx_compose_service.md](satosa-nginx_compose_service.md) | NGINX service in Compose, virtual hosts |
-| [satosa-nginx-vhost.md](satosa-nginx-vhost.md) | NGINX virtual host examples and configuration |
+
+## Configuration
+
+| Document | Description |
+| -------- | ----------- |
+| [setup.md](setup.md) | Configuration by environment variables, certificates, metadata |
+| [backends-frontends-configuration.md](backends-frontends-configuration.md) | Backend and frontend config files, enabling modules, Djangosaml2 SP setup |
+| [cie-oidc-backend.md](cie-oidc-backend.md) | CIE OIDC backend configuration (OpenID Federation) |
+| [mongodb.md](mongodb.md) | MongoDB installation and usage for OIDC/Wallet components |
+| [mongodb-env.md](mongodb-env.md) | MongoDB environment variables for Docker Compose |
+| [project-configuration.md](project-configuration.md) | IAM Proxy Italia project structure and configuration examples |
 
 ## Deployment and runtime
 
 | Document | Description |
 | -------- | ----------- |
-| [README.Satosa-common.md](README.Satosa-common.md) | SATOSA common configuration |
-| [README.SATOSA.internals.md](README.SATOSA.internals.md) | SATOSA internals |
+| [satosa-common.md](satosa-common.md) | SATOSA common configuration |
+| [satosa-internals.md](satosa-internals.md) | SATOSA internals |
+| [satosa-nginx_compose_service.md](satosa-nginx_compose_service.md) | NGINX service in Compose, virtual hosts |
+| [satosa-nginx-vhost.md](satosa-nginx-vhost.md) | NGINX virtual host examples |
 | [uwsgi.ini.md](uwsgi.ini.md) | uWSGI configuration |
+| [uwsgi-setup.md](uwsgi-setup.md) | uWSGI setup examples |
+| [rsyslog-setup.md](rsyslog-setup.md) | RSyslog configuration for SATOSA logs |
 | [systemd.md](systemd.md) | systemd service setup |
 
-## Other
+## Demos and examples
 
 | Document | Description |
 | -------- | ----------- |
+| [demo-djangosaml2-sp.md](demo-djangosaml2-sp.md) | Django SAML2 Service Provider demo |
+| [demo-oidc-rp.md](demo-oidc-rp.md) | Minimal OIDC Relying Party demo (auth code + PKCE) |
+| [demo-login-walkthrough.md](demo-login-walkthrough.md) | Step-by-step demo login walkthrough |
+| [demo-identity-python-forks-patching.md](demo-identity-python-forks-patching.md) | PySAML2 and SATOSA forked branches and patching |
+| [pyff-metadata.md](pyff-metadata.md) | pyFF metadata aggregation and Discovery Service |
+
+## Development
+
+| Document | Description |
+| -------- | ----------- |
+| [for-developers.md](for-developers.md) | Developer guide: idphinting, spid-sp-test, CI workflows, SATOSA internals, and related docs |
+| [testing.md](testing.md) | Unit and integration tests (pytest, CI) |
+| [saml2-development.md](saml2-development.md) | SAML2 / IdentityPython forks and SPID patches |
+| [identity-python-forks.md](identity-python-forks.md) | Identity Python forks management |
+| [python-development.md](python-development.md) | Developing Python dependencies with Docker |
+
+## Reference
+
+| Document | Description |
+| -------- | ----------- |
+| [external-references.md](external-references.md) | Tutorials, SATOSA docs, account linking, related projects |
+| [gallery.md](gallery.md) | Screenshots and demo pages |
+| [satosa_oidcop_oidc_client_registration.md](satosa_oidcop_oidc_client_registration.md) | OIDC client registration for satosa-oidcop |
+| [oidc_rp_debuggers.md](oidc_rp_debuggers.md) | OIDC RP debuggers and testing tools |
+| [gen_x509_chain_iam_proxy.md](gen_x509_chain_iam_proxy.md) | X.509 chain generator for pyeudiw (custom FQDN for demos) |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions (Docker, config, tests) |
-| [gen_x509_chain_iam_proxy.md](gen_x509_chain_iam_proxy.md) | X.509 chain generator script for pyeudiw (custom FQDN for demos) |
 
 > When adding new documentation files under `docs/`, add them to this index!

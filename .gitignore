@@ -49,7 +49,7 @@ Docker-compose/spid_cie_oidc_django
 *.log
 *.sqlite3
 
-# Local test virtual environment (README-TEST)
+# Local test virtual environment (see docs/testing.md)
 test_venv/
 test_env/
 

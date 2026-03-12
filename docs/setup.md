@@ -1,6 +1,6 @@
 # Setup
 
-In this section there are all the required information to install, configure and run iam-proxy-italia. For common issues and solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+In this section there are all the required information to install, configure and run iam-proxy-italia. For common issues and solutions, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ### NGINX setup
 
@@ -44,7 +44,7 @@ poetry install
 poetry env info
 ```
 
-**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [README-TEST.md](README-TEST.md)).
+**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [testing.md](testing.md)).
 
 
 ## Configure the Proxy
@@ -139,7 +139,7 @@ SAML2 frontends also rely on the same SAML keys configured for backends (`SATOSA
 
 #### OIDC (CIE OIDC backend, OIDCOP frontend)
 
-MongoDB env vars for OIDC components: `MONGO_CIE_OIDC_BACKEND_*` (CIE OIDC backend), `MONGO_OIDCOP_*` (oidcop frontend). For a single MongoDB, set `MONGO_URL`, `MONGO_PORT`, `MONGO_DBUSER`, `MONGO_DBPASSWORD`; component vars fall back to these. See [docs/mongodb-env.md](docs/mongodb-env.md).
+MongoDB env vars for OIDC components: `MONGO_CIE_OIDC_BACKEND_*` (CIE OIDC backend), `MONGO_OIDCOP_*` (oidcop frontend). For a single MongoDB, set `MONGO_URL`, `MONGO_PORT`, `MONGO_DBUSER`, `MONGO_DBPASSWORD`; component vars fall back to these. See [mongodb-env.md](mongodb-env.md).
 
 **Shared defaults:** `MONGO_URL`, `MONGO_PORT`, `MONGO_DBUSER`, `MONGO_DBPASSWORD`
 
@@ -244,7 +244,7 @@ Start an authentication from your SP.
 
 Load metadata from `https://iam-proxy-italia.example.org/spidSaml2/metadata`.
 
-![result](gallery/screen.gif)
+![result](../gallery/screen.gif)
 **Figure 2**: The result using spid-saml-check.
 
 ## First Run

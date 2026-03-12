@@ -3,17 +3,7 @@ SaToSa API Dev Guide
 
 This document describes how the SATOSA proxy, frontends (SAML2, OIDC OP, OpenID4VCI), backends (spidsaml2, ciesaml2, CieOidc, pyeudiw OpenID4VP), and microservices integrate. It focuses on the **context object**, **call sequence**, **example I/O**, and **sequence diagrams** to help developers understand the internal API and plugin I/O.
 
-**Contents:**
-- **Request flow** — Pipeline (unpack_request → run → endpoint_routing → _run_bound_endpoint → _save_state) and purpose of each step.
-- **Context object** — Common attributes and **differences** between SAML2, OIDC OP, pyeudiw OpenID4VP, and pyeudiw OpenID4VCI.
-- **Example context objects** — Concrete examples per protocol.
-- **Mermaid sequence diagrams** — Generic flow; SAML2/SPID; OIDC OP + CIE; OpenID4VCI → OpenID4VP; OpenID4VP backend internal.
-- **How to write a backend and a frontend** — Required methods, constructor args, endpoint contract, and minimal code examples.
-- **Request microservices** — When they run, `process(context, data)`, optional `register_endpoints`, chain, and examples (IdpHinting, DecideBackendByTargetIssuer, DiscoToTargetIssuer).
-- **Response microservices** — When they run, `process(context, data)`, chain, and examples (AddStaticAttributes, Hasher).
-- **Summary table** — Who reads/writes which context fields and main I/O.
-
----
+## Requests, Context, Responses
 
 Every HttpRequest is parsed by `proxy_Server.unpack_request` in the call()
 method of `proxy_Server.WsgiApplication`, a child of base.SATOSABase.
