@@ -60,7 +60,7 @@
     "alt1": {
       "name": "{Alternative 1}",
       "logo_text": "Login with {Alternative 1}",
-      "logo": "img/it-code-circle",
+      "logo": "/static/svg/sprites.svg#it-code-circle",
       "login_url": "#",
       "learn_more_descr": "{Alternative 1} is a federated identity system that allows you to access services that support {Alternative 1} authentication."
     }
