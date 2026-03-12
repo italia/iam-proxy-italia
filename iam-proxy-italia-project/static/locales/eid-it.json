@@ -44,7 +44,7 @@
     "eidas": {
       "name": "eIDAS",
       "logo_text": "Entra con eIDAS",
-      "logo": "cie/cie_white.svg",
+      "logo": "img/ficep.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
       "learn_more_descr": "eIDAS (electronic IDentification, Authentication and trust Services) è il regolamento europeo per l'identificazione elettronica transfrontaliera. Usa la tua identità digitale nazionale o uno schema notificato per accedere al servizio."
     }
@@ -53,7 +53,7 @@
     "idem": {
       "name":"IDEM",
       "logo_text": "Entra con IDEM",
-      "logo": "img/ficep.svg",
+      "logo": "img/idem.svg",
       "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_",
       "learn_more_descr": "IDEM (Identity and Access Management for Education and Research) è il sistema di identità federata della rete della ricerca e dell'istruzione italiana (GARR). Usalo per accedere ai servizi che supportano l'autenticazione IDEM."
     },

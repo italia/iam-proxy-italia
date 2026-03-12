@@ -7,7 +7,7 @@
     "login_logo": "Your Logo",
     "login_digital_identity": "Log in with a digital identity",
     "login_alternative_method" : "Log in using an alternative method",
-    "havent_digital_identy": "Don't have a digital identity?",
+    "havent_digital_identy": "Don't have a digital identity yet?",
     "find_how_to_get_digital_id": "Find out how to get it",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
     "learn_more": "Learn more"
@@ -44,7 +44,7 @@
     "eidas": {
       "name": "eIDAS",
       "logo_text": "Login with eIDAS",
-      "logo": "cie/cie_white.svg",
+      "logo": "img/ficep.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
       "learn_more_descr": "eIDAS (electronic IDentification, Authentication and trust Services) is the EU regulation for cross-border electronic identification. Use your national eID or notified scheme to access this service."
     }
@@ -53,7 +53,7 @@
     "idem": {
       "name":"IDEM",
       "logo_text": "Login with IDEM",
-      "logo": "img/ficep.svg",
+      "logo": "img/idem.svg",
       "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_",
       "learn_more_descr": "IDEM (Identity and Access Management for Education and Research) is the federated identity system of the Italian research and education network (GARR). Use it to access services that support IDEM authentication."
     },
