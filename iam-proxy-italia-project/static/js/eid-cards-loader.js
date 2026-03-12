@@ -11,7 +11,6 @@ function loadEidCardsi18next() {
   }
   loadDocument(eidBundle);
   loadEidCards(eidBundle);
-  uniformEidCardsAfterImages();
   if (typeof Ita !== "undefined") {
     new Ita();
   }
@@ -293,7 +292,7 @@ function createLogoButton(eid, hasLearnMore = false) {
 
   if (eid.login_url?.includes("#spid-idp-button")) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'ita ita-dropdown ita-l ita-fixed';
+    wrapper.className = 'ita ita-dropdown ita-l ita-fixed eid-cie-dropdown-wrapper';
 
     const btn = document.createElement('a');
     btn.href = "#";
@@ -318,7 +317,7 @@ function createLogoButton(eid, hasLearnMore = false) {
 
   const btn = document.createElement('a');
   btn.href = eid.login_url;
-  btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn' + (hasLearnMore ? ' eid-card-btn-center' : '');
+  btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn';
 
   btn.appendChild(createLogoImg());
   btn.appendChild(createTextSpan());
@@ -370,8 +369,6 @@ function createLearnMore(resource, eid) {
         toggle.classList.remove('expanded');
         text.classList.remove('is-open');
         if (box) box.style.height = '';
-        // Restore button dimensions from initial sizing (prevents stretch on collapse)
-        restoreButtonDimensions();
       }
     });
 
@@ -390,54 +387,6 @@ function createLearnMore(resource, eid) {
 }
 
 // ----------------------- Helpers -----------------------
-function setUniformSize(selector, dimension = "height") {
-  const elements = document.querySelectorAll(selector);
-  let max = 0;
-
-  elements.forEach(el => el.style[dimension] = "");
-
-  elements.forEach(el => {
-    const value = (dimension === "width") ? el.offsetWidth : el.offsetHeight;
-    if (value > max) max = value;
-  });
-
-  elements.forEach(el => el.style[dimension] = max + "px");
-}
-
 function checkId(id) {
   return id && typeof id === 'object' && Object.keys(id).length > 0;
 }
-
-function uniformAll(opts = {}) {
-  const { skipButtons = false } = opts;
-  setUniformSize(".it-card", "height");
-  if (!skipButtons) {
-    setUniformSize(".it-card .btn", "height");
-    setUniformSize(".it-card .btn", "width");
-  }
-}
-
-function uniformEidCardsAfterImages() {
-  const imgs = document.querySelectorAll(".it-card img");
-  let loaded = 0;
-
-  if (!imgs.length) {
-    uniformAll();
-    return;
-  }
-
-  imgs.forEach(img => {
-    if (img.complete) {
-      loaded++;
-    } else {
-      img.addEventListener("load", () => {
-        loaded++;
-        if (loaded === imgs.length) uniformAll();
-      });
-    }
-  });
-
-  if (loaded === imgs.length) uniformAll();
-}
-
-window.addEventListener('resize', uniformAll);
