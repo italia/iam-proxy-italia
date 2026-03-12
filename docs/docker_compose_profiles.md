@@ -32,7 +32,7 @@ Using the environment variable:
 COMPOSE_PROFILES=dev,storage_mongo docker compose up
 ```
 
-The [run-docker-compose.sh](./README.run-docker-compose.sh.md) script can start selected profiles via its options.
+The [run-docker-compose.sh](./run-docker-compose.md) script can start selected profiles via its options.
 
 ### Summary tables
 
@@ -84,5 +84,5 @@ The [run-docker-compose.sh](./README.run-docker-compose.sh.md) script can start 
 
 ### Insights
 
-* For more details on iam-proxy-italia Docker Compose read [Docker Compose readme](../Docker-compose/README.md).
-* For more details on run-docker-compose.sh read [run-docker-compose.sh](./README.run-docker-compose.sh.md).
+* For more details on iam-proxy-italia Docker Compose read [Docker Compose readme](docker-compose.md).
+* For more details on run-docker-compose.sh read [run-docker-compose.sh](./run-docker-compose.md).

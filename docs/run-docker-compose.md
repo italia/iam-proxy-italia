@@ -41,6 +41,6 @@ If `-c` option is enables, before each, the script remove all data from these di
 The empty directories are populated with the default data
 
 ### Insights
-* For more details on iam-proxy-italia docker compose read [Docker Compose readme](../Docker-compose/README.md)
+* For more details on iam-proxy-italia docker compose read [Docker Compose readme](docker-compose.md)
 * For more details on iam-proxy-italia docker compose profiles read [docker_compose_profiles](./docker_compose_profiles.md)
-* For more details on MongoDB for iam-proxy-italia read [README.mongo](../README.mongo.md)
+* For more details on MongoDB for iam-proxy-italia read [MongoDB documentation](mongodb.md)

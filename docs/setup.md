@@ -44,7 +44,7 @@ poetry install
 poetry env info
 ```
 
-**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [README-TEST.md](README-TEST.md)).
+**Installation recommendation:** For full setup (all plugins, SPID/CIE, etc.) use **poetry** as above. For running tests only, from the project root use **poetry**: `poetry install --extras test` (see [testing.md](testing.md)).
 
 
 ## Configure the Proxy
@@ -244,7 +244,7 @@ Start an authentication from your SP.
 
 Load metadata from `https://iam-proxy-italia.example.org/spidSaml2/metadata`.
 
-![result](gallery/screen.gif)
+![result](../gallery/screen.gif)
 **Figure 2**: The result using spid-saml-check.
 
 ## First Run

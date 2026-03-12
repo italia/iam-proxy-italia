@@ -121,5 +121,5 @@ When using Docker Compose with the `storage_mongo` (or `oidc` / `demo`) profile,
 
 - [SATOSA-oidcop](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop) – frontend and [unit tests (CLIENT_CONF, insert_client_in_client_db)](https://github.com/UniversitaDellaCalabria/SATOSA-oidcop/blob/main/tests/test_oidcop.py)
 - [idpyoidc client database](https://idpy-oidc.readthedocs.io/en/latest/server/contents/clients.html)
-- [README.mongo.md](../README.mongo.md) – MongoDB install, user creation, and Docker; links here for OIDC indexes and client registration
+- [mongodb.md](mongodb.md) – MongoDB install, user creation, and Docker; links here for OIDC indexes and client registration
 - [oidc_rp_debuggers.md](oidc_rp_debuggers.md) – OIDC RP options for testing satosa-oidcop
