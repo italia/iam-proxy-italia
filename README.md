@@ -43,14 +43,7 @@ Credential Issuers can fetch and enrich credential data from authentic sources u
 
 ## General Architecture of the Solution
 
-The main components of the IAM Proxy Italia the following ones:
-
-- **Frontend**, SAML2 Identity Provider and or OpenID Connect Provider and or OpenID Wallet Credential Issuer.
-- **Backend**, SAML2 Service Provider and or OpenID Connect Relying Party and or OpenID Wallet Relying Party.
-- **Microservices**, plugin that may intercept Http Requests or Response to apply rules, do overrides using local data or data provided by a third party remote systems (eg: Authentic Sources). For instance, the **TargetRouting** selects the appropriate Backend to be used with the endpoint (IdP) selected by the user.
-- **Discovery Service**, interface that allows users to select the authentication endpoint (which backend to use).
-
-IAM Proxy Italia provides protocol translation and metadata adaptation for Italian Digital Identity systems. Supported **backends** (SP/RP side; connect to IdPs) and **frontends** (IdP/OP side; connect to SPs/RPs):
+The proxy sits between **Service Providers** (SPs) and **Relying Parties** (RPs) on one side, and **Identity Providers** (IdPs) and authentication systems on the other.
 
 ```mermaid
 flowchart LR
@@ -61,6 +54,23 @@ flowchart LR
   A["Third party authentication services"]
   E --- D --- C --- B --- A
 ```
+
+ It translates protocols, adapts metadata, and routes requests so that a single SP/RP can support multiple identity systems (SPID, CIE, eIDAS, EUDI Wallet) without protocol-specific code.
+
+### Core Components
+
+| Component | Role | Protocols |
+|-----------|------|-----------|
+| **Frontend** | Exposes the proxy as an IdP/OP to SPs and RPs. SPs and RPs talk to the proxy; the frontend implements SAML2 IdP, OIDC OP, and/or OpenID4VCI Credential Issuer. | SAML2, OIDC, OpenID4VP, OpenID4VCI |
+| **Backend** | Connects the proxy to upstream IdPs and authentication systems. Implements SAML2 SP, OIDC RP, or Wallet RP and talks to SPID, CIE, eIDAS, EUDI Wallet, etc. | SAML2, OIDC, OpenID4VP |
+| **Microservices** | Plugins that intercept HTTP requests and responses to apply rules, enrich data from authentic sources, or route traffic. For example, **TargetRouting** picks the right backend based on the IdP chosen by the user. | — |
+| **Discovery Service** | Web interface where users choose which authentication method to use (SPID, CIE, Wallet, etc.), which determines which backend handles the flow. | — |
+
+### Supported Backends and Frontends
+
+Available **backends** (SP/RP side; connect to IdPs) and **frontends** (IdP/OP side; connect to SPs/RPs):
+
+
 ### Available Backends
 
 - SAML2 SPID SP
@@ -81,7 +91,6 @@ flowchart LR
 IAM Proxy Italia includes a set of demo components to exercise the features.
 
 User may run them via [Docker Compose](docs/docker-compose.md); use [profiles](docs/docker_compose_profiles.md) to select services. Components live in `iam-proxy-italia-project-demo-examples` and are wired in [Docker-compose/docker-compose.yml](Docker-compose/docker-compose.yml):
-
 
 | Component                | Path                                         | Docker service         | Profiles                                        | Exercises                                |
 | ------------------------ | -------------------------------------------- | ---------------------- | ----------------------------------------------- | ---------------------------------------- |
