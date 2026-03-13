@@ -49,6 +49,16 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 - `locales/wallets-en.json`, `locales/wallets-it.json`
 - Keys: `header.region_name`, `titles.*`, `footer.*`, `digital_id.*`, `alternative_id.*`
 
+### Locale manifest (`locales/languages.json`)
+
+Supported languages are derived from the locale files, not hardcoded. Run this after adding or removing locale files:
+
+```bash
+npm run generate:locales-manifest
+```
+
+This scans `locales/` for `{prefix}-{lang}.json` (e.g. `error-en.json`, `eid-it.json`) and builds a per-page manifest. The manifest is used by `error-i18n.js`, `eid-cards-loader.js`, and the QR code page.
+
 ### Error page (`error_page.html`)
 
 - `locales/error-en.json`, `locales/error-it.json`

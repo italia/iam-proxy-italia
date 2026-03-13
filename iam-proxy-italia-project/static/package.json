@@ -6,10 +6,11 @@
   "scripts": {
     "update-bootstrap-italia": "node scripts/copy-bootstrap-italia.js",
     "update-wallet-it-assets": "bash scripts/update-wallet-it-assets.sh",
-    "postinstall": "npm run update-bootstrap-italia",
+    "generate:locales-manifest": "node scripts/generate-locales-manifest.js",
+    "postinstall": "npm run update-bootstrap-italia && npm run generate:locales-manifest",
     "lint:html": "htmlhint '**/*.html'",
     "lint:css": "stylelint 'css/style.css' --allow-empty-input",
-    "lint:js": "eslint 'js/eid-cards-loader.js' 'js/error-i18n.js'",
+    "lint:js": "eslint 'js/locale-utils.js' 'js/eid-cards-loader.js' 'js/error-i18n.js'",
     "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
   },
   "devDependencies": {

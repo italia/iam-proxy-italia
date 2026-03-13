@@ -26,38 +26,53 @@ function applyErrorTranslations() {
   });
 
   // Update html lang
-  document.documentElement.lang = i18next.language === 'it' ? 'it' : 'en';
+  document.documentElement.lang = (i18next.language || '').split('-')[0] || 'en';
 }
 
-function initErrorI18n() {
+function initErrorI18n(supported) {
   applyErrorTranslations();
   var langSelect = document.getElementById('error-lang-select');
   if (langSelect) {
     var lng = (i18next.language || '').split('-')[0];
-    if (lng === 'it' || lng === 'en') langSelect.value = lng;
-    else langSelect.value = 'en';
+    if (supported && supported.indexOf(lng) !== -1) langSelect.value = lng;
+    else langSelect.value = supported && supported[0] ? supported[0] : 'en';
     langSelect.addEventListener('change', function (e) {
-      i18next.changeLanguage(e.target.value).then(applyErrorTranslations);
+      var selectedLang = e.target.value;
+      var currentBase = (i18next.language || '').split('-')[0];
+      if (selectedLang && selectedLang !== currentBase) {
+        i18next.changeLanguage(selectedLang).then(applyErrorTranslations).catch(function (err) {
+          console.error('Language change failed:', err);
+        });
+      }
     });
   }
 }
 
-if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined') {
-  var basePath = (function () {
-    var path = window.location.pathname;
-    var lastSlash = path.lastIndexOf('/');
-    return lastSlash >= 0 ? path.substring(0, lastSlash + 1) : '/';
-  })();
-  i18next
-    .use(i18nextHttpBackend)
-    .init({
-      lng: document.documentElement.lang || 'it',
-      fallbackLng: 'en',
-      backend: {
-        loadPath: basePath + 'locales/error-{{lng}}.json'
-      }
+if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined' && typeof window.LocaleUtils !== 'undefined') {
+  var LocaleUtils = window.LocaleUtils;
+  var basePath = ((typeof window.__LOCALES_BASE__ !== 'undefined' && window.__LOCALES_BASE__) || (LocaleUtils.getBasePath && LocaleUtils.getBasePath())) || '/';
+  basePath = basePath.replace(/\/?$/, '/');
+  LocaleUtils.fetchLocalesManifest(basePath)
+    .then(function (manifest) {
+      var supported = manifest.error || ['en'];
+      var initialLng = LocaleUtils.getPreferredLanguage(supported);
+      return i18next
+        .use(i18nextHttpBackend)
+        .init({
+          lng: initialLng,
+          fallbackLng: supported[0] || 'en',
+          load: 'languageOnly',
+          preload: supported,
+          backend: {
+            loadPath: basePath + 'locales/error-{{lng}}.json',
+            requestOptions: { cache: 'no-store' }
+          }
+        })
+        .then(function () {
+          LocaleUtils.populateLangSelect(document.getElementById('error-lang-select'), supported, initialLng);
+          initErrorI18n(supported);
+        });
     })
-    .then(initErrorI18n)
     .catch(function (err) {
       console.error('Error loading error page translations:', err);
     });

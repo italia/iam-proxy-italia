@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -11,6 +11,7 @@
     <link href="css/bootstrap-italia.min.css" rel="stylesheet">
     <link href="css/ita.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script>window.__LOCALES_BASE__="/static/";window.__PREFERRED_LANG__="__LANG_PLACEHOLDER__";</script>
     <style>
       html, body { margin: 0; padding: 0; height: 100%; }
       body { display: flex; flex-direction: column; min-height: 100vh; }
@@ -18,6 +19,7 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.1/i18nextHttpBackend.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
+    <script src="js/locale-utils.js"></script>
   </head>
   <body>
     <!-- HEADER (same structure as disco) -->
@@ -28,8 +30,8 @@
             <span class="navbar-brand text-white"><strong id="error-header-region-name" data-i18n="header.region_name">Nome Organizzazione</strong></span>
             <div>
               <select id="error-lang-select" class="form-select form-select-sm text-white">
-                <option value="en">EN</option>
-                <option value="it" selected>ITA</option>
+                <option value="en" selected>EN</option>
+                <option value="it">ITA</option>
               </select>
             </div>
           </div>

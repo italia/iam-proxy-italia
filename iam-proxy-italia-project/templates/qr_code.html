@@ -94,28 +94,38 @@
       let countdown;
 
       function initI18n() {
-        const initialLang = localStorage.getItem('lang') || $('#lang-select').val() || 'en';
-
-        i18next
-        .use(i18nextHttpBackend)
-        .init({
-          lng: initialLang,
-          fallbackLng: 'en',
-          backend: {
-            loadPath: '{% raw %}/static/locales/qr-{{lng}}.json{% endraw %}'
-          }
-        }, function (err, t) {
-          if (err) {
-            console.error("Error i18next:", err);
-          }
-          $('#lang-select').val(initialLang);
-          StartQRcodeScanCheck(t);
-          updateTexts(t);
-        });
-
+        const Utils = window.LocaleUtils || {};
+        const basePath = (Utils.getBasePath && Utils.getBasePath()) || '/static/';
+        (Utils.fetchLocalesManifest ? Utils.fetchLocalesManifest(basePath) : fetch('/static/locales/languages.json').then(r => (r.ok ? r.json() : { qr: ['en'] })))
+          .then(manifest => {
+            const supported = (manifest && manifest.qr) || ['en'];
+            const initialLang = Utils.getPreferredLanguage ? Utils.getPreferredLanguage(supported, { checkLocalStorage: true }) : supported[0];
+            const sel = document.getElementById('lang-select');
+            if (sel && Utils.populateLangSelect) Utils.populateLangSelect(sel, supported, initialLang);
+            i18next
+              .use(i18nextHttpBackend)
+              .init({
+                lng: initialLang,
+                fallbackLng: supported[0] || 'en',
+                load: 'languageOnly',
+                backend: {
+                  loadPath: '{% raw %}/static/locales/qr-{{lng}}.json{% endraw %}'
+                }
+              }, function (err, t) {
+                if (err) {
+                  console.error("Error i18next:", err);
+                }
+                $('#lang-select').val(initialLang);
+                StartQRcodeScanCheck(t);
+                updateTexts(t);
+              });
+          })
+          .catch(err => console.error('Error loading locales manifest:', err));
         // change language on select change in header
         $('#lang-select').on('change', function () {
           const newLang = $(this).val();
+          const currentBase = (i18next.language || '').split('-')[0];
+          if (!newLang || newLang === currentBase) return;
           i18next.changeLanguage(newLang, function (err, t) {
             if (err) {
               return console.error('Error during change language:', err);

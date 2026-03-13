@@ -19,24 +19,58 @@ function loadEidCardsi18next() {
   //  }
 }
 
-// Inizializza i18next
-i18next
-  .use(i18nextHttpBackend)
-  .init({
-    lng: 'en',
-    fallbackLng: 'en',
-    backend: {
-      loadPath: 'locales/eid-{{lng}}.json'
-    }
-  })
-  .then(loadEidCardsi18next)
-  .catch(err => console.error('Error loading eid-cards:', err));
+const LocaleUtils = window.LocaleUtils || {};
+// Resolve locales base: explicit __LOCALES_BASE__ > script path > getBasePath
+let basePath = (typeof window !== 'undefined' && window.__LOCALES_BASE__) || '';
+if (!basePath && typeof import.meta !== 'undefined' && import.meta.url) {
+  basePath = new URL(import.meta.url).pathname.replace(/\/js\/[^/]*$/, '/');
+}
+if (!basePath && typeof document !== 'undefined' && document.currentScript?.src) {
+  basePath = new URL(document.currentScript.src, document.baseURI).pathname.replace(/\/js\/[^/]*$/, '/');
+}
+if (!basePath) basePath = (LocaleUtils.getBasePath && LocaleUtils.getBasePath()) || '/';
+basePath = (basePath || '/').replace(/\/?$/, '/');
 
-// Change language
-document.getElementById("lang-select")?.addEventListener('change', (e) => {
-  const selectedLang = e.target.value;
-  i18next.changeLanguage(selectedLang).then(loadEidCardsi18next);
-});
+(LocaleUtils.fetchLocalesManifest
+  ? LocaleUtils.fetchLocalesManifest(basePath)
+  : fetch(basePath + 'locales/languages.json').then((r) => (r.ok ? r.json() : Promise.resolve({ eid: ['en'] })))
+).then((manifest) => {
+  const supported = (manifest && manifest.eid) || ['en'];
+  const initialLng = LocaleUtils.getPreferredLanguage ? LocaleUtils.getPreferredLanguage(supported) : supported[0];
+  return i18next
+    .use(i18nextHttpBackend)
+    .init({
+      lng: initialLng,
+      fallbackLng: supported[0] || 'en',
+      load: 'languageOnly',
+      preload: supported,
+      backend: {
+        loadPath: basePath + 'locales/eid-{{lng}}.json',
+        requestOptions: { cache: 'no-store' }
+      }
+    })
+    .then(() => {
+      const sel = document.getElementById('lang-select');
+      if (LocaleUtils.populateLangSelect && sel) LocaleUtils.populateLangSelect(sel, supported, initialLng);
+      else if (sel) {
+        sel.innerHTML = supported.map((l) => `<option value="${l}">${LocaleUtils.formatLangLabel ? LocaleUtils.formatLangLabel(l) : l.toUpperCase()}</option>`).join('');
+        sel.value = initialLng;
+      }
+      // Attach change handler after initial load to avoid spurious events from populate
+      if (sel) {
+        sel.addEventListener('change', (e) => {
+          const selectedLang = e.target.value;
+          const currentBase = (i18next.language || '').split('-')[0];
+          if (selectedLang && selectedLang !== currentBase) {
+            i18next.changeLanguage(selectedLang).then(loadEidCardsi18next).catch(function (err) {
+              console.error('Language change failed:', err);
+            });
+          }
+        });
+      }
+      return loadEidCardsi18next();
+    });
+}).catch((err) => console.error('Error loading eid-cards:', err));
 
 // ----------------------- Document Loader -----------------------
 function loadDocument(resource) {
