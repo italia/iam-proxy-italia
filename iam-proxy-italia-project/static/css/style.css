@@ -556,8 +556,14 @@ header svg.icon {
   background-color: #004C99 !important;
 }
 
-#lang-select {
+#lang-select,
+#error-lang-select,
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
   background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -566,6 +572,22 @@ header svg.icon {
   background-position: right 0.75rem center;
   background-size: 16px 12px;
   padding-right: 2.25rem;
+}
+
+#lang-select option,
+#error-lang-select option {
+  background-color: #fff !important;
+  color: #333 !important;
+}
+
+/* Header lang select: extra specificity to override Bootstrap Italia .form-select */
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
+  background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .header-title-section {
@@ -713,7 +735,8 @@ footer {
     font-size: 1rem !important;
   }
 
-  #lang-select {
+  #lang-select,
+  #error-lang-select {
     width: 100px;
   }
 }

@@ -4,7 +4,9 @@
     "description": "Errore di Autenticazione"
   },
   "header": {
-    "organization_name": "Nome Organizzazione"
+    "organization_name": "Nome Organizzazione",
+    "region_name": "Nome Organizzazione",
+    "logo_title": "Il tuo logo"
   },
   "nav": {
     "main_page": "Pagina principale",
@@ -20,12 +22,13 @@
   "body": {
     "title": "Errore di Autenticazione",
     "dear_user": "Gentile Utente,",
-    "intro": "Si è verificata un'eccezione nella gestione del flusso di autenticazione. Questo non può dipendere dalle tue credenziali, altrimenti ti sarebbe stata mostrata la pagina di autenticazione fallita.",
-    "communicated": "Il problema riscontrato è stato segnalato in tempo reale agli amministratori della piattaforma. In caso di problema temporaneo ti chiediamo di:",
-    "try_again": "Riprovare ad autenticarsi dalla pagina del sito del fornitore del servizio;",
+    "intro": "Si è verificato un errore durante il processo di autenticazione. Non è dipeso dalle tue credenziali, altrimenti avresti ricevuto un messaggio diverso nella pagina di accesso.",
+    "communicated": "Il problema è stato segnalato agli amministratori della piattaforma. In caso di anomalia temporanea ti chiediamo di:",
+    "try_again": "Riprovare dall'homepage del sito del servizio;",
     "wait_retry": "Se il problema si ripresenta, attendere qualche minuto e riprovare;",
-    "support_ticket": "Se il problema persiste per più di 1 ora, aprire un ticket di supporto su https://ticket.example.org",
-    "in_most_cases": "Nella maggior parte dei casi si tratta di un problema temporaneo dovuto ad aggiornamenti delle piattaforme, avanzamento di versione del software o migrazione dei server."
+    "support_ticket": "Se il problema persiste per oltre un'ora, contattare l'assistenza attraverso i canali forniti dalla tua organizzazione.",
+    "in_most_cases": "Nella maggior parte dei casi si tratta di problematiche temporanee legate ad aggiornamenti o manutenzione della piattaforma.",
+    "back_link": "Torna alla pagina di accesso"
   },
   "footer": {
     "organization_name": "Nome Organizzazione",

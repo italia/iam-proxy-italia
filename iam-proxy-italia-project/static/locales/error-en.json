@@ -4,7 +4,9 @@
     "description": "Authentication Error"
   },
   "header": {
-    "organization_name": "Organization Name"
+    "organization_name": "Organization Name",
+    "region_name": "Organization Name",
+    "logo_title": "Your Logo"
   },
   "nav": {
     "main_page": "Main page",
@@ -20,12 +22,13 @@
   "body": {
     "title": "Authentication Error",
     "dear_user": "Dear User,",
-    "intro": "There has been an exception in managing your Authentication flow. This cannot depend on your credentials, otherwise it would have been the page where you entered these to provide you with a Failed Authentication notice.",
-    "communicated": "The problem you have encountered has been communicated in real time to the platform administrators, in the event that it was a temporary problem we ask you to:",
-    "try_again": "Try to authenticate again, starting from the page of the service provider website;",
+    "intro": "An error occurred during the authentication process. This was not caused by your credentials; otherwise you would have seen a different message on the login page.",
+    "communicated": "The issue has been reported to the platform administrators. If this is a temporary problem, please:",
+    "try_again": "Try again from the service provider's website;",
     "wait_retry": "If the problem occurs again, wait a few minutes and try again;",
-    "support_ticket": "If the problem persists for more than 1 hour, we ask you to open a support ticket at https://ticket.example.org",
-    "in_most_cases": "In most cases, it is a temporary problem that arose following an update of the platforms in progress, an advancement of the software version or a server migration."
+    "support_ticket": "If the problem persists for more than one hour, please contact support using the channels provided by your organization.",
+    "in_most_cases": "In most cases, these are temporary issues related to platform updates or maintenance.",
+    "back_link": "Return to login"
   },
   "footer": {
     "organization_name": "Organization Name",

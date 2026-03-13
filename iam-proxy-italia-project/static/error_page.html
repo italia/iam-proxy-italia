@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title id="error-page-title"></title>
     <meta name="description" content="" id="error-page-description">
-    <!-- Bootstrap Italia CSS -->
-    <link href="css/bootstrap-italia.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="spid/favicon-32x32.png">
+    <!-- Bootstrap first, then style.css last so header/footer/lang-select overrides apply -->
+    <link href="css/bootstrap-italia.min.css" rel="stylesheet">
+    <link href="css/ita.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <style>
       html, body { margin: 0; padding: 0; height: 100%; }
       body { display: flex; flex-direction: column; min-height: 100vh; }
@@ -18,15 +20,14 @@
     <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
   </head>
   <body>
-    <div class="it-header-wrapper">
-      <!-- Top row in header (same as disco: lang at top right) -->
+    <!-- HEADER (same structure as disco) -->
+    <header class="it-header-wrapper">
       <div class="it-header-slim-wrapper bg-primary">
         <div class="container">
           <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
-            <span class="navbar-brand text-white" data-i18n="header.organization_name">Nome Organizzazione</span>
-            <!-- Dropdown language (top right, as on disco) -->
+            <span class="navbar-brand text-white"><strong id="error-header-region-name" data-i18n="header.region_name">Nome Organizzazione</strong></span>
             <div>
-              <select id="error-lang-select" class="form-select form-select-sm text-white" style="background-color: #0072CE">
+              <select id="error-lang-select" class="form-select form-select-sm text-white">
                 <option value="en">EN</option>
                 <option value="it" selected>ITA</option>
               </select>
@@ -34,24 +35,27 @@
           </div>
         </div>
       </div>
-      <!-- Subheader strip (same as disco: icon + page title) -->
-      <div style="background-color: #F2F7FC;">
+      <div class="header-title-section">
         <div class="container py-3">
           <div class="d-flex align-items-center">
             <svg class="icon icon-lg me-2" aria-hidden="true">
-              <use xlink:href="spid/svg/sprite.svg#it-code-circle"></use>
+              <!-- YOUR LOGO HERE (same as disco) -->
+              <use xlink:href="svg/sprites.svg#it-code-circle"></use>
             </svg>
-            <h2 class="mb-0" data-i18n="body.title">Errore di Autenticazione</h2>
+            <h2 id="error-header-logo-title" class="mb-0" data-i18n="header.logo_title">Il tuo logo</h2>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Container - Body of page-->
-    <div class="main-body">
-      <div class="container">
-        <div class="col-12 py-md-5 bd-content">
+    </header>
+    <!-- MAIN (same structure as disco: container, centered section title, then content) -->
+    <main class="container my-4 flex-grow-1">
+      <div class="mb-4">
+        <h3 class="text-center mb-4" data-i18n="body.title">Errore di Autenticazione</h3>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-12">
           <div class="card-wrapper card-space">
-            <article class="it-card rounded shadow-sm border">
+            <article class="it-card shadow border">
               <div class="it-card-body">
                 <div class="row">
                   <div class="col-sm">
@@ -67,17 +71,19 @@
                         </p>
                         <p data-i18n="body.in_most_cases"></p>
                       </li>
+                      <li class="list-group-item border-0">
+                        <a href="/" class="btn btn-outline-primary" data-i18n="body.back_link">Torna alla pagina di accesso</a>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
             </article>
-          </div>
         </div>
       </div>
-    </div>
-    <!-- Footer (same as disco: compact bar with 3 links) -->
-    <footer style="margin: 0; padding: 1rem 0; background-color: #0072CE; color: white; width: 100%;">
+    </main>
+    <!-- FOOTER (same structure as disco) -->
+    <footer>
       <div class="container h-100 d-flex align-items-center">
         <div class="d-flex flex-wrap justify-content-start">
           <a id="error-footer-legal" href="/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.legal_notes">Note legali</a>
