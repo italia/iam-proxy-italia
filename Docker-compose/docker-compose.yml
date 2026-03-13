@@ -103,7 +103,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:3.1.0
+    image: ghcr.io/italia/iam-proxy-italia:3.1.1
     build:
         context: ../
         args:

@@ -1,6 +1,6 @@
 [project]
 name = "iam-proxy-italia"
-version = "3.0"
+version = "3.1.1"
 description = "IAM Proxy Italia"
 authors = [
     {name = "Giuseppe De Marco",email = "demarcog83@gmail.com"}
