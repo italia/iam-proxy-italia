@@ -35,7 +35,7 @@ function initErrorI18n() {
   if (langSelect) {
     var lng = (i18next.language || '').split('-')[0];
     if (lng === 'it' || lng === 'en') langSelect.value = lng;
-    else langSelect.value = 'en';
+    else langSelect.value = 'it';
     langSelect.addEventListener('change', function (e) {
       i18next.changeLanguage(e.target.value).then(applyErrorTranslations);
     });
@@ -52,7 +52,7 @@ if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined')
     .use(i18nextHttpBackend)
     .init({
       lng: document.documentElement.lang || 'it',
-      fallbackLng: 'en',
+      fallbackLng: 'it',
       backend: {
         loadPath: basePath + 'locales/error-{{lng}}.json'
       }
