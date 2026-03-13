@@ -129,6 +129,7 @@ services:
       - SATOSA_GET_CIE_IDP_METADATA=${SATOSA_GET_CIE_IDP_METADATA:-true}
 
       - BASE_DIR=/satosa_proxy
+      - SATOSA_HOSTNAME=${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       - SATOSA_PRIVATE_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PRIVATE_KEY_FILENAME:-privkey.pem}
       - SATOSA_PUBLIC_KEY=${SATOSA_KEYS_FOLDER:-./pki}/${SATOSA_PUBLIC_KEY_FILENAME:-cert.pem}
       - SATOSA_BASE=https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}

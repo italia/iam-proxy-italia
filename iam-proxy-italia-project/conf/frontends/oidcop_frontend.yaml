@@ -2,7 +2,7 @@ module: satosa_oidcop.idpy_oidcop.OidcOpFrontend
 name: OIDC
 
 config:
-  domain: &domain iam-proxy-italia.example.org
+  domain: &domain !ENV SATOSA_HOSTNAME
   server_name: *domain
   base_url: &base_url <base_url>
 
