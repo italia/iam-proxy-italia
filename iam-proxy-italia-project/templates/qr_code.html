@@ -94,13 +94,13 @@
       let countdown;
 
       function initI18n() {
-        const initialLang = localStorage.getItem('lang') || $('#lang-select').val() || 'en';
+        const initialLang = localStorage.getItem('lang') || $('#lang-select').val() || 'it';
 
         i18next
         .use(i18nextHttpBackend)
         .init({
           lng: initialLang,
-          fallbackLng: 'en',
+          fallbackLng: 'it',
           backend: {
             loadPath: '{% raw %}/static/locales/qr-{{lng}}.json{% endraw %}'
           }

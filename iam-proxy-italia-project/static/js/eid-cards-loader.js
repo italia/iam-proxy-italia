@@ -23,8 +23,8 @@ function loadEidCardsi18next() {
 i18next
   .use(i18nextHttpBackend)
   .init({
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: 'it',
+    fallbackLng: 'it',
     backend: {
       loadPath: 'locales/eid-{{lng}}.json'
     }
