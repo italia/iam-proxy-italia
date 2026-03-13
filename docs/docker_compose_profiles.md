@@ -40,9 +40,10 @@ The [run-docker-compose.sh](./run-docker-compose.md) script can start selected p
 
 | Service              | Profiles |
 | -------------------- | -------- |
-| satosa-mongo         | demo, storage_mongo, mongoexpress, oidc, wallet |
-| satosa-mongo-express | demo, mongoexpress |
-| django_sp            | demo, dev, saml2 |
+| satosa-mongo             | demo, storage_mongo, mongoexpress, oidc, wallet |
+| satosa-mongo-express     | demo, mongoexpress |
+| relying-party-demo-mongo | demo, storage_mongo, oidc |
+| django_sp                | demo, dev, saml2 |
 | spid-samlcheck       | demo, dev, saml2 |
 | trust-anchor         | demo, storage_mongo, oidc |
 | cie-provider         | demo, storage_mongo, oidc |
@@ -58,7 +59,7 @@ The [run-docker-compose.sh](./run-docker-compose.md) script can start selected p
 | storage_mongo   | satosa-mongo, satosa-nginx, iam-proxy-italia |
 | mongoexpress    | satosa-mongo, satosa-mongo-express, satosa-nginx, iam-proxy-italia |
 | saml2           | django_sp, spid-samlcheck, satosa-nginx, iam-proxy-italia |
-| oidc            | satosa-mongo, trust-anchor, cie-provider, relying-party-demo, satosa-nginx, iam-proxy-italia |
+| oidc            | satosa-mongo, trust-anchor, cie-provider, relying-party-demo-mongo, relying-party-demo, satosa-nginx, iam-proxy-italia |
 | wallet          | satosa-mongo, satosa-nginx, iam-proxy-italia |
 | dev             | django_sp, spid-samlcheck, satosa-nginx, iam-proxy-italia |
 | demo            | all of the above |
@@ -68,7 +69,7 @@ The [run-docker-compose.sh](./run-docker-compose.md) script can start selected p
 | Stack   | Profiles that include it | Services |
 | ------- | ------------------------- | -------- |
 | **SAML2** | saml2, dev, demo        | django_sp (djangosaml2), spid-samlcheck |
-| **OIDC**  | oidc, demo               | trust-anchor, cie-provider, relying-party-demo, satosa-mongo (OIDC storage) |
+| **OIDC**  | oidc, demo               | trust-anchor, cie-provider, relying-party-demo-mongo (init), relying-party-demo, satosa-mongo (OIDC storage) |
 | **Wallet**| wallet, demo             | satosa-mongo (OpenID4VP/OpenID4VCI storage); proxy runs in iam-proxy-italia |
 | **Storage** | storage_mongo, mongoexpress | satosa-mongo, satosa-mongo-express |
 

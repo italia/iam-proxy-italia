@@ -103,7 +103,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:3.1.1
+    image: ghcr.io/italia/iam-proxy-italia:3.2.0
     build:
         context: ../
         args:
@@ -338,6 +338,33 @@ services:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
+
+  # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc) only when MongoDB is void.
+  # Otherwise run the insert manually — see docs/satosa_oidcop_oidc_client_registration.md
+  # (section "Insert a new client (new RP)").
+  relying-party-demo-mongo:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+    build:
+      <<: *demo-rp-build
+    container_name: relying-party-demo-mongo
+    working_dir: /rp-demo-project
+    command: ["python3", "init_oidcop_mongo.py"]
+    restart: "no"
+    depends_on:
+      satosa-mongo:
+        condition: service_healthy
+    networks:
+      - iam-proxy-italia
+    environment:
+      MONGO_URL: "${MONGO_URL:-satosa-mongo}"
+      MONGO_PORT: "${MONGO_PORT:-27017}"
+      MONGO_DBUSER: "${MONGO_DBUSER:-satosa}"
+      MONGO_DBPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
+      MONGO_INITDB_DATABASE: "${MONGO_INITDB_DATABASE:-oidcop}"
+      TZ: "${TZ:-Europe/Rome}"
 
   relying-party-demo:
     profiles:
