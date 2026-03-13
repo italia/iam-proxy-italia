@@ -1,0 +1,73 @@
+{
+  "header": {
+    "region_name": "Organization Name"
+  },
+  "titles": {
+    "page_title": "Autentication Method Selection Page",
+    "login_logo": "Your Logo",
+    "login_digital_identity": "Log in with a digital identity",
+    "login_alternative_method" : "Log in using an alternative method",
+    "havent_digital_identy": "Don't have a digital identity yet?",
+    "find_how_to_get_digital_id": "Find out how to get it",
+    "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
+    "learn_more": "Learn more"
+  },
+  "digital_id": {
+    "it_wallet": {
+      "name": "IT-Wallet",
+      "logo_text": "Login with IT-Wallet",
+      "logo": "wallet-it/wallet_icon.svg",
+      "login_url": "/Saml2/disco?entityID=wallet",
+      "learn_more_descr": "IT-Wallet is the Italian digital wallet system that gives you full control over your information, without the issuing authority knowing when and how it is used."
+    },
+    "cie": {
+      "name": "CIE SAML2",
+      "logo_text": "Login with CIE",
+      "logo": "cie/cie_white.svg",
+      "login_url": "/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco",
+      "learn_more_descr": "CIE (Carta d'Identità Elettronica) is the Italian electronic identity card. Use it to access online services in a secure way via the SAML2 protocol."
+    },
+    "cie_oidc": {
+      "name": "CIE OpenID Connect",
+      "logo_text": "Login with CIE",
+      "logo": "cie/cie_white.svg",
+      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op/",
+      "learn_more_descr": "CIE (Carta d'Identità Elettronica) can be used with the OIDC protocol to authenticate and access online services."
+    },
+    "spid": {
+      "name": "SPID",
+      "logo_text": "Login with SPID",
+      "logo": "spid/spid_icon.svg",
+      "login_url": "#spid-idp-button-xlarge-post",
+      "learn_more_descr": "SPID (Sistema Pubblico di Identità Digitale) is the Italian public digital identity system. Choose your identity provider to log in with your SPID credentials."
+    },
+    "eidas": {
+      "name": "eIDAS",
+      "logo_text": "Login with eIDAS",
+      "logo": "img/ficep.svg",
+      "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
+      "learn_more_descr": "eIDAS (electronic IDentification, Authentication and trust Services) is the EU regulation for cross-border electronic identification. Use your national eID or notified scheme to access this service."
+    }
+  },
+  "alternative_id": {
+    "idem": {
+      "name":"IDEM",
+      "logo_text": "Login with IDEM",
+      "logo": "img/idem.svg",
+      "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_",
+      "learn_more_descr": "IDEM (Identity and Access Management for Education and Research) is the federated identity system of the Italian research and education network (GARR). Use it to access services that support IDEM authentication."
+    },
+    "alt1": {
+      "name": "{Alternative 1}",
+      "logo_text": "Login with {Alternative 1}",
+      "logo": "/static/svg/sprites.svg#it-code-circle",
+      "login_url": "#",
+      "learn_more_descr": "{Alternative 1} is a federated identity system that allows you to access services that support {Alternative 1} authentication."
+    }
+  },
+  "footer": {
+    "legal_notice": "Legal notes",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Accessibility statement"
+  }
+}

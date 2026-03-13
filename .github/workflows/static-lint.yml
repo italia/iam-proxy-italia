@@ -1,0 +1,36 @@
+# Static assets linting (HTML, CSS, JS).
+# Runs only when static source files are touched.
+
+name: Static Lint
+
+on:
+  push:
+    branches: [master, dev]
+    paths:
+      - 'iam-proxy-italia-project/static/**'
+  pull_request:
+    branches: [master, dev]
+    paths:
+      - 'iam-proxy-italia-project/static/**'
+
+jobs:
+  static-lint:
+    name: Lint static assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Lint HTML, CSS, JS
+        working-directory: iam-proxy-italia-project/static
+        run: npm run lint

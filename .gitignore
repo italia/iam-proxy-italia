@@ -59,3 +59,7 @@ htmlcov/
 coverage.xml
 .venv-audit
 .venv-lock
+
+# Static assets (Bootstrap Italia via npm)
+iam-proxy-italia-project/static/node_modules/
+.venv*

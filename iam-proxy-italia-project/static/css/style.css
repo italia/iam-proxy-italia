@@ -189,7 +189,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 400;
-    display: swap;
+    font-display: swap;
     src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.eot');
     src: local(''),
         url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.eot?#iefix') format('embedded-opentype'),
@@ -204,7 +204,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 700;
-    display: swap;
+    font-display: swap;
     src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.eot');
     src: local(''),
         url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.eot?#iefix') format('embedded-opentype'),
@@ -219,7 +219,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 400;
-    display: swap;
+    font-display: swap;
     src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.eot');
     src: local(''),
         url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.eot?#iefix') format('embedded-opentype'),
@@ -234,7 +234,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 700;
-    display: swap;
+    font-display: swap;
     src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.eot');
     src: local(''),
         url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.eot?#iefix') format('embedded-opentype'),
@@ -400,3 +400,344 @@
     margin-left: -15%;
     margin-top: -10%;
 }
+
+/* ----- disco.html / eid-cards layout ----- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.it-card .btn:hover {
+  text-decoration: none;
+}
+
+/* EID cards: responsive layout - buttons fill available space */
+.it-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.it-card .it-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Button row: fixed height, never grows when learn-more expands */
+.it-card .it-card-body > .d-flex:first-child {
+  flex: 0 0 auto;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+}
+
+.it-card .eid-card-btn,
+.it-card .eid-cie-dropdown-wrapper {
+  width: 100%;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+}
+
+.it-card .eid-card-btn {
+  justify-content: flex-start;
+  flex: 1;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.eid-card-logo {
+  width: 1.25em;
+  height: 1.25em;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+}
+
+header svg.icon {
+  width: 32px;
+  height: 32px;
+  fill: #6c757d;
+}
+
+/* Find out how to get it link */
+.eid-find-how-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+  color: #0066cc !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
+  transition: color 0.15s ease;
+}
+
+.eid-find-how-link:hover {
+  color: #004d99 !important;
+  text-decoration: underline !important;
+}
+
+.eid-find-how-link:hover svg {
+  fill: #004d99 !important;
+}
+
+.eid-find-how-link:focus,
+.eid-find-how-link:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.eid-find-how-link svg {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* Learn more toggle */
+.eid-learn-more-toggle {
+  color: #0066cc !important;
+  text-decoration: underline !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.eid-learn-more-toggle:hover {
+  color: #004d99 !important;
+}
+
+.eid-learn-more-toggle .eid-learn-more-arrow {
+  display: inline-block !important;
+  overflow: visible;
+  width: 33px !important;
+  height: 33px !important;
+  transform-origin: center center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: 0.2rem;
+  vertical-align: middle;
+  transform: scale(0.35);
+}
+
+.eid-learn-more-toggle .eid-learn-more-arrow path {
+  fill: none !important;
+  stroke: #06c !important;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.eid-learn-more-toggle:hover .eid-learn-more-arrow path {
+  stroke: #004d99 !important;
+}
+
+/* Bootstrap Italia original color for navbar and footer */
+.it-header-slim-wrapper.bg-primary {
+  background-color: #004C99 !important;
+}
+
+#lang-select,
+#error-lang-select,
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
+  background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  padding-right: 2.25rem;
+}
+
+#lang-select option,
+#error-lang-select option {
+  background-color: #fff !important;
+  color: #333 !important;
+}
+
+/* Header lang select: extra specificity to override Bootstrap Italia .form-select */
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
+  background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.header-title-section {
+  background-color: #F2F7FC;
+}
+
+footer {
+  margin: 0;
+  padding: 1rem 0;
+  background-color: #004C99;
+  color: white;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+/* CIE dropdown - same style as SPID dropdown */
+.cie-dropdown-menu {
+  list-style: none;
+  background: white;
+  border: solid 1px #ddd;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  overflow: visible;
+  padding: 0;
+  margin: 0;
+  min-width: 270px;
+}
+
+.cie-dropdown-menu li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 18px;
+}
+
+.cie-dropdown-menu li > a {
+  display: flex;
+  align-items: center;
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #06C;
+  text-decoration: none !important;
+  line-height: 18px;
+  padding: 10px 12px;
+  white-space: nowrap;
+  border-bottom: 1px solid #ddd;
+}
+
+.cie-dropdown-menu .cie-option-label {
+  margin-left: 10px;
+  color: #003366 !important;
+  font-size: 1em !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.cie-dropdown-menu li > a:hover {
+  color: #036;
+  cursor: pointer;
+  background-color: #F0F0F0;
+}
+
+.cie-dropdown-menu li > a img {
+  height: 45px;
+  padding: 0;
+  margin-right: 10px;
+  border: 0;
+  flex-shrink: 0;
+}
+
+.cie-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  z-index: 1040;
+}
+
+.cie-dropdown-menu.is-open {
+  display: block;
+}
+
+.eid-card-logo {
+  width: 1.25em;
+  height: 1.25em;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.eid-card-btn {
+  gap: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.eid-card-btn-center {
+  align-self: center;
+}
+
+.eid-cie-dropdown-wrapper {
+  position: relative;
+}
+
+.eid-learn-more-content {
+  display: none;
+}
+
+.eid-learn-more-content.is-open {
+  display: block;
+}
+
+.eid-learn-more-toggle.expanded .eid-learn-more-arrow {
+  transform: scale(0.35) rotate(180deg);
+}
+
+.eid-alternative-section {
+  background-color: #F5F5F0;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  header .it-header-slim-wrapper-content {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  #eid-cards-container .col-12 {
+    margin-bottom: 1rem;
+  }
+
+  .it-card {
+    font-size: 1rem !important;
+  }
+
+  #lang-select,
+  #error-lang-select {
+    width: 100px;
+  }
+}
+

@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Errore di Autenticazione",
+    "description": "Errore di Autenticazione"
+  },
+  "header": {
+    "organization_name": "Nome Organizzazione",
+    "region_name": "Nome Organizzazione",
+    "logo_title": "Il tuo logo"
+  },
+  "nav": {
+    "main_page": "Pagina principale",
+    "faq": "Domande frequenti",
+    "this_service": "Questo servizio",
+    "assistance": "Assistenza",
+    "spid": "SPID",
+    "more_info": "Maggiori informazioni",
+    "dont_have_spid": "Non hai SPID?",
+    "need_help": "Serve aiuto?",
+    "close": "Chiudi"
+  },
+  "body": {
+    "title": "Errore di Autenticazione",
+    "dear_user": "Gentile Utente,",
+    "intro": "Si è verificato un errore durante il processo di autenticazione. Non è dipeso dalle tue credenziali, altrimenti avresti ricevuto un messaggio diverso nella pagina di accesso.",
+    "communicated": "Il problema è stato segnalato agli amministratori della piattaforma. In caso di anomalia temporanea ti chiediamo di:",
+    "try_again": "Riprovare dall'homepage del sito del servizio;",
+    "wait_retry": "Se il problema si ripresenta, attendere qualche minuto e riprovare;",
+    "support_ticket": "Se il problema persiste per oltre un'ora, contattare l'assistenza attraverso i canali forniti dalla tua organizzazione.",
+    "in_most_cases": "Nella maggior parte dei casi si tratta di problematiche temporanee legate ad aggiornamenti o manutenzione della piattaforma.",
+    "back_link": "Torna alla pagina di accesso"
+  },
+  "footer": {
+    "organization_name": "Nome Organizzazione",
+    "tagline": "Lorem ipsum",
+    "contacts": "Contatti",
+    "contacts_title": "Vai alla pagina: Contatti",
+    "address_line1": "via Tal dei Tali 00000 Città, Provincia",
+    "address_line2": "Codice Fiscale 2384762384623894 - Tel. (+39) xxxx yyyyyy",
+    "pec": "Posta Elettronica Certificata",
+    "pec_title": "Vai alla pagina: Posta Elettronica Certificata",
+    "e_invoicing": "Fatturazione Elettronica",
+    "e_invoicing_title": "Vai alla pagina: Fatturazione elettronica",
+    "useful_links": "Link Utili",
+    "useful_links_title": "Vai alla pagina: Link Utili",
+    "contacts_search": "Contatti/cerca persone",
+    "contacts_search_title": "Vai alla pagina: Contatti/cerca persone",
+    "admin_contacts": "Contatti amministrazione",
+    "admin_contacts_title": "Vai alla pagina: Contatti amministrazione",
+    "services_contacts": "Contatti servizi",
+    "services_contacts_title": "Vai alla pagina: Contatti servizi",
+    "pat": "PAT - Portale amministrazione trasparente",
+    "pat_title": "Vai alla pagina: PAT - Portale amministrazione trasparente",
+    "follow_us": "Seguici su",
+    "follow_us_title": "Vai alla pagina: Seguici su",
+    "newsletter": "Newsletter",
+    "newsletter_title": "Vai alla pagina: Newsletter",
+    "newsletter_form": "Form Newsletter",
+    "useful_links_section": "Sezione Link Utili",
+    "legal_notes": "Note legali",
+    "legal_notes_title": "Note Legali",
+    "privacy": "Protezione dei dati",
+    "privacy_title": "Protezione dei dati",
+    "accessibility": "Dichiarazione di accessibilità"
+  }
+}
