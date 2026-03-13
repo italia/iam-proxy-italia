@@ -35,7 +35,7 @@ db.createUser(
 exit
 ````
 
-For **OIDC client and session indexes** and **inserting test clients** (e.g. `jbxedfmfyc`), see [satosa_oidcop_oidc_client_registration.md](satosa_oidcop_oidc_client_registration.md).
+For **OIDC client and session indexes** and **inserting test clients** (e.g. `jbxedfmfyc`), see [demo-oidc-rp.md](demo-oidc-rp.md) (section "OIDC client registration").
 
 ### Using Docker
 

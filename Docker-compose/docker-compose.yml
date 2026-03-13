@@ -340,7 +340,7 @@ services:
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc) only when MongoDB is void.
-  # Otherwise run the insert manually — see docs/satosa_oidcop_oidc_client_registration.md
+  # Otherwise run the insert manually — see docs/demo-oidc-rp.md (section "Insert a new client")
   # (section "Insert a new client (new RP)").
   relying-party-demo-mongo:
     profiles:
@@ -364,6 +364,17 @@ services:
       MONGO_DBUSER: "${MONGO_DBUSER:-satosa}"
       MONGO_DBPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
       MONGO_INITDB_DATABASE: "${MONGO_INITDB_DATABASE:-oidcop}"
+      # OIDC RP Demo test client (see docs/demo-oidc-rp.md)
+      OIDC_RP_DEMO_CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
+      OIDC_RP_DEMO_CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
+      OIDC_RP_DEMO_REDIRECT_URI: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
+      OIDC_RP_DEMO_POST_LOGOUT_REDIRECT_URI: "https://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/session_logout/satosa"
+      OIDC_RP_DEMO_OP_BASE_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}"
+      OIDC_RP_DEMO_CLIENT_NAME: "${OIDC_RP_DEMO_CLIENT_NAME:-ciro}"
+      OIDC_RP_DEMO_CLIENT_SALT: "${OIDC_RP_DEMO_CLIENT_SALT:-6flfsj0Z}"
+      OIDC_RP_DEMO_REGISTRATION_ACCESS_TOKEN: "${OIDC_RP_DEMO_REGISTRATION_ACCESS_TOKEN:-z3PCMmC1HZ1QmXeXGOQMJpWQNQynM4xY}"
+      OIDC_RP_DEMO_CLIENT_CONTACTS: "${OIDC_RP_DEMO_CLIENT_CONTACTS:-ops@example.com}"
+      OIDC_RP_DEMO_ALLOWED_SCOPES: "${OIDC_RP_DEMO_ALLOWED_SCOPES:-openid,profile,email,offline_access}"
       TZ: "${TZ:-Europe/Rome}"
 
   relying-party-demo:
@@ -388,7 +399,11 @@ services:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
       WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
-      URL_CALLBACK: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
+      # OIDC RP Demo (see docs/demo-oidc-rp.md) — must match client in MongoDB
+      OIDC_RP_DEMO_CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
+      OIDC_RP_DEMO_CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
+      OIDC_RP_DEMO_REDIRECT_URI: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
+      URL_CALLBACK: "${OIDC_RP_DEMO_REDIRECT_URI:-http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa}"
       CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
       CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
 

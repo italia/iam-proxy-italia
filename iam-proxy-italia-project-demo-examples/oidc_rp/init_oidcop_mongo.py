@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 MongoDB init script for oidcop: creates database user, indexes, and test OIDC client.
-Executed by relying-party-demo at startup (before uvicorn). Idempotent.
+Executed by relying-party-demo-mongo at startup. Idempotent.
+All test client fields are configurable via OIDC_RP_DEMO_* env vars; see docs/demo-oidc-rp.md.
 """
 
 import os
@@ -14,31 +15,63 @@ except ImportError:
     print("init_oidcop_mongo: pymongo not installed, skipping MongoDB init", file=sys.stderr)
     sys.exit(0)
 
-# Env vars: MONGO_URL, MONGO_PORT, MONGO_DBUSER, MONGO_DBPASSWORD, MONGO_INITDB_DATABASE
+# MongoDB connection
 MONGO_URL = os.environ.get("MONGO_URL", "satosa-mongo")
 MONGO_PORT = os.environ.get("MONGO_PORT", "27017")
 MONGO_DBUSER = os.environ.get("MONGO_DBUSER", "satosa")
 MONGO_DBPASSWORD = os.environ.get("MONGO_DBPASSWORD", "thatpassword")
 MONGO_INITDB_DATABASE = os.environ.get("MONGO_INITDB_DATABASE", "oidcop")
 
-TEST_CLIENT = {
-    "client_id": "jbxedfmfyc",
-    "client_name": "ciro",
-    "client_salt": "6flfsj0Z",
-    "registration_access_token": "z3PCMmC1HZ1QmXeXGOQMJpWQNQynM4xY",
-    "registration_client_uri": "https://iam-proxy-italia.example.org/registration_api?client_id=jbxedfmfyc",
-    "client_id_issued_at": 1630952311.410208,
-    "client_secret": "19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1",
-    "client_secret_expires_at": 1802908740.410214,
-    "application_type": "web",
-    "contacts": ["ops@example.com"],
-    "token_endpoint_auth_method": "client_secret_basic",
-    "redirect_uris": [["http://localhost:8090/authz_cb/satosa", {}]],
-    "post_logout_redirect_uris": [["https://localhost:8090/session_logout/satosa", None]],
-    "response_types": ["code"],
-    "grant_types": ["authorization_code"],
-    "allowed_scopes": ["openid", "profile", "email", "offline_access"],
-}
+# OIDC RP Demo test client — all from env (see docs/demo-oidc-rp.md)
+def _get_test_client() -> dict:
+    client_id = os.environ.get("OIDC_RP_DEMO_CLIENT_ID", "jbxedfmfyc")
+    op_base = os.environ.get(
+        "OIDC_RP_DEMO_OP_BASE_URL",
+        os.environ.get("SATOSA_BASE", "https://iam-proxy-italia.example.org"),
+    )
+    redirect_uri = os.environ.get(
+        "OIDC_RP_DEMO_REDIRECT_URI", "http://localhost:8090/authz_cb/satosa"
+    )
+    post_logout_uri = os.environ.get(
+        "OIDC_RP_DEMO_POST_LOGOUT_REDIRECT_URI",
+        "https://localhost:8090/session_logout/satosa",
+    )
+    contacts_str = os.environ.get("OIDC_RP_DEMO_CLIENT_CONTACTS", "ops@example.com")
+    scopes_str = os.environ.get(
+        "OIDC_RP_DEMO_ALLOWED_SCOPES", "openid,profile,email,offline_access"
+    )
+    return {
+        "client_id": client_id,
+        "client_name": os.environ.get("OIDC_RP_DEMO_CLIENT_NAME", "ciro"),
+        "client_salt": os.environ.get("OIDC_RP_DEMO_CLIENT_SALT", "6flfsj0Z"),
+        "registration_access_token": os.environ.get(
+            "OIDC_RP_DEMO_REGISTRATION_ACCESS_TOKEN",
+            "z3PCMmC1HZ1QmXeXGOQMJpWQNQynM4xY",
+        ),
+        "registration_client_uri": f"{op_base.rstrip('/')}/registration_api?client_id={client_id}",
+        "client_id_issued_at": float(
+            os.environ.get("OIDC_RP_DEMO_CLIENT_ID_ISSUED_AT", "1630952311.410208")
+        ),
+        "client_secret": os.environ.get(
+            "OIDC_RP_DEMO_CLIENT_SECRET",
+            "19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1",
+        ),
+        "client_secret_expires_at": float(
+            os.environ.get("OIDC_RP_DEMO_CLIENT_SECRET_EXPIRES_AT", "1802908740.410214")
+        ),
+        "application_type": os.environ.get("OIDC_RP_DEMO_APPLICATION_TYPE", "web"),
+        "contacts": [c.strip() for c in contacts_str.split(",") if c.strip()],
+        "token_endpoint_auth_method": os.environ.get(
+            "OIDC_RP_DEMO_TOKEN_ENDPOINT_AUTH_METHOD", "client_secret_basic"
+        ),
+        "redirect_uris": [[redirect_uri, {}]],
+        "post_logout_redirect_uris": [[post_logout_uri, None]],
+        "response_types": os.environ.get("OIDC_RP_DEMO_RESPONSE_TYPES", "code").split(","),
+        "grant_types": os.environ.get(
+            "OIDC_RP_DEMO_GRANT_TYPES", "authorization_code"
+        ).split(","),
+        "allowed_scopes": [s.strip() for s in scopes_str.split(",") if s.strip()],
+    }
 
 
 def main():
@@ -79,9 +112,10 @@ def main():
     )
 
     # Upsert test client (idempotent)
+    test_client = _get_test_client()
     db.client.update_one(
-        {"client_id": TEST_CLIENT["client_id"]},
-        {"$set": TEST_CLIENT},
+        {"client_id": test_client["client_id"]},
+        {"$set": test_client},
         upsert=True,
     )
     client.close()

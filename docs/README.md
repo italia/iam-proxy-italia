@@ -40,7 +40,7 @@ Technical documentation for IAM Proxy Italia, organized by purpose.
 | Document | Description |
 | -------- | ----------- |
 | [demo-djangosaml2-sp.md](demo-djangosaml2-sp.md) | Django SAML2 Service Provider demo |
-| [demo-oidc-rp.md](demo-oidc-rp.md) | Minimal OIDC Relying Party demo (auth code + PKCE) |
+| [demo-oidc-rp.md](demo-oidc-rp.md) | OIDC Relying Party demo (auth code + PKCE, env vars, Docker) |
 | [demo-login-walkthrough.md](demo-login-walkthrough.md) | Step-by-step demo login walkthrough |
 | [demo-identity-python-forks-patching.md](demo-identity-python-forks-patching.md) | PySAML2 and SATOSA forked branches and patching |
 | [pyff-metadata.md](pyff-metadata.md) | pyFF metadata aggregation and Discovery Service |
@@ -61,8 +61,6 @@ Technical documentation for IAM Proxy Italia, organized by purpose.
 | -------- | ----------- |
 | [external-references.md](external-references.md) | Tutorials, SATOSA docs, account linking, related projects |
 | [gallery.md](gallery.md) | Screenshots and demo pages |
-| [satosa_oidcop_oidc_client_registration.md](satosa_oidcop_oidc_client_registration.md) | OIDC client registration for satosa-oidcop |
-| [oidc_rp_debuggers.md](oidc_rp_debuggers.md) | OIDC RP debuggers and testing tools |
 | [gen_x509_chain_iam_proxy.md](gen_x509_chain_iam_proxy.md) | X.509 chain generator for pyeudiw (custom FQDN for demos) |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions (Docker, config, tests) |
 
