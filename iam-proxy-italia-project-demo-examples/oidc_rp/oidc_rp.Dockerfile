@@ -11,6 +11,7 @@ WORKDIR /rp-demo-project
 
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/requirements.txt .
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/main.py .
+COPY iam-proxy-italia-project-demo-examples/oidc_rp/init_oidcop_mongo.py .
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/env.example .env
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/templates ./templates
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/static ./static
