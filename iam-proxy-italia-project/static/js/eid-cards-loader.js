@@ -137,7 +137,7 @@ function loadEidCards(resource) {
 // ----------------------- Create Eid Cards Row -----------------------
 function createEidCardsRow(resource, id_key, container) {
   const row = document.createElement('div');
-  row.className = 'row justify-content-center';
+  row.className = 'row justify-content-center align-items-start';
   const entries = getEidEntriesForRow(resource[id_key]);
   entries.forEach((eid) => {
     const col = document.createElement('div');
