@@ -493,8 +493,8 @@ main {
   margin-right: 0.5rem;
 }
 
-/* Responsive < 1280px: button labels wrap and stay centered */
-@media (max-width: 1279px) {
+/* Responsive 577px–1279px: button labels wrap and stay centered */
+@media (max-width: 1279px) and (min-width: 577px) {
   .it-card .it-card-body > .d-flex:first-child {
     min-height: 2.75rem;
     max-height: none;
@@ -763,6 +763,26 @@ footer {
 }
 
 @media (max-width: 576px) {
+  /* Button labels: wrap, left-aligned on mobile */
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: flex-start;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
+
   .container {
     padding-left: 8px !important;
     padding-right: 8px !important;

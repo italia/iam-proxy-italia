@@ -372,7 +372,7 @@ function createLearnMore(resource, eid) {
 
     const text = document.createElement('p');
     text.innerHTML = eid.learn_more_descr;
-    text.className = 'mt-2 eid-learn-more-content';
+    text.className = 'mt-2';
 
     const findHowLink = document.createElement('a');
     findHowLink.href = (resource.titles.find_how_to_get_digital_id_url || '').toString().trim() || 'javascript:void(0)';
@@ -385,24 +385,28 @@ function createLearnMore(resource, eid) {
       findHowLink.addEventListener('click', (ev) => ev.preventDefault());
     }
 
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'eid-learn-more-content';
+    contentWrapper.appendChild(text);
+    contentWrapper.appendChild(findHowLink);
+
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
       const box = toggle.closest('.it-card');
       const isExpanded = toggle.classList.contains('expanded');
       if (!isExpanded) {
         toggle.classList.add('expanded');
-        text.classList.add('is-open');
+        contentWrapper.classList.add('is-open');
         if (box) box.style.height = 'auto';
       } else {
         toggle.classList.remove('expanded');
-        text.classList.remove('is-open');
+        contentWrapper.classList.remove('is-open');
         if (box) box.style.height = '';
       }
     });
 
     container.appendChild(toggle);
-    container.appendChild(text);
-    container.appendChild(findHowLink);
+    container.appendChild(contentWrapper);
     return container;
   } else if (eid.learn_more_link) {
     const link = document.createElement('a');
