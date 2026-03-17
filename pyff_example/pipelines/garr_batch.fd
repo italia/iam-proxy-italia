@@ -1,0 +1,11 @@
+# Metadata download and validation
+- load xrd garr-loaded.xrd:
+  - ./pipelines/garr.xrd
+# select can even filter entity by IDPSSO or SPSSO Description and things ...
+# - select: "!//md:EntityDescriptor[md:SPSSODescriptor]"
+- select
+- store:
+     directory: ./garr
+- publish:
+     output: ./garr/garr-loaded.xml
+- stats

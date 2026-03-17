@@ -1,0 +1,8 @@
+#module: satosa.micro_services.multiple_ldap_attribute_store.MultiLdapAttributeStore
+module: multildap.satosa.multiple_ldap_attribute_store.MultiLdapAttributeStore
+name: MultipleLdapAttributeStore
+config:
+  settings_path: /opt/multildap/settings.py
+  unique_attribute_to_match: schacpersonaluniqueid
+  ldap_filter_operator: ':caseIgnoreMatch:='
+  #attributes_cache: true

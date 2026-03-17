@@ -1,0 +1,19 @@
+{% extends 'spid_base.html' %}
+  {% block page_title %}
+    <title>
+      Errore SPID
+    </title>
+  {% endblock page_title %}
+
+{% block container %}
+  <div class="callout danger">
+    <div class="callout-title">
+      Errore di autenticazione
+    </div>
+    <p>{{ message }}</p>
+    {% if troubleshoot %}
+      <p>{{ troubleshoot }}</p>
+    {% endif %}
+    </p>
+  </div>
+{% endblock %}

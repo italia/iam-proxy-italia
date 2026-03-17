@@ -1,0 +1,100 @@
+module: satosa.backends.saml2.SAMLBackend
+name: Saml2
+config:
+  #idp_blacklist_file: /path/to/blacklist.json
+
+  # make metadata downloadable from entityid url
+  entityid_endpoint: true
+
+  sp_config:
+    key_file: !ENV SATOSA_PRIVATE_KEY
+    cert_file: !ENV SATOSA_PUBLIC_KEY
+    encryption_keypairs:
+    - {'key_file': !ENV SATOSA_PRIVATE_KEY, 'cert_file': !ENV SATOSA_PUBLIC_KEY}
+
+    organization: 
+      display_name:
+      - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_EN, 'en']
+      - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_IT, 'it']
+      name: 
+      - [ !ENV SATOSA_ORGANIZATION_NAME_EN, 'en']
+      - [ !ENV SATOSA_ORGANIZATION_NAME_IT, 'it']
+      url:
+      - [ !ENV SATOSA_ORGANIZATION_URL_EN, 'en']
+      - [ !ENV SATOSA_ORGANIZATION_URL_IT, 'it']
+    contact_person:
+    - contact_type: technical
+      given_name: !ENV SATOSA_CONTACT_PERSON_GIVEN_NAME
+      email_address: !ENV SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+
+    metadata:
+      local: [./metadata/idp/]
+      mdq:
+        - url: "https://mdx.idem.garr.it/edugain/"
+          cert: ./pki/dem-mdx-service-crt.pem
+          freshness_period: P0Y0M0DT1H0M0S
+      # using pyFF or other MDX server
+      # mdq:
+      #  - url: "http://mdq.auth.unical.it/static/sha1"
+      #    cert: mdq.pem
+
+    entityid: '<base_url>/<name>/metadata'
+    accepted_time_diff: 300
+
+    service:
+      sp:
+        ui_info:
+          display_name:
+            - lang: en
+              text: !ENV SATOSA_UI_DISPLAY_NAME_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DISPLAY_NAME_IT
+          description:
+            - lang: en
+              text: !ENV SATOSA_UI_DESCRIPTION_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DESCRIPTION_IT
+          information_url:
+            - lang: en
+              text: !ENV SATOSA_UI_INFORMATION_URL_EN
+            - lang: it 
+              text: !ENV SATOSA_UI_INFORMATION_URL_IT
+          privacy_statement_url:
+            - lang: en
+              text: !ENV SATOSA_UI_PRIVACY_URL_EN
+            - lang: it
+              text: !ENV SATOSA_UI_PRIVACY_URL_IT
+          logo:
+            text: !ENV SATOSA_UI_LOGO_URL
+            width: !ENV SATOSA_UI_LOGO_WIDTH
+            height: !ENV SATOSA_UI_LOGO_HEIGHT
+
+        only_use_keys_in_metadata: true
+        force_authn: true
+
+        # sign dig and enc
+        authn_requests_signed: true
+        want_response_signed: true
+
+        # this must be unsolicited because in production different workers do not share the same storage (outstanding queries)!
+        allow_unsolicited: true
+
+        # they works both with ppln-dev branch
+        signing_algorithm: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        digest_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+
+        required_attributes: [name, surname]
+
+        endpoints:
+          assertion_consumer_service:
+          - [<base_url>/<name>/acs/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+          # single_logout_service:
+          # - [<base_url>/<name>ls/post/, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+          discovery_response:
+          - [<base_url>/<name>/disco, 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol']
+
+        name_id_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        name_id_format_allow_create: false
+
+  # disco_srv must be defined if there is more than one IdP in the metadata specified above
+  disco_srv: !ENV SATOSA_DISCO_SRV

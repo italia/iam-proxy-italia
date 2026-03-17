@@ -1,0 +1,47 @@
+[uwsgi]
+project     = pyff
+base        = /opt
+
+chdir       = %(base)/%(project)
+
+uid         = wert
+gid         = wert
+
+socket      = 127.0.0.1:3004
+master      = true
+processes   = 4
+#threads     = 2
+
+# set max connections to 1024 in uWSGI
+listen = 305
+
+wsgi-file   = %(base)/apps/pyFF/src/pyff/wsgi.py
+callable = app
+# se installato con pip non serve il plugin perchè embedded
+#plugins    = python
+
+# con virtualenv non serve
+#pythonpath     = %(base)/%(project)/%(project)
+
+virtualenv  = %(base)/django-saml2-idp.env
+
+# logto = /var/log/uwsgi/%(project).log
+log-maxsize = 100000000
+log-backupname = /var/log/uwsgi/%(project).old.log
+
+#module      = django_saml2_idp.wsgi:application
+
+vacuum      = True
+
+# respawn processes after serving ... requests
+max-requests    = 1000
+
+# respawn processes taking more than takes more then ... seconds
+harakiri    = 3600
+
+#env         = %(project).settings
+
+pidfile     = /var/log/uwsgi/%(project).pid
+touch-reload    = %(base)/%(project)/proxy_conf.yaml
+stats           = 127.0.0.1:9193
+stats-http      = True

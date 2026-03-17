@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block container %}
+<section id="area-riservata">
+  <div class="container">
+    <div class="row">
+      <div class="nav-tabs-hidescroll mt-4 mt-md-5">
+        <div class="tab-content">
+            <div id="profile" class="tab-pane fade show active">
+                <h5 class="mb-4">Benvenuto {{ user.first_name }}</h5>
+                
+                <p>Di seguito la lista dei tuoi dati personali.</p>
+                
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Valore</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    {% for name, value in user.attrs %}
+                        {% if name == "_state" or name == "id" or name == "username" or not value or name == "password" %}
+                               <!-- continue on {{ name }}: {{ value }} -->
+                        {% else %}
+                            <tr>
+                              <td>{{ name }}</td>
+                              <td>{{ value }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<br>
+{% endblock %}
+
+  

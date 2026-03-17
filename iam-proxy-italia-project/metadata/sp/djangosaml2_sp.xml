@@ -1,0 +1,35 @@
+<md:EntityDescriptor xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="http://localhost:8000/saml2/metadata/"><md:Extensions><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#md5" /><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#ripemd160" /><alg:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha224" /><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384" /><alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" /><alg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1" /><alg:SigningMethod Algorithm="http://www.w3.org/2009/xmldsig11#dsa-sha256" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-md5" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160" /><alg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha224" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384" /><alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512" /></md:Extensions><md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true" WantAssertionsSigned="true"><md:KeyDescriptor use="signing"><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDETCCAfmgAwIBAgIUPw12Gkt4agBtLBntd7RzTWwLKAYwDQYJKoZIhvcNAQEL
+BQAwGDEWMBQGA1UEAwwNc3AxLnVuaWNhbC5pdDAeFw0xOTAzMjAxNDMxMTVaFw0y
+OTAzMTcxNDMxMTVaMBgxFjAUBgNVBAMMDXNwMS51bmljYWwuaXQwggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCj0BzOt58ECsSwT049bIhmD0p7q0Y+4L7c
+jrvvJYcMT7HZE+tbO4M6upkXnP+3gvPpRccaEtwJoda3gYzvF35VMzp0fCW7OmXI
+R8cJtySIfzkdmmO385Tbxlp1jRxZyQtc2nPzCKeV4xlQNEinQr94nI7tMFReDejj
+XKwS5RABk8KQMo2M78xa9RQyxqDC1e0ioeVQRR2og99fF3u/WOJ/JB2aETTfvInr
+FIyFA5XB0roBDyM44877nRKYeMBd4kVk+fs4yu6kZm7WOXHUXFLKRuXLeVxEbZYz
+SSMjncsB1U35OAt+Ozkp+12qaqMAVdGKP+xso3zGAr/5AC6CuPnrAgMBAAGjUzBR
+MB0GA1UdDgQWBBR6RRoajGB1UmdiMAKSmgpL3RD0mzAfBgNVHSMEGDAWgBR6RRoa
+jGB1UmdiMAKSmgpL3RD0mzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUA
+A4IBAQBzRUa++T0EiR+Fq4iTpKIysigV+1CeMbS+u1JaPOnMXfWmboOOVDrHhnit
+bpfxm+SpbafPTz40THtfw9EKvReMjNa4HQ4vFBMwZtmYZ4piGS5PferFDzYdZG1d
+S/2vcCQA4Dya/R675XKEhBdWO8JfUOL1ImMoJBa5Z+ApU8OCk8hpiJUV0akpw7jA
++VO8+VR2T+SH+3h28KOrNdraWozZ99NKqB7GUFcaxouaOkPE7mi8JyAgLZMZvJae
+QeJEUI9sfavSLmvBsfbusAeCjFYCVM9MM7uZNvK6gI0Dzppl+rN7vRWcBF+oYyiS
+1EX9j2GqG1yWcdGvY60GJu5Er5id
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo></md:KeyDescriptor><md:KeyDescriptor use="encryption"><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDETCCAfmgAwIBAgIUPw12Gkt4agBtLBntd7RzTWwLKAYwDQYJKoZIhvcNAQEL
+BQAwGDEWMBQGA1UEAwwNc3AxLnVuaWNhbC5pdDAeFw0xOTAzMjAxNDMxMTVaFw0y
+OTAzMTcxNDMxMTVaMBgxFjAUBgNVBAMMDXNwMS51bmljYWwuaXQwggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCj0BzOt58ECsSwT049bIhmD0p7q0Y+4L7c
+jrvvJYcMT7HZE+tbO4M6upkXnP+3gvPpRccaEtwJoda3gYzvF35VMzp0fCW7OmXI
+R8cJtySIfzkdmmO385Tbxlp1jRxZyQtc2nPzCKeV4xlQNEinQr94nI7tMFReDejj
+XKwS5RABk8KQMo2M78xa9RQyxqDC1e0ioeVQRR2og99fF3u/WOJ/JB2aETTfvInr
+FIyFA5XB0roBDyM44877nRKYeMBd4kVk+fs4yu6kZm7WOXHUXFLKRuXLeVxEbZYz
+SSMjncsB1U35OAt+Ozkp+12qaqMAVdGKP+xso3zGAr/5AC6CuPnrAgMBAAGjUzBR
+MB0GA1UdDgQWBBR6RRoajGB1UmdiMAKSmgpL3RD0mzAfBgNVHSMEGDAWgBR6RRoa
+jGB1UmdiMAKSmgpL3RD0mzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUA
+A4IBAQBzRUa++T0EiR+Fq4iTpKIysigV+1CeMbS+u1JaPOnMXfWmboOOVDrHhnit
+bpfxm+SpbafPTz40THtfw9EKvReMjNa4HQ4vFBMwZtmYZ4piGS5PferFDzYdZG1d
+S/2vcCQA4Dya/R675XKEhBdWO8JfUOL1ImMoJBa5Z+ApU8OCk8hpiJUV0akpw7jA
++VO8+VR2T+SH+3h28KOrNdraWozZ99NKqB7GUFcaxouaOkPE7mi8JyAgLZMZvJae
+QeJEUI9sfavSLmvBsfbusAeCjFYCVM9MM7uZNvK6gI0Dzppl+rN7vRWcBF+oYyiS
+1EX9j2GqG1yWcdGvY60GJu5Er5id
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo></md:KeyDescriptor><md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://localhost:8000/saml2/ls/post/" /><md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://localhost:8000/saml2/ls/" /><md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat><md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat><md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://localhost:8000/saml2/acs/" index="1" /></md:SPSSODescriptor><md:Organization><md:OrganizationName xml:lang="it">Unical</md:OrganizationName><md:OrganizationName xml:lang="en">Unical</md:OrganizationName><md:OrganizationDisplayName xml:lang="it">Unical</md:OrganizationDisplayName><md:OrganizationDisplayName xml:lang="en">Unical</md:OrganizationDisplayName><md:OrganizationURL xml:lang="it">http://www.unical.it</md:OrganizationURL><md:OrganizationURL xml:lang="en">http://www.unical.it</md:OrganizationURL></md:Organization><md:ContactPerson contactType="administrative"><md:Company>Universita della Calabria</md:Company><md:GivenName>Giuseppe</md:GivenName><md:SurName>De Marco</md:SurName><md:EmailAddress>giuseppe.demarco@unical.it</md:EmailAddress></md:ContactPerson><md:ContactPerson contactType="technical"><md:Company>Universita della Calabria</md:Company><md:GivenName>Giuseppe</md:GivenName><md:SurName>De Marco</md:SurName><md:EmailAddress>giuseppe.demarco@unical.it</md:EmailAddress></md:ContactPerson></md:EntityDescriptor>

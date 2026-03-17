@@ -1,0 +1,5 @@
+module: satosa.micro_services.multiple_ldap_attribute_store.MultiLdapAttributeStore
+name: MultipleLdapAttributeStore
+config:
+  settings_path: /home/wert/django-saml2-idp-sp/pyMultiLDAP/settings.py
+  unique_attribute_to_match: edupersonprincipalname

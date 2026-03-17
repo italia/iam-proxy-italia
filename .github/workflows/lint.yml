@@ -1,0 +1,58 @@
+# Code linting with flake8 (separate workflow from docker-compose tests).
+
+name: Lint
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'iam-proxy-italia-project/static/**'
+      - 'Docker-compose/nginx/html/static/**'
+  pull_request:
+    branches: [ master, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'iam-proxy-italia-project/static/**'
+      - 'Docker-compose/nginx/html/static/**'
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
+  flake8:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    name: Lint (flake8)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.14']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install flake8
+        run: |
+          pip install --upgrade pip
+          pip install flake8
+
+      - name: Lint with flake8
+        run: |
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics iam-proxy-italia-project
+          flake8 --max-line-length 120 --count --exit-zero --statistics iam-proxy-italia-project

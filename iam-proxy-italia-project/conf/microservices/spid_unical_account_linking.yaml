@@ -1,0 +1,19 @@
+module: satosa.micro_services.attribute_processor.AttributeProcessor
+name: AttributeProcessor
+config:
+  process:
+  - attribute: codice_fiscale
+    processors:
+    - name: UnicalLegacyAttributeGenerator
+      #module: satosa.micro_services.processors.unical_legacy_attribute_generator
+      module: satosa_uniext.processors.unical_attribute_processor
+  - attribute: matricola_studente
+    processors:
+    - name: UnicalLegacyAttributeGenerator
+      #module: satosa.micro_services.processors.unical_legacy_attribute_generator
+      module: satosa_uniext.processors.unical_attribute_processor
+  - attribute: matricola_dipendente
+    processors:
+    - name: UnicalLegacyAttributeGenerator
+      #module: satosa.micro_services.processors.unical_legacy_attribute_generator
+      module: satosa_uniext.processors.unical_attribute_processor

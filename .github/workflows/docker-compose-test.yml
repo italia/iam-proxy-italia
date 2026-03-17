@@ -1,0 +1,106 @@
+# Docker Compose integration tests (SAML / spid-sp-test).
+# Lint runs in a separate workflow: .github/workflows/lint.yml
+
+name: Docker Compose test
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'iam-proxy-italia-project/static/**'
+      - 'Docker-compose/nginx/html/static/**'
+  pull_request:
+    branches: [ master, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'iam-proxy-italia-project/static/**'
+      - 'Docker-compose/nginx/html/static/**'
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
+  docker-compose:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    name: Docker Compose (SAML / spid-sp-test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Patch pyproject.toml if matching branch exists in eudi-wallet-it-python
+        env:
+          CURRENT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+          DEPTH_COMMITS: 50
+        run: bash .github/scripts/patch-pyeudiw-branch.sh
+
+      - name: docker compose
+        run: |
+          cd Docker-compose
+          ./run-docker-compose.sh
+
+      - name: List Docker containers
+        run: docker ps -a
+
+      - name: Inspect Satosa status
+        run: |
+          docker container inspect iam-proxy-italia
+          docker container logs iam-proxy-italia
+
+      - name: djangosaml2_sp container logs
+        run: docker container logs django_sp
+
+      - name: djangosaml2 SP metadata to Proxy
+        run: |
+          wget http://localhost:8000/saml2/metadata -O Docker-compose/iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
+
+      - name: Inspect djangosaml2 SP metadata
+        run: |
+          cat Docker-compose/iam-proxy-italia-project/metadata/sp/djangosaml2_sp.xml
+
+      - name: Copy Satosa IDP Metadata to djangosaml2 SP
+        run: |
+          wget -vd --no-check-certificate https://iam-proxy-italia.example.org/Saml2IDP/metadata -O Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
+      - name: Inspect Satosa IDP Metadata
+        run: |
+          cat Docker-compose/djangosaml2_sp/saml2_sp/saml2_config/iam-proxy-italia.xml
+
+      - name: spid-sp-test SPID metadata, requests and responses
+        run: |
+          mkdir -p Docker-compose/iam-proxy-italia-project/metadata/idp
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --idp-metadata > Docker-compose/iam-proxy-italia-project/metadata/idp/spid-sp-test.xml
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --metadata-url https://iam-proxy-italia.example.org/spidSaml2/metadata --authn-url "http://localhost:8000/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443" -ap spid_sp_test.plugins.authn_request.SatosaSaml2Spid --extra --debug ERROR -tr
+
+      - name: spid-sp-test CIE id metadata
+        run: |
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --profile cie-sp-public --metadata-url https://iam-proxy-italia.example.org/cieSaml2/metadata
+
+      - name: spid-sp-test eIDAS FiCEP metadata
+        run: |
+          docker run --rm --network host \
+            -v "$PWD/Docker-compose/iam-proxy-italia-project:/spid" -w /spid \
+            ghcr.io/italia/spid-sp-test:latest --profile ficep-eidas-sp --metadata-url https://iam-proxy-italia.example.org/spidSaml2/metadata

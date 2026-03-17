@@ -1,0 +1,30 @@
+module: satosa.micro_services.custom_routing.DecideBackendByTargetIssuer
+name: TargetRouter
+config:
+  default_backend: Saml2
+
+  target_mapping:
+    # test platforms
+    "http://idpspid.testunical.it:8088": "spidSaml2"
+    "https://validator.spid.gov.it": "spidSaml2"
+    "https://localhost:8443": "spidSaml2"
+    "https://preproduzione.idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
+    # put here all the others
+    "https://loginspid.aruba.it": "spidSaml2"
+    "https://identity.infocert.it": "spidSaml2"
+    "https://spid.intesa.it": "spidSaml2"
+    "https://id.lepida.it/idp/shibboleth": "spidSaml2"
+    "https://idp.namirialtsp.com/idp": "spidSaml2"
+    "https://posteid.poste.it": "spidSaml2"
+    "https://identity.sieltecloud.it": "spidSaml2"
+    "https://spid.register.it": "spidSaml2"
+    "https://login.id.tim.it/affwebservices/public/saml2sso": "spidSaml2"
+    "https://sp-proxy.eid.gov.it/spproxy/idpit": "spidSaml2"
+    "https://spid.teamsystem.com/idp": "spidSaml2"
+    "https://id.eht.eu": "spidSaml2"
+    "https://loginspid.infocamere.it": "spidSaml2"
+    "https://idp.intesigroup.com": "spidSaml2"
+    "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
+    #IT Wallet
+    "wallet": "OpenID4VP"
+    "http://cie-provider.example.org:8002/oidc/op/": "CieOidcRp"

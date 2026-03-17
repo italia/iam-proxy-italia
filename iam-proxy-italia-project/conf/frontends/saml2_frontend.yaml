@@ -1,0 +1,121 @@
+module: satosa.frontends.saml2.SAMLFrontend
+# This allows external discovery services to present the mirrored providers transparently, as separate entities in its UI
+# module: satosa.frontends.saml2.SAMLMirrorFrontend
+name: Saml2IDP
+
+config:
+  # make metadata downloadable from entityid url
+  entityid_endpoint: true
+
+  idp_config:
+    organization:
+      display_name: 
+        - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_IT, 'it']
+      name: 
+        - [ !ENV SATOSA_ORGANIZATION_NAME_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_NAME_IT, 'it']
+      url:
+        - [ !ENV SATOSA_ORGANIZATION_URL_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_URL_IT, 'it']
+    contact_person:
+      - contact_type: technical
+        given_name: !ENV SATOSA_CONTACT_PERSON_GIVEN_NAME
+        email_address: !ENV SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+
+    attribute_map_dir: 'attributes-map'
+
+    key_file: ./pki/privkey.pem
+    cert_file: ./pki/cert.pem
+    encryption_keypairs:
+    - {'key_file': ./pki/privkey.pem, 'cert_file': ./pki/cert.pem}
+
+    metadata:
+      local: [./metadata/sp/]
+      # using pyFF or other MDX server
+      # mdq:
+      #  - url: "http://mdq.auth.unical.it/static/sha1"
+          # cert: mdq.pem
+
+    entityid: '<base_url>/<name>/metadata'
+    accepted_time_diff: 300
+
+    # custom_attribute_release:
+        # "default":
+            # "":
+                # exclude: ["givenName"]
+        # idp-entity-id1
+            # sp-entity-id1:
+                # exclude: ["givenName"]
+
+    service:
+      idp:
+        endpoints:
+          single_sign_on_service: []
+        name: Authentication Proxy
+        ui_info:
+          display_name:
+            - lang: en
+              text: !ENV SATOSA_UI_DISPLAY_NAME_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DISPLAY_NAME_IT
+          description:
+            - lang: en
+              text: !ENV SATOSA_UI_DESCRIPTION_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DESCRIPTION_IT
+          information_url:
+            - lang: en
+              text: !ENV SATOSA_UI_INFORMATION_URL_EN
+            - lang: it
+              text: !ENV SATOSA_UI_INFORMATION_URL_IT
+          privacy_statement_url:
+            - lang: en
+              text: !ENV SATOSA_UI_PRIVACY_URL_EN
+            - lang: it
+              text: !ENV SATOSA_UI_PRIVACY_URL_IT
+          logo:
+            text: !ENV SATOSA_UI_LOGO_URL
+            width: !ENV SATOSA_UI_LOGO_WIDTH
+            height: !ENV SATOSA_UI_LOGO_HEIGHT
+        name_id_format: ['urn:oasis:names:tc:SAML:2.0:nameid-format:transient']
+
+        # want_authn_requests_signed: true
+        want_authn_requests_only_with_valid_cert: false
+
+        signing_algorithm: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        digest_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+
+        policy:
+          default:
+            attribute_restrictions: null
+            fail_on_missing_requested: false
+            lifetime: {minutes: 15}
+            name_form: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
+
+            sign_response: true
+            sign_assertion: true
+
+            encrypt_assertion: false
+            encrypted_advice_attributes: false
+
+  # acr_mapping:
+    # "": default-LoA
+    # "https://accounts.google.com": LoA1
+
+  endpoints:
+    # to be implemented
+    #single_logout_service:
+      #'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST': 'slo/post'
+
+    single_sign_on_service:
+      'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST': 'sso/post'
+      'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect': 'sso/redirect'
+
+  # If configured and not false or empty the common domain cookie _saml_idp will be set
+  # with or have appended the IdP used for authentication. The default is not to set the
+  # cookie. If the value is a dictionary with key 'domain' then the domain for the cookie
+  # will be set to the value for the 'domain' key. If no 'domain' is set then the domain
+  # from the BASE defined for the proxy will be used.
+  #common_domain_cookie:
+  #  domain: .example.com

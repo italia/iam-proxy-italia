@@ -1,0 +1,26 @@
+{# templates/base.html #}
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% block title %}{{ title }}{% endblock title %}</title>
+
+  <link rel="stylesheet" href="{{static}}/bootstrap-italia/css/bootstrap-italia.min.css">
+  <link rel="stylesheet" href="{{static}}/css/style.css">
+
+  <script src="{{static}}/js/qrcode/qr-code.js"></script>
+  <script src="{{static}}/js/jquery-3.7.0.min.js"></script>
+  <script src="{{static}}/bootstrap-italia/js/bootstrap-italia.bundle.min.js"></script>
+</head>
+
+<body style="background-color: #ebeced">
+    <!-- Container - Body of page-->
+    <div class="main-body">
+      <div class="container">
+            {% block body %}{% endblock %}
+      </div>
+    </div>
+</body>
+</html>

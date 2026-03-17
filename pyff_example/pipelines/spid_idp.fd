@@ -1,0 +1,41 @@
+# load) download SAML Metadatas configured in these files
+- load xrd ./spid_idp.xrd:
+  - pipelines/spid_idp.xrd
+
+# select) this could, or not, specify a selection filter for EntityDescriptors in the metadata repository.
+# it could be a XPATH selection to get for example only the IDP as: "http://mds.edugain.org!//md:EntityDescriptor[md:IDPSSODescriptor]"
+# in this case it will take all of them
+- select
+
+# the folder where single entities will be stored
+- store:
+     directory: ./md-idp
+
+# publish) causes the active document to be stored in an XML file.
+- publish:
+     output: ./md-idp/md-loaded.xml
+
+# stats) prints out some information about the metadata repository.
+- stats
+
+# MDX server, see: https://pythonhosted.org/pyFF/examples.html#example-5-mdx
+- when request:
+    - select
+    - pipe:
+        - when accept application/xml:
+             - xslt:
+                 stylesheet: tidy.xsl
+             - first
+             - finalize:
+                cacheDuration: PT5H
+                validUntil: P10D
+             - sign:
+                 key: ./certificates/key.pem
+                 cert: ./certificates/cert.pem
+             - emit application/xml
+             - break
+        - when accept application/json:
+             - xslt:
+                 stylesheet: discojson.xsl
+             - emit application/json:
+             - break

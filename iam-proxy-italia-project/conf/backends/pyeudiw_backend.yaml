@@ -1,0 +1,401 @@
+module: pyeudiw.satosa.backends.openid4vp.openid4vp.OpenID4VPBackend
+name: OpenID4VP
+
+config:
+
+  ui:
+    static_storage_url: !ENV SATOSA_BASE_STATIC
+    template_folder: "templates" # project root
+    qrcode_template: "qr_code.html"
+    error_template: "error.html"
+    error_url: !ENV SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
+    authorization_error_template: "authorization_error.html"
+
+  endpoints:
+    pre_request:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.pre_request_endpoint
+      class: PreRequestHandler
+      path: /pre-request
+    response:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.response_endpoint
+      class: ResponseHandler
+      path: /response-uri
+    request:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.request_endpoint
+      class: RequestHandler
+      path: /request-uri
+    status:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.status_endpoint
+      class: StatusHandler
+      path: /status
+    get_response:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
+      class: GetResponseHandler
+      path: /get_response
+
+  qrcode:
+    size: 250 # px
+    color: '#000000'  # hex
+    expiration_time: 120 # seconds
+    logo_path: 'img/IT-Wallet-Logo-Primary-BlueItalia.svg' # relative to static_storage_url
+
+  response_code:
+    sym_key: "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" # hex string of 64 characters
+
+  security:
+    wallet_attestation_required: true # enable wallet attestation interoperability; if missing it will be set to true by default
+
+  jwt:
+    default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+    default_enc_alg: RSA-OAEP
+    default_enc_enc: A256CBC-HS512
+    default_exp: 6         # minutes
+    enc_alg_supported: &enc_alg_supported
+        - RSA-OAEP
+        - RSA-OAEP-256
+        - ECDH-ES
+        - ECDH-ES+A128KW
+        - ECDH-ES+A192KW
+        - ECDH-ES+A256KW
+    enc_enc_supported: &enc_enc_supported
+        - A128CBC-HS256
+        - A192CBC-HS384
+        - A256CBC-HS512
+        - A128GCM
+        - A192GCM
+        - A256GCM
+    sig_alg_supported: &sig_alg_supported
+        - RS256
+        - RS384
+        - RS512
+        - ES256
+        - ES384
+        - ES512
+
+  authorization:
+    client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    auth_iss_id: # this field if not set will be set to client_id in the authz request
+    url_scheme: haip
+    scopes:
+    - pid-sd-jwt:unique_id+given_name+family_name
+    default_acr_value: https://www.spid.gov.it/SpidL2
+    expiration_time: 5 # minutes
+    aud: https://self-issued.me/v2
+    response_mode: direct_post
+    presentation_definition:
+      id: global-presentation-definition-id
+      input_descriptors:
+      - id: input-specific-id
+        purpose: Request presentation holding Power of Representation attestation
+        format:
+          dc+sd-jwt: {}
+        constraints:
+          fields:
+          - path:
+            - "$.vct"
+            filter:
+              const: urn:eu.europa.ec.eudi:por:1
+      - id: another-input-specific-id
+        purpose: Request first name and last name claims from PID attestation
+        format:
+          dc+sd-jwt: {}
+        constraints:
+          limit_disclosure: required
+          fields:
+            - path:
+              - "$.vct"
+              filter:
+                type: string
+                pattern: urn:eu.europa.ec.eudi:por:1
+            - path:
+              - "$.family_name"
+            - path:
+              - "$.given_name"
+
+  duckle:
+    dcql_query: &dcql_query >
+      {"credentials":[{"id":"personal id data","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
+
+
+  user_attributes:
+    unique_identifiers:
+    - tax_id_code
+    - unique_id
+    - personal_administrative_number
+    subject_id_random_value: CHANGEME!
+
+  network:
+    httpc_params: &httpc_params
+      connection:
+        ssl: true
+      session:
+        timeout: 6
+
+  # private jwk
+  # WARNING: change these keys in production env. Keep these keys unchanged can pose a serious security risk.
+  metadata_jwks: &metadata_jwks
+    - kty: EC # Please note: this is the first key [0] and it is used for signing the presentation requests
+      d: i0HQiqDPXf-MqC776ztbgOCI9-eARhcUczqJ-7_httc
+      use: sig
+      crv: P-256
+      kid: SQgNjv4yU8sfuafJ2DPWq2tnOlK1JSibd3V5KqYRhOk
+      x: Q46FDkhMjewZIP9qP8ZKZIP-ZEemctvjxeP0l3vWHMI
+      y: IT7lsGxdJewmonk9l1_TAVYx_nixydTtI1Sbn0LkfEA
+      alg: ES256
+    - kty: RSA
+      d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+      e: AQAB
+      use: enc
+      kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+      n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+      p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+      q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+    - kty: RSA
+      use: sig
+      alg: RS256
+      kid: m00NPAelNBnG_wK2R5EpI_k-GWCHEUySamQYubgFjCg
+      d: nMsnqz0lPHNGBgUqyuJ5nXQ0jh-mzs6d2xOY_QhpkRW1kEbexRJDdVV3fqMxj_s0MiF8mn-s8ea3e8cbNDgIy000Wvx05y1rMkB6KaZX2ZL5jwU7i_xP6NlLh8itikqJz7kKQSILgibQFFQDcScpEk8gUKa6fmSJQVwTII6GoJCdiJflv-FI2OQ_TCBQEEVVLpeUiVSP0n3OMUKGBlbaHOQkArUpla_ke_mtdfIrl7uB74Rxrin68KtFHkGDGdJPs-PPO1yJ2paFZI9QR_ettZ22v45c-qIgmCjsEnITDMaO9724PU_umlWsWe36Y9RAAzofKsjKqvA1OIzU03ob9Q
+      n: sP6jt1XwJE0JDKxy4B7r3Jdb8W6bSRoVunyjWMgl5IafqFwHsJlYgCAWPeTrAL-iyjdnWC1csHuTqWjdndDL-oqEarrqoDAycVkfFTUTD81_wVhWUzAwxhQHiT7PTUIsV7m9VGlfC_kdCpQl5CcK1yx2nQ1KbqWOV1_5WnMgnN_EpNmztkZDnJmKedVduOb2dKWwnLS3fcGvUxXc87DjAzC2vfgQSoQfXAZbwItyS6OinFiUnBxRvt9ZY2IapjI1-wwDKKeRrqPC-fV2oWTrMqoYAvIDnf9AjKHAbIw7q301-7-eaUMF1hVtAz1XeXvMp0wK8_uSo9Vgv1vHhBpOwQ
+      e: AQAB
+      p: 0ViKTSyZdLtvbLBpTvVAXTdrhTwGXuh16PadQMAVmkoxOPiExRB5uLiy2ADaVKSglia5aQBUp9v0ygEEOmkiUtn5A26D9ui0dkPR0hx4fwqCOOmA2ZyDUNFJ_qrGSwT1SxGQDHeRteymJG7uN9QekS3XiBDgFJxwl-vVpoSTBJM
+      q: 2HBr9qhVd3zZUQuNb7ro06ErLl4fhL-DiKsNqXB772tDNTJYeog1nOWgS22tcv5WHrSoYF1x5Q74YVoA6yVj6DwFx2Hc2pYZazzhYMRC3NAWkTEdroy9IjtpzKIpQIqw-sq8CbWVBXzho8uQBCdg8h73z11_HPyXT9BqQCmxJ9s
+      dp: WsQ32rQuqNUnv4lRb4GYcZI41SCsZnQFw4dBsTRXaXknlFr0PfkhvXyfVlYwU6i5U8DgfO0-xzTwErGUIrs4vZFyjRFauDA3JlvLWn0rpXFp-sELM87PhLfpjDiBFz_EFtM7kJw7GhTMCFnsgVpAEpQ8sesXLPiTPNts2_D5SW8
+      dq: jWlucLrtFGOjDRuyLjT9l__uWZ4vk6kZRHsWMwWGRBhd0ezx-CT0em1hPMcNE1vvYqKAfG2xU4pjaB_JB9nnG73TvMBI7xwwwWsGihXQ5bqjc_uWPAxCKpKM_qFYuI2lMkaxctqL4gkE1-LRVpVv9uGa4YZh3ct_BSvTr9ZNpA8
+      qi: kn9Etj4a2erCUmoZUQalPjHxCRYm5Q3wAkFIRGSQADA51mkwQHyTYqXbHcmXn2ZgXBVI6XDWJB51Me-NCPfITTlusqxvATF7Q-QJtdK_FbgNtcVRNc1FMq_M7VBHA1i9wJR7T4t57aywfXPmlsA5TToTDRe-ybdw0C3ys4KQATs
+
+  #This is the configuration for the relaying party metadata
+  metadata: &metadata
+    application_type: web
+
+    #The following section contains all the algorithms supported for the encryption of response
+    authorization_encrypted_response_alg: *enc_alg_supported
+    authorization_encrypted_response_enc: *enc_enc_supported
+    authorization_signed_response_alg: *sig_alg_supported
+
+    #Various informations of the client
+    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    client_name: Name of an example organization
+    contacts:
+      - ops@verifier.example.org
+    default_acr_values:
+      - https://www.spid.gov.it/SpidL2
+      - https://www.spid.gov.it/SpidL3
+
+    #The following section contains all the algorithms supported for the encryption of id token response
+    id_token_encrypted_response_alg: *enc_alg_supported
+    id_token_encrypted_response_enc: *enc_enc_supported
+    id_token_signed_response_alg: *sig_alg_supported
+
+    # public part loaded in the __init__
+    jwks: *metadata_jwks
+
+    redirect_uris:
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
+    request_uris:
+      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
+
+    # not necessary according to openid4vp
+    # default_max_age: 1111
+    # require_auth_time: true
+    # subject_type: pairwise
+
+    vp_formats:
+      dc+sd-jwt:
+        sd-jwt_alg_values:
+          - ES256
+          - ES384
+        kb-jwt_alg_values:
+          - ES256
+          - ES384
+    token_endpoint_auth_methods_supported:
+      - attest_jwt_client_auth
+    client_attestation_signing_alg_values_supported:
+      - ES256
+      - ES384
+      - ES512
+    client_attestation_pop_signing_alg_values_supported:
+      - ES256
+      - ES384
+      - ES512
+
+  credential_presentation_handlers:
+    max_submission_size: 4096
+    formats:
+      - module: pyeudiw.satosa.backends.openid4vp.vp_sd_jwt_vc
+        class:  VpVcSdJwtParserVerifier
+        format: dc+sd-jwt
+      - module: pyeudiw.satosa.backends.openid4vp.vp_mdoc_cbor
+        class:  VpMDocCbor
+        format: mso_mdoc
+      - module: pyeudiw.duckle_ql.handler
+        class: DuckleHandler
+        format: jwt_vc_json
+        config:
+          # Top-level dcql_query for pyeudiw that accepts it; duckle.dcql_query for older pyeudiw (e.g. 2.0.1)
+          dcql_query: *dcql_query
+          duckle:
+            dcql_query: *dcql_query
+
+  trust:
+    direct_trust_sd_jwt_vc:
+      module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
+      class: DirectTrustSdJwtVc
+      config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
+        jwk_endpoint: /.well-known/jwt-vc-issuer
+    direct_trust_jar:
+      module: pyeudiw.trust.handler.direct_trust_jar
+      class: DirectTrustJar
+      config:
+        cache_ttl: 0
+        httpc_params: *httpc_params
+        jwk_endpoint: /.well-known/jar-issuer
+        jwks: *metadata_jwks
+    federation:
+      module: pyeudiw.trust.handler.federation
+      class: FederationHandler
+      config:
+        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
+        httpc_params: *httpc_params
+        cache_ttl: 0
+        entity_configuration_exp: 600
+        # include_issued_jwt_header_param: true # default false; if true, it will include trust_chain header parameters in the signed presentation request issued by this trust handler
+        metadata_type: "openid_credential_verifier"
+        metadata: *metadata
+        authority_hints:
+            - http://127.0.0.1:8000
+        trust_anchors:
+            - http://127.0.0.1:8000:
+              -
+            - https://trust-anchor.edu:
+              -
+            - https://trust-anchor.example.org:
+              - kty: RSA
+                d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+                e: AQAB
+                kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+                n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+                p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+                q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+        default_sig_alg: "RS256"
+        trust_marks: []
+        federation_entity_metadata:
+            organization_name: IAM Proxy Italia OpenID4VP backend
+            homepage_uri: https://developers.italia.it
+            policy_uri: https://developers.italia.it
+            tos_uri: https://developers.italia.it
+            logo_uri: https://developers.italia.it/assets/icons/logo-it.svg
+        federation_jwks: # !ENV PYEUDIW_FEDERATION_JWKS
+          - kty: RSA
+            d: QUZsh1NqvpueootsdSjFQz-BUvxwd3Qnzm5qNb-WeOsvt3rWMEv0Q8CZrla2tndHTJhwioo1U4NuQey7znijhZ177bUwPPxSW1r68dEnL2U74nKwwoYeeMdEXnUfZSPxzs7nY6b7vtyCoA-AjiVYFOlgKNAItspv1HxeyGCLhLYhKvS_YoTdAeLuegETU5D6K1xGQIuw0nS13Icjz79Y8jC10TX4FdZwdX-NmuIEDP5-s95V9DMENtVqJAVE3L-wO-NdDilyjyOmAbntgsCzYVGH9U3W_djh4t3qVFCv3r0S-DA2FD3THvlrFi655L0QHR3gu_Fbj3b9Ybtajpue_Q
+            e: AQAB
+            kid: 9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w
+            n: utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw
+            p: 2zmGXIMCEHPphw778YjVTar1eycih6fFSJ4I4bl1iq167GqO0PjlOx6CZ1-OdBTVU7HfrYRiUK_BnGRdPDn-DQghwwkB79ZdHWL14wXnpB5y-boHz_LxvjsEqXtuQYcIkidOGaMG68XNT1nM4F9a8UKFr5hHYT5_UIQSwsxlRQ0
+            q: 2jMFt2iFrdaYabdXuB4QMboVjPvbLA-IVb6_0hSG_-EueGBvgcBxdFGIZaG6kqHqlB7qMsSzdptU0vn6IgmCZnX-Hlt6c5X7JB_q91PZMLTO01pbZ2Bk58GloalCHnw_mjPh0YPviH5jGoWM5RHyl_HDDMI-UeLkzP7ImxGizrM
+    x509:
+      module: pyeudiw.trust.handler.x509
+      class: X509Handler
+      config:
+        client_id: !ENV PYEUDIW_X509_CLIENT_ID # e.g. "x509_san_dns:iam-proxy-italia.example.org"; must match leaf cert SAN DNS
+        certificate_authorities:
+          ca.example.com: |
+            -----BEGIN CERTIFICATE-----
+            MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
+            XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+            hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+            MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
+            ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
+            LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
+            KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
+            xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
+            AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
+            cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
+            YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
+            PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
+            WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
+            -----END CERTIFICATE-----
+        leaf_certificate_chains_by_ca: # X.509 chains in PEM format (leaf FQDN: iam-proxy-italia.example.org). Leaf MUST match metadata_jwks[0]
+          ca.example.com:
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICpzCCAk2gAwIBAgIUICY5d3bzoF3Hai0jckK5OcxS5oYwCgYIKoZIzj0EAwIw
+              fTEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEsMCoGCSqGSIb3DQEJARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20x
+              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MDMwOTE2NDk0NloX
+              DTI3MDMxMDE2NDk0NlowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
+              bXBsZS5vcmcxCzAJBgNVBAYTAklUMTAwLgYJKoZIhvcNAQkBFiFpbmZvQGlhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcxHjAcBgNVBAoMFUlBTSBQcm94eSBJdGFs
+              aWEgTGVhZjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEOOhQ5ITI3sGSD/aj/G
+              SmSD/mRHpnLb48Xj9Jd71hzCIT7lsGxdJewmonk9l1/TAVYx/nixydTtI1Sbn0Lk
+              fECjgaAwgZ0wDAYDVR0TAQH/BAIwADBNBgNVHREERjBEhiRodHRwczovL2lhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmeCHGlhbS1wcm94eS1pdGFsaWEuZXhhbXBs
+              ZS5vcmcwHQYDVR0OBBYEFEgF7Z+nzUlaMeDcOaS5mwDrxiEnMB8GA1UdIwQYMBaA
+              FKVyVQwLn0dMCkkI0mTl/1n8KEuLMAoGCCqGSM49BAMCA0gAMEUCIHNLPGADAdt4
+              fKUa9XQPcjyg7zRfIxIwwRPElMoJHKw1AiEAufQOQKA9lm1hZZB1uquw04NihLOe
+              GENhnF/mdOC++kY=
+              -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICfDCCAiOgAwIBAgIUEuIRQvo3vS+MMm2By3wQsFDuOaUwCgYIKoZIzj0EAwIw
+              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowfTEhMB8GA1UEAwwYaW50
+              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJVDEsMCoGCSqGSIb3DQEJ
+              ARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20xHTAbBgNVBAoMFEV4YW1w
+              bGUgSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAD/Ms8fX
+              XwDLr7Lome68ZCRmEyc31bMvnvj5Mpc4NyrljxK0My/Xb1HmM68JXRchJPe6v5/q
+              vYM0IpKi85pDfKOBnjCBmzASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdEQQ+MDyG
+              IGh0dHBzOi8vaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tghhpbnRlcm1lZGlhdGUu
+              ZXhhbXBsZS5jb20wHQYDVR0OBBYEFKVyVQwLn0dMCkkI0mTl/1n8KEuLMB8GA1Ud
+              IwQYMBaAFPxUYnyLWqJnm+vN3UpxiT8yH6ILMAoGCCqGSM49BAMCA0cAMEQCIAjv
+              TXF9zSk4ztvBQweeWRCMB+nWC6ypHVBRz4lPxb7EAiAq+WtiKSY9AXZevTDYgZ1U
+              DH3lMQJPlpJNP0CwLYq6YQ==
+              -----END CERTIFICATE-----
+            - |
+              -----BEGIN CERTIFICATE-----
+              MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
+              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
+              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
+              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
+              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
+              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
+              KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
+              xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
+              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
+              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
+              YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
+              PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
+              WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
+              -----END CERTIFICATE-----
+        private_keys: *metadata_jwks
+
+  # Mongodb database configuration
+  storage:
+    mongo_db:
+      cache:
+        module: pyeudiw.storage.mongo_cache
+        class: MongoCache
+        init_params:
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
+          conf:
+            db_name: pyeudiw_openid4vp
+          connection_params:
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD
+      storage:
+        module: pyeudiw.storage.mongo_storage
+        class: MongoStorage
+        init_params:
+          url: !ENV MONGO_PYEUDIW_OPENID4VP_HOST
+          conf:
+            db_name: pyeudiw_openid4vp
+            db_sessions_collection: sessions
+            db_trust_attestations_collection: trust_attestations
+            db_trust_anchors_collection: trust_anchors
+            db_trust_sources_collection: trust_sources
+            data_ttl: 63072000 # 2 years
+          connection_params:
+            username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
+            password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD

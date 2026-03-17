@@ -1,0 +1,142 @@
+module: backends.ciesaml2.CieSAMLBackend
+
+name: cieSaml2
+config:
+  # idp_blacklist_file: /path/to/blacklist.json
+
+  # error templates
+  static_storage_url: !ENV SATOSA_BASE_STATIC
+  error_template: "spid_login_error.html"
+  template_folder: "templates" # project root
+
+  # make metadata downloadable from entityid url
+  entityid_endpoint: true
+
+  spid_allowed_acrs:
+    - https://www.spid.gov.it/SpidL1
+    - https://www.spid.gov.it/SpidL2
+    - https://www.spid.gov.it/SpidL3
+
+  spid_acr_comparison: "minimum"
+
+  acr_mapping:
+    "": 'https://www.spid.gov.it/SpidL2'
+    # "": 'https://www.spid.gov.it/SpidL3'
+    # specify AuthnContext per IdP
+    # "https://identity.sieltecloud.it": 'https://www.spid.gov.it/SpidL1'
+    # "https://idp.namirialtsp.com/idp": 'https://www.spid.gov.it/SpidL1'
+    # "https://identity.infocert.it": 'https://www.spid.gov.it/SpidL1'
+
+  sp_config:
+    key_file: !ENV SATOSA_PRIVATE_KEY
+    cert_file: !ENV SATOSA_PUBLIC_KEY
+    encryption_keypairs:
+    - {'key_file': !ENV SATOSA_PRIVATE_KEY, 'cert_file': !ENV SATOSA_PUBLIC_KEY}
+
+    attribute_map_dir: 'attributes-map'
+
+    organization:
+      display_name: 
+        - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_IT, 'it']
+      name: 
+        - [ !ENV SATOSA_ORGANIZATION_NAME_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_NAME_IT, 'it']
+      url:
+        - [ !ENV SATOSA_ORGANIZATION_URL_EN, 'en']
+        - [ !ENV SATOSA_ORGANIZATION_URL_IT, 'it']
+
+    contact_person:
+      - contact_type: 'administrative'
+        company: !ENV SATOSA_ORGANIZATION_NAME_IT
+        email_address: !ENV SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+        telephone_number: !ENV SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER
+        cie_info: 
+          Public: ''
+          IPACode: !ENV SATOSA_CONTACT_PERSON_IPA_CODE
+          Municipality: !ENV SATOSA_CONTACT_PERSON_MUNICIPALITY
+
+
+    metadata:
+      local: [./metadata/idp/]
+      # using pyFF or other MDX server
+      # mdq:
+      #  - url: "http://mdq.auth.unical.it/static/sha1"
+          # cert: mdq.pem
+
+    entityid: '<base_url>/<name>/metadata'
+    accepted_time_diff: 10
+
+    service:
+      sp:
+        ui_info:
+          display_name:
+            - lang: en
+              text: !ENV SATOSA_UI_DISPLAY_NAME_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DISPLAY_NAME_IT
+          description:
+            - lang: en
+              text: !ENV SATOSA_UI_DESCRIPTION_EN
+            - lang: it
+              text: !ENV SATOSA_UI_DESCRIPTION_IT
+          information_url:
+            - lang: en
+              text: !ENV SATOSA_UI_INFORMATION_URL_EN
+            - lang: it
+              text: !ENV SATOSA_UI_INFORMATION_URL_IT
+          privacy_statement_url:
+            - lang: en
+              text: !ENV SATOSA_UI_PRIVACY_URL_EN
+            - lang: it
+              text: !ENV SATOSA_UI_PRIVACY_URL_IT
+          logo:
+            text: !ENV SATOSA_UI_LOGO_URL
+            width: !ENV SATOSA_UI_LOGO_WIDTH
+            height: !ENV SATOSA_UI_LOGO_HEIGHT
+
+        # sign dig and enc
+        authn_requests_signed: true
+        want_response_signed: true
+        want_assertions_signed: true
+
+        signing_algorithm: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        digest_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+
+        # security
+        only_use_keys_in_metadata: true
+
+        # it depends by acr level, see spidsaml2.authn_request
+        # force_authn: false
+
+        name_id_format_allow_create: false
+        name_id_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        requested_attribute_name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic'
+        allow_unknown_attributes: true
+
+        # in production different workers do not share the same storage!
+        allow_unsolicited: true
+
+        # this instantiate the attribute_consuming_service
+        required_attributes: [
+                              'name',
+                              'familyName',
+                              'dateOfBirth',
+                              'fiscalNumber',
+                              ]
+        requested_attributes: []
+        #optional_attributes: ['name',
+        #                      'familyName',
+        #                      'dateOfBirth',
+        #                      'fiscalNumber']
+
+        endpoints:
+          assertion_consumer_service:
+          - [<base_url>/<name>/acs/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+          single_logout_service:
+          - [<base_url>/<name>/ls/post/, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+          discovery_response:
+          - [<base_url>/<name>/disco, 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol']
+
+  # disco_srv must be defined if there is more than one IdP in the metadata specified above
+  disco_srv: !ENV SATOSA_DISCO_SRV

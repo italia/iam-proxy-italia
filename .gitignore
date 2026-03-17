@@ -1,0 +1,65 @@
+SATOSA/
+*/__pyc__/*
+example/logs/*.log
+example/metadata/*.md
+example/data/*
+example/private/*
+iam-proxy-italia-project/logs/*.log
+iam-proxy-italia-project/metadata/*.md
+iam-proxy-italia-project/data/*
+iam-proxy-italia-project/private/*
+iam-proxy-italia-project/wwwallet/mysql/data/
+*.pyc
+*pyFF_example/info.log
+*pyFF_example/error.log
+*pyFF_example/access.log
+*pyFF_example/md*
+*pyFF_example/*pid
+*pyFF_example/*sqlite
+*pyFF_example/.whoosh
+*pyFF_example/garr
+*pyFF_example/entities
+example_sp/djangosaml2_sp/sqlite3.db
+iam-proxy-italia-project-demo-examples/djangosaml2_sp/sqlite3.db
+project/*
+docker-example/*
+Docker-compose/iam-proxy-italia-project/*
+Docker-compose/djangosaml2_sp/*
+Docker-compose/mongo/db/*
+Docker-compose/nginx/html/static/*
+Docker-compose/certbot/live/localhost
+Docker-compose/certbot/live/iam-proxy-italia.example.org
+Docker-compose/certbot/live/*
+Docker-compose/.env
+Docker-compose/eudi-wallet-it-python
+Docker-compose/wwwallet
+Docker-compose/spid_cie_oidc_django
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+.idea/
+*.iml
+.run/
+# Ignore Mac system files
+**/.DS_Store
+.DS_Store
+*.log.*
+*.log
+*.sqlite3
+
+# Local test virtual environment (see docs/testing.md)
+test_venv/
+test_env/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+.venv-audit
+.venv-lock
+
+# Static assets (Bootstrap Italia via npm)
+iam-proxy-italia-project/static/node_modules/
+.venv*

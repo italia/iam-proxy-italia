@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Page details -->
+
+    {% block page_title %}{% endblock page_title %}
+
+    <meta name="description" content="Bootstrap Italia">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ static }}spid/bootstrap-italia.css">
+    <!-- Extra CSS/Javascript -->
+
+    <link rel="shortcut icon" href="{{ static }}spid/favicon-32x32.png">
+
+    <link type="text/css" rel="stylesheet" href="{{ static }}spid/spid-sp-access-button.css">
+
+    {% block extra_head %} {% endblock %}
+
+  </head>
+  <body>
+
+    <div class="it-header-wrapper">
+
+      <!-- Top row in header -->
+
+      <div class="it-header-slim-wrapper">
+	<div class="container">
+	  <div class="row">
+	    <div class="col-12">
+	      <div class="it-header-slim-wrapper-content">
+		<a class="d-none d-lg-block navbar-brand" href="/">
+
+		  Nome Organizzazione
+
+		</a>
+		<div class="nav-mobile">
+		  <nav>
+		    <a class="it-opener d-lg-none" data-toggle="collapse" href="#menu-principale" role="button" aria-expanded="false" aria-controls="menu-principale">
+		      <span>
+
+			Nome Organizzazione
+
+		      </span>
+
+		    </a>
+
+		  </nav>
+		</div>
+
+
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+
+      <div class="it-nav-wrapper">
+	<div class="it-header-center-wrapper">
+	  <div class="container">
+	    <div class="row">
+	      <div class="col-12">
+		<div class="it-header-center-content-wrapper">
+		  <!-- Logo -->
+		  <div class="it-brand-wrapper">
+		    <a href="/">
+
+		      <div class="col-10 col-md-12 offset-1 offset-md-0">
+			<img src="{{ static }}spid/logo.jpg" style="width: 10%;" alt="SPID Logo">
+		      </div>
+
+
+		      <div class="it-brand-text">
+			<h2 class="no_toc">
+
+
+
+			</h2>
+			<h3 class="no_toc d-none d-md-block">
+
+
+
+			</h3>
+		      </div>
+		    </a>
+		  </div>
+
+		  <!-- Social and Search -->
+
+		  <div class="it-right-zone">
+
+
+
+
+
+		  </div>
+
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Main menu -->
+
+	<div class="it-header-navbar-wrapper">
+	  <div class="container">
+	    <div class="row">
+	      <div class="col-12">
+		<nav class="navbar navbar-expand-lg has-megamenu">
+		  <button class="custom-navbar-toggler" type="button" aria-controls="nav10" aria-expanded="false" aria-label="Toggle navigation" data-target="#nav10">
+		    <svg class="icon">
+		      <use xlink:href="{{ static }}spid/svg/sprite.svg#it-burger"></use>
+		    </svg>
+		  </button>
+		  <div class="navbar-collapsable" id="nav10">
+		    <div class="overlay"></div>
+		    <div class="close-div sr-only">
+		      <button class="btn close-menu" type="button"><span class="it-close"></span>close</button>
+		    </div>
+		    <div class="menu-wrapper">
+		      <ul class="navbar-nav">
+
+			<li class="nav-item active"><a class="nav-link active" href="#">
+			    <span>Pagina principale</span>
+			    <span class="sr-only">current</span></a></li>
+
+
+
+			<li class="nav-item dropdown">
+			  <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
+			    <span>Domande frequenti</span>
+			    <svg class="icon icon-xs">
+			      <use xlink:href="{{ static }}spid/svg/sprite.svg#it-expand"></use>
+			    </svg>
+			  </a>
+			  <div class="dropdown-menu">
+			    <div class="link-list-wrapper">
+			      <ul class="link-list">
+				<li>
+				  <h3 class="no_toc" id="heading">Questo servizio</h3>
+				</li>
+				<li><a class="list-item" href=""><span>Assistenza</span></a></li>
+				<li><span class="divider"></span></li>
+				<li>
+				  <h3 class="no_toc" id="heading">SPID</h3>
+				</li>
+				<li class="spid-idp-support-link">
+				  <a class="list-item" href="https://www.spid.gov.it/">Maggiori informazioni</a>
+				</li>
+				<li class="spid-idp-support-link">
+				  <a class="list-item" href="https://www.spid.gov.it/richiedi-spid">Non hai SPID?</a>
+				</li>
+				<li class="spid-idp-support-link">
+				  <a class="list-item" href="https://www.spid.gov.it/serve-aiuto">Serve aiuto?</a>
+				</li>
+
+
+			      </ul>
+			    </div>
+			  </div>
+			</li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+      </div>
+    </div>
+
+
+
+
+    <!-- Container - Body of page-->
+    <div class="main-body">
+      <div class="container">
+	{%  block container %} {% endblock %}
+      </div>
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="it-footer">
+      <div class="it-footer-main">
+	<div class="container">
+
+	  <section>
+	    <div class="row clearfix">
+	      <div class="col-sm-12">
+		<div class="it-brand-wrapper">
+		  <a href="#">
+
+		    <img class="icon" src="{{ static }}spid/logo.jpg">
+
+
+		    <div class="it-brand-text">
+		      <h2 class="no_toc">
+
+			Nome Organizzazione
+
+		      </h2>
+		      <h3 class="no_toc d-none d-md-block">
+
+			lorem ipsum
+
+		      </h3>
+		    </div>
+
+		  </a>
+		</div>
+	      </div>
+	    </div>
+	  </section>
+
+
+	  <!-- Footer middle section with menu blocks -->
+
+
+
+	  <!-- Footer bottom section with contacts -->
+
+	  <section class="py-4 border-white border-top">
+	    <div class="row">
+	      <div class="col-lg-4 col-md-4 pb-2">
+		<h4><a href="#" title="Vai alla pagina: Contatti">Contatti</a></h4>
+		<p>
+		<strong>Nome Organizzazione</strong>
+		<br>
+		via Tal dei Tali 00000 Città, Provincia
+		<br>
+		Codice Fiscale 2384762384623894 - Tel. (+39) xxxx yyyyyy
+		</p>
+		<div class="link-list-wrapper">
+		  <ul class="footer-list link-list clearfix">
+		    <li>
+		      <a class="list-item" href="https://www.example.org/contacts/" title="Vai alla pagina: Posta Elettronica Certificata">
+			Posta Elettronica Certificata
+		      </a>
+		    </li>
+		    <li>
+		      <a class="list-item" href="https://www.example.org/fatturazione" title="Vai alla pagina: Fatturazione elettronica">
+			Fatturazione Elettronica
+		      </a>
+		    </li>
+		  </ul>
+		</div>
+	      </div>
+	      <div class="col-lg-4 col-md-4 pb-2">
+		<h4><a href="#" title="Vai alla pagina: Lorem Ipsum">Link Utili</a></h4>
+		<div class="link-list-wrapper">
+		  <ul class="footer-list link-list clearfix">
+		    <li>
+		      <a class="list-item" href="https://www.example.org/search_phone" title="Vai alla pagina: Contatti/cerca persone">
+			Contatti/cerca persone
+		      </a>
+		    </li>
+		    <li>
+		      <a class="list-item" href="https://www.example.org/amministrazione/" title="Vai alla pagina: Contatti amministrazione">
+			Contatti amministrazione
+		      </a>
+		    </li>
+		    <li>
+		      <a class="list-item" href="https://www.example.org/" title="Vai alla pagina: Contatti servizi">
+			Contatti servizi
+		      </a>
+		    </li>
+		    <li>
+		      <a class="list-item" href="https://example.portaleamministrazionetrasparente.it/" title="Vai alla pagina: PAT - Portale amministrazione trasparente">
+			PAT - Portale amministrazione trasparente
+		      </a>
+		    </li>
+		  </ul>
+		</div>
+	      </div>
+	      <div class="col-lg-4 col-md-4 pb-2">
+		<div class="pb-2">
+		  <h4><a href="#" title="Vai alla pagina: Seguici su">Seguici su</a></h4>
+		  <ul class="list-inline text-left social">
+		    <li class="list-inline-item">
+		      <a class="p-2 text-white" href="https://it-it.facebook.com/pages/example" target="_blank">
+			<svg class="icon icon-sm icon-white align-top">
+			  <use xlink:href="{{ static }}spid/svg/sprite.svg#it-facebook"></use>
+			</svg><span class="sr-only">Facebook</span>
+		      </a>
+		    </li>
+		    <li class="list-inline-item">
+		      <a class="p-2 text-white" href="https://twitter.com/example" target="_blank">
+			<svg class="icon icon-sm icon-white align-top">
+			  <use xlink:href="{{ static }}spid/svg/sprite.svg#it-twitter"></use>
+			</svg><span class="sr-only">Twitter</span>
+		      </a>
+		    </li>
+		    <li class="list-inline-item">
+		      <a class="p-2 text-white" href="https://www.instagram.com/example/" target="_blank">
+			<svg class="icon icon-sm icon-white align-top">
+			  <use xlink:href="{{ static }}spid/svg/sprite.svg#it-instagram"></use>
+			</svg><span class="sr-only">Instagram</span>
+		      </a>
+		    </li>
+		    <li class="list-inline-item">
+		      <a class="p-2 text-white" href="https://www.youtube.com/example" target="_blank">
+			<svg class="icon icon-sm icon-white align-top">
+			  <use xlink:href="{{ static }}spid/svg/sprite.svg#it-youtube"></use>
+			</svg><span class="sr-only">YouTube</span>
+		      </a>
+		    </li>
+		  </ul>
+		</div>
+		<div class="pb-2">
+		  <h4><a href="#" title="Vai alla pagina: Newsletter">Newsletter</a></h4>
+		  <p>Form Newsletter</p>
+		</div>
+	      </div>
+	    </div>
+	  </section>
+
+	</div>
+      </div>
+
+
+      <div class="it-footer-small-prints clearfix">
+	<div class="container">
+
+	  <h3 class="sr-only">Sezione Link Utili</h3>
+	  <ul class="it-footer-small-prints-list list-inline mb-0 d-flex flex-column flex-md-row">
+	    <li class="list-inline-item">
+	      <a href="/" title="Note Legali">
+		Note legali
+	      </a>
+	    </li>
+	    <li class="list-inline-item">
+	      <a href="https://www.example.org/privacy/" title="Protezione dei dati">
+		Protezione dei dati
+	      </a>
+	    </li>
+	  </ul>
+
+	</div>
+      </div>
+
+    </footer>
+
+    <script>window.__PUBLIC_PATH__ = "{{ static }}spid/fonts"</script>
+    <script src="{{ static }}spid/bootstrap-italia.js"></script>
+
+    <script src="{{ static }}spid/spid-sp-access-button.js"></script>
+    <script src="{{ static }}spid/spid_button.js"></script>
+
+    {% block extra_scripts %} {% endblock %}
+
+  </body>
+</html>
