@@ -885,9 +885,11 @@ footer {
 #wallet-grid {
   align-items: flex-start;
 }
+
 #wallet-grid .col {
   align-self: flex-start;
 }
+
 .navbar-separator {
   width: 1px;
   min-width: 1px;
@@ -896,36 +898,44 @@ footer {
   background-color: #c6c8c9;
   margin: 0 1.5rem;
 }
+
 .it-wallet-navbar-logo {
   height: 32px;
   width: auto;
   max-width: 200px;
   object-fit: contain;
 }
+
 .it-wallet-info-icon {
   flex-shrink: 0;
   object-fit: contain;
   height: 21px;
 }
+
 #wallet-grid .it-card {
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
+
 #wallet-grid .it-card .it-card-body {
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 #wallet-grid .it-card .it-card-body > a:first-of-type {
   flex: 0 0 auto;
 }
+
 #wallet-grid .it-card .it-card-body > .wallet-learn-more {
   flex: 0 0 auto;
   margin-top: 0;
 }
+
 #wallet-grid .it-card > .it-card-body > a:first-child {
   min-height: 72px;
 }
+
 #wallet-grid .wallet-card-logo {
   width: 48px;
   height: 48px;
@@ -935,6 +945,7 @@ footer {
   object-fit: contain;
   display: block;
 }
+
 /* Logo+title row: fixed height so all cards have identical vertical spacing */
 #wallet-grid .it-card .d-flex.align-items-center.mb-2,
 #wallet-grid .it-card-body > a:first-child > .d-flex {
@@ -943,28 +954,35 @@ footer {
   margin-bottom: 0.5rem !important;
   align-items: center;
 }
+
 #wallet-grid .it-card .wallet-learn-more {
   margin-top: 0;
   min-height: 1.5rem;
 }
+
 #wallet-grid .it-card .eid-learn-more-toggle {
   margin-top: 0;
   display: inline-block;
 }
+
 #wallet-grid .it-card .eid-learn-more-content {
   margin-top: 0.5rem;
 }
+
 #wallet-grid .it-card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
+
 #wallet-grid a:hover {
   color: inherit;
 }
+
 .it-wallet-info-section {
   background-color: #F5F5F0;
   width: 100vw;
   margin-left: calc(50% - 50vw);
 }
+
 .it-wallet-info-section a {
   display: inline-flex;
   align-items: center;
@@ -973,10 +991,12 @@ footer {
   font-size: 1em;
   margin-left: 32px;
 }
+
 .it-wallet-info-section a svg {
   color: inherit;
   fill: currentColor;
 }
+
 .it-wallet-info-section a:hover {
   color: #004d99;
   text-decoration: underline;

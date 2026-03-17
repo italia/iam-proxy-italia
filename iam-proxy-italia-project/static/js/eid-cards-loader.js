@@ -216,7 +216,7 @@ function createEidCardBox(resource, eid) {
 }
 
 // ----------------------- Logo Button -----------------------
-function createLogoButton(eid, hasLearnMore = false) {
+function createLogoButton(eid, _hasLearnMore = false) {
   const createLogoImg = () => {
     const img = document.createElement('img');
     img.src = eid.logo;

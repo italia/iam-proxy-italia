@@ -60,8 +60,10 @@ function filterWallets(wallets, query) {
 
 function buildWalletUri(uri) {
   const params = new URLSearchParams(window.location.search);
-  const returnUrl = params.get('return') || (window.location.origin + window.location.pathname);
-  const entityID = params.get('entityID') || 'wallet';
+  // Default return to proxy's disco callback when missing (e.g. direct access or params lost)
+  const returnUrl = params.get('return') || (window.location.origin + '/Saml2/disco');
+  // For wallet flow, entityID must be 'wallet' to route to OpenID4VP; do not overwrite with page params
+  const entityID = uri.includes('entityID=wallet') ? 'wallet' : (params.get('entityID') || 'wallet');
   try {
     const u = new URL(uri, window.location.origin);
     u.searchParams.set('return', returnUrl);
