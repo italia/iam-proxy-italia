@@ -37,7 +37,7 @@ config:
     size: 250 # px
     color: '#000000'  # hex
     expiration_time: 120 # seconds
-    logo_path: 'wallet-it/wallet-icon-blue.svg' # relative to static_storage_url
+    logo_path: 'it-wallet/wallet-icon-blue.svg' # relative to static_storage_url
 
   response_code:
     sym_key: "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" # hex string of 64 characters

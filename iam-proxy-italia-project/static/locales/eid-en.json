@@ -16,7 +16,7 @@
     "it_wallet": {
       "name": "IT-Wallet",
       "logo_text": "Login with IT-Wallet",
-      "logo": "wallet-it/wallet_icon.svg",
+      "logo": "it-wallet/wallet_icon.svg",
       "login_url": "/Saml2/disco?entityID=wallet",
       "learn_more_descr": "IT-Wallet is the Italian digital wallet system that gives you full control over your information, without the issuing authority knowing when and how it is used."
     },

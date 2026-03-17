@@ -5,7 +5,7 @@
 
 set -e
 BASE_URL="https://raw.githubusercontent.com/italia/eid-wallet-it-docs/versione-corrente/official_resources"
-DEST_DIR="wallet-it"
+DEST_DIR="it-wallet"
 mkdir -p "$DEST_DIR"
 
 echo "Downloading official IT-Wallet assets..."
