@@ -98,14 +98,17 @@ def main():
             raise
 
     # Indexes (idempotent)
-    db.client.create_index([("client_id", 1)], unique=True)
-    db.client.create_index(
+    # Use db["client"] — db.client is the MongoClient, not the "client" collection
+    client_coll = db["client"]
+    session_coll = db["session"]
+    client_coll.create_index([("client_id", 1)], unique=True)
+    client_coll.create_index(
         [("registration_access_token", 1)],
         unique=True,
         partialFilterExpression={"registration_access_token": {"$type": "string"}},
     )
-    db.session.create_index([("sid", 1)], unique=True)
-    db.session.create_index(
+    session_coll.create_index([("sid", 1)], unique=True)
+    session_coll.create_index(
         [("expires_at", 1)],
         expireAfterSeconds=0,
         partialFilterExpression={"count": {"$gt": 2}},
@@ -113,7 +116,7 @@ def main():
 
     # Upsert test client (idempotent)
     test_client = _get_test_client()
-    db.client.update_one(
+    client_coll.update_one(
         {"client_id": test_client["client_id"]},
         {"$set": test_client},
         upsert=True,

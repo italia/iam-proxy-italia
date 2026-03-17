@@ -136,14 +136,14 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      # CONFIGURATION ENDPOINT
-      - FEDERATION_RESOLVE_ENDPOINT=${FEDERATION_RESOLVE_ENDPOINT}
-      - SAMPLE_CIE_LOGO_URI=${SATOSA_BASE_STATIC}/${SAMPLE_CIE_LOGO_URI}
-      - FEDERATION_LEGAL_INFORMATION_URI=${FEDERATION_LEGAL_INFORMATION_URI}
-      - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID}
-      - OPENID_RP_JWKS_URI=${OPENID_RP_JWKS_URI}
-      - OPENID_RP_SIGNED_JWKS_URI=${OPENID_RP_SIGNED_JWKS_URI}
-      - OPENID_RP_CALLBACK_URI=${OPENID_RP_CALLBACK_URI}
+      # CONFIGURATION ENDPOINT (defaults from env.example when void)
+      - FEDERATION_RESOLVE_ENDPOINT=${FEDERATION_RESOLVE_ENDPOINT:-resolve}
+      - SAMPLE_CIE_LOGO_URI=${SATOSA_BASE_STATIC}/${SAMPLE_CIE_LOGO_URI:-cie/sample-cie-logo.png}
+      - FEDERATION_LEGAL_INFORMATION_URI=${FEDERATION_LEGAL_INFORMATION_URI:-en/website/legal-information}
+      - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp}
+      - OPENID_RP_JWKS_URI=${OPENID_RP_JWKS_URI:-openid_relying_party/jwks.json}
+      - OPENID_RP_SIGNED_JWKS_URI=${OPENID_RP_SIGNED_JWKS_URI:-openid_relying_party/jwks.jose}
+      - OPENID_RP_CALLBACK_URI=${OPENID_RP_CALLBACK_URI:-oidc/callback}
       # END CONFIGURATION ENDPOINT
       # MongoDB: four component-specific env sets (CIE OIDC backend, OpenID4VP backend, oidcop frontend, OpenID4VCI frontend).
       # For single MongoDB, set MONGO_URL/MONGO_PORT/MONGO_DBUSER/MONGO_DBPASSWORD; component vars fall back to these.
@@ -339,9 +339,9 @@ services:
       PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
-  # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc) only when MongoDB is void.
-  # Otherwise run the insert manually — see docs/demo-oidc-rp.md (section "Insert a new client")
-  # (section "Insert a new client (new RP)").
+  # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).
+  # Always runs at startup when stack is brought up (run-docker-compose.sh forces re-run).
+  # See docs/demo-oidc-rp.md (section "Insert a new client (new RP)").
   relying-party-demo-mongo:
     profiles:
       - demo
@@ -351,7 +351,7 @@ services:
       <<: *demo-rp-build
     container_name: relying-party-demo-mongo
     working_dir: /rp-demo-project
-    command: ["python3", "init_oidcop_mongo.py"]
+    entrypoint: ["python3", "init_oidcop_mongo.py"]
     restart: "no"
     depends_on:
       satosa-mongo:
@@ -398,12 +398,15 @@ services:
     environment:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
-      WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION}"
+      # Must be a full URL (https://...). Use WELL_KNOW_OPENID_CONFIGURATION in .env to override.
+      WELL_KNOW_OPENID_CONFIGURATION: "${WELL_KNOW_OPENID_CONFIGURATION:-https://iam-proxy-italia.example.org/OIDCOP/.well-known/openid-configuration}"
       # OIDC RP Demo (see docs/demo-oidc-rp.md) — must match client in MongoDB
       OIDC_RP_DEMO_CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
       OIDC_RP_DEMO_CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
       OIDC_RP_DEMO_REDIRECT_URI: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa"
       URL_CALLBACK: "${OIDC_RP_DEMO_REDIRECT_URI:-http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/authz_cb/satosa}"
+      URL_REDIRECT: "http://${DEMO_RELYING_PARTY_FQDN:-localhost:8090}/"
+      SCOPE: "openid profile email offline_access"
       CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
       CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
 
