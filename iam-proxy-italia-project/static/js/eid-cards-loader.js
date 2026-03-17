@@ -227,6 +227,7 @@ function createLogoButton(eid, hasLearnMore = false) {
 
   const createTextSpan = () => {
     const span = document.createElement('span');
+    span.className = 'eid-card-btn-label';
     span.textContent = eid.logo_text;
     return span;
   };
@@ -373,6 +374,17 @@ function createLearnMore(resource, eid) {
     text.innerHTML = eid.learn_more_descr;
     text.className = 'mt-2 eid-learn-more-content';
 
+    const findHowLink = document.createElement('a');
+    findHowLink.href = (resource.titles.find_how_to_get_digital_id_url || '').toString().trim() || 'javascript:void(0)';
+    findHowLink.target = '_blank';
+    findHowLink.rel = 'noopener noreferrer';
+    findHowLink.className = 'eid-find-how-link d-block mt-2';
+    findHowLink.textContent = resource.titles.find_how_to_get_digital_id || '';
+
+    if (!findHowLink.href || findHowLink.href === 'javascript:void(0)') {
+      findHowLink.addEventListener('click', (ev) => ev.preventDefault());
+    }
+
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
       const box = toggle.closest('.it-card');
@@ -390,6 +402,7 @@ function createLearnMore(resource, eid) {
 
     container.appendChild(toggle);
     container.appendChild(text);
+    container.appendChild(findHowLink);
     return container;
   } else if (eid.learn_more_link) {
     const link = document.createElement('a');

@@ -429,6 +429,12 @@ main {
   border-radius: 0 !important;
 }
 
+/* IT-Wallet button: rounded corners (only exception) */
+#eid-cards-container .eid-card-btn-wallet,
+#eid-alternative-section .eid-card-btn-wallet {
+  border-radius: 0.375rem !important;
+}
+
 /* EID cards: responsive layout - buttons fill available space */
 .it-card {
   display: flex;
@@ -485,6 +491,28 @@ main {
   align-self: stretch;
   background: rgba(255, 255, 255, 0.9);
   margin-right: 0.5rem;
+}
+
+/* Responsive < 1280px: button labels wrap and stay centered */
+@media (max-width: 1279px) {
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 100%;
+    min-width: 0;
+    text-align: center;
+  }
 }
 
 header svg.icon {
