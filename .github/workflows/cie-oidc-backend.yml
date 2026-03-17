@@ -6,18 +6,22 @@ name: CIE OIDC backend
 on:
   push:
     branches: [ master, dev ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'iam-proxy-italia-project/static/**'
-      - 'Docker-compose/nginx/html/static/**'
+    paths:
+      - 'iam-proxy-italia-project/backends/**'
+      - 'iam-proxy-italia-project/conf/**'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+      - '.github/workflows/cie-oidc-backend.yml'
+      - '.github/scripts/patch-pyeudiw-branch.sh'
   pull_request:
     branches: [ master, dev ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'iam-proxy-italia-project/static/**'
-      - 'Docker-compose/nginx/html/static/**'
+    paths:
+      - 'iam-proxy-italia-project/backends/**'
+      - 'iam-proxy-italia-project/conf/**'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+      - '.github/workflows/cie-oidc-backend.yml'
+      - '.github/scripts/patch-pyeudiw-branch.sh'
 
 jobs:
   pre_job:
