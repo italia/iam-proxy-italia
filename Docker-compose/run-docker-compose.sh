@@ -1,16 +1,19 @@
 #!/bin/bash
+# Run from script directory so paths and .env resolve correctly
+cd "$(dirname "$0")"
+
 # Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
-export COMPOSE_PROFILES=demo
-export SATOSA_CLEAN_DATA="false"
-export SKIP_UPDATE=
-export RUN_SPID_TEST=
+export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
+export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
+export SKIP_UPDATE="${SKIP_UPDATE:-}"
+export RUN_SPID_TEST="${RUN_SPID_TEST:-}"
 
 #export SATOSA_FORCE_ENV="true"
 
 function clean_data {
-  if [ $SATOSA_CLEAN_DATA == "true" ]; then
+  if [ "${SATOSA_CLEAN_DATA}" = "true" ]; then
     rm -Rf ./mongo/db/*
     rm -Rf ./iam-proxy-italia-project/*
     rm -Rf ./djangosaml2_sp/*
@@ -28,7 +31,7 @@ function clean_data {
 }
 
 function init_files () {
-  if [ -f $1 ]; then echo "$2 file is already initialized" ; else $3 ; fi
+  if [ -f "$1" ]; then echo "$2 file is already initialized" ; else $3 ; fi
 }
 
 function add_satosa_cert () {
@@ -119,6 +122,8 @@ function update {
 }
 
 function start {
+  # Ensure external network exists (avoids host interface teardown on compose down)
+  docker network create iam-proxy-italia 2>/dev/null || true
   if [ "$SATOSA_BUILD" == "true" ]; then
     docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans --build
   else

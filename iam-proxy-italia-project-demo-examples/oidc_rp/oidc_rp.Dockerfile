@@ -11,9 +11,13 @@ WORKDIR /rp-demo-project
 
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/requirements.txt .
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/main.py .
+COPY iam-proxy-italia-project-demo-examples/oidc_rp/init_oidcop_mongo.py .
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/env.example .env
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/templates ./templates
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/static ./static
+# Bootstrap Italia assets (svg sprites, fonts) — shared with djangosaml2_sp
+COPY iam-proxy-italia-project-demo-examples/djangosaml2_sp/static/bootstrap-italia/svg/sprites.svg ./static/svg/
+COPY iam-proxy-italia-project-demo-examples/djangosaml2_sp/static/bootstrap-italia/fonts ./static/bootstrap-italia/fonts
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/settings.py .
 COPY iam-proxy-italia-project-demo-examples/oidc_rp/i18n ./i18n
 

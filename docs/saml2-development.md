@@ -5,7 +5,7 @@ read [identity-python-forks.md](identity-python-forks.md) for any further explai
 
 All the patches and features are currently merged and available with the following releases:
 
-- [pysaml2](https://github.com/peppelinux/pysaml2/tree/pplnx-v7.5.3)
+- [pysaml2](https://github.com/peppelinux/pysaml2/tree/pplnx-v7.5.4-1)
 - [SATOSA](https://github.com/peppelinux/SATOSA/tree/oidcop-v8.0.0)
 
 ## Pending contributions to idpy

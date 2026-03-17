@@ -11,7 +11,7 @@ requires-python = ">=3.10,<4.0"
 dependencies = [
     "pip>=26.0",  # CVE-2026-1703: path traversal when extracting wheels; fixed in 26.0
     "setuptools>=78.1.1",  # PYSEC-2022-43012, PYSEC-2025-49, CVE-2024-6345
-    "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.3",
+    "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.4-1",
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
     "satosa-oidcop==4.1.0",
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.2.0",
@@ -27,7 +27,7 @@ test = [
     "flake8",
     "spid-sp-test",
     "pytest-asyncio",
-    "pyOpenSSL>=24.0",
+    "pyOpenSSL>=26.0.0",
     "pip-audit (>=2.10.0,<3.0.0)"
 ]
 
