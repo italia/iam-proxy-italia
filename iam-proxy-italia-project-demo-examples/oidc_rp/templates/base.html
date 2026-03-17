@@ -20,8 +20,15 @@ Sottotitolo del Comune
 
 {% block header_slim_buttons %}
 <div class="it-access-top-wrapper">
-    {% if not id_token %}"
+    {% if not id_token %}
     <a class="btn btn-primary btn-icon btn-full" href="{{settings.LOGIN_URL}}" title="Accedi all'area personale" aria-label="Accedi all'area personale" data-focus-mouse="false">
+          <span class="rounded-icon">
+            <svg class="icon icon-primary">
+              <use xlink:href="{{ url_for('static', path='svg/sprites.svg') }}#it-user"></use>
+            </svg>
+          </span>
+          <span class="d-none d-lg-block">Accedi all'area personale</span>
+          </a>
     {% else %}
     <div class="dropdown text-center">
       <!--<button class="btn btn-primary btn-icon btn-full" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
@@ -43,16 +50,7 @@ Sottotitolo del Comune
       </div>
     </div>
     {% endif %}
-
-    {% if not id_token %}
-    <span class="rounded-icon">
-      <svg class="icon icon-primary">
-        <use xlink:href="{{ url_for('static', path='svg/sprites.svg') }}#it-user"></use>
-      </svg>
-    </span>
-    <span class="d-none d-lg-block">Accedi all'area personale</span>
-    </a>
-    {% endif %}  
+ 
 </div>
 {% endblock header_slim_buttons %}
 
