@@ -1,0 +1,138 @@
+.it-footer {
+  h4,
+  ul,
+  li,
+  p {
+    font-size: 1rem;
+  }
+
+  a {
+    color: $white;
+    &:hover {
+      color: color-hover($white);
+    }
+  }
+}
+
+.it-footer-main {
+  --bs-border-opacity: 0.5;
+  background-color: $footer-top-background;
+  color: $white;
+  font-size: 1rem;
+
+  h4 {
+    text-transform: uppercase;
+  }
+
+  .link-list-wrapper ul li {
+    a:not(.disabled) {
+      padding: 0;
+      line-height: 2rem;
+      text-decoration: underline;
+    }
+  }
+
+  .it-brand-wrapper {
+    padding: $v-gap * 4 0;
+
+    .it-brand-text {
+      padding-right: $v-gap * 3;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+
+      h2 {
+        font-size: $header-center-h2-size-mob;
+        margin-bottom: 0;
+        font-weight: $header-center-h2-weight;
+        letter-spacing: unset;
+        line-height: 1.1;
+      }
+
+      h3 {
+        font-size: $header-center-h3-size;
+        font-weight: normal;
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      .icon {
+        fill: $header-center-text-color;
+        width: $header-center-icon-size-mob;
+        height: $header-center-icon-size-mob;
+        margin-right: $header-center-icon-margin-mob;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  section {
+    padding: 0 $v-gap * 2;
+  }
+
+  label {
+    font-weight: 600;
+  }
+}
+
+.it-footer-small-prints {
+  background-color: $footer-bottom-background;
+
+  ul.it-footer-small-prints-list {
+    padding: 1.5rem 1rem;
+
+    li {
+      padding: 0.5rem 0;
+      &:first-child {
+        padding-top: 0;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.form-newsletter {
+  input[type='email'] {
+    font-size: 1rem;
+    & ~ * {
+      margin-top: 1em;
+    }
+  }
+
+  button {
+    display: block;
+    width: 100%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    button {
+      display: inline-block;
+      width: auto;
+    }
+  }
+}
+//Tablet vertical
+@include media-breakpoint-up(md) {
+  .it-footer-small-prints {
+    ul.it-footer-small-prints-list {
+      li {
+        padding: 0 1rem;
+
+        &:first-child {
+          padding-left: 0;
+        }
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+}

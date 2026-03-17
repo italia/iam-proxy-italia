@@ -1,0 +1,12 @@
+import { ElemValueType } from '../modules/interfaces';
+export declare const isEmpty: (value: ElemValueType) => boolean;
+export declare const isEmail: (value: string) => boolean;
+export declare const isLengthMoreThanMax: (value: string, len: number) => boolean;
+export declare const isLengthLessThanMin: (value: string, len: number) => boolean;
+export declare const isNumber: (value: string) => boolean;
+export declare const isInteger: (value: string) => boolean;
+export declare const isPassword: (value: string) => boolean;
+export declare const isStrongPassword: (value: string) => boolean;
+export declare const isNumberMoreThanMax: (value: number, len: number) => boolean;
+export declare const isNumberLessThanMin: (value: number, len: number) => boolean;
+export declare const isInvalidOrEmptyString: (value?: ElemValueType) => boolean;

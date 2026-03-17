@@ -1,0 +1,47 @@
+{
+    "name": "@types/bootstrap",
+    "version": "5.2.10",
+    "description": "TypeScript definitions for bootstrap",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/bootstrap",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "denisname",
+            "githubUsername": "denisname",
+            "url": "https://github.com/denisname"
+        },
+        {
+            "name": "Piotr Błażejewicz",
+            "githubUsername": "peterblazejewicz",
+            "url": "https://github.com/peterblazejewicz"
+        },
+        {
+            "name": "Martin Badin",
+            "githubUsername": "martin-badin",
+            "url": "https://github.com/martin-badin"
+        },
+        {
+            "name": "Kyle Tsang",
+            "githubUsername": "kyletsang",
+            "url": "https://github.com/kyletsang"
+        },
+        {
+            "name": "Luke Nelson",
+            "githubUsername": "luc122c",
+            "url": "https://github.com/luc122c"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/bootstrap"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@popperjs/core": "^2.9.2"
+    },
+    "typesPublisherContentHash": "c92ed4379251cc173e28be43e85f18041aa3e6ec2cd0d7b66e800b0f8a0b36a8",
+    "typeScriptVersion": "4.5"
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title id="error-page-title"></title>
+    <meta name="description" content="" id="error-page-description">
+    <link rel="shortcut icon" href="spid/favicon-32x32.png">
+    <!-- Bootstrap first, then style.css last so header/footer/lang-select overrides apply -->
+    <link href="css/bootstrap-italia.min.css" rel="stylesheet">
+    <link href="css/ita.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body { display: flex; flex-direction: column; min-height: 100vh; }
+      .main-body { flex: 1; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.1/i18nextHttpBackend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
+  </head>
+  <body>
+    <!-- HEADER (same structure as disco) -->
+    <header class="it-header-wrapper">
+      <div class="it-header-slim-wrapper bg-primary">
+        <div class="container">
+          <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
+            <span class="navbar-brand text-white"><strong id="error-header-region-name" data-i18n="header.region_name">Nome Organizzazione</strong></span>
+            <div>
+              <select id="error-lang-select" class="form-select form-select-sm text-white">
+                <option value="en">EN</option>
+                <option value="it" selected>ITA</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-title-section">
+        <div class="container py-3">
+          <div class="d-flex align-items-center">
+            <svg class="icon icon-lg me-2" aria-hidden="true">
+              <!-- YOUR LOGO HERE (same as disco) -->
+              <use xlink:href="svg/sprites.svg#it-code-circle"></use>
+            </svg>
+            <h2 id="error-header-logo-title" class="mb-0" data-i18n="header.logo_title">Il tuo logo</h2>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- MAIN (layout from mockup: centered, dotted borders, icon, CTA, assistance link) -->
+    <main class="container my-4 flex-grow-1">
+      <div class="error-page-body">
+        <h1 class="error-page-description" data-i18n="body.description">
+          Si è verificato un errore durante il processo di autenticazione. Non è dipeso dalle tue credenziali.
+        </h1>
+        <div class="error-page-icon">
+          <img src="img/error-icon.svg" alt="" width="160" height="133" role="presentation">
+        </div>
+        <p class="error-page-guidance" data-i18n="body.guidance">
+          Riprova dall'homepage del servizio o attendi qualche minuto. Se il problema persiste, contatta l'assistenza.
+        </p>
+        <div class="error-page-actions">
+          <a href="/" class="btn btn-primary error-page-cta" data-i18n="body.action">Torna alla pagina di accesso</a>
+          <a href="#" class="error-page-assistance" target="_blank" rel="noopener" data-i18n-title="body.assistance_link_title">
+            <span data-i18n="body.assistance_link">Rimando all'assistenza specifica</span>
+            <svg class="icon icon-sm ms-1" aria-hidden="true" focusable="false"><use href="svg/sprites.svg#it-external-link"></use></svg>
+          </a>
+        </div>
+      </div>
+    </main>
+    <!-- FOOTER (same structure as disco) -->
+    <footer>
+      <div class="container h-100 d-flex align-items-center">
+        <div class="d-flex flex-wrap justify-content-start">
+          <a id="error-footer-legal" href="/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.legal_notes">Note legali</a>
+          <a id="error-footer-privacy" href="https://www.example.org/privacy/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.privacy">Protezione dei dati</a>
+          <a id="error-footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener" data-i18n="footer.accessibility">Dichiarazione di accessibilità</a>
+        </div>
+      </div>
+    </footer>
+    <script>window.__PUBLIC_PATH__ = "spid/fonts"</script>
+    <script src="js/bootstrap-italia.bundle.min.js"></script>
+    <script src="js/error-i18n.js"></script>
+    <!--<script src="spid/bootstrap-italia.js"></script>
+    <script src="spid/spid-sp-access-button.js"></script>
+    <script src="spid/spid_button.js"></script>-->
+  </body>
+</html>
+

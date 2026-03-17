@@ -1,0 +1,126 @@
+.input-number {
+  position: relative;
+
+  &.input-number-adaptive {
+    width: fit-content;
+    input[type='number'] {
+      width: auto;
+      transition: all 0.3s;
+    }
+  }
+
+  //reset input style
+  input[type='number'] {
+    appearance: textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+    &::-ms-clear {
+      display: none;
+    }
+
+    // color: $color-text-muted;
+
+    &:focus {
+      color: $color-text-base;
+    }
+  }
+
+  //disabled version
+  &.disabled {
+    input[type='number'] {
+      background-color: $gray-disabled;
+      color: $gray-800;
+      &:hover {
+        cursor: not-allowed;
+        color: $gray-label-disabled;
+      }
+    }
+    .input-group-text {
+      background-color: $gray-disabled;
+      color: $gray-800;
+      button {
+        pointer-events: none;
+        &:hover {
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  //add + sub buttons
+  .input-group-text.align-buttons {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+  }
+  .input-group-text button {
+    position: relative;
+    transition: opacity 0.1s;
+    padding: 0;
+    border: none;
+    height: 50%;
+    width: 16px;
+    background: transparent;
+    &:after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      content: '';
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+    &:focus,
+    &:hover {
+      &.input-number-add {
+        &:after {
+          border-color: transparent transparent $dark transparent; // TODO Check if still necessary
+        }
+      }
+      &.input-number-sub {
+        &:after {
+          border-color: $dark transparent transparent transparent; // TODO Check if still necessary
+        }
+      }
+    }
+    &:focus:not([data-focus-mouse='true']) {
+      opacity: 1;
+    }
+
+    &.input-number-add {
+      &:after {
+        border-width: 0 5px 6px 5px;
+        border-color: transparent transparent $neutral-1-a7 transparent; // TODO Check if still necessary
+      }
+    }
+    &.input-number-sub {
+      &:after {
+        border-width: 6px 5px 0 5px;
+        border-color: $neutral-1-a7 transparent transparent transparent; // TODO Check if still necessary
+      }
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+//Desktop
+@include media-breakpoint-up(xl) {
+  .input-number {
+    //add + sub buttons
+    button {
+      opacity: 0;
+    }
+    &:hover {
+      button {
+        opacity: 1;
+      }
+    }
+  }
+}
