@@ -40,6 +40,18 @@ npm run update-wallet-it-assets
 
 Or run `bash scripts/update-wallet-it-assets.sh` from this directory.
 
+## SPID IdP logos
+
+SPID discovery uses IdP logos from [italia/spid-graphics](https://github.com/italia/spid-graphics) (`idp-logos/`). The list of IdPs and entityIDs is in `spid/spid-idps.js`, aligned with [registry.spid.gov.it/entities-idp](https://registry.spid.gov.it/entities-idp).
+
+To refresh logos from the official repo:
+
+```bash
+bash scripts/update-spid-idp-assets.sh
+```
+
+Run from the `static` directory. Note: InfoCamere logo is not yet in the official repo; add `spid-idp-infocamereid.svg` manually when available.
+
 ## i18n
 
 Both the discovery page and the error page use [i18next](https://www.i18next.com/) with locale files in `locales/`.
