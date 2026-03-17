@@ -4,8 +4,8 @@ Django>=4.2.17,<5.0
 cffi>=1.17.0
 # CVE-2026-26007: SECT curves subgroup validation; fixed in 46.0.5
 cryptography>=46.0.5
-# pyOpenSSL 25.x required for cryptography 46.x; supports cryptography>=45.0.7,<47
-pyOpenSSL>=25.0.0,<26.0.0
+# pyOpenSSL 26.x: CVE-2026-27448, CVE-2026-27459; requires cryptography>=46.0.0
+pyOpenSSL>=26.0.0
 
 # django saml2 SP (requires Django>=4.2, defusedxml, pysaml2)
 djangosaml2>=1.11.1
