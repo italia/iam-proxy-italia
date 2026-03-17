@@ -640,6 +640,66 @@ header svg.icon {
   background-color: #F2F7FC;
 }
 
+/* Error page body - layout from mockup */
+.error-page-body {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.error-page-description {
+  color: #003366;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error-page-icon {
+  margin: 0 auto 1.5rem;
+}
+
+.error-page-icon img {
+  max-width: 160px;
+  height: auto;
+}
+
+.error-page-guidance {
+  color: #5c6f82;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-page-cta {
+  padding: 0.5rem 1.5rem;
+}
+
+.error-page-assistance {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #5c6f82;
+  text-decoration: none;
+}
+
+.error-page-assistance:hover {
+  color: #004C99;
+}
+
 footer {
   margin: 0;
   padding: 1rem 0;

@@ -20,15 +20,11 @@
     "close": "Chiudi"
   },
   "body": {
-    "title": "Errore di Autenticazione",
-    "dear_user": "Gentile Utente,",
-    "intro": "Si è verificato un errore durante il processo di autenticazione. Non è dipeso dalle tue credenziali, altrimenti avresti ricevuto un messaggio diverso nella pagina di accesso.",
-    "communicated": "Il problema è stato segnalato agli amministratori della piattaforma. In caso di anomalia temporanea ti chiediamo di:",
-    "try_again": "Riprovare dall'homepage del sito del servizio;",
-    "wait_retry": "Se il problema si ripresenta, attendere qualche minuto e riprovare;",
-    "support_ticket": "Se il problema persiste per oltre un'ora, contattare l'assistenza attraverso i canali forniti dalla tua organizzazione.",
-    "in_most_cases": "Nella maggior parte dei casi si tratta di problematiche temporanee legate ad aggiornamenti o manutenzione della piattaforma.",
-    "back_link": "Torna alla pagina di accesso"
+    "description": "Si è verificato un errore durante il processo di autenticazione. Non è dipeso dalle tue credenziali, altrimenti avresti ricevuto un messaggio diverso nella pagina di accesso.",
+    "guidance": "Riprova dall'homepage del servizio o attendi qualche minuto. Se il problema persiste per oltre un'ora, contatta l'assistenza attraverso i canali forniti dalla tua organizzazione.",
+    "action": "Torna alla pagina di accesso",
+    "assistance_link": "Rimando all'assistenza specifica",
+    "assistance_link_title": "Vai alla pagina di assistenza"
   },
   "footer": {
     "organization_name": "Nome Organizzazione",
