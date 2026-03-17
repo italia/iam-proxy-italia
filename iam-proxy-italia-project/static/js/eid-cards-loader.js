@@ -216,7 +216,7 @@ function createEidCardBox(resource, eid) {
 }
 
 // ----------------------- Logo Button -----------------------
-function createLogoButton(eid, hasLearnMore = false) {
+function createLogoButton(eid, _hasLearnMore = false) {
   const createLogoImg = () => {
     const img = document.createElement('img');
     img.src = eid.logo;
@@ -325,9 +325,14 @@ function createLogoButton(eid, hasLearnMore = false) {
   }
 
   const btn = document.createElement('a');
-  btn.href = eid.login_url;
-  const isCie = eid.name?.toLowerCase().includes('cie') || eid.logo?.toLowerCase().includes('cie');
+  let href = eid.login_url;
   const isWallet = eid.name?.toLowerCase().includes('it-wallet') || eid.logo?.toLowerCase().includes('it-wallet');
+  if (isWallet && window.location.search) {
+    const sep = href.includes('?') ? '&' : '?';
+    href = href + sep + window.location.search.slice(1);
+  }
+  btn.href = href;
+  const isCie = eid.name?.toLowerCase().includes('cie') || eid.logo?.toLowerCase().includes('cie');
   btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn' + (isCie ? ' eid-card-btn-cie' : '') + (isWallet ? ' eid-card-btn-wallet' : '');
 
   btn.appendChild(createLogoImg());
