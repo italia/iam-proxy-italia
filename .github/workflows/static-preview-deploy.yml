@@ -38,6 +38,8 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: lint
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     permissions:
       contents: write
     steps:
@@ -62,7 +64,7 @@ jobs:
           SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
           PREVIEW_DIR="preview/${SAFE_BRANCH}"
           mkdir -p deploy/"${PREVIEW_DIR}"
-          cp -r iam-proxy-italia-project/static/* deploy/"${PREVIEW_DIR}"/
+          (cd iam-proxy-italia-project/static && tar --exclude=node_modules -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
           # Rewrite /static/ to ./ for GitHub Pages relative paths
           find deploy/"${PREVIEW_DIR}" \( -name '*.html' -o -name '*.json' -o -name '*.js' \) -type f \
             -exec sed -i 's|/static/|./|g' {} \;
@@ -89,6 +91,7 @@ jobs:
           rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"
           mkdir -p preview/"${{ steps.prepare.outputs.safe_branch }}"
           cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
-          git add preview/"${{ steps.prepare.outputs.safe_branch }}"
+          touch .nojekyll
+          git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
           git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }} [skip ci]"
           git push origin gh-pages
