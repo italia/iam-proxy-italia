@@ -50,6 +50,13 @@
     }
   },
   "alternative_id": {
+    "cns": {
+      "name": "CNS",
+      "logo_text": "Entra con CNS",
+      "logo": "img/cns.svg",
+      "login_url": "#",
+      "learn_more_descr": "La CNS (Carta Nazionale dei Servizi) è lo strumento di identificazione che consente ai cittadini di accedere ai servizi della pubblica amministrazione online. Puoi usarla per accedere ai servizi che supportano l'autenticazione CNS."
+    },
     "idem": {
       "name":"IDEM",
       "logo_text": "Entra con IDEM",

@@ -423,6 +423,12 @@ main {
   text-decoration: none;
 }
 
+/* EID cards: no rounded corners on buttons */
+#eid-cards-container .btn,
+#eid-alternative-section .btn {
+  border-radius: 0 !important;
+}
+
 /* EID cards: responsive layout - buttons fill available space */
 .it-card {
   display: flex;
@@ -455,7 +461,7 @@ main {
   flex: 1;
   min-height: 2.75rem;
   max-height: 2.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 1rem;
   font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
@@ -466,7 +472,19 @@ main {
   min-height: 20px;
   max-width: 28px;
   max-height: 28px;
+  aspect-ratio: 1;
   object-fit: contain;
+  margin-right: 0.25rem;
+}
+
+/* Vertical line between logo and label (all buttons except IT-Wallet) */
+.eid-card-btn .eid-card-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.9);
+  margin-right: 0.5rem;
 }
 
 header svg.icon {

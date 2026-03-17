@@ -50,6 +50,13 @@
     }
   },
   "alternative_id": {
+    "cns": {
+      "name": "CNS",
+      "logo_text": "Login with CNS",
+      "logo": "img/cns.svg",
+      "login_url": "#",
+      "learn_more_descr": "CNS (Carta Nazionale dei Servizi) is the identification tool that enables citizens to access public administration services online. Use it to access services that support CNS authentication."
+    },
     "idem": {
       "name":"IDEM",
       "logo_text": "Login with IDEM",
