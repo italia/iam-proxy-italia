@@ -2,7 +2,6 @@ import datetime
 import inspect
 import logging
 
-import pytz
 from saml2 import samlp
 
 # to load state from a cookie
@@ -133,8 +132,10 @@ class Saml2ResponseValidator(object):
                     i.issue_instant, "%Y-%m-%dT%H:%M:%S.%fZ"
                 )
 
-            issuerinstant_aware = pytz.utc.localize(issueinstant_naive)
-            now = pytz.utc.localize(datetime.datetime.utcnow())
+            issuerinstant_aware = issueinstant_naive.replace(
+                tzinfo=datetime.timezone.utc
+            )
+            now = datetime.datetime.now(datetime.timezone.utc)
 
             if now < issuerinstant_aware:
                 seconds = (issuerinstant_aware - now).seconds
