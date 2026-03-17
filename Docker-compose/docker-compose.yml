@@ -414,6 +414,9 @@ services:
 networks:
   iam-proxy-italia:
     name: iam-proxy-italia
+    # external: true prevents network removal on "compose down", avoiding host
+    # network interface teardown that can disconnect the machine from the internet
+    external: true
 
 ## External volumes
 # volumes:

@@ -16,6 +16,7 @@ function help {
   echo "-h print this help"
   echo ""
   echo "If present, SATOSA_HOSTNAME (${SATOSA_HOSTNAME}) and demo hostnames (cie-provider.example.org, trust-anchor.example.org) are removed from /etc/hosts (see run-docker-compose.sh -h)."
+  echo "The iam-proxy-italia Docker network is retained (external) to avoid host network interface teardown that can disconnect the machine from the internet."
   echo ""
 }
 

@@ -122,6 +122,8 @@ function update {
 }
 
 function start {
+  # Ensure external network exists (avoids host interface teardown on compose down)
+  docker network create iam-proxy-italia 2>/dev/null || true
   if [ "$SATOSA_BUILD" == "true" ]; then
     docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans --build
   else
