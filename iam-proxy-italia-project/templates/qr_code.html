@@ -7,13 +7,6 @@
       --brand-blue: #0072CE;
     }
 
-    .qr-box {
-      padding: 1.5rem;
-      background-color: #fff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 0.5rem;
-    }
-
     .qr-code {
       display: block;
       margin: auto;
@@ -58,7 +51,7 @@
     <!-- QR Code box -->
     <script src="{{ static }}/js/qrcode/qr-code.js"></script>
     <div id="content-qrcode" class="d-flex justify-content-center mb-4">
-      <div id="content-qrcode-payload" class="qr-box">
+      <div id="content-qrcode-payload">
         <qr-code
             contents="{{ qrcode_text }}"
             module-color="{{ qrcode_color }}"
@@ -129,8 +122,6 @@
       function updateTexts(t) {
         // meta
         $('#tab-title').html(t('page_title'));
-        // headers
-        $('#wallet-title').html(t('login_logo'));
         // content
         $('#content-title').html('<b>' + t('contentTitle') + '</b>');
         $('#content-qrcode-info-text').html(
