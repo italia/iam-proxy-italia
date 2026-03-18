@@ -8,7 +8,8 @@
   },
   "search": {
     "placeholder": "Search by name",
-    "button": "Search"
+    "button": "Search",
+    "no_results": "No results"
   },
   "wallets": {
     "load_more": "Load more"
@@ -23,6 +24,7 @@
   },
   "learn_more": {
     "question": "Don't know what IT-Wallet is?",
-    "link": "Find out more"
+    "link": "Find out more",
+    "how_to_get": "Find out how to get it"
   }
 }
