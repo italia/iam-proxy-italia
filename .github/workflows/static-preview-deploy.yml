@@ -13,8 +13,21 @@ on:
       - 'iam-proxy-italia-project/static/**'
 
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
   lint:
     name: Lint static assets
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +49,9 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
+    needs: [pre_job, lint]
+    if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
-    needs: lint
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     permissions:
