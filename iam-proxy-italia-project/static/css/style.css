@@ -969,6 +969,20 @@ footer {
   margin-top: 0.5rem;
 }
 
+#wallet-grid .wallet-how-to-get-link {
+  color: #0066cc;
+}
+
+#wallet-grid .wallet-how-to-get-link:hover {
+  color: #004d99;
+}
+
+.it-wallet-no-results-icon {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
 #wallet-grid .it-card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }

@@ -141,9 +141,23 @@ function createWalletCard(wallet, resource, basePath) {
   desc.className = 'text-muted small mb-0 mt-2';
   desc.textContent = wallet.description || '';
 
+  const howToGetLabel = resource?.learn_more?.how_to_get ?? 'Scopri come ottenerlo';
+  const howToGetLink = document.createElement('a');
+  howToGetLink.href = wallet.how_to_get_url || '#';
+  howToGetLink.className = 'wallet-how-to-get-link text-decoration-none d-inline-flex align-items-center gap-1 mt-2';
+  howToGetLink.textContent = howToGetLabel;
+  const extIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  extIcon.setAttribute('class', 'icon icon-sm ms-1');
+  extIcon.setAttribute('aria-hidden', 'true');
+  const useEl = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  useEl.setAttribute('href', basePath + 'svg/sprites.svg#it-external-link');
+  extIcon.appendChild(useEl);
+  howToGetLink.appendChild(extIcon);
+
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'eid-learn-more-content';
   contentWrapper.appendChild(desc);
+  contentWrapper.appendChild(howToGetLink);
 
   toggle.addEventListener('click', (e) => {
     e.preventDefault();
@@ -172,9 +186,26 @@ function createWalletCard(wallet, resource, basePath) {
 function renderWallets(wallets, resource, basePath) {
   const grid = document.getElementById('wallet-grid');
   grid.innerHTML = '';
-  wallets.forEach((w) => {
-    grid.appendChild(createWalletCard(w, resource, basePath));
-  });
+  if (wallets.length === 0) {
+    const noResultsLabel = resource?.search?.no_results ?? 'Nessun risultato';
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'col-12 d-flex flex-column align-items-center justify-content-center py-5';
+    const img = document.createElement('img');
+    img.src = basePath + 'img/error-icon.svg';
+    img.alt = '';
+    img.className = 'it-wallet-no-results-icon mb-3';
+    img.setAttribute('aria-hidden', 'true');
+    const msg = document.createElement('h3');
+    msg.className = 'h3 text-muted mb-0';
+    msg.textContent = noResultsLabel;
+    emptyDiv.appendChild(img);
+    emptyDiv.appendChild(msg);
+    grid.appendChild(emptyDiv);
+  } else {
+    wallets.forEach((w) => {
+      grid.appendChild(createWalletCard(w, resource, basePath));
+    });
+  }
 }
 
 function setupBackLink() {
