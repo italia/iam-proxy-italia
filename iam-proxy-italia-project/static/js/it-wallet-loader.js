@@ -195,8 +195,8 @@ function renderWallets(wallets, resource, basePath) {
     img.alt = '';
     img.className = 'it-wallet-no-results-icon mb-3';
     img.setAttribute('aria-hidden', 'true');
-    const msg = document.createElement('h3');
-    msg.className = 'h3 text-muted mb-0';
+    const msg = document.createElement('h5');
+    msg.className = 'h5 text-muted mb-0';
     msg.textContent = noResultsLabel;
     emptyDiv.appendChild(img);
     emptyDiv.appendChild(msg);
