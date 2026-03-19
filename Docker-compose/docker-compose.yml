@@ -23,6 +23,10 @@ x-rp-demo-common: &demo-rp-common
     - iam-proxy-italia
   restart: unless-stopped
 
+  x-rp-demo-build: &demo-wi-build
+    context: ../
+    dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
+
 services:
   satosa-mongo:
     profiles:
@@ -103,7 +107,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.3.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.2.0
     build:
         context: ../
         args:
@@ -409,6 +413,26 @@ services:
       SCOPE: "openid profile email offline_access"
       CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
       CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
+
+  wallet-instance-demo:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+      - wallet_instance_demo
+    container_name: wallet-instance-demo
+    build:
+      <<: *demo-wi-build
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./wallet-instance-demo/config:/config:rw
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - demo-wi.example.org
+    environment:
+      EXAMPLE_ENV: EXAMPLE_ENV
 
 
 networks:
