@@ -27,6 +27,10 @@ x-rp-demo-common: &demo-rp-common
     context: ../
     dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
 
+  x-pagopa-cli-build: &pagopa-cli-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
+
 services:
   satosa-mongo:
     profiles:
@@ -434,6 +438,22 @@ services:
     environment:
       EXAMPLE_ENV: EXAMPLE_ENV
 
+  pagopa-wallet-cli:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+      - wallet_instance_demo
+    container_name: pagopa-wallet-cli
+    build:
+      <<: *pagopa-cli-build
+    depends_on:
+      iam-proxy-italia:
+        condition: service_started
+    environment:
+      CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
+    networks:
+      - iam-proxy-italia
 
 networks:
   iam-proxy-italia:
