@@ -23,7 +23,7 @@ x-rp-demo-common: &demo-rp-common
     - iam-proxy-italia
   restart: unless-stopped
 
-  x-rp-demo-build: &demo-wi-build
+  x-wallet-rp-demo-build: &demo-wi-build
     context: ../
     dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
 
