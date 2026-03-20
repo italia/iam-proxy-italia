@@ -1,0 +1,1018 @@
+/* Titillium+Web:300,400,600,700 */
+
+/* titillium-web-300 - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-300italic - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: italic;
+    font-weight: 300;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.eot') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-300italic.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-regular - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-regular.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-italic - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.eot') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-italic.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-700 - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-700italic - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.eot') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-700italic.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-600 - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600.svg#TitilliumWeb') format('svg');
+}
+
+/* titillium-web-600italic - latin-ext_latin */
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: italic;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.eot') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-600italic.svg#TitilliumWeb') format('svg');
+}
+
+/* Lora:400,700 */
+
+/* lora-regular - latin-ext_latin */
+@font-face {
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-regular.svg#Lora') format('svg');
+}
+
+/* lora-700 - latin-ext_latin */
+@font-face {
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700.svg#Lora') format('svg');
+}
+
+/* lora-italic - latin-ext_latin */
+@font-face {
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-italic.svg#Lora') format('svg');
+}
+
+/* lora-700italic - latin-ext_latin */
+@font-face {
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Lora/lora-v20-latin-ext_latin-700italic.svg#Lora') format('svg');
+}
+
+/* Roboto+Mono:400,700 */
+
+/* roboto-mono-regular - latin-ext_latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-regular.svg#RobotoMono') format('svg');
+}
+
+/* roboto-mono-700 - latin-ext_latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700.svg#RobotoMono') format('svg');
+}
+
+/* roboto-mono-italic - latin-ext_latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-italic.svg#RobotoMono') format('svg');
+}
+
+/* roboto-mono-700italic - latin-ext_latin */
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.eot');
+    src: local(''),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.eot?#iefix') format('embedded-opentype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.woff2') format('woff2'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.woff') format('woff'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.ttf') format('truetype'),
+        url('../bootstrap-italia/fonts/Roboto_Mono/roboto-mono-v13-latin-ext_latin-700italic.svg#RobotoMono') format('svg');
+}
+
+
+.button-container{
+    padding-bottom: 1em;
+}
+
+.border-right {
+    border-right: 1px solid #dee2e6;
+}
+
+@media (min-width: 992px) {
+    .border-md-right {
+        border-right: 1px solid #dee2e6;
+    }
+
+    .space-up {
+        margin-top: 2em;
+    }
+  }
+  
+  @media (max-width: 991.98px) {
+    .border-md-bottom {
+        margin-bottom: 2em;
+        padding-bottom: 2em;
+        border-bottom: 1px solid #dee2e6;
+    }
+  }
+
+ .column-buttons{
+    padding-left: 2em;
+    padding-right: 2em;
+ }
+
+ .linkicon{
+    margin-left: 0.4em;
+    margin-bottom: 0.2em;
+ }
+
+ .buttonicon{
+    margin-right: 0.5em;
+ }
+
+.qr-code-box{
+    padding: 2em;
+}
+
+.qr-code-title{
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.it-wallet-logo{
+    height: 2em;
+    width: 100px !important;
+    width: fit-content;
+ }
+
+ .title-wallet{
+    color:#0065cc;
+ }
+
+ .flex-container{
+    display: flex;
+    align-items: center;
+ }
+
+ .border-md-bottom-title{
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+
+ }
+
+ .main-title{
+    text-align:center;
+    background-color: aqua;
+ }
+ 
+ .text-helper{
+    margin-top:2em;
+    margin-bottom:1em;
+ }
+
+#qrcodeImage{
+    width: 12em;
+    height: 12em;
+}
+
+ /* SPINNER */
+
+ .fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(232, 232, 232, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* iframe qrcode page */
+#iframeContainer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#innerBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35em;
+    height: 35em;
+}
+
+#inneriframeContainer{
+    width: 100%;
+    height: 100%;
+}
+
+#inneriframeContainer iframe {
+    width: 100%;
+    height: 100%;
+}
+
+#closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    background-color:  rgba(0, 0, 0, 0);
+    border: none;
+    color: black;
+    cursor: pointer;
+    z-index: 1;
+}
+
+#closeButton svg {
+    fill: black;
+}
+
+.qr-code-text{
+    font-size: 15px;
+}
+
+.icon-qr-code {
+    width: 130%;
+    vertical-align: middle;
+    margin-left: -15%;
+    margin-top: -10%;
+}
+
+/* ----- disco.html / eid-cards layout ----- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.it-card .btn:hover {
+  text-decoration: none;
+}
+
+/* EID cards: no rounded corners on buttons */
+#eid-cards-container .btn,
+#eid-alternative-section .btn {
+  border-radius: 0 !important;
+}
+
+/* IT-Wallet button: rounded corners (only exception) */
+#eid-cards-container .eid-card-btn-wallet,
+#eid-alternative-section .eid-card-btn-wallet {
+  border-radius: 0.375rem !important;
+}
+
+/* EID cards: responsive layout - buttons fill available space */
+.it-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.it-card .it-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Button row: fixed height, never grows when learn-more expands */
+.it-card .it-card-body > .d-flex:first-child {
+  flex: 0 0 auto;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+}
+
+.it-card .eid-card-btn,
+.it-card .eid-cie-dropdown-wrapper {
+  width: 100%;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+}
+
+.it-card .eid-card-btn {
+  justify-content: flex-start;
+  flex: 1;
+  min-height: 2.75rem;
+  max-height: 2.75rem;
+  padding: 0.2rem 1rem;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.eid-card-logo {
+  width: 1.25em;
+  height: 1.25em;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 28px;
+  max-height: 28px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  margin-right: 0.25rem;
+}
+
+/* Vertical line between logo and label (all buttons except IT-Wallet) */
+.eid-card-btn .eid-card-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.9);
+  margin-right: 0.5rem;
+}
+
+/* Responsive 577px–1279px: button labels wrap and stay centered */
+@media (max-width: 1279px) and (min-width: 577px) {
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 100%;
+    min-width: 0;
+    text-align: center;
+  }
+}
+
+header svg.icon {
+  width: 32px;
+  height: 32px;
+  fill: #6c757d;
+}
+
+/* Find out how to get it link */
+.eid-find-how-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+  color: #0066cc !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
+  transition: color 0.15s ease;
+}
+
+.eid-find-how-link:hover {
+  color: #004d99 !important;
+  text-decoration: underline !important;
+}
+
+.eid-find-how-link:hover svg {
+  fill: #004d99 !important;
+}
+
+.eid-find-how-link:focus,
+.eid-find-how-link:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.eid-find-how-link svg {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* Learn more toggle */
+.eid-learn-more-toggle {
+  color: #0066cc !important;
+  text-decoration: underline !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.eid-learn-more-toggle:hover {
+  color: #004d99 !important;
+}
+
+.eid-learn-more-toggle .eid-learn-more-arrow {
+  display: inline-block !important;
+  overflow: visible;
+  width: 33px !important;
+  height: 33px !important;
+  transform-origin: center center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: 0.2rem;
+  vertical-align: middle;
+  transform: scale(0.35);
+}
+
+.eid-learn-more-toggle .eid-learn-more-arrow path {
+  fill: none !important;
+  stroke: #06c !important;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.eid-learn-more-toggle:hover .eid-learn-more-arrow path {
+  stroke: #004d99 !important;
+}
+
+/* Bootstrap Italia original color for navbar and footer */
+.it-header-slim-wrapper.bg-primary {
+  background-color: #004C99 !important;
+}
+
+#lang-select,
+#error-lang-select,
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
+  background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  padding-right: 2.25rem;
+}
+
+#lang-select option,
+#error-lang-select option {
+  background-color: #fff !important;
+  color: #333 !important;
+}
+
+/* Header lang select: extra specificity to override Bootstrap Italia .form-select */
+.it-header-slim-wrapper.bg-primary #lang-select,
+.it-header-slim-wrapper.bg-primary #error-lang-select {
+  background-color: #004C99 !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.header-title-section {
+  background-color: #F2F7FC;
+}
+
+/* Error page body - layout from mockup */
+.error-page-body {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.error-page-description {
+  color: #003366;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error-page-icon {
+  margin: 0 auto 1.5rem;
+}
+
+.error-page-icon img {
+  max-width: 160px;
+  height: auto;
+}
+
+.error-page-guidance {
+  color: #5c6f82;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-page-cta {
+  padding: 0.5rem 1.5rem;
+}
+
+.error-page-assistance {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #5c6f82;
+  text-decoration: none;
+}
+
+.error-page-assistance:hover {
+  color: #004C99;
+}
+
+footer {
+  margin: 0;
+  padding: 1rem 0;
+  background-color: #004C99;
+  color: white;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+/* CIE dropdown - same style as SPID dropdown */
+.cie-dropdown-menu {
+  list-style: none;
+  background: white;
+  border: solid 1px #ddd;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  overflow: visible;
+  padding: 0;
+  margin: 0;
+  min-width: 270px;
+}
+
+.cie-dropdown-menu li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 18px;
+}
+
+.cie-dropdown-menu li > a {
+  display: flex;
+  align-items: center;
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #06C;
+  text-decoration: none !important;
+  line-height: 18px;
+  padding: 10px 12px;
+  white-space: nowrap;
+  border-bottom: 1px solid #ddd;
+}
+
+.cie-dropdown-menu .cie-option-label {
+  margin-left: 10px;
+  color: #003366 !important;
+  font-size: 1em !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.cie-dropdown-menu li > a:hover {
+  color: #036;
+  cursor: pointer;
+  background-color: #F0F0F0;
+}
+
+.cie-dropdown-menu li > a img {
+  height: 45px;
+  padding: 0;
+  margin-right: 10px;
+  border: 0;
+  flex-shrink: 0;
+}
+
+.cie-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  z-index: 1040;
+}
+
+.cie-dropdown-menu.is-open {
+  display: block;
+}
+
+.eid-card-logo {
+  width: 1.25em;
+  height: 1.25em;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.eid-card-btn {
+  gap: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.eid-card-btn-center {
+  align-self: center;
+}
+
+.eid-cie-dropdown-wrapper {
+  position: relative;
+}
+
+.eid-learn-more-content {
+  display: none;
+}
+
+.eid-learn-more-content.is-open {
+  display: block;
+}
+
+.eid-learn-more-toggle.expanded .eid-learn-more-arrow {
+  transform: scale(0.35) rotate(180deg);
+}
+
+.eid-alternative-section {
+  background-color: #F5F5F0;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* ----- it-wallet.html wallet selection page ----- */
+#wallet-grid .it-card a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+#wallet-grid .it-card {
+  transition: box-shadow 0.2s ease;
+}
+
+#wallet-grid .it-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+@media (max-width: 576px) {
+  /* Button labels: wrap, left-aligned on mobile */
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: flex-start;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  header .it-header-slim-wrapper-content {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  #eid-cards-container .col-12 {
+    margin-bottom: 1rem;
+  }
+
+  .it-card {
+    font-size: 1rem !important;
+  }
+
+  #lang-select,
+  #error-lang-select {
+    width: 100px;
+  }
+}
+
+/* ----- it-wallet.html: wallet selection page ----- */
+#wallet-grid {
+  align-items: flex-start;
+}
+
+#wallet-grid .col {
+  align-self: flex-start;
+}
+
+.navbar-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background-color: #c6c8c9;
+  margin: 0 1.5rem;
+}
+
+.it-wallet-navbar-logo {
+  height: 32px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+.it-wallet-info-icon {
+  flex-shrink: 0;
+  object-fit: contain;
+  height: 21px;
+}
+
+#wallet-grid .it-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+#wallet-grid .it-card .it-card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#wallet-grid .it-card .it-card-body > a:first-of-type {
+  flex: 0 0 auto;
+}
+
+#wallet-grid .it-card .it-card-body > .wallet-learn-more {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+#wallet-grid .it-card > .it-card-body > a:first-child {
+  min-height: 72px;
+}
+
+#wallet-grid .wallet-card-logo {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
+/* Logo+title row: fixed height so all cards have identical vertical spacing */
+#wallet-grid .it-card .d-flex.align-items-center.mb-2,
+#wallet-grid .it-card-body > a:first-child > .d-flex {
+  min-height: 72px;
+  height: 72px;
+  margin-bottom: 0.5rem !important;
+  align-items: center;
+}
+
+#wallet-grid .it-card .wallet-learn-more {
+  margin-top: 0;
+  min-height: 1.5rem;
+}
+
+#wallet-grid .it-card .eid-learn-more-toggle {
+  margin-top: 0;
+  display: inline-block;
+}
+
+#wallet-grid .it-card .eid-learn-more-content {
+  margin-top: 0.5rem;
+}
+
+#wallet-grid .wallet-how-to-get-link {
+  color: #0066cc;
+}
+
+#wallet-grid .wallet-how-to-get-link:hover {
+  color: #004d99;
+}
+
+.it-wallet-no-results-icon {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+#wallet-grid .it-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+#wallet-grid a:hover {
+  color: inherit;
+}
+
+.it-wallet-info-section {
+  background-color: #F5F5F0;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.it-wallet-info-section a {
+  display: inline-flex;
+  align-items: center;
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 1em;
+  margin-left: 32px;
+}
+
+.it-wallet-info-section a svg {
+  color: inherit;
+  fill: currentColor;
+}
+
+.it-wallet-info-section a:hover {
+  color: #004d99;
+  text-decoration: underline;
+}
+
