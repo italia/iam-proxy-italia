@@ -110,7 +110,7 @@ FEDERATION_DEFAULT_POLICY = {
   "federation_entity": {},
   "oauth_resource": {},
   "wallet_provider": {},
-  "wallet_relying_party": {}
+  "openid_credential_verifier": {}
 }
 
 ALLOWED_HOSTS = ['*']
