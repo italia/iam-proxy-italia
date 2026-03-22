@@ -8,8 +8,10 @@ import sys
 
 def main():
     trust_anchor = os.environ.get("TRUST_ANCHOR_URL", "http://trust-anchor.example.org:5002")
-    prov_base = os.environ.get("OPENID_CIE_PROVIDER_URL", "http://cie-provider.example.org:8002/oidc/op/")
+    prov_base = os.environ.get("OPENID_CIE_PROVIDER_URL", "http://cie-provider.example.org:8002/oidc/op")
     prov_base = prov_base.rstrip("/").split("/oidc/op")[0] if "/oidc/op" in prov_base else prov_base.rstrip("/")
+    satosa_hostname = os.environ.get("SATOSA_HOSTNAME", "iam-proxy-italia.example.org")
+    rp_sub = os.environ.get("RP_URL") or f"https://{satosa_hostname}/CieOidcRp"
 
     dump_path = "dumps/example.json"
     if len(sys.argv) > 1:
@@ -21,13 +23,14 @@ def main():
     orig = content
     content = content.replace("http://127.0.0.1:5002", trust_anchor)
     content = content.replace("http://127.0.0.1:8002", prov_base)
+    content = content.replace("https://satosa.example.org/CieOidcRp", rp_sub)
 
     if content == orig:
         print("WARN: No replacements made - check placeholder URLs in dump")
-    elif "http://127.0.0.1:5002" in content or "http://127.0.0.1:8002" in content:
+    elif "http://127.0.0.1:5002" in content or "http://127.0.0.1:8002" in content or "https://satosa.example.org/CieOidcRp" in content:
         print("WARN: Some placeholders may remain after replacement")
     else:
-        print(f"Prepare: TRUST_ANCHOR_URL={trust_anchor} PROV_BASE={prov_base}")
+        print(f"Prepare: TRUST_ANCHOR_URL={trust_anchor} PROV_BASE={prov_base} RP_SUB={rp_sub}")
 
     with open(dump_path, "w", encoding="utf-8") as f:
         f.write(content)

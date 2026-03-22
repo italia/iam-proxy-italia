@@ -196,16 +196,14 @@
       "name": "cie provider",
       "sub": "http://127.0.0.1:8002/oidc/op",
       "type": "openid_provider",
-      "jwks": {
-        "keys": [
-          {
-            "kty": "RSA",
-            "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
-            "e": "AQAB",
-            "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
-          }
-        ]
-      },
+      "jwks": [
+        {
+          "kty": "RSA",
+          "n": "tg3aE9fd6ltXzNrim_4CGKYWfC3nqc_tv4Xjaw473CcrfiqDzeTKHfRfbvbqb1DwmI4fvCOi51EVcmKLnThzXynAUpyUvswvL8_uzgDWO1RSmBG1L0RE-CkKih4keXh1ku9hNs1_V-82dK5oLOR-VJLnhZCqThR4HH6TqLjjWrrXfsHVRvauJilX6FxGb5JFoc27VxxdH2c6P2SHC9wuB8tnfG7OSrSD1g2h7lTXbIfm78a0op67d_jupzkoKoCTmzkR2zvwTVVDd99vkDLY2WXmb8hIwG6dQZXYlkhqAYKzTuTZ0tjVh0OrqfDxYtLH3wQzzaJORewZYqLyB09P8w",
+          "e": "AQAB",
+          "kid": "ZhSoaOedVOsBw6m2vclwSWiqqnGeOStT-gUclot_67w"
+        }
+      ],
       "metadata_policy": {},
       "constraints": {},
       "extended_claims": {},
@@ -223,6 +221,44 @@
       "modified": "2022-03-19T22:36:52.498Z",
       "descendant": 3,
       "profile": 3,
+      "issuer": 1
+    }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationdescendant",
+    "pk": 5,
+    "fields": {
+      "created": "2022-03-19T22:36:34.269Z",
+      "modified": "2022-04-23T15:27:41.661Z",
+      "uid": "autouid-cieoidcrp-rp-demo",
+      "name": "CieOidcRp",
+      "sub": "https://satosa.example.org/CieOidcRp",
+      "type": "openid_relying_party",
+      "jwks": [
+        {
+          "kty": "RSA",
+          "e": "AQAB",
+          "kid": "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs",
+          "n": "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w"
+        }
+      ],
+      "metadata_policy": {},
+      "constraints": {},
+      "extended_claims": {},
+      "status": "valid",
+      "status_log": {},
+      "is_active": true,
+      "registrant": []
+    }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationentityassignedprofile",
+    "pk": 6,
+    "fields": {
+      "created": "2022-03-19T22:36:52.498Z",
+      "modified": "2022-03-19T22:36:52.498Z",
+      "descendant": 5,
+      "profile": 1,
       "issuer": 1
     }
   }

@@ -128,6 +128,7 @@ services:
       - MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION=${MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION:-cie_oidc_authentication}
       - MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION=${MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION:-cie_oidc_authentication_token}
       - MONGO_CIE_OIDC_BACKEND_USER_COLLECTION=${MONGO_CIE_OIDC_BACKEND_USER_COLLECTION:-cie_oidc_users}
+      - MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION=${MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION:-cie_oidc_trust_chains}
       - MONGODB_CIE_OIDC_BACKEND_USERNAME=${MONGO_CIE_OIDC_BACKEND_DBUSER:-${MONGO_DBUSER:-satosa}}
       - MONGODB_CIE_OIDC_BACKEND_PASSWORD=${MONGO_CIE_OIDC_BACKEND_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
@@ -177,7 +178,7 @@ services:
 
       # CIE OIDC backend: trust anchor and provider URLs (reachable from this container)
       - TRUST_ANCHOR_URL=${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      - OPENID_CIE_PROVIDER_URL=${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
+      - OPENID_CIE_PROVIDER_URL=${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
     expose:
       - 10000
     ports:
@@ -259,7 +260,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.1
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.2
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -289,7 +290,7 @@ services:
       RUNNING_PORT: "5002"
       SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   cie-provider:
@@ -297,7 +298,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.1
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.2
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -330,7 +331,7 @@ services:
       RUNNING_PORT: "8002"
       SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).

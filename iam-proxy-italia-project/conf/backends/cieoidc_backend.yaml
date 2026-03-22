@@ -18,13 +18,14 @@ config:
           db_auth_collection: !ENV MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION
           db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
           db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
+          db_trust_chain_collection: !ENV MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION
           data_ttl: 63072000 # 2 years
         connection_params:
           username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
           password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
 
   providers:
-    - !ENV OPENID_CIE_PROVIDER_URL # http://cie-provider.example.org:8002/oidc/op/
+    - !ENV OPENID_CIE_PROVIDER_URL # http://cie-provider.example.org:8002/oidc/op
 
   security_operations:
     hash:

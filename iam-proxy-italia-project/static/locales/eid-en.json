@@ -31,7 +31,7 @@
       "name": "CIE OpenID Connect",
       "logo_text": "Login with CIE",
       "logo": "cie/cie_white.svg",
-      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op/",
+      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op",
       "learn_more_descr": "CIE (Carta d'Identità Elettronica) can be used with the OIDC protocol to authenticate and access online services."
     },
     "spid": {

@@ -54,32 +54,33 @@ function add_iam_cert () {
   cd ../..
 }
 
-# Ensure a hostname resolves to 127.0.0.1; if not, add to /etc/hosts or prompt the user.
-# Usage: ensure_host_resolvable "hostname"
+# Ensure hostname resolves to 127.0.0.1. Warn if it resolves elsewhere; try to add to /etc/hosts if missing.
 function ensure_host_resolvable {
   local hostname="$1"
-  if getent hosts "${hostname}" >/dev/null 2>&1; then
+  local ip
+  ip=$(getent hosts "${hostname}" 2>/dev/null | awk '{print $1; exit}')
+
+  # Resolves to loopback — OK
+  [[ "$ip" == "127.0.0.1" ]] || [[ "$ip" == "::1" ]] && return 0
+
+  # Resolves to something else — warn only
+  if [[ -n "$ip" ]]; then
+    echo ""
+    echo "WARNING: ${hostname} resolves to ${ip}. For local demo add to /etc/hosts:  127.0.0.1 ${hostname}"
+    echo ""
     return 0
   fi
+
+  # Does not resolve — try to add
+  grep -q "${hostname}" /etc/hosts 2>/dev/null && return 0
   echo ""
-  echo "Hostname '${hostname}' does not resolve. It must point to 127.0.0.1 for local access (e.g. HTTPS)."
-  if grep -q "${hostname}" /etc/hosts 2>/dev/null; then
-    echo "An entry for ${hostname} already exists in /etc/hosts."
+  echo "Adding 127.0.0.1 ${hostname} to /etc/hosts (may prompt for sudo)."
+  if echo "127.0.0.1 ${hostname}" | sudo tee -a /etc/hosts >/dev/null 2>&1; then
     return 0
   fi
-  echo "Adding '127.0.0.1 ${hostname}' to /etc/hosts (may prompt for sudo)."
-  if (echo "127.0.0.1 ${hostname}" | sudo tee -a /etc/hosts >/dev/null 2>&1); then
-    echo "Added. ${hostname} now resolves to 127.0.0.1."
-    return 0
-  fi
-  echo ""
-  echo "Could not write to /etc/hosts. Add this line manually (e.g. with sudo):"
-  echo "  127.0.0.1 ${hostname}"
-  echo ""
+  echo "Could not write. Add manually:  127.0.0.1 ${hostname}"
   read -r -p "Continue anyway? [y/N] " reply
-  if [[ ! "${reply}" =~ ^[yY]$ ]]; then
-    exit 1
-  fi
+  [[ "${reply}" =~ ^[yY]$ ]] || exit 1
 }
 
 function ensure_satosa_hostname_resolvable {

@@ -54,6 +54,58 @@
     }
   },
   {
+    "model": "spid_cie_oidc_accounts.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$AhIzWIg12g3HskebsrXn98$vnuNV6C91Bnc1JobVWj392ekqHkKiI12bhgd0q6ApZk=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user",
+      "is_staff": false,
+      "date_joined": "2022-03-02T22:51:34.537Z",
+      "first_name": null,
+      "last_name": null,
+      "is_active": true,
+      "email": "user@example.it",
+      "origin": null,
+      "attributes": {
+        "https://attributes.eid.gov.it/fiscal_number": "RSSMRA85M01H501U",
+        "given_name": "Mario",
+        "family_name": "Rossi",
+        "place_of_birth": {
+          "region": "RM",
+          "locality": "H501"
+        },
+        "birthdate": "1985-01-15",
+        "gender": "male",
+        "email": "user@example.it",
+        "email_verified": "true",
+        "document_details": {
+          "type": "cartaIdentita",
+          "document_number": "CA12345IT",
+          "issuer": {
+            "name": "ComuneRoma"
+          },
+          "date_of_issuance": "2020-01-01",
+          "date_of_expiry": "2030-01-31"
+        },
+        "sub": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+        "username": "http://127.0.0.1:8002/oidc/op/__a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+        "phone_number": "390612345678",
+        "phone_number_verified": "true",
+        "address": {
+          "street_address": "Via Roma 1",
+          "postal_code": "00100",
+          "locality": "Roma",
+          "region": "RM",
+          "country_code": "IT"
+        }
+      },
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "spid_cie_oidc_entity.federationentityconfiguration",
     "pk": 1,
     "fields": {

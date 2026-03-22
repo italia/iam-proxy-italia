@@ -1,8 +1,10 @@
 import uuid
 
-from typing import Any
+from typing import Any, Optional
 from datetime import datetime, timezone
+
 from backends.cieoidc.models.oidc_auth import OidcAuthentication
+from backends.cieoidc.models.trust_chain_cache import TrustChainCache
 from backends.cieoidc.storage.interfaces.storage import OidcStorage
 from backends.cieoidc.utils.helpers.misc import dynamic_class_loader
 
@@ -84,6 +86,12 @@ class OidcDbEngine(OidcStorage):
 
     def get_sessions(self, state: str) -> list[OidcAuthentication]:
         return self.__find(self.get_sessions.__name__, state)
+
+    def get_trust_chain_by_provider(self, provider_url: str) -> Optional[TrustChainCache]:
+        return self.__find(self.get_trust_chain_by_provider.__name__, provider_url)
+
+    def add_or_update_trust_chain(self, entity: TrustChainCache) -> int:
+        return self.__write(self.add_or_update_trust_chain.__name__, entity)
 
     def prepare_for_insert(self, auth_entity: OidcAuthentication):
         now = datetime.now(timezone.utc)
