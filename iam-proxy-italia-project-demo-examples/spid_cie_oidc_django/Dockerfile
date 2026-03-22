@@ -1,4 +1,4 @@
-FROM ghcr.io/italia/spid-cie-oidc-django:1.6.0
+FROM ghcr.io/italia/spid-cie-oidc-django:v1.6.0
 
 ARG RUNNING_PORT
 ARG MODULE_NAME
