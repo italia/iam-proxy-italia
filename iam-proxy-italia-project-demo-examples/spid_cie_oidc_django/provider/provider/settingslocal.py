@@ -17,18 +17,16 @@ ADMIN_PATH = 'admin/'
 APPEND_SLASH = False
 
 # required for onboarding checks and also for all the leafs
-OIDCFED_DEFAULT_TRUST_ANCHOR = "http://trust-anchor.example.org:5002"
+# URLs from env; defaults for local dev (127.0.0.1)
+OIDCFED_DEFAULT_TRUST_ANCHOR = os.environ.get(
+    "TRUST_ANCHOR_URL", "http://127.0.0.1:5002"
+)
 OIDCFED_TRUST_ANCHORS = [OIDCFED_DEFAULT_TRUST_ANCHOR]
 OIDCFED_PROVIDER_PROFILE = "cie"
 #OIDCFED_PROVIDER_MAX_REFRESH = 10 #used in SPID
 OIDCFED_PROVIDER_MAX_CONSENT_TIMEFRAME = 3600 #used in CIE (seconds)
 
 OIDCFED_REQUIRED_TRUST_MARKS = []
-
-#OIDCFED_FEDERATION_TRUST_MARKS_PROFILES = {
-#    "openid_relying_party__public": {},
-#    "openid_relying_party__private": {},
-#}
 
 HTTPC_PARAMS = {
     "connection": {"ssl": False},

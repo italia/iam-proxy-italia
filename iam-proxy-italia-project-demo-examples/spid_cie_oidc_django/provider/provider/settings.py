@@ -10,8 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from pathlib import Path
+
 from .settingslocal import *  # noqa: F401
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Ensure required for manage.py commands (migrate, loaddata, runserver)
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+AUTH_USER_MODEL = 'spid_cie_oidc_accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,7 +83,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = str(BASE_DIR / 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

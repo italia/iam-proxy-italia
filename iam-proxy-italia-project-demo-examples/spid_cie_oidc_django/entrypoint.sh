@@ -14,4 +14,5 @@ fi
 
 python3 manage.py migrate
 python3 manage.py loaddata dumps/example.json
-python3 manage.py runserver 0.0.0.0:8000
+# Port is overridden at Docker build (5002 for TA, 8002 for provider)
+exec python3 manage.py runserver 0.0.0.0:5002

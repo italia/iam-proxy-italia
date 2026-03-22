@@ -1,7 +1,11 @@
 #!/bin/bash
-# Same default as run-docker-compose.sh when SATOSA_HOSTNAME is unset or empty
+# Same defaults as run-docker-compose.sh when unset or empty
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+DEFAULT_TRUST_ANCHOR_HOSTNAME="trust-anchor.example.org"
+DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
+export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
+export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
 
 function help {
   echo ""
@@ -59,7 +63,7 @@ docker compose -f docker-compose.yml --profile "*" down -v --remove-orphans
 remove_image "$DJANGO_SP" "docker-compose-django_sp"
 remove_image "$IAM_PROXY_ITALIA" "iam-proxy-italia"
 
-for _h in "${SATOSA_HOSTNAME}" "cie-provider.example.org" "trust-anchor.example.org"; do
+for _h in "${SATOSA_HOSTNAME}" "${OPENID_CIE_PROVIDER_HOSTNAME}" "${TRUST_ANCHOR_HOSTNAME}"; do
   if grep -q "${_h}" /etc/hosts 2>/dev/null; then
     tmp=$(mktemp)
     grep -v "${_h}" /etc/hosts > "$tmp"

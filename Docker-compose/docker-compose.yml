@@ -207,6 +207,10 @@ services:
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
+
+      # CIE OIDC backend: trust anchor and provider URLs (reachable from this container)
+      - TRUST_ANCHOR_URL=${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      - OPENID_CIE_PROVIDER_URL=${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
     expose:
       - 10000
     ports:
@@ -304,14 +308,17 @@ services:
         aliases:
           - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
     healthcheck:
-      test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
+      # Use FQDN so entity_configuration lookup (by request sub) matches DB entity IDs
+      test: ["CMD", "sh", "-c", "/bin/bash /healthcheck.sh \"$$TRUST_ANCHOR_URL\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+    stop_grace_period: 5s
     environment:
+      SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   cie-provider:
@@ -333,18 +340,22 @@ services:
     networks:
       iam-proxy-italia:
         aliases:
-          - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
+          - ${OPENID_CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
     depends_on:
-      - trust-anchor
+      trust-anchor:
+        condition: service_started
     healthcheck:
-      test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
-      interval: 15s
-      timeout: 10s
+      # Use FQDN from OPENID_CIE_PROVIDER_URL so entity_configuration lookup (by request sub) matches DB entity IDs
+      test: ["CMD", "sh", "-c", "/bin/bash /healthcheck.sh \"$$OPENID_CIE_PROVIDER_URL\""]
+      interval: 5s
+      timeout: 3s
       retries: 10
       start_period: 30s
+    stop_grace_period: 3s
     environment:
+      SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).

@@ -4,7 +4,14 @@ cd "$(dirname "$0")"
 
 # Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+DEFAULT_TRUST_ANCHOR_HOSTNAME="trust-anchor.example.org"
+DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
+export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
+export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
+# URLs used by prepare_dump.py and containers (must match env.example)
+export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-http://${TRUST_ANCHOR_HOSTNAME}:5002}"
+export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/oidc/op/}"
 export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
@@ -77,8 +84,8 @@ function ensure_host_resolvable {
 
 function ensure_satosa_hostname_resolvable {
   ensure_host_resolvable "${SATOSA_HOSTNAME}"
-  ensure_host_resolvable "cie-provider.example.org"
-  ensure_host_resolvable "trust-anchor.example.org"
+  ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOSTNAME}"
+  ensure_host_resolvable "${TRUST_ANCHOR_HOSTNAME}"
 }
 
 function initialize_satosa {
@@ -98,6 +105,13 @@ function initialize_satosa {
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
+
+  # Apply placeholder replacement in dumps so entity IDs match runtime hostnames/URLs
+  PREPARE_SCRIPT="../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/prepare_dump.py"
+  if [ -f "$PREPARE_SCRIPT" ] && [ -f "./spid_cie_oidc_django/federation_authority/dumps/example.json" ]; then
+    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/federation_authority/dumps/example.json
+    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/provider/dumps/example.json
+  fi
 
   rm -Rf ./iam-proxy-italia-project/static
 
