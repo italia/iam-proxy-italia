@@ -1,36 +1,3 @@
-
-# Template for django
-x-django-build: &django-build
-  context: ../
-  dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
-
-# Common template for Django project
-x-django-common: &django-common
-  working_dir: /django-project
-  entrypoint: "sh /entrypoint.sh"
-  networks:
-    - iam-proxy-italia
-  restart: unless-stopped
-
-x-rp-demo-build: &demo-rp-build
-  context: ../
-  dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
-
-x-rp-demo-common: &demo-rp-common
-  working_dir: /rp-demo-project
-  entrypoint: "sh /entrypoint.sh"
-  networks:
-    - iam-proxy-italia
-  restart: unless-stopped
-
-  x-wallet-rp-demo-build: &demo-wi-build
-    context: ../
-    dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
-
-  x-pagopa-cli-build: &pagopa-cli-build
-      context: ../
-      dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
-
 services:
   satosa-mongo:
     profiles:
@@ -292,17 +259,19 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *django-common
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.1
     container_name: trust-anchor
-    build:
-      <<: *django-build
-      args:
-        MODULE_NAME: federation_authority
-        RUNNING_PORT: 5002
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     ports:
       - "5002:5002"
     volumes:
       - ./spid_cie_oidc_django/federation_authority:/django-project:rw
+      - ./spid_cie_oidc_django/entrypoint.sh:/entrypoint.sh:ro
+      - ./spid_cie_oidc_django/prepare.sh:/prepare.sh:ro
+      - ./spid_cie_oidc_django/prepare_dump.py:/prepare_dump.py:ro
+      - ./spid_cie_oidc_django/healthcheck.sh:/healthcheck.sh:ro
     networks:
       iam-proxy-italia:
         aliases:
@@ -316,6 +285,8 @@ services:
       start_period: 45s
     stop_grace_period: 5s
     environment:
+      MODULE_NAME: federation_authority
+      RUNNING_PORT: "5002"
       SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
@@ -326,17 +297,19 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *django-common
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.1
     container_name: cie-provider
-    build:
-      <<: *django-build
-      args:
-        MODULE_NAME: provider
-        RUNNING_PORT: 8002
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     ports:
       - "8002:8002"
     volumes:
-      - ./spid_cie_oidc_django/provider:/django-project
+      - ./spid_cie_oidc_django/provider:/django-project:rw
+      - ./spid_cie_oidc_django/entrypoint.sh:/entrypoint.sh:ro
+      - ./spid_cie_oidc_django/prepare.sh:/prepare.sh:ro
+      - ./spid_cie_oidc_django/prepare_dump.py:/prepare_dump.py:ro
+      - ./spid_cie_oidc_django/healthcheck.sh:/healthcheck.sh:ro
     networks:
       iam-proxy-italia:
         aliases:
@@ -353,6 +326,8 @@ services:
       start_period: 30s
     stop_grace_period: 3s
     environment:
+      MODULE_NAME: provider
+      RUNNING_PORT: "8002"
       SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op/}
@@ -367,7 +342,8 @@ services:
       - storage_mongo
       - oidc
     build:
-      <<: *demo-rp-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
     container_name: relying-party-demo-mongo
     working_dir: /rp-demo-project
     entrypoint: ["python3", "init_oidcop_mongo.py"]
@@ -401,10 +377,13 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *demo-rp-common
     container_name: relying-party-demo
+    working_dir: /rp-demo-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     build:
-      <<: *demo-rp-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
     ports:
       - "8090:8090"
     networks:
@@ -437,7 +416,8 @@ services:
       - wallet_instance_demo
     container_name: wallet-instance-demo
     build:
-      <<: *demo-wi-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
     ports:
       - "8080:8080"
     volumes:
@@ -457,7 +437,8 @@ services:
       - wallet_instance_demo
     container_name: pagopa-wallet-cli
     build:
-      <<: *pagopa-cli-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
     depends_on:
       iam-proxy-italia:
         condition: service_started
