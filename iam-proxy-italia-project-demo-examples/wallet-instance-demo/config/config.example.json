@@ -1,0 +1,179 @@
+{
+  "app": {
+    "secret_key": "s3cr3t",
+    "oid_fed_list_path": "/list",
+    "oid_fed_well_known_path": "/.well-known/openid-federation",
+    "chrome_devtools_path": "/.well-known/appspecific/com.chrome.devtools.json",
+    "favicon_subpath": "images/wallet_logo.svg",
+    "favicon_mimetype": "image/svg+xml",
+    "static_folder": "static",
+    "default_host": "0.0.0.0",
+    "default_port": 8080,
+    "correlation_id_fallback": "N/A",
+    "default_correlation_id": "default-id"
+  },
+  "wallet_instance": {
+    "key_storage": [
+      "iso_18045_basic"
+    ],
+    "user_authentication": [
+      "iso_18045_basic"
+    ],
+    "certification": "https://registry.example.org"
+  },
+  "wallet_provider": {
+    "wallet_link": "https://wallet-solution.example.org",
+    "ec_duration_seconds": 1980,
+    "nbf_attestation": 0,
+    "spec_version": "1.3.3",
+    "public_url": "http://localhost:8080/provider",
+    "federation_jwks": [
+      {
+        "alg": "ES256",
+        "crv": "P-256",
+        "d": "vI7s3EKlxJHN8fQF_lVHA5hFGagdgmIF_VoBwpVuMcc",
+        "kid": "7G9Nt1V6XZ2Hw9q-qsKekR2ren6KJUhyW9Q2nJGQa8U",
+        "kty": "EC",
+        "use": "sig",
+        "x": "gg19h7-Lmdvw59_wEEN1MC8QuFXyWuPKGYr26d0vVzA",
+        "y": "uNNgGYqAjidmGcyxTvdlNcYSzdwlDHfcttu012CSFQQ",
+        "x5c": [
+          "MIIBtTCCAVygAwIBAgIUaqRZgk2y4An3faKpGVdjeT6peO4wCgYIKoZIzj0EAwIwWzELMAkGA1UEBhMCSVQxHjAcBgNVBAoMFUlBTSBQUk9YWSBJVEFMSUEgREVNTzEsMCoGA1UEAwwjaHR0cHM6Ly93YWxsZXQtc29sdXRpb24uZXhhbXBsZS5vcmcwHhcNMjYwMzE3MTA0OTEwWhcNMjcwMzE3MTA0OTEwWjBbMQswCQYDVQQGEwJJVDEeMBwGA1UECgwVSUFNIFBST1hZIElUQUxJQSBERU1PMSwwKgYDVQQDDCNodHRwczovL3dhbGxldC1zb2x1dGlvbi5leGFtcGxlLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABIINfYe/i5nb8Off8BBDdTAvELhV8lrjyhmK9undL1cwuNNgGYqAjidmGcyxTvdlNcYSzdwlDHfcttu012CSFQQwCgYIKoZIzj0EAwIDRwAwRAIgQUi3r9Eb5JI5OOcm5SP5Y9YJEMqR/paBtAwqWaR/beoCIFWbDPXDJw0EseT34Tq+O5gYGdTLlsmyclTh91R9BrLA"
+        ]
+      }
+    ],
+    "core_jwks": [
+      {
+        "alg": "ES256",
+        "crv": "P-256",
+        "d": "M-hFHVWY8UaWOowSg_FP2mPDDo3QC3pA6tK3uhkgARA",
+        "kid": "uPp8HTP3_oJdZXHDkQdNQLMFsPvOEVIotXZHn__iBGM",
+        "kty": "EC",
+        "use": "sig",
+        "x": "UGQzWmf7brGYYTK8yhkMjbjt-qu62zVRdYGRW-g4bME",
+        "y": "zXiXY2mDkJA8EZH5GtEifGV_arUVIgprJlR1RSd_KXw",
+        "x5c": [
+          "MIIBtjCCAVygAwIBAgIUFQr8YQTaYvRxlgRYQnJJwqOis7AwCgYIKoZIzj0EAwIwWzELMAkGA1UEBhMCSVQxHjAcBgNVBAoMFUlBTSBQUk9YWSBJVEFMSUEgREVNTzEsMCoGA1UEAwwjaHR0cHM6Ly93YWxsZXQtc29sdXRpb24uZXhhbXBsZS5vcmcwHhcNMjYwMzE3MTEwMDA1WhcNMjcwMzE3MTEwMDA1WjBbMQswCQYDVQQGEwJJVDEeMBwGA1UECgwVSUFNIFBST1hZIElUQUxJQSBERU1PMSwwKgYDVQQDDCNodHRwczovL3dhbGxldC1zb2x1dGlvbi5leGFtcGxlLm9yZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABFBkM1pn+26xmGEyvMoZDI247fqruts1UXWBkVvoOGzBzXiXY2mDkJA8EZH5GtEifGV/arUVIgprJlR1RSd/KXwwCgYIKoZIzj0EAwIDSAAwRQIhAMGDqiBXu9CuiHUfKEDEbxWxeI1mR5/Md5xN2uB5c5s/AiBA8xzYy1oOhKnxWJwXbZIMGBNkLmeYfcOyxywxt5013w=="
+        ]
+      }
+    ],
+    "authority_hints": [],
+    "metadata_group": {
+      "federation_entity": {
+        "organization_name": "IAM PROXY ITALIA DEMO",
+        "homepage_uri": "https://wallet-provider.example.org",
+        "policy_uri": "https://wallet-provider.example.org/privacy_policy",
+        "tos_uri": "https://wallet-provider.example.org/info_policy",
+        "logo_uri": "https://wallet-provider.example.org/logo.svg"
+      },
+      "wallet_solution": {
+        "logo_uri": "https://wallet-solution.example.org/compact-logo.svg",
+        "wallet_metadata": {
+          "wallet_name": "WALLET DEMO",
+          "credential_offer_endpoint": "https://wallet-solution.digital-strategy.europa.eu/credential_offer",
+          "authorization_endpoint": "https://wallet-solution.digital-strategy.europa.eu/authorization",
+          "vp_formats_supported": {
+            "dc+sd-jwt": {
+              "sd-jwt_alg_values": [
+                "ES256",
+                "ES384"
+              ]
+            }
+          },
+          "client_id_prefixes_supported": [
+            "openid_federation",
+            "x509_hash"
+          ],
+          "response_types_supported": [
+            "vp_token"
+          ],
+          "response_modes_supported": [
+            "query"
+          ],
+          "request_object_signing_alg_values_supported": [
+            "ES256"
+          ]
+        }
+      }
+    }
+  },
+  "ms_trust_configuration": {
+    "IT": {
+      "trust_root": "https://trust-anchor.example.org",
+      "trust_framework": "oid-fed"
+    }
+  },
+  "metadata": {
+    "use_proxy": false,
+    "http_proxy": "proxy.example.com:8080",
+    "https_proxy": "proxy.example.com:8080",
+    "no_proxy": "localhost,127.0.0.1",
+    "initialize_flow": {
+      "idphints": {
+        "CIE3": "",
+        "CIE2": "https://cie-provider.example.org",
+        "SPID2": "https://demo.spid.gov.it"
+      },
+      "credential_configuration_id": "dc_sd_jwt_PersonIdentificationData",
+      "response_mode": "query",
+      "response_type": "code",
+      "redirect_uri": "http://localhost:8080/wallet/cb"
+    },
+    "credential_flow": {
+      "_response_mode": "query",
+      "response_mode": "form_post.jwt",
+      "response_type": "code",
+      "redirect_uri": "http://localhost:8080/wallet/cb",
+      "credential_configurations_supported": [
+        "dc_sd_jwt_EuropeanDisabilityCard",
+        "dc_sd_jwt_EuropeanHealthInsuranceCard",
+        "dc_sd_jwt_mDL",
+        "mso_mdoc_mDL",
+        "dc_sd_jwt_education_degree",
+        "dc_sd_jwt_education_enrollment",
+        "dc_sd_jwt_residency"
+      ]
+    },
+    "presentation_flow": {
+      "response_mode": "direct_post.jwt",
+      "response_type": "vp_token",
+      "status_assertion_supported": false
+    }
+  },
+  "logging": {
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+      "default": {
+        "format": "%(asctime)s [%(levelname)s] %(name)s [correlation_id=%(correlation_id)s]: %(message)s"
+      }
+    },
+    "filters": {
+      "correlation": {
+        "()": "app.CorrelationIdFilter"
+      }
+    },
+    "handlers": {
+      "console": {
+        "class": "logging.StreamHandler",
+        "formatter": "default",
+        "filters": [
+          "correlation"
+        ],
+        "level": "INFO"
+      }
+    },
+    "root": {
+      "level": "INFO",
+      "handlers": [
+        "console"
+      ]
+    },
+    "loggers": {
+      "werkzeug": {
+        "level": "WARNING",
+        "propagate": false
+      }
+    }
+  }
+}

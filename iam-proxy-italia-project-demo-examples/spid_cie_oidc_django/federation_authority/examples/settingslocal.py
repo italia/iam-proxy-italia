@@ -5,6 +5,7 @@ import sys
 import logging
 
 from spid_cie_oidc import __version__
+from urllib.parse import urlparse
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'test':
@@ -68,7 +69,7 @@ FEDERATION_DEFAULT_POLICY = {
       # "client_id": {"value":  "https://rp.example.it/spid"},
       # "redirect_uris": {
         # "subset_of": [
-          # "https://rp.example.it/spid/cb1", 
+          # "https://rp.example.it/spid/cb1",
           # "https://rp.example.it/spid/cb2"
         # ]
       # },
@@ -107,7 +108,9 @@ FEDERATION_DEFAULT_POLICY = {
   # TODO: TBD
   "openid_provider": {},
   "federation_entity": {},
-  "oauth_resource": {}
+  "oauth_resource": {},
+  "wallet_provider": {},
+  "openid_credential_verifier": {}
 }
 
 ALLOWED_HOSTS = ['*']
@@ -269,3 +272,14 @@ LOGGING = {
         }
     }
 }
+
+#wallet trust anchor settings
+PRIVATE_KEY_TYPE = "EC"
+
+# X.509 parade
+X509_COUNTRY_NAME = "IT"
+X509_STATE_OR_PROVINCE_NAME = "Lazio"
+X509_LOCALITY_NAME = "Rome"
+X509_ORGANIZATION_NAME = "Example Wallet Trust Anchor"
+X509_COMMON_NAME = urlparse(OIDCFED_DEFAULT_TRUST_ANCHOR).hostname
+

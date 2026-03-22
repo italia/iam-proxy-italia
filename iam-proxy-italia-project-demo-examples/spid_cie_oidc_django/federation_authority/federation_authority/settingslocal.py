@@ -50,7 +50,7 @@ LOGIN_URL = "/oidc/rp/landing"
 
 FEDERATION_DEFAULT_POLICY = {
     "wallet_provider": {},
-    "wallet_relying_party": {},
+    "openid_credential_verifier": {},
     "openid_relying_party": {
       # TODO: to be customized for each entities, not somethinf to default!
       # "client_id": {"value":  "https://rp.example.it/spid"},
