@@ -3,7 +3,7 @@ import inspect
 import time
 from datetime import datetime, timezone
 from types import SimpleNamespace
-from typing import Optional
+from typing import Optional, List
 
 from satosa.backends.base import BackendModule
 from satosa.backends.oauth import get_metadata_desc_for_oauth_backend
@@ -86,7 +86,7 @@ class CieOidcBackend(BackendModule):
         super().__init__(callback, internal_attributes, base_url, name)
         self.config = module_config
         self.endpoints = {}
-        self._trust_anchor_ec = None
+        self._validated_trust_anchors: List[EntityStatement] = []
         self.trust_chain = self._generate_trust_chains()
         self._trust_chain_resolver = TrustChainResolver(
             self.trust_chain,
@@ -184,58 +184,43 @@ class CieOidcBackend(BackendModule):
             logger.warning("Could not persist trust chain for %s: %s", provider_url, e)
 
     def _generate_trust_chains(self) -> dict:
-        '''
-        private method _generate_trust_chains:
-        Tries to load trust chains from DB first; for missing or expired entries,
-        fetches Trust Anchor, builds chains, and persists them to DB.
-        '''
-        logger.debug(
-            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. "
-        )
-
+        """try load from DB, or can try discovery with TA's list."""
         httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
         providers = self.config["providers"]
         trust_chains = dict()
-        trust_anchor_ec = None
 
         for provider_url in providers:
-            # Try load from DB
+            # try load from DB
             engine = self._get_storage()
             if engine:
                 cached = engine.get_trust_chain_by_provider(provider_url)
                 if cached and not _is_cache_expired(cached):
                     chain = _trust_chain_from_cache(cached)
-                    trust_chains[provider_url] = chain
-                    normalized = provider_url.rstrip("/") if provider_url.endswith("/") else provider_url + "/"
-                    if normalized != provider_url:
-                        trust_chains[normalized] = chain
+                    self._add_to_dict(trust_chains, provider_url, chain)
                     continue
 
-            # Build via discovery
+            # Build via discovery, tryng each TA
             try:
-                if trust_anchor_ec is None:
-                    ta_url = self.config["trust_chain"]["config"]["trust_anchor"][0]
-                    jwt = get_entity_configurations(ta_url, httpc_params=httpc_params)[0]
-                    trust_anchor_ec = EntityStatement(jwt, httpc_params=httpc_params)
-                    trust_anchor_ec.validate_by_itself()
-                    self._trust_anchor_ec = trust_anchor_ec
-
-                chain = CieOidcBackend.generate_trust_chain(
-                    trust_anchor_ec, provider_url, httpc_params
-                )
-                trust_chains[provider_url] = chain
-                normalized = provider_url.rstrip("/") if provider_url.endswith("/") else provider_url + "/"
-                if normalized != provider_url:
-                    trust_chains[normalized] = chain
-                self._store_trust_chain(chain, provider_url)
-            except Exception as exception:
-                logger.error(
-                    "Exception %s generated from this provider %s",
-                    exception,
-                    provider_url,
-                )
+                tas = self._ensure_trust_anchors()
+                for ta_ec in tas:
+                    try:
+                        chain = self.generate_trust_chain(ta_ec, provider_url, httpc_params)
+                        self._add_to_dict(trust_chains, provider_url, chain)
+                        self._store_trust_chain(chain, provider_url)
+                        logger.info(f"Provider {provider_url} linked to TA {ta_ec.sub}")
+                        break
+                    except Exception:
+                        continue
+            except Exception as e:
+                logger.error(f"Could not resolve trust chain for {provider_url}: {e}")
 
         return trust_chains
+
+    def _add_to_dict(self, d, url, chain):
+        """Helper to add a normalize URL in a dict."""
+        d[url] = chain
+        norm = url.rstrip("/") if url.endswith("/") else url + "/"
+        d[norm] = chain
 
     @staticmethod
     def generate_trust_chain(
@@ -262,15 +247,25 @@ class CieOidcBackend(BackendModule):
         trust_chain.apply_metadata_policy()
         return trust_chain
 
-    def _ensure_trust_anchor(self) -> EntityStatement:
-        """Return cached trust anchor EC, or fetch and cache it."""
-        if self._trust_anchor_ec is None:
+    def _ensure_trust_anchors(self) -> List[EntityStatement]:
+        """Return a list off valid TAs."""
+        if not self._validated_trust_anchors:
             httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
-            ta_url = self.config["trust_chain"]["config"]["trust_anchor"][0]
-            jwt = get_entity_configurations(ta_url, httpc_params=httpc_params)[0]
-            self._trust_anchor_ec = EntityStatement(jwt, httpc_params=httpc_params)
-            self._trust_anchor_ec.validate_by_itself()
-        return self._trust_anchor_ec
+            ta_urls = self.config["trust_chain"]["config"]["trust_anchor"]
+            
+            for ta_url in ta_urls:
+                try:
+                    jwt = get_entity_configurations(ta_url, httpc_params=httpc_params)[0]
+                    ta_ec = EntityStatement(jwt, httpc_params=httpc_params)
+                    ta_ec.validate_by_itself()
+                    self._validated_trust_anchors.append(ta_ec)
+                except Exception as e:
+                    logger.error(f"Failed to validate TA {ta_url}: {e}")
+            
+            if not self._validated_trust_anchors:
+                raise ValueError("No valid Trust Anchors could be loaded.")
+        
+        return self._validated_trust_anchors
 
     def get_or_build_trust_chain(self, provider_url: str) -> TrustChainBuilder:
         """
@@ -278,12 +273,8 @@ class CieOidcBackend(BackendModule):
         Newly built chains are stored in memory and in the database.
         """
         providers = self.config.get("providers", [])
-        provider_variants = (provider_url, provider_url.rstrip("/"), provider_url + "/" if not provider_url.endswith("/") else None)
-        if not any(p in providers for p in provider_variants if p):
-            raise TrustChainNotFoundError(
-                f"The identity provider '{provider_url}' is not in the configured providers list. "
-                f"Configured: {', '.join(providers)}."
-            ) from None
+        if not any(p in providers for p in [provider_url, provider_url.rstrip("/"), provider_url + "/"] if p):
+            raise TrustChainNotFoundError(f"Provider {provider_url} not in allowed list.")
 
         # Try load from DB (in-memory cache already checked by TrustChainResolver)
         engine = self._get_storage()
@@ -291,27 +282,19 @@ class CieOidcBackend(BackendModule):
             cached = engine.get_trust_chain_by_provider(provider_url)
             if cached and not _is_cache_expired(cached):
                 chain = _trust_chain_from_cache(cached)
-                self.trust_chain[provider_url] = chain
-                normalized = provider_url.rstrip("/") if provider_url.endswith("/") else provider_url + "/"
-                if normalized != provider_url:
-                    self.trust_chain[normalized] = chain
-                logger.info("Trust chain loaded from DB for provider %s", provider_url)
+                self._add_to_dict(self.trust_chain, provider_url, chain)
                 return chain
 
-        logger.info(
-            "Trust chain not in cache; performing on-demand discovery for provider %s",
-            provider_url,
-        )
         httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
-        trust_anchor_ec = self._ensure_trust_anchor()
+        tas = self._ensure_trust_anchors()
 
-        chain = CieOidcBackend.generate_trust_chain(
-            trust_anchor_ec, provider_url, httpc_params
-        )
-        self.trust_chain[provider_url] = chain
-        normalized = provider_url.rstrip("/") if provider_url.endswith("/") else provider_url + "/"
-        if normalized != provider_url:
-            self.trust_chain[normalized] = chain
-        self._store_trust_chain(chain, provider_url)
-        logger.info("Trust chain built and stored for provider %s", provider_url)
-        return chain
+        for ta_ec in tas:
+            try:
+                chain = self.generate_trust_chain(ta_ec, provider_url, httpc_params)
+                self._add_to_dict(self.trust_chain, provider_url, chain)
+                self._store_trust_chain(chain, provider_url)
+                return chain
+            except Exception:
+                continue
+
+        raise TrustChainNotFoundError(f"Failed to build trust chain for {provider_url} with any TA.")
