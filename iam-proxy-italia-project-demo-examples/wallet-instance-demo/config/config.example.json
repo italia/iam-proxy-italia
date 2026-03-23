@@ -66,7 +66,7 @@
         "tos_uri": "https://wallet-provider.example.org/info_policy",
         "logo_uri": "https://wallet-provider.example.org/logo.svg"
       },
-      "wallet_solution": {
+      "wallet_provider": {
         "logo_uri": "https://wallet-solution.example.org/compact-logo.svg",
         "wallet_metadata": {
           "wallet_name": "WALLET DEMO",
