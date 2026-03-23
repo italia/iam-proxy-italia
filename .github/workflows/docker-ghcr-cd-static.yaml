@@ -2,8 +2,6 @@ name: Create and publish the static-files Docker image
 
 on:
   push:
-    # paths:
-    #   - "iam-proxy-italia-project/static/**"
   release:
     types:
       - published
@@ -37,7 +35,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_SECRET }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (tags, labels, annotations) for Docker
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
@@ -55,9 +53,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            VCS_REF=${{ github.sha }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

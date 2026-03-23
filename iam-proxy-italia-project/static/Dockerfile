@@ -14,17 +14,6 @@ RUN npm run update-bootstrap-italia
 # Stage 2 – serve: lightweight static-web-server (Alpine)
 FROM joseluisq/static-web-server:2-alpine
 
-ARG BUILD_DATE
-ARG VERSION
-ARG VCS_REF
-
-LABEL org.opencontainers.image.title="iam-proxy-italia-static" \
-      org.opencontainers.image.created=$BUILD_DATE \
-      org.opencontainers.image.version=$VERSION \
-      org.opencontainers.image.source="https://github.com/italia/iam-proxy-italia.git" \
-      org.opencontainers.image.revision=$VCS_REF \
-      org.opencontainers.image.description="Static assets for IAM Proxy Italia."
-
 # Copy only the assets that must be served.
 # Files land under /public/static/ so the server naturally handles
 # requests with the /static prefix without any path-rewrite in the ingress.
