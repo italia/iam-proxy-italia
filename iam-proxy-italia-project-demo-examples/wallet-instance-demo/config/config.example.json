@@ -26,7 +26,7 @@
     "ec_duration_seconds": 1980,
     "nbf_attestation": 0,
     "spec_version": "1.3.3",
-    "public_url": "http://localhost:8080/provider",
+    "public_url": "http://wallet-instance.example.org:8080/provider",
     "federation_jwks": [
       {
         "alg": "ES256",
@@ -99,7 +99,7 @@
   },
   "ms_trust_configuration": {
     "IT": {
-      "trust_root": "https://trust-anchor.example.org",
+      "trust_root": "http://trust-anchor.example.org:5002",
       "trust_framework": "oid-fed"
     }
   },

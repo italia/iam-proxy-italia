@@ -420,15 +420,21 @@ services:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
     ports:
-      - "8080:8080"
+      - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
-      - ./wallet-instance-demo/config:/config:rw
+      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+    environment:
+      FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
+      FLASK_RUN_PORT: 8080
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-}
+      DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
+      WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
     networks:
       iam-proxy-italia:
         aliases:
-          - demo-wi.example.org
-    environment:
-      EXAMPLE_ENV: EXAMPLE_ENV
+          - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
   pagopa-wallet-cli:
     profiles:

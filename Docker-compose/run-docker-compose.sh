@@ -9,9 +9,12 @@ DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
 export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
+DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 # URLs used by prepare_dump.py and containers (must match env.example)
 export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-http://${TRUST_ANCHOR_HOSTNAME}:5002}"
 export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/oidc/op/}"
+export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:8080/provider}"
 export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
@@ -87,6 +90,7 @@ function ensure_satosa_hostname_resolvable {
   ensure_host_resolvable "${SATOSA_HOSTNAME}"
   ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOSTNAME}"
   ensure_host_resolvable "${TRUST_ANCHOR_HOSTNAME}"
+  ensure_host_resolvable "${DEMO_WALLET_INSTANCE_HOSTNAME}"
 }
 
 function initialize_satosa {
@@ -98,6 +102,7 @@ function initialize_satosa {
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
+  mkdir -p ./wallet-instance-demo/config
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -106,6 +111,7 @@ function initialize_satosa {
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
+  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
 
   # Apply placeholder replacement in dumps so entity IDs match runtime hostnames/URLs
   PREPARE_SCRIPT="../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/prepare_dump.py"
@@ -113,7 +119,6 @@ function initialize_satosa {
     python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/federation_authority/dumps/example.json
     python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/provider/dumps/example.json
   fi
-
   rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
@@ -152,12 +157,14 @@ function start {
     demo|*demo*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       echo -e "  OIDC RP demo:              http://localhost:8090"
+      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
       ;;
     dev|*saml2*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       ;;
     storage_mongo|*oidc*)
       echo -e "  OIDC RP demo:              http://localhost:8090"
+      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
       ;;
     *)
       echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"

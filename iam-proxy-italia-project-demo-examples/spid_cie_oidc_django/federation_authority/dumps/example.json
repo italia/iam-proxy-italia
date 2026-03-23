@@ -261,5 +261,89 @@
       "profile": 1,
       "issuer": 1
     }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationdescendant",
+    "pk": 7,
+    "fields": {
+      "created": "2022-03-19T22:36:34.269Z",
+      "modified": "2022-04-23T15:27:41.661Z",
+      "uid": "autouid-wallet-instance-demo",
+      "name": "wallet-instance-demo",
+      "sub": "http://wallet-instance.example.org:8080/provider",
+      "type": "wallet_provider",
+      "jwks": [
+        {
+          "alg": "ES256",
+          "crv": "P-256",
+          "kid": "7G9Nt1V6XZ2Hw9q-qsKekR2ren6KJUhyW9Q2nJGQa8U",
+          "kty": "EC",
+          "use": "sig",
+          "x": "gg19h7-Lmdvw59_wEEN1MC8QuFXyWuPKGYr26d0vVzA",
+          "y": "uNNgGYqAjidmGcyxTvdlNcYSzdwlDHfcttu012CSFQQ"
+        }
+      ],
+      "metadata_policy": {},
+      "constraints": {},
+      "extended_claims": {},
+      "status": "valid",
+      "status_log": {},
+      "is_active": true,
+      "registrant": []
+    }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationdescendant",
+    "pk": 8,
+    "fields": {
+      "created": "2022-03-19T22:36:34.269Z",
+      "modified": "2022-04-23T15:27:41.661Z",
+      "uid": "autouid-openid4vp-backend",
+      "name": "OpenID4VP",
+      "sub": "https://satosa.example.org/OpenID4VP",
+      "type": "openid_credential_verifier",
+      "jwks": [
+        {
+          "kty": "RSA",
+          "e": "AQAB",
+          "kid": "9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w",
+          "n": "utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw"
+        }
+      ],
+      "metadata_policy": {},
+      "constraints": {},
+      "extended_claims": {},
+      "status": "valid",
+      "status_log": {},
+      "is_active": true,
+      "registrant": []
+    }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationdescendant",
+    "pk": 9,
+    "fields": {
+      "created": "2022-03-19T22:36:34.269Z",
+      "modified": "2022-04-23T15:27:41.661Z",
+      "uid": "autouid-openid4vci-frontend",
+      "name": "OpenID4VCI",
+      "sub": "https://satosa.example.org/OpenID4VCI",
+      "type": "openid_credential_issuer",
+      "jwks": [
+        {
+          "kty": "RSA",
+          "e": "AQAB",
+          "kid": "9Cquk0X-fNPSdePQIgQcQZtD6J0IjIRrFigW2PPK_-w",
+          "n": "utqtxbs-jnK0cPsV7aRkkZKA9t4S-WSZa3nCZtYIKDpgLnR_qcpeF0diJZvKOqXmj2cXaKFUE-8uHKAHo7BL7T-Rj2x3vGESh7SG1pE0thDGlXj4yNsg0qNvCXtk703L2H3i1UXwx6nq1uFxD2EcOE4a6qDYBI16Zl71TUZktJwmOejoHl16CPWqDLGo9GUSk_MmHOV20m4wXWkB4qbvpWVY8H6b2a0rB1B1YPOs5ZLYarSYZgjDEg6DMtZ4NgiwZ-4N1aaLwyO-GLwt9Vf-NBKwoxeRyD3zWE2FXRFBbhKGksMrCGnFDsNl5JTlPjaM3kYyImE941ggcuc495m-Fw"
+        }
+      ],
+      "metadata_policy": {},
+      "constraints": {},
+      "extended_claims": {},
+      "status": "valid",
+      "status_log": {},
+      "is_active": true,
+      "registrant": []
+    }
   }
 ]
