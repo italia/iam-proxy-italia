@@ -218,11 +218,11 @@ mongodb:
     enabled: true
     # User configuration (index 0 = frontend, index 1 = backend)
     usernames:
-      - satosa # Frontend user
-      - satosa # Backend user
+      - satosa # OIDC Frontend user
+      - satosa # OIDC Backend user
     databases:
-      - oidcop # Frontend database
-      - cie_oidc # Backend database
+      - oidcop # OIDC Frontend database
+      - cie_oidc # OIDC Backend database
     # Passwords for users (index 0 = frontend, index 1 = backend)
     passwords:
       - CHANGE_ME!
@@ -255,7 +255,7 @@ mongodb:
         { expireAfterSeconds: 0, partialFilterExpression: { count: { $gt: 2 } } }
       );
   # Backend collection names (shared between internal and external MongoDB)
-  backend:
+  cieOidcBackend:
     collections:
       authentication: "cie_oidc_authentication"
       authenticationToken: "cie_oidc_authentication_token"
@@ -264,10 +264,10 @@ mongodb:
   # Note: usernames, passwords, and databases are taken from mongodb.auth.* arrays
   # where index 0 = frontend and index 1 = backend
   external:
-    backend:
+    cieOidcBackend:
       host: "satosa-mongo"
       port: 27017
-    frontend:
+    oidcopFrontend:
       host: "satosa-mongo"
       port: 27017
       # Username is taken from mongodb.auth.usernames[0]
