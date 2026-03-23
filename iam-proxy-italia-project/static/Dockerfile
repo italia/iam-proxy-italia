@@ -30,5 +30,5 @@ COPY --from=build /build/wallet-it       /public/static/wallet-it
 COPY --from=build /build/disco.html      /public/static/disco.html
 COPY --from=build /build/error_page.html /public/static/error_page.html
 
-ENV SERVER_PORT=80
+ENV SERVER_PORT=8000
 ENV SERVER_ROOT=/public

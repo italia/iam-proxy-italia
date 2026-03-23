@@ -76,7 +76,7 @@ staticFiles:
   # URL path prefix served by the static server (keep in sync with SATOSA_BASE_STATIC).
   staticPath: /static
   service:
-    port: 80
+    port: 8000
   resources: {}
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
