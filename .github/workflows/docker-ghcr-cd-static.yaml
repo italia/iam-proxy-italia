@@ -2,8 +2,8 @@ name: Create and publish the static-files Docker image
 
 on:
   push:
-    paths:
-      - "iam-proxy-italia-project/static/**"
+    # paths:
+    #   - "iam-proxy-italia-project/static/**"
   release:
     types:
       - published
