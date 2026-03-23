@@ -71,3 +71,18 @@ Create the name of the secret to use
 {{- default (include "iam-proxy-italia.fullname" .) .Values.secret.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Fully qualified name for the static-files deployment and service.
+*/}}
+{{- define "iam-proxy-italia.staticFullname" -}}
+{{- printf "%s-static" (include "iam-proxy-italia.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Selector labels for the static-files deployment (distinct from the main app selectors).
+*/}}
+{{- define "iam-proxy-italia.staticSelectorLabels" -}}
+app.kubernetes.io/name: {{ printf "%s-static" (include "iam-proxy-italia.name" .) }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

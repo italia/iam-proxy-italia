@@ -28,6 +28,15 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          {{- if $.Values.staticFiles.enabled }}
+          - path: {{ $.Values.staticFiles.staticPath }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "iam-proxy-italia.staticFullname" $ }}
+                port:
+                  number: {{ $.Values.staticFiles.service.port }}
+          {{- end }}
           {{- range .paths }}
           - path: {{ .path }}
             {{- with .pathType }}

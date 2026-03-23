@@ -21,6 +21,16 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   rules:
+    {{- if .Values.staticFiles.enabled }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ .Values.staticFiles.staticPath }}
+      backendRefs:
+        - name: {{ include "iam-proxy-italia.staticFullname" . }}
+          port: {{ .Values.staticFiles.service.port }}
+          weight: 1
+    {{- end }}
     {{- range .Values.httpRoute.rules }}
     {{- with .matches }}
     - matches:

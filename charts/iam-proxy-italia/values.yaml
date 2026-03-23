@@ -61,6 +61,24 @@ service:
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 10000
 
+# Static files server — a separate Deployment/Service that serves assets under `staticPath`.
+staticFiles:
+  # Enable the static files server alongside the main proxy.
+  enabled: true
+  # Number of replicas for the static server.
+  replicaCount: 1
+  image:
+    # Image repository. Defaults to <image.repository>-static when empty.
+    repository: ""
+    pullPolicy: IfNotPresent
+    # Image tag. Defaults to the same tag as the main image when empty.
+    tag: ""
+  # URL path prefix served by the static server (keep in sync with SATOSA_BASE_STATIC).
+  staticPath: /static
+  service:
+    port: 80
+  resources: {}
+
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
