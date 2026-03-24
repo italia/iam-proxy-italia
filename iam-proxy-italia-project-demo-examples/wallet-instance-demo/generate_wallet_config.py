@@ -49,6 +49,8 @@ def main():
     if "ms_trust_configuration" in config and "IT" in config["ms_trust_configuration"]:
         config["ms_trust_configuration"]["IT"]["trust_root"] = trust_root
 
+    config["wallet_provider"]["authority_hints"] = [trust_root]
+
     cie2_idphint = _getenv(
         "OPENID_CIE_PROVIDER_ISSUER",
         _getenv("OPENID_CIE_PROVIDER_URL", "http://cie-provider.example.org:8002/oidc/op"),
