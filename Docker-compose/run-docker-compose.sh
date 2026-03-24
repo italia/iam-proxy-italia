@@ -170,7 +170,17 @@ function start {
       echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
       ;;
   esac
-  echo -e ""
+
+  # cie-provider (spid-cie-oidc-django sample dump): same profiles as in docker-compose.yml for that service
+  case "${COMPOSE_PROFILES}" in
+    demo|*demo*|storage_mongo|oidc|*oidc*)
+      echo -e "=== ${OPENID_CIE_PROVIDER_HOSTNAME} (CIE OIDC) — credentials from sample dump (see spid-cie-oidc-django README) ==="
+      echo -e "  Django admin:        username: admin    password: oidcadmin"
+      echo -e "  End-user OIDC login: username: user     password: oidcuser"
+      echo -e "  Base URL:            http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/"
+      echo -e ""
+      ;;
+  esac
 
   if [[ -n "${RUN_SPID_TEST}" ]]; then
     echo -e "\n"
