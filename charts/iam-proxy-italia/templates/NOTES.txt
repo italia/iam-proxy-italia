@@ -1,0 +1,49 @@
+==========================================
+IAM Proxy Italia has been installed!
+==========================================
+
+{{- $secretName := include "iam-proxy-italia.secret" . }}
+
+{{- if .Values.secret.existingSecret }}
+✅ Using existing secret: {{ .Values.secret.existingSecret }}
+{{- else }}
+✅ Secret: {{ $secretName }}
+{{- if not .Values.mongodb.auth.passwords }}
+   🔐 MongoDB passwords auto-generated
+{{- end }}
+{{- if not .Values.satosa.encryptionKey }}
+   🔐 SATOSA encryption key auto-generated
+{{- end }}
+   ⚠️  Values persist across upgrades. Retrieve with:
+   kubectl get secret {{ $secretName }} -n {{ .Release.Namespace }} -o yaml
+{{- end }}
+
+Configuration:
+==========================================
+  Hostname:  {{ .Values.satosa.hostname }}
+  Debug:     {{ .Values.satosa.debug }}
+{{- if .Values.mongodb.enabled }}
+  MongoDB:   internal ({{ include "iam-proxy-italia.fullname" . }}-mongodb:27017)
+{{- else }}
+  MongoDB backend:   {{ .Values.mongodb.external.backend.host }}:{{ .Values.mongodb.external.backend.port }}
+  MongoDB frontend:  {{ .Values.mongodb.external.frontend.host }}:{{ .Values.mongodb.external.frontend.port }}
+{{- end }}
+
+Access:
+==========================================
+{{- if .Values.httpRoute.enabled }}
+  HTTPRoute enabled — check your Gateway configuration.
+{{- else if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  https://{{ .host }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get svc {{ include "iam-proxy-italia.fullname" . }} -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "http://$NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  kubectl get svc {{ include "iam-proxy-italia.fullname" . }} -n {{ .Release.Namespace }} -w
+{{- else }}
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "iam-proxy-italia.fullname" . }} 10000:{{ .Values.service.port }}
+  echo "http://localhost:10000"
+{{- end }}

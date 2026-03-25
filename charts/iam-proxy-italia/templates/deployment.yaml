@@ -1,0 +1,293 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  # Hack to fix "Multi-Attach error for volume"
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "iam-proxy-italia.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "iam-proxy-italia.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "iam-proxy-italia.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- toYaml .Values.container.command | nindent 12 }}
+          args:
+            - |
+              . /.venv/bin/activate
+              wsgi_file="/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py"
+              exec uwsgi \
+                --wsgi-file "$wsgi_file" \
+                --http-socket {{ .Values.uwsgi.socket }} \
+                {{- if .Values.uwsgi.master }}
+                --master \
+                --log-master-bufsize {{ .Values.uwsgi.logMasterBufsize }} \
+                {{- end }}
+                --processes {{ .Values.uwsgi.processes }} \
+                --listen {{ .Values.uwsgi.listen }} \
+                --callable app \
+                --vacuum \
+                {{- if .Values.uwsgi.master }}
+                --max-requests {{ .Values.uwsgi.maxRequests }} \
+                --harakiri {{ .Values.uwsgi.harakiri }} \
+                {{- end }}
+                {{- if .Values.uwsgi.singleInterpreter }}
+                --single-interpreter \
+                {{- end }}
+                --buffer-size={{ .Values.uwsgi.bufferSize }} \
+                --chdir {{ .Values.satosa.baseDir }} \
+                --die-on-term
+          env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
+            - name: SATOSA_DEBUG
+              value: {{ .Values.satosa.debug | toString | quote }}
+            - name: SATOSA_BY_DOCKER
+              value: {{ .Values.satosa.byDocker | toString | quote }}
+            - name: SATOSA_GET_IDEM_MDQ_KEY
+              value: {{ .Values.satosa.getIdemMdqKey | toString | quote }}
+            - name: SATOSA_GET_SPID_IDP_METADATA
+              value: {{ .Values.satosa.getSpidIdpMetadata | toString | quote }}
+            - name: SATOSA_GET_FICEP_IDP_METADATA
+              value: {{ .Values.satosa.getFicepIdpMetadata | toString | quote }}
+            - name: SATOSA_GET_CIE_IDP_METADATA
+              value: {{ .Values.satosa.getCieIdpMetadata | toString | quote }}
+            - name: BASE_DIR
+              value: {{ .Values.satosa.baseDir | quote }}
+            - name: SATOSA_HOSTNAME
+              value: {{ .Values.satosa.hostname | quote }}
+            - name: SATOSA_PRIVATE_KEY
+              value: "{{ .Values.satosa.keys.mountPath }}/{{ .Values.satosa.keys.privateKeyFilename }}"
+            - name: SATOSA_PUBLIC_KEY
+              value: "{{ .Values.satosa.keys.mountPath }}/{{ .Values.satosa.keys.publicKeyFilename }}"
+            - name: SATOSA_BASE_STATIC
+              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}"
+            - name: SATOSA_DISCO_SRV
+              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}/disco.html"
+            - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
+              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}/error_page.html"
+            - name: MONGO_CIE_OIDC_BACKEND_HOST
+              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"mongodb://{{ .Values.mongodb.external.backend.host }}:{{ .Values.mongodb.external.backend.port }}"{{ end }}
+            - name: MONGO_CIE_OIDC_BACKEND_DB_NAME
+              value: {{ index .Values.mongodb.auth.databases 1 | quote }}
+            - name: MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION
+              value: {{ .Values.mongodb.cieOidcBackend.collections.authentication | quote }}
+            - name: MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
+              value: {{ .Values.mongodb.cieOidcBackend.collections.authenticationToken | quote }}
+            - name: MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
+              value: {{ .Values.mongodb.cieOidcBackend.collections.users | quote }}
+            - name: MONGODB_CIE_OIDC_BACKEND_USERNAME
+              value: {{ index .Values.mongodb.auth.usernames 1 | quote }}
+            - name: MONGODB_CIE_OIDC_BACKEND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: mongodb-oidc-backend-password
+            - name: MONGO_OIDCOP_HOST
+              value: {{ if .Values.mongodb.enabled }}"{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"mongodb://{{ .Values.mongodb.external.frontend.host }}:{{ .Values.mongodb.external.frontend.port }}"{{ end }}
+            - name: MONGODB_OIDCOP_USERNAME
+              value: {{ index .Values.mongodb.auth.usernames 0 | quote }}
+            - name: MONGODB_OIDCOP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: mongodb-oidcop-frontend-password
+            - name: SATOSA_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: satosa-encryption-key
+            - name: SATOSA_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: satosa-salt
+            - name: SATOSA_STATE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: satosa-state-encryption-key
+            - name: SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+              value: {{ .Values.contactPerson.emailAddress | quote }}
+            - name: SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER
+              value: {{ .Values.contactPerson.telephoneNumber | quote }}
+            - name: SATOSA_CONTACT_PERSON_FISCALCODE
+              value: {{ .Values.contactPerson.fiscalCode | quote }}
+            - name: SATOSA_CONTACT_PERSON_GIVEN_NAME
+              value: {{ .Values.contactPerson.givenName | quote }}
+            - name: SATOSA_CONTACT_PERSON_IPA_CODE
+              value: {{ .Values.contactPerson.ipaCode | quote }}
+            - name: SATOSA_CONTACT_PERSON_MUNICIPALITY
+              value: {{ .Values.contactPerson.municipality | quote }}
+            - name: SATOSA_ORGANIZATION_DISPLAY_NAME_EN
+              value: {{ .Values.organization.displayName.en | quote }}
+            - name: SATOSA_ORGANIZATION_DISPLAY_NAME_IT
+              value: {{ .Values.organization.displayName.it | quote }}
+            - name: SATOSA_ORGANIZATION_NAME_EN
+              value: {{ .Values.organization.name.en | quote }}
+            - name: SATOSA_ORGANIZATION_NAME_IT
+              value: {{ .Values.organization.name.it | quote }}
+            - name: SATOSA_ORGANIZATION_URL_EN
+              value: {{ .Values.organization.url.en | quote }}
+            - name: SATOSA_ORGANIZATION_URL_IT
+              value: {{ .Values.organization.url.it | quote }}
+            - name: SATOSA_UI_DESCRIPTION_EN
+              value: {{ .Values.ui.description.en | quote }}
+            - name: SATOSA_UI_DESCRIPTION_IT
+              value: {{ .Values.ui.description.it | quote }}
+            - name: SATOSA_UI_DISPLAY_NAME_EN
+              value: {{ .Values.ui.displayName.en | quote }}
+            - name: SATOSA_UI_DISPLAY_NAME_IT
+              value: {{ .Values.ui.displayName.it | quote }}
+            - name: SATOSA_UI_INFORMATION_URL_EN
+              value: {{ .Values.ui.informationUrl.en | quote }}
+            - name: SATOSA_UI_INFORMATION_URL_IT
+              value: {{ .Values.ui.informationUrl.it | quote }}
+            - name: SATOSA_UI_LOGO_HEIGHT
+              value: {{ .Values.ui.logo.height | toString | quote }}
+            - name: SATOSA_UI_LOGO_WIDTH
+              value: {{ .Values.ui.logo.width | toString | quote }}
+            - name: SATOSA_UI_LOGO_URL
+              value: {{ .Values.ui.logo.url | quote }}
+            - name: SATOSA_UI_PRIVACY_URL_EN
+              value: {{ .Values.ui.privacyUrl.en | quote }}
+            - name: SATOSA_UI_PRIVACY_URL_IT
+              value: {{ .Values.ui.privacyUrl.it | quote }}
+            - name: SATOSA_USER_ID_HASH_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "iam-proxy-italia.secret" . }}
+                  key: satosa-user-id-hash-salt
+            - name: PYEUDIW_FEDERATION_CLIENT_ID
+              value: {{ .Values.pyeudiw.federationClientId | default (printf "openid_federation:https://%s/OpenID4VP" .Values.satosa.hostname) | quote }}
+            - name: PYEUDIW_X509_CLIENT_ID
+              value: {{ .Values.pyeudiw.x509ClientId | default (printf "x509_san_dns:%s" .Values.satosa.hostname) | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.satosa.keys.existingVolume }}
+            - name: {{ .Values.satosa.keys.existingVolume }}
+              mountPath: {{ .Values.satosa.keys.mountPath }}
+              readOnly: true
+            {{- else if and .Values.satosa.keys.privateKey .Values.satosa.keys.publicKey }}
+            - name: keys
+              mountPath: {{ .Values.satosa.keys.mountPath }}
+              readOnly: true
+            {{- end }}
+            - name: config
+              mountPath: {{ .Values.configVolume.mountPath }}
+              readOnly: true
+            - name: config-backends
+              mountPath: {{ .Values.configVolume.mountPath }}/backends
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: {{ .Values.dataVolume.mountPath }}
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if and .Values.satosa.keys.privateKey .Values.satosa.keys.publicKey (not .Values.satosa.keys.existingVolume) }}
+        - name: keys
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-keys
+        {{- end }}
+        - name: config
+          configMap:
+            name: {{ .Values.configVolume.existingConfigMap | default (include "iam-proxy-italia.fullname" .) }}
+            {{- if not .Values.configVolume.existingConfigMap }}
+            items:
+            - key: proxy_conf.yaml
+              path: proxy_conf.yaml
+            - key: internal_attributes.yaml
+              path: internal_attributes.yaml
+            {{- range $path, $_ := .Files.Glob "config-files/**" }}
+            {{- $filename := trimPrefix "config-files/" $path }}
+            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) }}
+            - key: {{ $filename | replace "/" "__" }}
+              path: {{ $filename }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+        - name: config-backends
+          configMap:
+            name: {{ .Values.configVolume.existingConfigMap | default (printf "%s-backends" (include "iam-proxy-italia.fullname" .)) }}
+            {{- if not .Values.configVolume.existingConfigMap }}
+            items:
+            {{- range $path, $_ := .Files.Glob "config-files/backends/**" }}
+            {{- $filename := trimPrefix "config-files/backends/" $path }}
+            {{- if not (hasSuffix "/" $filename) }}
+            - key: {{ printf "backends__%s" ($filename | replace "/" "__") }}
+              path: {{ $filename }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+        - name: tmp
+          emptyDir:
+            medium: Memory
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.dataVolume.existingClaim | default (include "iam-proxy-italia.fullname" .) }}
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,613 @@
+# Default values for iam-proxy-italia.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: ghcr.io/italia/iam-proxy-italia
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# Container command and args configuration
+container:
+  command: ["/bin/bash", "-ec"]
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 10000
+
+# Static files server — a separate Deployment/Service that serves assets under `staticPath`.
+staticFiles:
+  # Enable the static files server alongside the main proxy.
+  enabled: true
+  # Number of replicas for the static server.
+  replicaCount: 1
+  image:
+    # Image repository. Defaults to <image.repository>-static when empty.
+    repository: ""
+    pullPolicy: IfNotPresent
+    # Image tag. Defaults to the same tag as the main image when empty.
+    tag: ""
+  # URL path prefix served by the static server (keep in sync with SATOSA_BASE_STATIC).
+  staticPath: /static
+  service:
+    port: 8000
+  resources: {}
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# -- Expose the service via gateway-api HTTPRoute
+# Requires Gateway API resources and suitable controller installed within the cluster
+# (see: https://gateway-api.sigs.k8s.io/guides/)
+httpRoute:
+  # HTTPRoute enabled.
+  enabled: false
+  # HTTPRoute annotations.
+  annotations: {}
+  # Which Gateways this Route is attached to.
+  parentRefs:
+    - name: gateway
+      sectionName: http
+      # namespace: default
+  # Hostnames matching HTTP header.
+  hostnames:
+    - chart-example.local
+  # List of rules and filters applied.
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /headers
+  #   filters:
+  #   - type: RequestHeaderModifier
+  #     requestHeaderModifier:
+  #       set:
+  #       - name: My-Overwrite-Header
+  #         value: this-is-the-only-value
+  #       remove:
+  #       - User-Agent
+  # - matches:
+  #   - path:
+  #       type: PathPrefix
+  #       value: /echo
+  #     headers:
+  #     - name: version
+  #       value: v2
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+# Configuration files volume
+# If existingConfigMap is set, uses that ConfigMap
+# If empty, auto-generates ConfigMap from files in config-files/ directory
+configVolume:
+  # Mount path in the container
+  mountPath: /satosa_proxy
+  # Name of existing ConfigMap to use (leave empty for auto-generated)
+  existingConfigMap: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Timezone configuration
+timezone: "Europe/Rome"
+
+# SATOSA configuration
+satosa:
+  # Hostname for the SATOSA service
+  hostname: "localhost"
+  # Enable debug mode
+  debug: false
+  # Running in Docker container
+  byDocker: true
+  # Base directory for SATOSA
+  baseDir: /satosa_proxy
+
+  # Metadata fetching flags
+  getIdemMdqKey: false
+  getSpidIdpMetadata: false
+  getFicepIdpMetadata: false
+  getCieIdpMetadata: false
+
+  keys:
+    mountPath: /satosa_proxy/pki
+    privateKeyFilename: privkey.pem
+    publicKeyFilename: cert.pem
+    # Volume name to mount (leave empty to create Secret from privateKey/publicKey)
+    existingVolume: ""
+    # PEM content (used only if existingVolume is empty)
+    privateKey: ""
+    publicKey: ""
+
+  # Encryption configuration
+  # These values will be stored in a Kubernetes Secret
+  encryptionKey: ""
+  salt: ""
+  stateEncryptionKey: ""
+  userIdHashSalt: ""
+
+# MongoDB configuration
+mongodb:
+  enabled: true
+  auth:
+    enabled: true
+    # User configuration (index 0 = frontend, index 1 = backend)
+    usernames:
+      - satosa # OIDC Frontend user
+      - satosa # OIDC Backend user
+    databases:
+      - oidcop # OIDC Frontend database
+      - cie_oidc # OIDC Backend database
+    # Passwords for users (index 0 = frontend, index 1 = backend)
+    passwords:
+      - CHANGE_ME!
+      - CHANGE_ME!
+  initdbScripts:
+    init-indexes.js: |
+      const rootUser = process.env.MONGODB_ROOT_USER;
+      const rootPassword = process.env.MONGODB_ROOT_PASSWORD;
+
+      const admin = db.getSiblingDB('admin');
+
+      admin.auth(rootUser, rootPassword);
+
+      use oidcop
+
+      db.createCollection('client')
+
+      // make client_id unique
+      db.client.createIndex( { "client_id": 1 }, { unique: true } )
+      db.client.createIndex( { "registration_access_token": 1 }, { unique: true } )
+
+      db.createCollection('session')
+
+      // make access_token and sid unique
+      db.session.createIndex( { "sid": 1 }, { unique: true } )
+
+      // create expired session deletion
+      db.session.createIndex(
+        { expires_at: 1 },
+        { expireAfterSeconds: 0, partialFilterExpression: { count: { $gt: 2 } } }
+      );
+  # Backend collection names (shared between internal and external MongoDB)
+  cieOidcBackend:
+    collections:
+      authentication: "cie_oidc_authentication"
+      authenticationToken: "cie_oidc_authentication_token"
+      users: "cie_oidc_users"
+  # External MongoDB configuration (used when enabled: false)
+  # Note: usernames, passwords, and databases are taken from mongodb.auth.* arrays
+  # where index 0 = frontend and index 1 = backend
+  external:
+    cieOidcBackend:
+      host: "satosa-mongo"
+      port: 27017
+    oidcopFrontend:
+      host: "satosa-mongo"
+      port: 27017
+      # Username is taken from mongodb.auth.usernames[0]
+      # Password is taken from mongodb.auth.passwords[0]
+      # Database is taken from mongodb.auth.databases[0]
+
+# Organization information
+organization:
+  name:
+    en: "example_organization"
+    it: "example_organization"
+  displayName:
+    en: "Example Organization"
+    it: "Example Organization"
+  url:
+    en: "https://example_organization.org"
+    it: "https://example_organization.org/it"
+
+# Contact person information
+contactPerson:
+  emailAddress: "support.example@organization.org"
+  telephoneNumber: "+3906123456789"
+  fiscalCode: "XXXXXX00X00X000Y"
+  givenName: "Contact Me"
+  ipaCode: "ipa00c"
+  municipality: "H501"
+
+# UI configuration
+ui:
+  description:
+    en: "Resource description"
+    it: "Resource description"
+  displayName:
+    en: "Resource Display Name"
+    it: "Resource Display Name"
+  informationUrl:
+    en: "https://example_organization.org/information_url"
+    it: "https://example_organization.org/it/information_url"
+  privacyUrl:
+    en: "https://example_organization.org/privacy"
+    it: "https://example_organization.org/it/privacy"
+  logo:
+    url: "https://example_organization.org/logo.png"
+    width: 80
+    height: 60
+
+# PYEUDIW configuration
+pyeudiw:
+  # Federation client ID (leave empty to auto-generate from hostname)
+  federationClientId: ""
+  # X509 client ID (leave empty to auto-generate from hostname)
+  x509ClientId: ""
+
+# SATOSA proxy_conf.yaml configuration
+proxyConf:
+  cookieStateName: "SATOSA_STATE"
+  contextStateDelete: true
+  cookieMaxAge: 600
+  # Optional cookie settings (only included if set)
+  cookieSecure: ""
+  cookieHttponly: ""
+  cookieSamesite: ""
+  cookiesSamesiteCompat:
+    - ["SATOSA_STATE", "SATOSA_STATE_LEGACY"]
+  customPluginModulePaths:
+    - "conf/backends"
+    - "conf/frontends"
+    - "conf/micro_services"
+  backendModules:
+    - "conf/backends/saml2_backend.yaml"
+    - "conf/backends/spidsaml2_backend.yaml"
+    #- "conf/backends/ciesaml2_backend.yaml"
+    #- "conf/backends/pyeudiw_backend.yaml"
+    #- "conf/backends/cieoidc_backend.yaml"
+  frontendModules:
+    - "conf/frontends/saml2_frontend.yaml"
+    - "conf/frontends/oidcop_frontend.yaml"
+    #- "conf/frontends/openid4vci_frontend.yaml"
+  microServices:
+    - "conf/microservices/idp_hinting.yaml"
+    - "conf/microservices/disco_to_target_issuer.yaml"
+    - "conf/microservices/target_based_routing.yaml"
+  logging:
+    version: 1
+    formatters:
+      simple:
+        format: "[%(asctime)-19.19s] [%(levelname)-5.5s]: %(message)s [%(name)s.%(funcName)s:%(lineno)s]"
+      syslog:
+        format: "[SATOSA] [%(name)s] [%(levelname)s]: %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+    loggers:
+      satosa:
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      saml2:
+        level: ERROR
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.frontends.saml2":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.backends.saml2":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa.frontends.idpy_oidcop":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa_oidcop.idpy_oidcop":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "satosa_oidcop.core.storage.mongo":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.spidsaml2":
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.ciesaml2":
+        level: INFO
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "pyeudiw.satosa.backend":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+      "backends.cieoidc":
+        level: DEBUG
+        formatter: simple
+        handlers: [console]
+        propagate: false
+
+# SATOSA internal_attributes.yaml configuration
+internalAttributes:
+  attributes:
+    address:
+      openid: [address.street_address]
+      orcid: [addresses.str]
+      saml: [postaladdress, address]
+      openid4vp: [address]
+    displayname:
+      openid: [nickname]
+      orcid: [name.credit-name]
+      github: [login]
+      saml: [displayName, familyname, FamilyName, familyName]
+      cie_oidc: [first_name]
+    edupersontargetedid:
+      facebook: [id]
+      linkedin: [id]
+      orcid: [orcid]
+      github: [id]
+      openid: [sub]
+      saml:
+        [
+          eduPersonTargetedID,
+          eduPersonTargetedId,
+          spidCode,
+          sub,
+          id,
+          fiscalNumber,
+        ]
+      openid4vp: [sub]
+      cie_oidc: [sub]
+    edupersonprincipalname:
+      saml: [eduPersonPrincipalName]
+    edupersonscopedaffiliation:
+      saml: [eduPersonScopedAffiliation]
+    edupersonentilement:
+      saml: [eduPersonEntitlement]
+    schacpersonaluniqueid:
+      saml: [schacPersonalUniqueID, fiscalNumber]
+    schacpersonaluniquecode:
+      saml: [schacPersonalUniqueCode]
+    schachomeorganizationtype:
+      saml: [schacHomeOrganizationType]
+    schachomeorganization:
+      saml: [schacHomeOrganization]
+    givenname:
+      facebook: [first_name]
+      linkedin: [email-address]
+      orcid: [name.given-names.value]
+      openid: [given_name]
+      openid4vp: [given_name]
+      saml: [givenName, name, Name]
+      cie_oidc: [first_name]
+    mail:
+      facebook: [email]
+      linkedin: [email-address]
+      orcid: [emails.str]
+      github: [email]
+      openid: [email]
+      saml: [mail, email]
+      openid4vp: [mail, email]
+      openid4vci: [mail, email]
+      cie_oidc: [email]
+    name:
+      facebook: [name]
+      orcid: [name.credit-name]
+      github: [name]
+      openid: [name]
+      saml: [name, Name]
+      openid4vp: [given_name]
+      openid4vci: [given_name]
+      cie_oidc: [first_name]
+    surname:
+      facebook: [last_name]
+      linkedin: [lastName]
+      orcid: [name.family-name.value]
+      openid: [family_name]
+      saml: [sn, surname, familyName, FamilyName]
+      openid4vp: [family_name]
+      openid4vci: [family_name]
+      cie_oidc: [last_name]
+    spidcode:
+      openid: [spidcode]
+      openid4vp: [sub]
+      saml: [spidCode]
+    email:
+      facebook: [email]
+      linkedin: [email-address]
+      orcid: [emails.str]
+      github: [email]
+      openid: [email]
+      openid4vp: [mail, email]
+      saml: [mail]
+      cie_oidc: [email]
+    familyname:
+      saml: [familyName, familyname, FamilyName]
+      cie_oidc: [last_name]
+    fiscalnumber:
+      saml: [fiscalNumber, fiscalnumber, FiscalNumber]
+      cie_oidc: [fiscal_number]
+    gender:
+      saml: [gender, Gender]
+    companyName:
+      saml: [companyName]
+    registeredOffice:
+      saml: [registeredOffice]
+    ivaCode:
+      saml: [ivaCode]
+    idCard:
+      saml: [idCard]
+    digitalAddress:
+      saml: [digitalAddress]
+    placeOfBirth:
+      saml: [placeOfBirth]
+      openid4vci: [placeOfBirth]
+    countyOfBirth:
+      saml: [countyOfBirth]
+      openid4vci: [countyOfBirth]
+    dateOfBirth:
+      saml: [dateOfBirth]
+      openid4vci: [dateOfBirth]
+    mobilePhone:
+      saml: [mobilePhone]
+    expirationDate:
+      saml: [expirationDate]
+    fiscal_code:
+      openid4vci: [fiscal_code]
+  userIdFromAttrs: [edupersontargetedid]
+  userIdToAttr: spidcode
+
+# uWSGI configuration
+uwsgi:
+  socket: "0.0.0.0:10000"
+  # In K8s prefer processes: 1 and scale horizontally via replicaCount/HPA
+  processes: 1
+  # Enable uWSGI master process. When processes: 1, set to false to avoid an extra supervisor process
+  master: false
+  # Run all apps in the same interpreter (recommended for single-process K8s deployments)
+  singleInterpreter: true
+  listen: 2048
+  maxRequests: 512
+  harakiri: 20
+  bufferSize: 32768
+  logMasterBufsize: 128000
+
+# Secret configuration for sensitive data
+# If existingSecret is not set, a new secret will be created automatically
+# When using an existing secret, it must contain the following keys:
+# - satosa-encryption-key
+# - satosa-salt
+# - satosa-state-encryption-key
+# - satosa-user-id-hash-salt
+# - mongodb-password
+# - mongodb-backend-password
+# - mongodb-frontend-password
+dataVolume:
+  # Volume per i dati runtime del proxy (jwks, chiavi oidcop, ecc.)
+  # Di default viene creato un PVC montato in mountPath.
+  # Fornire existingClaim per usare un PVC già esistente.
+  mountPath: /satosa_proxy/data
+  existingClaim: ""
+  storageClassName: ""
+  size: 1Gi
+
+secret:
+  # The name of the secret to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+  # Use an existing secret instead of creating a new one
+  # When set, the secret will not be created and values from the existing secret will be used
+  existingSecret: ""
+  # Annotations to add to the created secret (only used when creating a new secret)
+  annotations: {}

@@ -1,0 +1,14 @@
+apiVersion: v2
+name: iam-proxy-italia
+description: |
+  IAM Proxy Italia is the distribution of the SATOSA IAM Proxy allowing
+  SAML-to-SAML, OIDC-to-SAML, SAML-to-Wallet and OIDC-to-Wallet
+  interoperability with the  Italian Digital Identity Systems.
+version: 0.1.0
+appVersion: "v3.2.0"
+
+dependencies:
+  - name: mongodb
+    version: 18.6.0
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: mongodb.enabled
