@@ -7,7 +7,7 @@ config:
     par:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.pushed_authorization_request_endpoint
       class: ParHandler
-      path: '/par'
+      path: '/as/par'
     credential_offer:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_offer_endpoint
       class: CredentialOfferHandler
@@ -19,7 +19,7 @@ config:
     authorization:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.authorization_endpoint
       class: AuthorizationHandler
-      path: '/authorization'
+      path: '/authorize'
     token:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.token_endpoint
       class: TokenHandler
@@ -74,7 +74,9 @@ config:
         ssl: true
       session:
         timeout: 6
-
+  security:
+    wallet_attestation_required: true
+    dpop_required: true
   jwt:
     default_sig_alg: ES256  # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
     default_enc_alg: RSA-OAEP
@@ -120,8 +122,8 @@ config:
   #This is the configuration for the relaying party metadata
   metadata:
     oauth_authorization_server:
-      issuer: https://DO-NOT-CHANGEME.eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
-      pushed_authorization_request_endpoint: /as/par
+      issuer:  # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      pushed_authorization_request_endpoint: /as/par #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
       authorization_endpoint: /authorize
       token_endpoint: /token
       client_registration_types_supported:
@@ -147,10 +149,19 @@ config:
         - authorization_code
       token_endpoint_auth_methods_supported:
         - attest_jwt_client_auth
+      client_attestation_signing_alg_values_supported:
+        - ES256
+        - ES384
+        - ES512
+      client_attestation_pop_signing_alg_values_supported:
+        - ES256
+        - ES384
+        - ES512
       token_endpoint_auth_signing_alg_values_supported:
         - ES256
         - ES384
         - ES512
+      require_signed_request_object: true
       request_object_signing_alg_values_supported:
         - ES256
         - ES384
@@ -161,8 +172,8 @@ config:
         - ES512
       jwks: *metadata_jwks
     openid_credential_issuer: &openid_credential_issuer_metadata
-      credential_issuer: https://DO-NOT-CHANGEME.eaa-provider.example.org # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
-      credential_endpoint: /credential
+      credential_issuer: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      credential_endpoint: /credential #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
       nonce_endpoint: /nonce-endpoint
       deferred_credential_endpoint: /deferred-credential
       revocation_endpoint: /revoke
@@ -177,6 +188,105 @@ config:
         - name: EAA Provider
           locale: en-US
       credential_configurations_supported:
+        dc_sd_jwt_pid:
+          format: dc+sd-jwt
+          scope: pid
+          cryptographic_binding_methods_supported:
+            - jwk
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          vct: urn:it-wallet:pid:1
+          credential_metadata:
+            display:
+              - name: Dati di Identificazione Personale
+                description: Dati di identificazione personale
+                locale: it-IT
+              - name: Person Identification Data
+                description: Person identification data
+                locale: en-US
+            claims:
+              - path:
+                  - given_name
+                mandatory: true
+                sd: always
+                display:
+                  - description: Nome attuale
+                    label: Nome
+                    locale: it-IT
+                  - description: Current First Name
+                    label: First Name
+                    locale: en-US
+
+              - path:
+                  - family_name
+                mandatory: true
+                sd: always
+                display:
+                  - description: Cognome attuale
+                    label: Cognome
+                    locale: it-IT
+                  - description: Current Family Name
+                    label: Family Name
+                    locale: en-US
+
+              - path:
+                  - birthdate
+                mandatory: true
+                sd: always
+                display:
+                  - description: Data di nascita. DEVE essere impostato secondo ISO8601-1 (formato AAAA-MM-GG).
+                    label: Data di nascita
+                    locale: it-IT
+                  - description: Date of Birth. It MUST be set according to ISO8601-1 (YYYY-MM-DD format).
+                    label: Date of birth
+                    locale: en-US
+
+              - path:
+                  - place_of_birth
+                mandatory: true
+                sd: always
+                display:
+                  - description: Luogo di nascita. DEVE essere presente almeno uno tra paese, regione, località.
+                    locale: it-IT
+                  - description:  Place of Birth. At least one of country, region, locality MUST be present.
+                    label: Place of birth
+                    locale: en-US
+
+              - path:
+                - tax_id_code
+
+                sd: always
+                display:
+                  - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
+                    label: Codice Fiscale
+                    locale: it-IT
+                  - description: National tax identification code of natural person as a String format.
+                    label: Tax id code
+                    locale: en-US
+
+              - path:
+                  - nationalities
+                mandatory: true
+                sd: always
+                display:
+                  - description: Uno o più codici paese alfa-2 come specificato nella norma ISO 3166-1.
+                    label: Nazionalità
+                    locale: it-IT
+                  - description: One or more alpha-2 country codes as specified in ISO 3166-1.
+                    label: Nationalities
+                    locale: en-US
+          schema_id: pid+dc+sd-jwt+urn:it-wallet:pid:1
+          authentic_sources:
+            entity_id:
+            dataset_id:
         dc_sd_jwt_EuropeanDisabilityCard:
           format: dc+sd-jwt
           scope: EuropeanDisabilityCard
