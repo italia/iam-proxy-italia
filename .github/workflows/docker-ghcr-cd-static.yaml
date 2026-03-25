@@ -43,6 +43,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=iam-proxy-italia-static
             org.opencontainers.image.description=Static files for IAM Proxy Italia
+          annotations: |
             manifest:org.opencontainers.image.title=iam-proxy-italia-static
             manifest:org.opencontainers.image.description=Static files for IAM Proxy Italia
             index:org.opencontainers.image.title=iam-proxy-italia-static
