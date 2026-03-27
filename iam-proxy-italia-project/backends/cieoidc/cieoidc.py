@@ -273,7 +273,10 @@ class CieOidcBackend(BackendModule):
         Newly built chains are stored in memory and in the database.
         """
         providers = self.config.get("providers", [])
-        if not any(p in providers for p in [provider_url, provider_url.rstrip("/"), provider_url + "/"] if p):
+        provider_variants = [provider_url, provider_url.rstrip("/")]
+        if not provider_url.endswith("/"):
+            provider_variants.append(provider_url + "/")
+        if not any(p in providers for p in provider_variants if p):
             raise TrustChainNotFoundError(f"Provider {provider_url} not in allowed list.")
 
         # Try load from DB (in-memory cache already checked by TrustChainResolver)
