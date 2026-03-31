@@ -242,9 +242,22 @@ class CieOidcBackend(BackendModule):
 
     def _add_to_dict(self, d, url, chain):
         """Helper to add a normalize URL in a dict."""
+        # Always store the exact URL key.
         d[url] = chain
+        # Also store the normalized variant (with/without trailing slash),
+        # but avoid silently overwriting an existing normalized entry.
         norm = url.rstrip("/") if url.endswith("/") else url + "/"
-        d[norm] = chain
+        if norm != url:
+            if norm in d:
+                logger.warning(
+                    "Duplicate provider URL variants configured: %s and %s; "
+                    "keeping existing trust chain for %s",
+                    url,
+                    norm,
+                    norm,
+                )
+            else:
+                d[norm] = chain
 
     @staticmethod
     def generate_trust_chain(
