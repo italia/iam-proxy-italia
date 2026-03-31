@@ -241,7 +241,7 @@ class CieOidcBackend(BackendModule):
         return trust_chains
 
     def _add_to_dict(self, d, url, chain):
-        """Helper to add a normalize URL in a dict."""
+        """Helper to add a normalized URL in a dict."""
         # Always store the exact URL key.
         d[url] = chain
         # Also store the normalized variant (with/without trailing slash),
