@@ -173,13 +173,19 @@ class CieOidcBackend(BackendModule):
         try:
             payload = chain.subject_configuration.payload
             exp = payload.get("exp")
-            cached = TrustChainCache(
-                provider_url=provider_url,
-                payload=payload,
-                exp=exp,
-                created=datetime.now(timezone.utc),
-            )
-            engine.add_or_update_trust_chain(cached)
+            variants = {
+                provider_url.rstrip("/"),
+                provider_url.rstrip("/") + "/"
+            }
+
+            for url in variants:
+                cached = TrustChainCache(
+                    provider_url=url,
+                    payload=payload,
+                    exp=exp,
+                    created=datetime.now(timezone.utc),
+                )
+                engine.add_or_update_trust_chain(cached)
         except Exception as e:
             logger.warning("Could not persist trust chain for %s: %s", provider_url, e)
 
