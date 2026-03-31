@@ -285,11 +285,11 @@ class CieOidcBackend(BackendModule):
         return trust_chain
 
     def _ensure_trust_anchors(self) -> List[EntityStatement]:
-        """Return a list off valid TAs."""
+        """Return a list of valid TAs."""
         if not self._validated_trust_anchors:
             httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
             ta_urls = self.config["trust_chain"]["config"]["trust_anchor"]
-            
+
             for ta_url in ta_urls:
                 try:
                     jwt = get_entity_configurations(ta_url, httpc_params=httpc_params)[0]
@@ -298,10 +298,10 @@ class CieOidcBackend(BackendModule):
                     self._validated_trust_anchors.append(ta_ec)
                 except Exception as e:
                     logger.error(f"Failed to validate TA {ta_url}: {e}")
-            
+
             if not self._validated_trust_anchors:
                 raise ValueError("No valid Trust Anchors could be loaded.")
-        
+
         return self._validated_trust_anchors
 
     def get_or_build_trust_chain(self, provider_url: str) -> TrustChainBuilder:
