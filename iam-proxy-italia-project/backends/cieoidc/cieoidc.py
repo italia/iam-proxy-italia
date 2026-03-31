@@ -208,17 +208,35 @@ class CieOidcBackend(BackendModule):
             # Build via discovery, tryng each TA
             try:
                 tas = self._ensure_trust_anchors()
+                chain_built = False
                 for ta_ec in tas:
                     try:
-                        chain = self.generate_trust_chain(ta_ec, provider_url, httpc_params)
+                        chain = self.generate_trust_chain(
+                            ta_ec, provider_url, httpc_params
+                        )
                         self._add_to_dict(trust_chains, provider_url, chain)
                         self._store_trust_chain(chain, provider_url)
-                        logger.info(f"Provider {provider_url} linked to TA {ta_ec.sub}")
+                        logger.info(
+                            "Provider %s linked to TA %s", provider_url, ta_ec.sub
+                        )
+                        chain_built = True
                         break
-                    except Exception:
-                        continue
+                    except Exception as e:
+                        logger.warning(
+                            "Failed to build trust chain for provider %s with TA %s: %s",
+                            provider_url,
+                            getattr(ta_ec, "sub", "<unknown>"),
+                            e,
+                        )
+                if not chain_built:
+                    logger.error(
+                        "Could not build trust chain for provider %s with any configured trust anchor",
+                        provider_url,
+                    )
             except Exception as e:
-                logger.error(f"Could not resolve trust chain for {provider_url}: {e}")
+                logger.error(
+                    "Could not resolve trust chain for %s: %s", provider_url, e
+                )
 
         return trust_chains
 
