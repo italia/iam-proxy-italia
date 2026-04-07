@@ -315,7 +315,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
         """
         auth_info = AuthenticationInformation("https://www.spid.gov.it/SpidL2", str(round(time.time())), issuer)
         internal_resp = InternalData(auth_info=auth_info)
-        internal_resp.attributes = self._converter.to_internal("cie_oidc", attributes)
+        internal_resp.attributes = self._converter.to_internal("openid", attributes)
         internal_resp.subject_id = sub
         return internal_resp
 
