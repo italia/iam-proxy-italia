@@ -212,7 +212,7 @@
       "created": "2026-01-01T00:00:00.000Z",
       "modified": "2026-01-01T00:00:00.000Z",
       "name": "wallet-provider",
-      "profile_category": "wallet_provider",
+      "profile_category": "wallet_solution",
       "profile_id": "http://127.0.0.1:5002/trust_marks/federation-entity/wallet-provider",
       "trust_mark_template": {
         "iss": "$.issuer_sub",
@@ -372,7 +372,7 @@
       "uid": "autouid-wallet-instance-demo",
       "name": "wallet-instance-demo",
       "sub": "http://wallet-instance.example.org:8080/provider",
-      "type": "wallet_provider",
+      "type": "wallet_solution",
       "jwks": [
         {
           "alg": "ES256",

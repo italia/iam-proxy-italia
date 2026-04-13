@@ -2,7 +2,7 @@ module: pyeudiw.satosa.frontends.openid4vci.openid4vci.OpenID4VCIFrontend
 name: OpenID4VCI
 
 config:
-
+  default_target_authentication_backend: Saml2
   endpoints:
     par:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.pushed_authorization_request_endpoint
