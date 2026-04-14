@@ -36,7 +36,12 @@ function loadDocument(resource) {
     if (options[2]) options[2].textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   }
   const backLink = document.getElementById('back-link');
-  if (backLink) backLink.textContent = resource?.nav?.back ?? 'Indietro';
+  const backText = resource?.nav?.back ?? 'Indietro';
+  if (backLink) backLink.setAttribute('aria-label', backText);
+  const backLabel = document.querySelector('.it-wallet-back-label');
+  if (backLabel) {
+    backLabel.textContent = typeof backText === 'string' ? backText.toUpperCase() : 'INDIETRO';
+  }
 
   const footerLegal = document.getElementById('footer-legal');
   if (footerLegal) footerLegal.textContent = resource?.footer?.legal_notice ?? '';
@@ -108,24 +113,41 @@ function createWalletCard(wallet, resource, basePath) {
   const body = document.createElement('div');
   body.className = 'it-card-body d-flex flex-column justify-content-center';
 
-  const logoTitleCol = document.createElement('div');
-  logoTitleCol.className = 'd-flex align-items-center justify-content-start w-100 it-wallet-card-main-row';
+  const cardLink = document.createElement('a');
+  cardLink.href = buildWalletUri(wallet.uri);
+  cardLink.className = 'it-wallet-card-hit';
+  cardLink.title = wallet.name;
+
+  const row = document.createElement('div');
+  row.className = 'd-flex align-items-center w-100 it-wallet-card-main-row';
+
+  const left = document.createElement('div');
+  left.className = 'it-wallet-card-left';
   const img = document.createElement('img');
   img.src = (wallet.logo_uri || '').startsWith('/') ? wallet.logo_uri : basePath + (wallet.logo_uri || '');
   img.alt = wallet.name;
-  img.className = 'wallet-card-logo me-3 flex-shrink-0';
-  logoTitleCol.appendChild(img);
+  img.className = 'wallet-card-logo flex-shrink-0';
+  left.appendChild(img);
 
-  const titleLink = document.createElement('a');
-  titleLink.href = buildWalletUri(wallet.uri);
-  titleLink.className = 'it-wallet-card-link text-start';
-  titleLink.title = wallet.name;
   const title = document.createElement('h5');
-  title.className = 'it-card-title mb-0 it-wallet-card-title';
+  title.className = 'it-card-title mb-0 it-wallet-card-title text-start';
   title.textContent = wallet.name;
-  titleLink.appendChild(title);
-  logoTitleCol.appendChild(titleLink);
-  body.appendChild(logoTitleCol);
+  left.appendChild(title);
+
+  const arrow = document.createElement('span');
+  arrow.className = 'it-wallet-card-arrow flex-shrink-0';
+  arrow.setAttribute('aria-hidden', 'true');
+  const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  arrowSvg.setAttribute('class', 'icon');
+  const arrowUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  arrowUse.setAttribute('href', basePath + 'svg/sprites.svg#it-arrow-right');
+  arrowSvg.appendChild(arrowUse);
+  arrow.appendChild(arrowSvg);
+
+  row.appendChild(left);
+  row.appendChild(arrow);
+  cardLink.appendChild(row);
+  body.appendChild(cardLink);
 
   if (SHOW_CARD_LEARN_MORE) {
     const learnMoreLabel = resource?.learn_more?.link ?? 'Scopri di più';
@@ -227,6 +249,15 @@ function renderWallets(wallets, resource, basePath) {
   }
 }
 
+function getWalletResource() {
+  const lang = i18next.language || 'it';
+  let resource = i18next.getResourceBundle(lang, 'translation');
+  if (!resource) {
+    resource = i18next.store?.getDataByLanguage?.(lang)?.translation ?? i18next.store?.data?.[lang]?.translation ?? {};
+  }
+  return resource;
+}
+
 function setupBackLink() {
   const backLink = document.getElementById('back-link');
   if (backLink) {
@@ -238,12 +269,7 @@ function setupBackLink() {
 
 async function loadItWalletPage() {
   const basePath = getBasePath();
-  const lang = i18next.language || 'it';
-
-  let resource = i18next.getResourceBundle(lang, 'translation');
-  if (!resource) {
-    resource = i18next.store?.getDataByLanguage?.(lang)?.translation ?? i18next.store?.data?.[lang]?.translation ?? {};
-  }
+  const resource = getWalletResource();
   loadDocument(resource);
 
   let wallets = [];
@@ -263,35 +289,90 @@ async function loadItWalletPage() {
   const searchClearBtn = document.getElementById('search-clear-btn');
   const sortSelect = document.getElementById('wallet-sort');
   const controls = document.getElementById('wallet-controls');
+  const titleActions = document.getElementById('wallet-title-actions');
+  const searchToggle = document.getElementById('wallet-search-toggle');
+  const iconSearchOpen = document.getElementById('wallet-search-toggle-icon-open');
+  const iconSearchClose = document.getElementById('wallet-search-toggle-icon-close');
   const showControls = defaultWalletOrder.length >= SEARCH_MIN_WALLETS;
   controls?.classList.toggle('d-none', !showControls);
+  if (titleActions) titleActions.hidden = !showControls;
   let appliedQuery = '';
 
+  function isWalletDesktopLayout() {
+    return window.matchMedia('(min-width: 992px)').matches;
+  }
+
+  function syncMobilePanelUi(open) {
+    if (!searchToggle) return;
+    searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (iconSearchOpen) iconSearchOpen.hidden = !!open;
+    if (iconSearchClose) iconSearchClose.hidden = !open;
+  }
+
+  function setMobilePanelOpen(open) {
+    if (!controls || !showControls) return;
+    if (isWalletDesktopLayout()) return;
+    controls.classList.toggle('is-mobile-panel-open', open);
+    syncMobilePanelUi(open);
+  }
+
+  function resetMobilePanelForDesktop() {
+    if (!controls) return;
+    controls.classList.remove('is-mobile-panel-open');
+    syncMobilePanelUi(false);
+  }
+
   function applyFiltersAndSort() {
+    const res = getWalletResource();
     const query = showControls ? appliedQuery : '';
     const sortValue = showControls ? (sortSelect?.value || 'default') : 'default';
     const filtered = filterWallets(defaultWalletOrder, query);
     const sorted = sortWallets(filtered, sortValue);
-    renderWallets(sorted, resource, basePath);
+    renderWallets(sorted, res, basePath);
     searchClearBtn?.classList.toggle('d-none', !(searchInput?.value || '').trim());
   }
 
-  searchInput?.addEventListener('input', () => {
-    searchClearBtn?.classList.toggle('d-none', !(searchInput?.value || '').trim());
-  });
-  searchBtn?.addEventListener('click', () => {
-    appliedQuery = (searchInput?.value || '').trim();
-    applyFiltersAndSort();
-  });
-  sortSelect?.addEventListener('change', () => applyFiltersAndSort());
-  searchClearBtn?.addEventListener('click', () => {
-    if (searchInput) {
-      searchInput.value = '';
-      searchInput.focus();
-    }
-    appliedQuery = '';
-    applyFiltersAndSort();
-  });
+  if (searchInput) {
+    searchInput.oninput = () => {
+      searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+    };
+  }
+  if (searchBtn) {
+    searchBtn.onclick = () => {
+      appliedQuery = (searchInput?.value || '').trim();
+      applyFiltersAndSort();
+    };
+  }
+  if (sortSelect) {
+    sortSelect.onchange = () => applyFiltersAndSort();
+  }
+  if (searchClearBtn) {
+    searchClearBtn.onclick = () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      appliedQuery = '';
+      applyFiltersAndSort();
+    };
+  }
+
+  if (searchToggle) {
+    searchToggle.onclick = () => {
+      if (!showControls || isWalletDesktopLayout()) return;
+      const next = !controls?.classList.contains('is-mobile-panel-open');
+      setMobilePanelOpen(next);
+    };
+  }
+  if (!window.__itWalletLayoutListenersBound) {
+    window.__itWalletLayoutListenersBound = true;
+    window.addEventListener('resize', () => {
+      if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
+    });
+  }
+
+  if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
+  else syncMobilePanelUi(false);
 
   applyFiltersAndSort();
   setupBackLink();
