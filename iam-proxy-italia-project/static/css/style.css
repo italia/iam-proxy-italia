@@ -1108,6 +1108,7 @@ html.it-wallet-html body.it-wallet-body {
   -webkit-appearance: none;
   -moz-appearance: none;
   background: transparent;
+
   /* non usare color:transparent: su WebKit il menu a tendina eredita e resta illeggibile */
   color: #17324d;
 }
@@ -1138,8 +1139,7 @@ html.it-wallet-html body.it-wallet-body {
 
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open {
     display: flex !important;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     align-items: center;
     gap: 0.75rem;
     width: 100%;
