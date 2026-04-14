@@ -1,3 +1,4 @@
+/* global initHeaderLangDropdown */
 /**
  * i18n for error_page.html: load locale and apply to data-i18n / data-i18n-title elements.
  */

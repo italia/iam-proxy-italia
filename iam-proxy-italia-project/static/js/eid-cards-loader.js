@@ -1,3 +1,4 @@
+/* global initHeaderLangDropdown */
 // ----------------------- i18next -----------------------
 function loadEidCardsi18next() {
   const lang = i18next.language;
