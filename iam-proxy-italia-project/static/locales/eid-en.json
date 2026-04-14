@@ -42,7 +42,7 @@
       "learn_more_descr": "SPID (Sistema Pubblico di Identità Digitale) is the Italian public digital identity system. Choose your identity provider to log in with your SPID credentials."
     },
     "eidas": {
-      "name": "eIDAS",
+      "name": "European digital ID",
       "logo_text": "Login with eIDAS",
       "logo": "img/ficep.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
