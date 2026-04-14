@@ -495,11 +495,13 @@ main {
 .eid-cards-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .eid-cards-row > .eid-card-col {
-  flex: 1 1 18rem;
-  min-width: 18rem;
+  flex: 0 0 auto;
+  width: min(100%, 18rem);
+  max-width: 18rem;
 }
 
 .eid-card-logo {
@@ -868,10 +870,6 @@ footer {
 }
 
 @media (max-width: 576px) {
-  .eid-cards-row > .eid-card-col {
-    min-width: 100%;
-  }
-
   /* Button labels: wrap, left-aligned on mobile */
   .it-card .it-card-body > .d-flex:first-child {
     min-height: 2.75rem;

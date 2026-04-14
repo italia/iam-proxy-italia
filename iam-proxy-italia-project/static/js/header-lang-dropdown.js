@@ -3,7 +3,7 @@
  */
 (function (global) {
   /** Spazio tra trigger e menu: il margin sul .dropdown-menu è ignorato da Popper (usa transform). */
-  // var MENU_OFFSET_PX = 24;
+  var MENU_OFFSET_PX = 24;
 
   function bindLangMenuPopper(toggle) {
     if (!global.bootstrap || !global.bootstrap.Dropdown || !toggle) return;
