@@ -16,8 +16,8 @@
     "it_wallet": {
       "name": "IT-Wallet",
       "logo_text": "Entra con IT-Wallet",
-      "logo": "wallet-it/wallet_icon.svg",
-      "login_url": "/Saml2/disco?entityID=wallet",
+      "logo": "it-wallet/wallet_icon.svg",
+      "login_url": "it-wallet.html",
       "learn_more_descr": "IT-Wallet è il Sistema di portafoglio digitale italiano che ti dà il pieno controllo sulle tue informazioni, senza che l'ente che le ha rilasciate venga a conoscenza di quando e come vengono usate."
     },
     "cie": {
@@ -31,7 +31,7 @@
       "name": "CIE OpenID Connect",
       "logo_text": "Entra con CIE",
       "logo": "cie/cie_white.svg",
-      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op/",
+      "login_url": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op",
       "learn_more_descr": "La CIE (Carta d'Identità Elettronica) può essere usata con il protocollo OIDC per autenticarti e accedere ai servizi online."
     },
     "spid": {
@@ -50,6 +50,13 @@
     }
   },
   "alternative_id": {
+    "cns": {
+      "name": "CNS",
+      "logo_text": "Entra con CNS",
+      "logo": "img/cns.svg",
+      "login_url": "#",
+      "learn_more_descr": "La CNS (Carta Nazionale dei Servizi) è lo strumento di identificazione che consente ai cittadini di accedere ai servizi della pubblica amministrazione online. Puoi usarla per accedere ai servizi che supportano l'autenticazione CNS."
+    },
     "idem": {
       "name":"IDEM",
       "logo_text": "Entra con IDEM",

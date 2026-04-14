@@ -6,18 +6,21 @@
 // - entityName - string with IDP name
 // - entityID - string with IDP entityID
 // - logo - url of IDP logo image
+// IdPs from https://registry.spid.gov.it/entities-idp (official SPID registry)
 const idps = [
-  {"entityName": "SPID Test", "entityID": "https://localhost:8080", "logo": ""},
+  {"entityName": "SPID Test", "entityID": "https://localhost:8080", "logo": "/static/spid/spid_icon.svg"},
   {"entityName": "Aruba ID", "entityID": "https://loginspid.aruba.it", "logo": "/static/spid/spid-idp-arubaid.svg"},
+  {"entityName": "EtnaHitech ID", "entityID": "https://id.eht.eu", "logo": "/static/spid/spid-idp-etnaid.svg"},
   {"entityName": "Infocert ID", "entityID": "https://identity.infocert.it", "logo": "/static/spid/spid-idp-infocertid.svg"},
-  {"entityName": "Intesa ID", "entityID": "https://spid.intesa.it", "logo": "/static/spid/spid-idp-intesaid.svg"},
+  {"entityName": "InfoCamere ID", "entityID": "https://loginspid.infocamere.it", "logo": ""},
+  {"entityName": "Intesi Group ID", "entityID": "https://idp.intesigroup.com", "logo": "/static/spid/spid-idp-intesigroupspid.svg"},
   {"entityName": "Lepida ID", "entityID": "https://id.lepida.it/idp/shibboleth", "logo": "/static/spid/spid-idp-lepidaid.svg"},
   {"entityName": "Namirial ID", "entityID": "https://idp.namirialtsp.com/idp", "logo": "/static/spid/spid-idp-namirialid.svg"},
   {"entityName": "Poste ID", "entityID": "https://posteid.poste.it", "logo": "/static/spid/spid-idp-posteid.svg"},
+  {"entityName": "Register.it", "entityID": "https://spid.register.it", "logo": "/static/spid/spid-idp-spiditalia.svg"},
   {"entityName": "Sielte ID", "entityID": "https://identity.sieltecloud.it", "logo": "/static/spid/spid-idp-sielteid.svg"},
-  {"entityName": "SPIDItalia Register.it", "entityID": "https://spid.register.it", "logo": "/static/spid/spid-idp-spiditalia.svg"},
-  {"entityName": "Tim ID", "entityID": "https://login.id.tim.it/affwebservices/public/saml2sso", "logo": "/static/spid/spid-idp-timid.svg"},
-  {"entityName": "TeamSystem ID", "entityID": "https://spid.teamsystem.com/idp", "logo": "/static/spid/spid-idp-teamsystemid.svg"}
+  {"entityName": "TeamSystem ID", "entityID": "https://spid.teamsystem.com/idp", "logo": "/static/spid/spid-idp-teamsystemid.svg"},
+  {"entityName": "Tim ID", "entityID": "https://login.id.tim.it/affwebservices/public/saml2sso", "logo": "/static/spid/spid-idp-timid.svg"}
 ].sort(() => Math.random() - 0.5)
 
 // ** Values **
@@ -33,7 +36,8 @@ const entityID = urlParams.get('entityID');
 function addIdpEntry(data, element) {
   let li = document.createElement('li');
   li.className = 'spid-idp-button-link'
-  li.innerHTML = `<a href="${servicePath}?entityID=${data['entityID']}&return=${servicePath}"><span class="spid-sr-only">${data['entityName']}</span><img src="${data['logo']}" alt="${data['entityName']}"></a>`
+  const logoHtml = data['logo'] ? `<img src="${data['logo']}" alt="${data['entityName']}">` : `<span class="spid-idp-name">${data['entityName']}</span>`;
+  li.innerHTML = `<a href="${servicePath}?entityID=${encodeURIComponent(data['entityID'])}&return=${encodeURIComponent(servicePath)}"><span class="spid-sr-only">${data['entityName']}</span>${logoHtml}</a>`
   element.prepend(li)
 }
 

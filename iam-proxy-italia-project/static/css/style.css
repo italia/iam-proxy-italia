@@ -423,6 +423,12 @@ main {
   text-decoration: none;
 }
 
+/* EID cards: no rounded corners on buttons */
+#eid-cards-container .btn,
+#eid-alternative-section .btn {
+  border-radius: 0 !important;
+}
+
 /* EID cards: responsive layout - buttons fill available space */
 .it-card {
   display: flex;
@@ -455,7 +461,7 @@ main {
   flex: 1;
   min-height: 2.75rem;
   max-height: 2.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 1rem;
   font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
@@ -466,7 +472,41 @@ main {
   min-height: 20px;
   max-width: 28px;
   max-height: 28px;
+  aspect-ratio: 1;
   object-fit: contain;
+  margin-right: 0.25rem;
+}
+
+/* Vertical line between logo and label (fixed-justified, all eid login buttons) */
+.eid-card-btn .eid-card-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.9);
+  margin-right: 0.5rem;
+}
+
+/* Responsive 577px–1279px: button labels wrap and stay centered */
+@media (max-width: 1279px) and (min-width: 577px) {
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: center;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 100%;
+    min-width: 0;
+    text-align: center;
+  }
 }
 
 header svg.icon {
@@ -594,6 +634,66 @@ header svg.icon {
   background-color: #F2F7FC;
 }
 
+/* Error page body - layout from mockup */
+.error-page-body {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.error-page-description {
+  color: #003366;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error-page-icon {
+  margin: 0 auto 1.5rem;
+}
+
+.error-page-icon img {
+  max-width: 160px;
+  height: auto;
+}
+
+.error-page-guidance {
+  color: #5c6f82;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-page-cta {
+  padding: 0.5rem 1.5rem;
+}
+
+.error-page-assistance {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #5c6f82;
+  text-decoration: none;
+}
+
+.error-page-assistance:hover {
+  color: #004C99;
+}
+
 footer {
   margin: 0;
   padding: 1rem 0;
@@ -716,7 +816,41 @@ footer {
   margin-left: calc(50% - 50vw);
 }
 
+/* ----- it-wallet.html wallet selection page ----- */
+#wallet-grid .it-card a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+#wallet-grid .it-card {
+  transition: box-shadow 0.2s ease;
+}
+
+#wallet-grid .it-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
 @media (max-width: 576px) {
+  /* Button labels: wrap, left-aligned on mobile */
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: none;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: wrap;
+    min-height: 2.75rem;
+    max-height: none;
+    justify-content: flex-start;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
+
   .container {
     padding-left: 8px !important;
     padding-right: 8px !important;
@@ -739,5 +873,140 @@ footer {
   #error-lang-select {
     width: 100px;
   }
+}
+
+/* ----- it-wallet.html: wallet selection page ----- */
+#wallet-grid {
+  align-items: flex-start;
+}
+
+#wallet-grid .col {
+  align-self: flex-start;
+}
+
+.navbar-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background-color: #c6c8c9;
+  margin: 0 1.5rem;
+}
+
+.it-wallet-navbar-logo {
+  height: 32px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+.it-wallet-info-icon {
+  flex-shrink: 0;
+  object-fit: contain;
+  height: 21px;
+}
+
+#wallet-grid .it-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+#wallet-grid .it-card .it-card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#wallet-grid .it-card .it-card-body > a:first-of-type {
+  flex: 0 0 auto;
+}
+
+#wallet-grid .it-card .it-card-body > .wallet-learn-more {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+#wallet-grid .it-card > .it-card-body > a:first-child {
+  min-height: 72px;
+}
+
+#wallet-grid .wallet-card-logo {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
+/* Logo+title row: fixed height so all cards have identical vertical spacing */
+#wallet-grid .it-card .d-flex.align-items-center.mb-2,
+#wallet-grid .it-card-body > a:first-child > .d-flex {
+  min-height: 72px;
+  height: 72px;
+  margin-bottom: 0.5rem !important;
+  align-items: center;
+}
+
+#wallet-grid .it-card .wallet-learn-more {
+  margin-top: 0;
+  min-height: 1.5rem;
+}
+
+#wallet-grid .it-card .eid-learn-more-toggle {
+  margin-top: 0;
+  display: inline-block;
+}
+
+#wallet-grid .it-card .eid-learn-more-content {
+  margin-top: 0.5rem;
+}
+
+#wallet-grid .wallet-how-to-get-link {
+  color: #0066cc;
+}
+
+#wallet-grid .wallet-how-to-get-link:hover {
+  color: #004d99;
+}
+
+.it-wallet-no-results-icon {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+#wallet-grid .it-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+#wallet-grid a:hover {
+  color: inherit;
+}
+
+.it-wallet-info-section {
+  background-color: #F5F5F0;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.it-wallet-info-section a {
+  display: inline-flex;
+  align-items: center;
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 1em;
+  margin-left: 32px;
+}
+
+.it-wallet-info-section a svg {
+  color: inherit;
+  fill: currentColor;
+}
+
+.it-wallet-info-section a:hover {
+  color: #004d99;
+  text-decoration: underline;
 }
 

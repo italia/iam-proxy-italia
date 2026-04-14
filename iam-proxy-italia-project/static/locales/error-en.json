@@ -20,15 +20,11 @@
     "close": "Close"
   },
   "body": {
-    "title": "Authentication Error",
-    "dear_user": "Dear User,",
-    "intro": "An error occurred during the authentication process. This was not caused by your credentials; otherwise you would have seen a different message on the login page.",
-    "communicated": "The issue has been reported to the platform administrators. If this is a temporary problem, please:",
-    "try_again": "Try again from the service provider's website;",
-    "wait_retry": "If the problem occurs again, wait a few minutes and try again;",
-    "support_ticket": "If the problem persists for more than one hour, please contact support using the channels provided by your organization.",
-    "in_most_cases": "In most cases, these are temporary issues related to platform updates or maintenance.",
-    "back_link": "Return to login"
+    "description": "An error occurred during the authentication process. This was not caused by your credentials; otherwise you would have seen a different message on the login page.",
+    "guidance": "Try again from the service provider's website or wait a few minutes. If the problem persists for more than one hour, please contact support using the channels provided by your organization.",
+    "action": "Return to login",
+    "assistance_link": "Link to specific assistance",
+    "assistance_link_title": "Go to assistance page"
   },
   "footer": {
     "organization_name": "Organization Name",
