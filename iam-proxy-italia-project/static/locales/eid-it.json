@@ -43,10 +43,10 @@
     },
     "eidas": {
       "name": "eIDAS",
-      "logo_text": "Entra con eIDAS",
+      "logo_text": "Login with eIDAS",
       "logo": "img/ficep.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
-      "learn_more_descr": "eIDAS (electronic IDentification, Authentication and trust Services) è il regolamento europeo per l'identificazione elettronica transfrontaliera. Usa la tua identità digitale nazionale o uno schema notificato per accedere al servizio."
+      "learn_more_descr": "Sign-in with a digital identity from another European Country including Iceland, Liechtenstein and Norway, and third country nationals in possession of a notified residency card"
     }
   },
   "alternative_id": {

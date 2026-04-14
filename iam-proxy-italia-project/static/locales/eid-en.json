@@ -46,7 +46,7 @@
       "logo_text": "Login with eIDAS",
       "logo": "img/ficep.svg",
       "login_url": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
-      "learn_more_descr": "eIDAS (electronic IDentification, Authentication and trust Services) is the EU regulation for cross-border electronic identification. Use your national eID or notified scheme to access this service."
+      "learn_more_descr": "Sign-in with a digital identity from another European Country including Iceland, Liechtenstein and Norway, and third country nationals in possession of a notified residency card"
     }
   },
   "alternative_id": {
