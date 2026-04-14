@@ -218,7 +218,7 @@ function createEidCardBox(resource, eid) {
 }
 
 // ----------------------- Logo Button -----------------------
-function createLogoButton(eid, hasLearnMore = false) {
+function createLogoButton(eid, _hasLearnMore = false) {
   const createLogoImg = () => {
     const img = document.createElement('img');
     img.src = eid.logo;
@@ -229,6 +229,7 @@ function createLogoButton(eid, hasLearnMore = false) {
 
   const createTextSpan = () => {
     const span = document.createElement('span');
+    span.className = 'eid-card-btn-label';
     span.textContent = eid.logo_text;
     return span;
   };
@@ -240,11 +241,15 @@ function createLogoButton(eid, hasLearnMore = false) {
 
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn';
+    btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn eid-card-btn-cie';
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
 
     btn.appendChild(createLogoImg());
+    const cieSep = document.createElement('span');
+    cieSep.className = 'eid-card-separator';
+    cieSep.setAttribute('aria-hidden', 'true');
+    btn.appendChild(cieSep);
     btn.appendChild(createTextSpan());
 
     const menu = document.createElement('ul');
@@ -298,12 +303,16 @@ function createLogoButton(eid, hasLearnMore = false) {
 
     const btn = document.createElement('a');
     btn.href = "#";
-    btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn';
+    btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn eid-card-btn-spid';
     btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
 
     btn.appendChild(createLogoImg());
+    const spidSep = document.createElement('span');
+    spidSep.className = 'eid-card-separator';
+    spidSep.setAttribute('aria-hidden', 'true');
+    btn.appendChild(spidSep);
     btn.appendChild(createTextSpan());
 
     const menu = document.createElement('div');
@@ -318,10 +327,31 @@ function createLogoButton(eid, hasLearnMore = false) {
   }
 
   const btn = document.createElement('a');
-  btn.href = eid.login_url;
-  btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn';
+  let href = eid.login_url;
+  const isWallet = eid.name?.toLowerCase().includes('it-wallet') || eid.logo?.toLowerCase().includes('it-wallet');
+  if (isWallet && window.location.search) {
+    const sep = href.includes('?') ? '&' : '?';
+    href = href + sep + window.location.search.slice(1);
+  }
+  btn.href = href;
+  const isCie = eid.name?.toLowerCase().includes('cie') || eid.logo?.toLowerCase().includes('cie');
+  const isEidas =
+    eid.name?.toLowerCase().includes('eidas') ||
+    eid.logo_text?.toLowerCase().includes('eidas') ||
+    eid.logo?.toLowerCase().includes('eidas');
+  btn.className =
+    'btn btn-primary d-flex align-items-center eid-card-btn' +
+    (isCie ? ' eid-card-btn-cie' : '') +
+    (isWallet ? ' eid-card-btn-wallet' : '') +
+    (isEidas ? ' eid-card-btn-eidas' : '');
 
   btn.appendChild(createLogoImg());
+  if (!isWallet) {
+    const sep = document.createElement('span');
+    sep.className = 'eid-card-separator';
+    sep.setAttribute('aria-hidden', 'true');
+    btn.appendChild(sep);
+  }
   btn.appendChild(createTextSpan());
 
   return btn;
