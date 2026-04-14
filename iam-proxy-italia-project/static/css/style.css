@@ -874,9 +874,36 @@ footer {
     padding-right: 8px !important;
   }
 
-  header .it-header-slim-wrapper-content {
+  footer .d-flex.flex-wrap {
     flex-direction: column !important;
     align-items: flex-start !important;
+    gap: 0.25rem;
+  }
+
+  footer .d-flex.flex-wrap a {
+    margin-right: 0 !important;
+  }
+
+  header .it-header-slim-wrapper-content {
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: nowrap;
+  }
+
+  header .it-header-slim-wrapper-content .navbar-brand {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100% - 4.5rem);
+    margin-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  header .it-header-slim-wrapper-content .it-header-slim-right-zone {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 
   #eid-cards-container .col-12 {
