@@ -1,0 +1,111 @@
+# Deploy static preview (disco, it-wallet, qrcode-demo) to GitHub Pages
+# when static files change and CI (lint) succeeds.
+# Each branch gets its own subfolder: preview/<branch-name>/
+
+name: Static Preview Deploy
+
+on:
+  push:
+    paths:
+      - 'iam-proxy-italia-project/static/**'
+  pull_request:
+    paths:
+      - 'iam-proxy-italia-project/static/**'
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          skip_after_successful_duplicate: 'true'
+          same_content_newer: 'true'
+
+  lint:
+    name: Lint static assets
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Lint HTML, CSS, JS
+        working-directory: iam-proxy-italia-project/static
+        run: npm run lint
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: [pre_job, lint]
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Prepare preview artifact
+        id: prepare
+        run: |
+          BRANCH="${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}"
+          # Sanitize branch name for use as folder (replace / with -)
+          SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
+          PREVIEW_DIR="preview/${SAFE_BRANCH}"
+          mkdir -p deploy/"${PREVIEW_DIR}"
+          (cd iam-proxy-italia-project/static && tar --exclude=node_modules -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
+          # Rewrite /static/ to ./ for GitHub Pages relative paths
+          find deploy/"${PREVIEW_DIR}" \( -name '*.html' -o -name '*.json' -o -name '*.js' \) -type f \
+            -exec sed -i 's|/static/|./|g' {} \;
+          # qrcode-demo uses bootstrap-italia/svg - disco/it-wallet use svg/; ensure svg exists
+          if [ -d deploy/"${PREVIEW_DIR}"/bootstrap-italia/svg ]; then
+            mkdir -p deploy/"${PREVIEW_DIR}"/svg
+            cp deploy/"${PREVIEW_DIR}"/bootstrap-italia/svg/sprites.svg deploy/"${PREVIEW_DIR}"/svg/ 2>/dev/null || true
+          fi
+          echo "preview_dir=${PREVIEW_DIR}" >> $GITHUB_OUTPUT
+          echo "safe_branch=${SAFE_BRANCH}" >> $GITHUB_OUTPUT
+          echo "Branch preview: ${PREVIEW_DIR}"
+
+      - name: Deploy to GitHub Pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages 2>/dev/null || true
+          if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
+            git checkout -B gh-pages origin/gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf --cached . 2>/dev/null || true
+          fi
+          rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"
+          mkdir -p preview/"${{ steps.prepare.outputs.safe_branch }}"
+          cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
+          touch .nojekyll
+          git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
+          git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }} [skip ci]"
+          git push origin gh-pages
