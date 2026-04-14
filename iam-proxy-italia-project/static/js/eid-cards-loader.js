@@ -29,14 +29,15 @@ i18next
       loadPath: 'locales/eid-{{lng}}.json'
     }
   })
-  .then(loadEidCardsi18next)
+  .then(() => {
+    if (typeof initHeaderLangDropdown === "function") {
+      initHeaderLangDropdown(i18next, {
+        afterLanguageChange: () => loadEidCardsi18next(),
+      });
+    }
+    loadEidCardsi18next();
+  })
   .catch(err => console.error('Error loading eid-cards:', err));
-
-// Change language
-document.getElementById("lang-select")?.addEventListener('change', (e) => {
-  const selectedLang = e.target.value;
-  i18next.changeLanguage(selectedLang).then(loadEidCardsi18next);
-});
 
 // ----------------------- Document Loader -----------------------
 function loadDocument(resource) {
