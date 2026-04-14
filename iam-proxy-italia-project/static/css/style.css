@@ -545,6 +545,8 @@ header svg.icon {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
+  font-size: 1rem !important;
+  margin-top: 0.75rem;
   cursor: pointer !important;
   text-decoration: underline !important;
   color: #0066cc !important;
@@ -579,6 +581,7 @@ header svg.icon {
 
 /* Learn more toggle */
 .eid-learn-more-toggle {
+  font-size: 1rem !important;
   color: #0066cc !important;
   text-decoration: underline !important;
   cursor: pointer;

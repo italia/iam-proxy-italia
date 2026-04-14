@@ -359,15 +359,30 @@ function createLogoButton(eid, _hasLearnMore = false) {
 
 // ----------------------- Learn More -----------------------
 function createLearnMore(resource, eid) {
-  const learnMoreLinkText = eid.learn_more_label ?? resource.titles.learn_more;
-  if (!eid.learn_more_link && eid.learn_more_descr) {
+  const toggleLabelText = eid.learn_more_toggle_label ?? resource.titles.learn_more;
+  const ctaLabelText = eid.learn_more_label ?? resource.titles.find_how_to_get_digital_id ?? resource.titles.learn_more;
+  const appendExternalIcon = (linkEl) => {
+    const svgNs = 'http://www.w3.org/2000/svg';
+    const icon = document.createElementNS(svgNs, 'svg');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.setAttribute('width', '16');
+    icon.setAttribute('height', '16');
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('fill', '#0066cc');
+    const path = document.createElementNS(svgNs, 'path');
+    path.setAttribute('d', 'M21 3v6h-1V4.7l-7.6 7.7-.8-.8L19.3 4H15V3h6zm-4 16.5c0 .3-.2.5-.5.5h-12c-.3 0-.5-.2-.5-.5v-12c0-.3.2-.5.5-.5H12V6H4.5C3.7 6 3 6.7 3 7.5v12c0 .8.7 1.5 1.5 1.5h12c.8 0 1.5-.7 1.5-1.5V12h-1v7.5z');
+    icon.appendChild(path);
+    linkEl.appendChild(document.createTextNode(' '));
+    linkEl.appendChild(icon);
+  };
+  if (eid.learn_more_descr) {
     const container = document.createElement('div');
     container.className = 'mt-2';
 
     const toggle = document.createElement('a');
     toggle.href = '#';
     toggle.className = 'eid-learn-more-toggle';
-    toggle.textContent = learnMoreLinkText;
+    toggle.textContent = toggleLabelText;
 
     const svgNs = 'http://www.w3.org/2000/svg';
     const arrow = document.createElementNS(svgNs, 'svg');
@@ -388,6 +403,17 @@ function createLearnMore(resource, eid) {
 
     const text = document.createElement('p');
     text.innerHTML = eid.learn_more_descr;
+    if (eid.learn_more_link) {
+      text.appendChild(document.createTextNode(' '));
+      const inlineCta = document.createElement('a');
+      inlineCta.href = eid.learn_more_link;
+      inlineCta.target = '_blank';
+      inlineCta.rel = 'noopener noreferrer';
+      inlineCta.className = 'eid-find-how-link';
+      inlineCta.textContent = ctaLabelText;
+      appendExternalIcon(inlineCta);
+      text.appendChild(inlineCta);
+    }
     text.className = 'mt-2 eid-learn-more-content';
 
     toggle.addEventListener('click', (e) => {
@@ -412,8 +438,10 @@ function createLearnMore(resource, eid) {
     const link = document.createElement('a');
     link.href = eid.learn_more_link;
     link.target = '_blank';
+    link.rel = 'noopener noreferrer';
     link.className = 'd-block mt-2';
-    link.textContent = learnMoreLinkText;
+    link.textContent = ctaLabelText;
+    appendExternalIcon(link);
     return link;
   }
   return null;
