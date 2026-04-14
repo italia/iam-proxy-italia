@@ -475,6 +475,13 @@ header svg.icon {
   fill: #6c757d;
 }
 
+/* "Non hai un'identità digitale?" — heading/5-l */
+.eid-havent-digital-id-heading {
+  color: #2f475e;
+  font-size: 24px;
+  line-height: 32px;
+}
+
 /* Find out how to get it link */
 .eid-find-how-link {
   display: inline-flex !important;

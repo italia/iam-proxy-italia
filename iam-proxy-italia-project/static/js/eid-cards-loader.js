@@ -84,6 +84,7 @@ function loadEidCards(resource) {
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
       const infoTitle = document.createElement('h4');
+      infoTitle.className = 'eid-havent-digital-id-heading';
       infoTitle.textContent = havenDigitalId;
 
       const infoLink = document.createElement('a');
