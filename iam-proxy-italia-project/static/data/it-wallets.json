@@ -23,6 +23,38 @@
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
+    },
+    {
+      "id": "https://lorem-wallet-1.example",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Lorem Wallet One",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    },
+    {
+      "id": "https://lorem-wallet-2.example",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Lorem Wallet Two",
+      "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    },
+    {
+      "id": "https://lorem-wallet-3.example",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Lorem Wallet Three",
+      "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    },
+    {
+      "id": "https://lorem-wallet-4.example",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Lorem Wallet Four",
+      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
     }
   ]
 }

@@ -3,13 +3,19 @@
     "region_name": "Organization Name"
   },
   "titles": {
-    "page_title": "Select your IT-Wallet",
+    "page_title": "Choose the app",
+    "page_subtitle": "Select the digital wallet to continue",
     "logo_title": "Your logo"
   },
   "search": {
     "placeholder": "Search by name",
     "button": "Search",
     "no_results": "No results"
+  },
+  "sort": {
+    "default": "Default",
+    "az": "Alphabetical A-Z",
+    "za": "Alphabetical Z-A"
   },
   "wallets": {
     "load_more": "Load more"
