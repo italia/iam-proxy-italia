@@ -1,0 +1,30 @@
+{
+  "header": {
+    "region_name": "Nome dell'Organizzazione"
+  },
+  "titles": {
+    "page_title": "Seleziona il tuo IT-Wallet",
+    "logo_title": "Il tuo logo"
+  },
+  "search": {
+    "placeholder": "Cerca per nome",
+    "button": "Cerca",
+    "no_results": "Nessun risultato"
+  },
+  "wallets": {
+    "load_more": "Carica altri"
+  },
+  "nav": {
+    "back": "Indietro"
+  },
+  "footer": {
+    "legal_notice": "Note legali",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Dichiarazione Accessibilità"
+  },
+  "learn_more": {
+    "question": "Non sai cos'è IT-Wallet?",
+    "link": "Scopri di più",
+    "how_to_get": "Scopri come ottenerlo"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "immediate_subordinate_entities": [
+    {
+      "id": "https://io.pagopa.it",
+      "logo_uri": "it-wallet/io_logo.svg",
+      "name": "IO, l'app dei servizi pubblici",
+      "description": "L'app dei servizi pubblici italiani per ricevere notifiche, pagamenti e documenti dalla Pubblica Amministrazione.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    },
+    {
+      "id": "https://pwallet.example.org",
+      "logo_uri": "it-wallet/pwallet_logo.svg",
+      "name": "Pwallet",
+      "description": "Esempio di wallet digitale per l'autenticazione e la gestione delle credenziali verificate.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    },
+    {
+      "id": "https://example-wallet.net",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Nome Wallet su 2 righe",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "uri": "/Saml2/disco?entityID=wallet",
+      "how_to_get_url": "#"
+    }
+  ]
+}
