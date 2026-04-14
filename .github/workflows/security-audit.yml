@@ -53,7 +53,7 @@ jobs:
 
       - name: Install dependencies with Poetry
         run: |
-          pip install poetry
+          pip install "poetry>=2.3.3"
           poetry install --extras test
 
       - name: Install pip-audit
