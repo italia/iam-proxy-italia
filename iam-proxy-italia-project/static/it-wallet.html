@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="it-wallet-html">
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -18,7 +18,7 @@
   <script src="js/header-lang-dropdown.js?v=wallet-ui-20260414"></script>
 </head>
 
-<body>
+<body class="it-wallet-body">
   <!-- HEADER (same structure as disco.html) -->
   <header class="it-header-wrapper">
     <div class="it-header-slim-wrapper bg-primary">
@@ -79,28 +79,55 @@
   <!-- MAIN -->
   <main class="container my-4 it-wallet-page">
     <div class="it-wallet-title-row">
-      <a href="#" id="back-link" class="it-wallet-back-link">
-        <svg class="icon icon-sm me-1" aria-hidden="true">
-          <use href="/static/svg/sprites.svg#it-arrow-left"></use>
-        </svg>
-        <span>INDIETRO</span>
-      </a>
-      <h1 class="text-center mb-2" id="page-title">Scegli l'app</h1>
+      <div class="it-wallet-title-slot it-wallet-title-slot--start">
+        <a href="#" id="back-link" class="it-wallet-back-link">
+          <svg class="icon icon-sm me-1" aria-hidden="true">
+            <use href="/static/svg/sprites.svg#it-arrow-left"></use>
+          </svg>
+          <span class="it-wallet-back-label">INDIETRO</span>
+        </a>
+      </div>
+      <h1 class="it-wallet-title-heading mb-0" id="page-title">Scegli l'app</h1>
+      <div class="it-wallet-title-slot it-wallet-title-slot--end">
+      <div id="wallet-title-actions" class="it-wallet-title-actions" hidden>
+        <button type="button" id="wallet-search-toggle" class="it-wallet-icon-btn" aria-expanded="false"
+          aria-controls="wallet-controls">
+          <svg id="wallet-search-toggle-icon-open" class="icon" aria-hidden="true">
+            <use href="/static/svg/sprites.svg#it-search"></use>
+          </svg>
+          <svg id="wallet-search-toggle-icon-close" class="icon it-wallet-icon-chevron-up" aria-hidden="true" hidden>
+            <use href="/static/svg/sprites.svg#it-expand"></use>
+          </svg>
+        </button>
+      </div>
+      </div>
     </div>
     <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle">Seleziona il portafoglio digitale con cui proseguire</p>
 
     <section class="it-wallet-layout-surface">
-      <div id="wallet-controls" class="it-wallet-controls mb-4">
+      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4">
         <div class="it-wallet-search-group">
           <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per nome" aria-label="Cerca wallet per nome">
           <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">&times;</button>
         </div>
-        <button class="btn btn-primary" type="button" id="search-btn">Cerca</button>
-        <select id="wallet-sort" class="form-select" aria-label="Ordina wallet">
-          <option value="default">Predefinito</option>
-          <option value="az">Alfabetico A-Z</option>
-          <option value="za">Alfabetico Z-A</option>
-        </select>
+        <button class="btn btn-primary btn-sm" type="button" id="search-btn">Cerca</button>
+        <div class="it-wallet-sort-wrap">
+          <span class="it-wallet-sort-facade" aria-hidden="true">
+            <span class="it-wallet-sort-icon-duo">
+              <svg class="icon it-wallet-sort-arrow" aria-hidden="true">
+                <use href="/static/svg/sprites.svg#it-arrow-up"></use>
+              </svg>
+              <svg class="icon it-wallet-sort-arrow" aria-hidden="true">
+                <use href="/static/svg/sprites.svg#it-arrow-down"></use>
+              </svg>
+            </span>
+          </span>
+          <select id="wallet-sort" class="it-wallet-sort-native" aria-label="Ordina wallet">
+            <option value="default">Predefinito</option>
+            <option value="az">Alfabetico A-Z</option>
+            <option value="za">Alfabetico Z-A</option>
+          </select>
+        </div>
       </div>
 
       <div id="wallet-grid" class="row g-4 justify-content-center align-items-start">
