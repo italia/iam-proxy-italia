@@ -140,11 +140,11 @@ function loadEidCards(resource) {
 // ----------------------- Create Eid Cards Row -----------------------
 function createEidCardsRow(resource, id_key, container) {
   const row = document.createElement('div');
-  row.className = 'row justify-content-center align-items-start';
+  row.className = 'row justify-content-center align-items-start eid-cards-row';
   const entries = getEidEntriesForRow(resource[id_key]);
   entries.forEach((eid) => {
     const col = document.createElement('div');
-    col.className = 'col-12 col-md-3 mb-3 mb-md-4';
+    col.className = 'col-12 col-md-3 mb-3 mb-md-4 eid-card-col';
     col.appendChild(createEidCardBox(resource, eid));
     row.appendChild(col);
   });
