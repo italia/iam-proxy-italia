@@ -687,6 +687,14 @@ header svg.icon {
   background-color: #F2F7FC;
 }
 
+.header-title-section .navbar-separator {
+  display: inline-block;
+  width: 1px;
+  height: 32px;
+  background-color: #BFCAD5;
+  margin: 0 16px;
+}
+
 /* Error page body - layout from mockup */
 .error-page-body {
   text-align: center;
@@ -869,6 +877,138 @@ footer {
   margin-left: calc(50% - 50vw);
 }
 
+.it-wallet-page {
+  min-height: calc(100vh - 18rem);
+}
+
+.it-wallet-back-link {
+  display: inline-flex;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0066CC;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.it-wallet-back-link .icon {
+  width: 1rem;
+  height: 1rem;
+  color: #0066CC;
+  fill: currentColor;
+}
+
+.it-wallet-title-row {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.it-wallet-title-row #page-title {
+  margin-bottom: 0;
+}
+
+.it-wallet-subtitle {
+  color: #17324D;
+}
+
+.it-wallet-layout-surface {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.it-wallet-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.it-wallet-search-group {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.it-wallet-search-group .form-control {
+  padding-right: 2rem;
+}
+
+.it-wallet-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #5C6F82;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#wallet-sort {
+  min-width: 12rem;
+  max-width: 14rem;
+}
+
+.it-wallet-grid-col {
+  display: flex;
+  justify-content: center;
+}
+
+.it-wallet-card {
+  width: 387px;
+  max-width: 387px;
+  height: 99px;
+  min-height: 99px;
+  border-radius: 4px;
+}
+
+.it-wallet-card .it-card-body {
+  height: 99px;
+  min-height: 99px;
+  padding: 24px;
+}
+
+.it-wallet-card-main-row {
+  gap: 24px;
+  align-items: center;
+  text-align: left;
+}
+
+.wallet-card-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.it-wallet-card-link {
+  color: #0066CC;
+  text-decoration: underline;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.it-wallet-card-title {
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 600 !important;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.it-wallet-card .wallet-learn-more {
+  display: none !important;
+}
+
 @media (max-width: 576px) {
   /* Button labels: wrap, left-aligned on mobile */
   .it-card .it-card-body > .d-flex:first-child {
@@ -937,6 +1077,24 @@ footer {
 
   .it-header-lang-dropdown .nav-link.dropdown-toggle {
     padding-left: 0 !important;
+  }
+
+  .it-wallet-controls {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .it-wallet-title-row {
+    padding-top: 2rem;
+  }
+
+  .it-wallet-back-link {
+    top: 0;
+    transform: none;
+  }
+
+  #wallet-sort {
+    max-width: none;
   }
 }
 
