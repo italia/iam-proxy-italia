@@ -1,0 +1,22 @@
+{
+  "name": "iam-proxy-italia-static",
+  "description": "Static assets for IAM Proxy Italia (Bootstrap Italia, i18n). Run from this directory.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "update-bootstrap-italia": "node scripts/copy-bootstrap-italia.js",
+    "update-wallet-it-assets": "bash scripts/update-wallet-it-assets.sh",
+    "postinstall": "npm run update-bootstrap-italia",
+    "lint:html": "htmlhint '**/*.html'",
+    "lint:css": "stylelint 'css/style.css' --allow-empty-input",
+    "lint:js": "eslint 'js/eid-cards-loader.js' 'js/error-i18n.js'",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
+  },
+  "devDependencies": {
+    "bootstrap-italia": "^2.18.0",
+    "eslint": "^9.0.0",
+    "htmlhint": "^1.1.4",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  }
+}
