@@ -446,5 +446,35 @@
       "is_active": true,
       "registrant": []
     }
+  },
+  {
+    "model": "spid_cie_oidc_authority.federationdescendant",
+    "pk": 10,
+    "fields": {
+      "created": "2026-04-16T12:43:34.269Z",
+      "modified": "2026-04-16T12:43:41.661Z",
+      "uid": "autouid-wallet-provider-wct",
+      "name": "wallet-provider-wct",
+      "sub": "https://wallet-provider.wct.example.org:3002",
+      "type": "wallet_solution",
+      "jwks": [
+        {
+          "alg": "ES256",
+          "crv": "P-256",
+          "kid": "3CQn07V5kZV97Mm5db94Gt7zKw5-qsKekR2ren6KJUhyW9Q2nJGQa8U",
+          "kty": "EC",
+          "use": "sig",
+          "x": "jQj4lmCxJX8MQLXCckGw7BDxq_-GvTDfX7Tmt1p8Zqk",
+          "y": "6Rd-rlhZmphQZDPPajBPlwngX-SCfDKoobQXgT9biDg"
+        }
+      ],
+      "metadata_policy": {},
+      "constraints": {},
+      "extended_claims": {},
+      "status": "valid",
+      "status_log": {},
+      "is_active": true,
+      "registrant": []
+    }
   }
 ]

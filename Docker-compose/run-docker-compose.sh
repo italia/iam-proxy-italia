@@ -1,6 +1,14 @@
 #!/bin/bash
 # Run from script directory so paths and .env resolve correctly
+if [ -f .env ]; then
+  set -o allexport
+  source .env
+  set +o allexport
+fi
+
 cd "$(dirname "$0")"
+
+
 
 # Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
@@ -15,6 +23,7 @@ export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_
 export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-http://${TRUST_ANCHOR_HOSTNAME}:5002}"
 export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/oidc/op/}"
 export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:8080/provider}"
+export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
 export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
@@ -95,7 +104,7 @@ function ensure_satosa_hostname_resolvable {
 
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
-  
+
   mkdir -p ./iam-proxy-italia-project
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
@@ -144,11 +153,33 @@ function update {
 function start {
   # Ensure external network exists (avoids host interface teardown on compose down)
   docker network create iam-proxy-italia 2>/dev/null || true
-  if [ "$SATOSA_BUILD" == "true" ]; then
-    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans --build
-  else
-    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
-  fi
+
+  # NEW BUSINESS
+
+  DOCKER_UP_ARGS=(
+  -f docker-compose.yml up
+  --wait
+  --wait-timeout 60
+  --remove-orphans
+  )
+  echo -e "Starting compose with args: ${DOCKER_UP_ARGS[*]} \n"
+  docker compose "${DOCKER_UP_ARGS[@]}"
+  EXIT_CODE=$?
+  echo -e "\n Compose finished with exit code: $EXIT_CODE\n"
+  # @TODO handle exit code and perform cleanup if needed (e.g. to avoid stale containers on next run if compose up fails)
+# if [[ "${EXIT_CODE}" -ne 0 ]]; then
+#   echo "Errore rilevato: processo di pulizia"
+#
+#   if [[ -n "${PAGOPA_CLI_SERVICE_NAME}" ]]; then
+#     echo "PAGOPA_CLI_SERVICE_NAME presente: eseguo cleanup specifico"
+#     docker compose -f docker-compose.yml down -v
+#   fi
+#
+#   exit $EXIT_CODE
+# fi
+
+  # END NEW BUSINESS
+
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
   echo -e "\n"
