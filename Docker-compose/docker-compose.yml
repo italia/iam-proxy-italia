@@ -448,11 +448,18 @@ services:
       dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
     depends_on:
       iam-proxy-italia:
-        condition: service_started
+        condition: service_healthy
     environment:
       CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     networks:
       - iam-proxy-italia
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://iam-proxy-italia:10000/OpenID4VCI/.well-known/openid-configuration || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
 
 networks:
   iam-proxy-italia:
