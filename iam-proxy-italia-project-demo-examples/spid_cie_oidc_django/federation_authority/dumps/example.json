@@ -331,8 +331,8 @@
     "fields": {
       "created": "2026-01-01T00:00:00.000Z",
       "modified": "2026-01-01T00:00:00.000Z",
-      "descendant": 5,
-      "profile": 1,
+      "descendant": 10,
+      "profile": 5,
       "issuer": 1
     }
   },
