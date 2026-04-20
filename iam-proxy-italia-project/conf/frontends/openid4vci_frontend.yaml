@@ -123,9 +123,9 @@ config:
   metadata:
     oauth_authorization_server:
       issuer:  # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
-      pushed_authorization_request_endpoint: /as/par #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
-      authorization_endpoint: /authorize
-      token_endpoint: /token
+      pushed_authorization_request_endpoint: <base_url>/<name>/as/par #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
+      authorization_endpoint: <base_url>/<name>/authorize
+      token_endpoint: <base_url>/<name>/token
       client_registration_types_supported:
         - automatic
       code_challenge_methods_supported:
@@ -172,16 +172,16 @@ config:
         - ES512
       jwks: *metadata_jwks
     openid_credential_issuer: &openid_credential_issuer_metadata
-      credential_issuer: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
-      credential_endpoint: /credential #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
-      nonce_endpoint: /nonce-endpoint
-      deferred_credential_endpoint: /deferred-credential
-      revocation_endpoint: /revoke
-      status_assertion_endpoint: /status
-      notification_endpoint: /notification
+      credential_issuer:  <base_url>/<name> # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+      credential_endpoint:  <base_url>/<name>/credential #for all endpoints if only the path is specified, it will be autopopulated using internal variables with format: "<base_url>/<name>/<specified_path>"
+      nonce_endpoint:  <base_url>/<name>/nonce-endpoint
+      deferred_credential_endpoint:  <base_url>/<name>/deferred-credential
+      revocation_endpoint:  <base_url>/<name>/revoke
+      status_assertion_endpoint:  <base_url>/<name>/status
+      notification_endpoint:  <base_url>/<name>/notification
       credential_hash_alg_supported: sha-256
-      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
-        -
+#      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
+#        - www.authorization-server.example.com
       display:
         - name: EAA Provider
           locale: it-IT
@@ -221,9 +221,11 @@ config:
                   - description: Nome attuale
                     label: Nome
                     locale: it-IT
+                    name: Nome
                   - description: Current First Name
                     label: First Name
                     locale: en-US
+                    name: First Name
 
               - path:
                   - family_name
@@ -233,9 +235,11 @@ config:
                   - description: Cognome attuale
                     label: Cognome
                     locale: it-IT
+                    name: Cognome
                   - description: Current Family Name
                     label: Family Name
                     locale: en-US
+                    name: Family Name
 
               - path:
                   - birthdate
@@ -245,10 +249,11 @@ config:
                   - description: Data di nascita. DEVE essere impostato secondo ISO8601-1 (formato AAAA-MM-GG).
                     label: Data di nascita
                     locale: it-IT
+                    name: Data di nascita
                   - description: Date of Birth. It MUST be set according to ISO8601-1 (YYYY-MM-DD format).
                     label: Date of birth
                     locale: en-US
-
+                    name: Date of Birth
               - path:
                   - place_of_birth
                 mandatory: true
@@ -256,9 +261,12 @@ config:
                 display:
                   - description: Luogo di nascita. DEVE essere presente almeno uno tra paese, regione, località.
                     locale: it-IT
+                    label: Luogo di nascita
+                    name: Luogo di nascita
                   - description:  Place of Birth. At least one of country, region, locality MUST be present.
                     label: Place of birth
                     locale: en-US
+                    name: Place of Birth
 
               - path:
                 - tax_id_code
@@ -268,9 +276,11 @@ config:
                   - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
                     label: Codice Fiscale
                     locale: it-IT
+                    name: Codice fiscale
                   - description: National tax identification code of natural person as a String format.
                     label: Tax id code
                     locale: en-US
+                    name: Tax id code
 
               - path:
                   - nationalities
@@ -280,13 +290,15 @@ config:
                   - description: Uno o più codici paese alfa-2 come specificato nella norma ISO 3166-1.
                     label: Nazionalità
                     locale: it-IT
+                    name: Nazionalità
                   - description: One or more alpha-2 country codes as specified in ISO 3166-1.
                     label: Nationalities
                     locale: en-US
+                    name: Nationalities
           schema_id: pid+dc+sd-jwt+urn:it-wallet:pid:1
           authentic_sources:
-            entity_id:
-            dataset_id:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
         dc_sd_jwt_EuropeanDisabilityCard:
           format: dc+sd-jwt
           scope: EuropeanDisabilityCard
@@ -308,70 +320,82 @@ config:
             - name: European Disability Card
               locale: en-US
           vct: https://trust-registry.eid-wallet.example.it/v1.0/EuropeanDisabilityCard
-          claims:
-            - path:
-                - document_number
-              display:
-                - name: Numero Documento
-                  locale: it-IT
-                - name: Document Number
-                  locale: en-US
-            - path:
-                - given_name
-              display:
-                - name: Nome
-                  locale: it-IT
-                - name: Name
-                  locale: en-US
-            - path:
-                - family_name
-              display:
-                - name: Cognome
-                  locale: it-IT
-                - name: Family Name
-                  locale: en-US
-            - path:
-                - birth_date
-              display:
-                - name: Data di Nascita (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Date of Birth (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - personal_administrative_number
-              display:
-                - name: Codice Fiscale
-                  locale: it-IT
-                - name: Tax Identification Number
-                  locale: en-US
-            - path:
-                - expiry_date
-              display:
-                - name: Data di Scadenza (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Expiration Date (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - constant_attendance_allowance
-              display:
-                - name: Diritto accompagnatore
-                  locale: it-IT
-                - name: Constant attendance allowance
-                  locale: en-US
-            - path:
-                - portrait
-              display:
-                - name: Foto codificata in base64
-                  locale: it-IT
-                - name: Portrait base64 encoded
-                  locale: en-US
-            - path:
-                - link_qr_code
-              display:
-                - name: Link QR Code
-                  locale: it-IT
-                - name: Link QR Code
-                  locale: en-US
+          credential_metadata:
+            display:
+              - name: Carta della disabilità europea
+                description: Versione digitale della carta della disabilità europea
+                locale: it-IT
+              - name: European Disability Card
+                description: Digital version of the European Disability Card
+                locale: en-US
+            claims:
+              - path:
+                  - document_number
+                display:
+                  - name: Numero Documento
+                    locale: it-IT
+                  - name: Document Number
+                    locale: en-US
+              - path:
+                  - given_name
+                display:
+                  - name: Nome
+                    locale: it-IT
+                  - name: Name
+                    locale: en-US
+              - path:
+                  - family_name
+                display:
+                  - name: Cognome
+                    locale: it-IT
+                  - name: Family Name
+                    locale: en-US
+              - path:
+                  - birth_date
+                display:
+                  - name: Data di Nascita (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Date of Birth (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - personal_administrative_number
+                display:
+                  - name: Codice Fiscale
+                    locale: it-IT
+                  - name: Tax Identification Number
+                    locale: en-US
+              - path:
+                  - expiry_date
+                display:
+                  - name: Data di Scadenza (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Expiration Date (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - constant_attendance_allowance
+                display:
+                  - name: Diritto accompagnatore
+                    locale: it-IT
+                  - name: Constant attendance allowance
+                    locale: en-US
+              - path:
+                  - portrait
+                display:
+                  - name: Foto codificata in base64
+                    locale: it-IT
+                  - name: Portrait base64 encoded
+                    locale: en-US
+              - path:
+                  - link_qr_code
+                display:
+                  - name: Link QR Code
+                    locale: it-IT
+                  - name: Link QR Code
+                    locale: en-US
+          schema_id: EuropeanDisabilityCard+dc+sd-jwt+urn:it-wallet:EuropeanDisabilityCard:v1.0.0
+          authentic_sources:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
         dc_sd_jwt_mDL:
           format: dc+sd-jwt
           scope: mDL
@@ -387,104 +411,109 @@ config:
                 - ES256
                 - ES384
                 - ES512
-          display:
-            - name: Patente di guida
-              locale: it-IT
-            - name: Mobile Driver's License
-              locale: en-US
           vct: https://trust-registry.eid-wallet.example.it/v1.0/mDL
-          claims:
-            - path:
-                - given_name
-              display:
-                - name: Nome
-                  locale: it-IT
-                - name: Name
-                  locale: en-US
-            - path:
-                - family_name
-              display:
-                - name: Cognome
-                  locale: it-IT
-                - name: Family Name
-                  locale: en-US
-            - path:
-                - birth_date
-              display:
-                - name: Data di Nascita (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Date of Birth (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - place_of_birth
-              display:
-                - name: Luogo di Nascita
-                  locale: it-IT
-                - name: Place of Birth
-                  locale: en-US
-            - path:
-                - issue_date
-              display:
-                - name: Data di rilascio (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Issue Date (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - expiry_date
-              display:
-                - name: Data di Scadenza (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Expiration Date (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - issuing_country
-              display:
-                - name: Paese di rilascio
-                  locale: it-IT
-                - name: Issuing Country
-                  locale: en-US
-            - path:
-                - issuing_authority
-              display:
-                - name: Autorità di rilascio
-                  locale: it-IT
-                - name: Issuing Authority
-                  locale: en-US
-            - path:
-                - document_number
-              display:
-                - name: Numero Documento
-                  locale: it-IT
-                - name: Document Number
-                  locale: en-US
-            - path:
-                - portrait
-              display:
-                - name: Foto codificata in base64
-                  locale: it-IT
-                - name: Portrait base64 encoded
-                  locale: en-US
-            - path:
-                - driving_privileges
-              display:
-                - name: Elenco delle categorie di abilitazione separate da spazio
-                  locale: it-IT
-                - name: Driving Privileges separated by space
-                  locale: en-US
-            - path:
-                - restrictions_conditions
-              display:
-                - name: Annotazioni/Restrizioni valide per tutte le categorie separate da spazio
-                  locale: it-IT
-                - name: Restriction/Condition for all driving privileges separated by space
-                  locale: en-US
-            - path:
-                - driving_privileges_details
-              display:
-                - name: Dettagli delle categorie di abilitazione
-                  locale: it-IT
-                - name: Driving privilege details
-                  locale: en-US
+          credential_metadata:
+            display:
+              - name: Patente di guida
+                locale: it-IT
+              - name: Mobile Driver's License
+                locale: en-US
+            claims:
+              - path:
+                  - given_name
+                display:
+                  - name: Nome
+                    locale: it-IT
+                  - name: Name
+                    locale: en-US
+              - path:
+                  - family_name
+                display:
+                  - name: Cognome
+                    locale: it-IT
+                  - name: Family Name
+                    locale: en-US
+              - path:
+                  - birth_date
+                display:
+                  - name: Data di Nascita (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Date of Birth (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - place_of_birth
+                display:
+                  - name: Luogo di Nascita
+                    locale: it-IT
+                  - name: Place of Birth
+                    locale: en-US
+              - path:
+                  - issue_date
+                display:
+                  - name: Data di rilascio (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Issue Date (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - expiry_date
+                display:
+                  - name: Data di Scadenza (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Expiration Date (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - issuing_country
+                display:
+                  - name: Paese di rilascio
+                    locale: it-IT
+                  - name: Issuing Country
+                    locale: en-US
+              - path:
+                  - issuing_authority
+                display:
+                  - name: Autorità di rilascio
+                    locale: it-IT
+                  - name: Issuing Authority
+                    locale: en-US
+              - path:
+                  - document_number
+                display:
+                  - name: Numero Documento
+                    locale: it-IT
+                  - name: Document Number
+                    locale: en-US
+              - path:
+                  - portrait
+                display:
+                  - name: Foto codificata in base64
+                    locale: it-IT
+                  - name: Portrait base64 encoded
+                    locale: en-US
+              - path:
+                  - driving_privileges
+                display:
+                  - name: Elenco delle categorie di abilitazione separate da spazio
+                    locale: it-IT
+                  - name: Driving Privileges separated by space
+                    locale: en-US
+              - path:
+                  - restrictions_conditions
+                display:
+                  - name: Annotazioni/Restrizioni valide per tutte le categorie separate da spazio
+                    locale: it-IT
+                  - name: Restriction/Condition for all driving privileges separated by space
+                    locale: en-US
+              - path:
+                  - driving_privileges_details
+                display:
+                  - name: Dettagli delle categorie di abilitazione
+                    locale: it-IT
+                  - name: Driving privilege details
+                    locale: en-US
+          schema_id: mDL+dc+sd-jwt+urn:it-wallet:mDL:v1.0.0
+          authentic_sources:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential
         mso_mdoc_mDL:
           format: mso_mdoc
           scope: mDL
@@ -495,108 +524,119 @@ config:
             - ES256
             - ES384
             - ES512
-          display:
-            - name: Patente di guida
-              locale: it-IT
-            - name: Mobile Driver's License
-              locale: en-US
-          claims:
-            - path:
-                - org.iso.18013.5.1
-                - given_name
-              display:
-                - name: Nome
-                  locale: it-IT
-                - name: First Name
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - family_name
-              display:
-                - name: Cognome
-                  locale: it-IT
-                - name: Family Name
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - birth_date
-              display:
-                - name: Data di nascita (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Date of Birth (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - birth_place
-              display:
-                - name: Luogo di Nascita
-                  locale: it-IT
-                - name: Place of Birth
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - issue_date
-              display:
-                - name: Data di rilascio (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Issue Date (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - expiry_date
-              display:
-                - name: Data di scadenza (YYYY-MM-GG)
-                  locale: it-IT
-                - name: Expiry Date (YYYY-MM-GG)
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - issuing_country
-              display:
-                - name: Paese di rilascio
-                  locale: it-IT
-                - name: Issuing Country
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - issuing_authority
-              display:
-                - name: Autorità di rilascio
-                  locale: it-IT
-                - name: Issuing Authority
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - document_number
-              display:
-                - name: Numero di documento
-                  locale: it-IT
-                - name: Document Number
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - portrait
-              display:
-                - name: Foto codificata in base64
-                  locale: it-IT
-                - name: Portrait base64 encoded
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - driving_privileges
-              display:
-                - name: Elenco delle categorie di abilitazione e relativi dettagli su restrizioni/condizioni
-                  locale: it-IT
-                - name: Driving Privileges and related restrictions/conditions details
-                  locale: en-US
-            - path:
-                - org.iso.18013.5.1
-                - un_distinguishing_sign
-              display:
-                - name: Codice identificativo della Nazione
-                  locale: it-IT
-                - name: Distinguishing sign of the issuing country
-                  locale: en-US
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          credential_metadata:
+            display:
+              - name: Patente di guida
+                locale: it-IT
+              - name: Mobile Driver's License
+                locale: en-US
+            claims:
+              - path:
+                  - org.iso.18013.5.1
+                  - given_name
+                display:
+                  - name: Nome
+                    locale: it-IT
+                  - name: First Name
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - family_name
+                display:
+                  - name: Cognome
+                    locale: it-IT
+                  - name: Family Name
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - birth_date
+                display:
+                  - name: Data di nascita (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Date of Birth (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - birth_place
+                display:
+                  - name: Luogo di Nascita
+                    locale: it-IT
+                  - name: Place of Birth
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - issue_date
+                display:
+                  - name: Data di rilascio (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Issue Date (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - expiry_date
+                display:
+                  - name: Data di scadenza (YYYY-MM-GG)
+                    locale: it-IT
+                  - name: Expiry Date (YYYY-MM-GG)
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - issuing_country
+                display:
+                  - name: Paese di rilascio
+                    locale: it-IT
+                  - name: Issuing Country
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - issuing_authority
+                display:
+                  - name: Autorità di rilascio
+                    locale: it-IT
+                  - name: Issuing Authority
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - document_number
+                display:
+                  - name: Numero di documento
+                    locale: it-IT
+                  - name: Document Number
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - portrait
+                display:
+                  - name: Foto codificata in base64
+                    locale: it-IT
+                  - name: Portrait base64 encoded
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - driving_privileges
+                display:
+                  - name: Elenco delle categorie di abilitazione e relativi dettagli su restrizioni/condizioni
+                    locale: it-IT
+                  - name: Driving Privileges and related restrictions/conditions details
+                    locale: en-US
+              - path:
+                  - org.iso.18013.5.1
+                  - un_distinguishing_sign
+                display:
+                  - name: Codice identificativo della Nazione
+                    locale: it-IT
+                  - name: Distinguishing sign of the issuing country
+                    locale: en-US
+          schema_id: mDL+mso_mdoc+org.iso.18013.5.1.mDL
+          authentic_sources:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential
       jwks: *metadata_jwks
       trust_frameworks_supported:
         - it_cie
