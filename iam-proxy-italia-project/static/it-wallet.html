@@ -115,7 +115,11 @@
             </svg>
           </span>
           <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per Nome" aria-label="Cerca wallet per nome">
-          <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">&times;</button>
+          <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">
+            <svg class="icon" aria-hidden="true">
+              <use href="/static/svg/sprites.svg#it-close-big"></use>
+            </svg>
+          </button>
         </div>
         <button class="btn btn-primary btn-sm" type="button" id="search-btn">Cerca</button>
         <div class="it-wallet-sort-wrap">

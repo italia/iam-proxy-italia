@@ -1072,6 +1072,7 @@ html.it-wallet-html body.it-wallet-body {
   max-width: 803px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 2rem;
 }
 
 .it-wallet-sort-wrap {
@@ -1234,9 +1235,19 @@ html.it-wallet-html body.it-wallet-body {
   border: 0;
   background: transparent;
   color: #5C6F82;
-  font-size: 1.1rem;
-  line-height: 1;
+  padding: 0;
+  line-height: 0;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.it-wallet-search-clear .icon {
+  width: 1rem;
+  height: 1rem;
+  color: currentColor;
+  fill: currentColor;
 }
 
 .it-wallet-grid-col {
@@ -1245,8 +1256,31 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 #wallet-grid.row {
+  margin-top: 1rem;
   margin-left: 0;
   margin-right: 0;
+}
+
+@media (min-width: 992px) {
+  #wallet-grid.row {
+    display: grid;
+    grid-template-columns: repeat(2, 387px);
+    column-gap: 1.5rem;
+    row-gap: 1.5rem;
+    justify-content: center;
+  }
+
+  #wallet-grid.row > .it-wallet-grid-col {
+    width: 387px;
+    max-width: 387px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 0;
+  }
+
+  #wallet-grid.row > .col-12:not(.it-wallet-grid-col) {
+    grid-column: 1 / -1;
+  }
 }
 
 .it-wallet-card {
