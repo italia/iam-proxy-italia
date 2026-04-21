@@ -1,16 +1,17 @@
-# Security-pinned versions (Django 4.2 LTS, djangosaml2 1.11.x).
-# Run: pip-audit -r requirements.txt
-# Django>=4.2.30: Apr 2026 security releases (e.g. GHSA-mvfq-ggxm-9mc5, GHSA-933h-hp56-hf7m) on 4.2.x
-Django>=4.2.30,<5.0
+# Security-pinned versions. Run: pip-audit -r requirements.txt
+# Django 5.2.x: pip-audit/OSV currently flags all 4.2.x including 4.2.30 for several CVEs with no
+#   valid 4.2 fix version in the advisory payload; 5.2.13+ is the supported patched LTS line on PyPI.
+Django>=5.2.13,<6.0
 cffi>=1.17.0
-# CVE-2026-26007: SECT curves subgroup validation; fixed in 46.0.5
-cryptography>=46.0.5
-# pyOpenSSL 26.x: CVE-2026-27448, CVE-2026-27459; requires cryptography>=46.0.0
+cryptography>=46.0.7
 pyOpenSSL>=26.0.0
 
-# django saml2 SP (requires Django>=4.2, defusedxml, pysaml2)
-djangosaml2>=1.11.1
+# django saml2 SP (pysaml2: keep <7.5.1 so pip does not resolve 7.5.1+ which caps pyOpenSSL<24.3.0)
+djangosaml2>=1.12.0
+pysaml2>=6.5.1,<7.5.1
 importlib-resources>=5.12.0,<6.0.0
+lxml>=6.1.0
+requests>=2.33.0
 
 # Required by Python zoneinfo when system tzdata is missing (Docker/slim images)
 tzdata>=2024.1
