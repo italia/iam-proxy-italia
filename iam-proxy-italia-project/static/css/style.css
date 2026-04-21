@@ -1065,6 +1065,9 @@ html.it-wallet-html body.it-wallet-body {
   align-items: center;
   gap: 1rem;
   width: 100%;
+  max-width: 803px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .it-wallet-sort-wrap {
@@ -1072,67 +1075,77 @@ html.it-wallet-html body.it-wallet-body {
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-  border: 1px solid #0066CC;
-  border-radius: 8px;
-  background: #fff;
   box-sizing: border-box;
 }
 
-.it-wallet-sort-facade {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  display: flex;
+.it-wallet-sort-trigger {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 1px solid #0066CC;
+  border-radius: 4px;
+  background: #fff;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 0;
+  cursor: pointer;
+}
+
+.it-wallet-sort-trigger:focus-visible {
+  outline: 2px solid #0066CC;
+  outline-offset: 2px;
+}
+
+.it-wallet-sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  border: 1px solid #D9E4F2;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(23, 50, 77, 0.14);
+  padding: 0.35rem 0;
+  z-index: 30;
+}
+
+.it-wallet-sort-menu-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #17324d;
+  text-align: left;
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  padding: 0.85rem 1.15rem;
+  cursor: pointer;
+}
+
+.it-wallet-sort-menu-item:hover,
+.it-wallet-sort-menu-item:focus-visible,
+.it-wallet-sort-menu-item.is-active {
+  background: #f2f7fc;
+  outline: none;
 }
 
 .it-wallet-sort-native {
   position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 8px;
-  opacity: 0;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 40px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: transparent;
-
-  /* non usare color:transparent: su WebKit il menu a tendina eredita e resta illeggibile */
-  color: #17324d;
-}
-
-.it-wallet-sort-native option,
-.it-wallet-sort-native optgroup {
-  color: #17324d;
-  background-color: #fff;
-}
-
-.it-wallet-sort-native:focus {
-  opacity: 0.01;
-  outline: none;
-  color: #17324d;
-}
-
-.it-wallet-sort-native:focus-visible {
-  outline: 2px solid #0066CC;
-  outline-offset: 2px;
-  opacity: 0.01;
-  color: #17324d;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 @media (max-width: 991.98px) {
+  .it-wallet-controls {
+    max-width: 387px;
+  }
+
   .it-wallet-controls.it-wallet-controls-panel:not(.is-mobile-panel-open) {
     display: none !important;
   }
@@ -1176,8 +1189,37 @@ html.it-wallet-html body.it-wallet-body {
   flex: 1 1 auto;
 }
 
+.it-wallet-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5C6F82;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.it-wallet-search-icon .icon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
 .it-wallet-search-group .form-control {
+  border: 1px solid #D9E4F2;
+  border-radius: 4px !important;
+  padding-left: 2.25rem;
   padding-right: 2rem;
+}
+
+#search-btn {
+  min-height: 40px;
+  padding: 0.125rem 0.9rem;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  border-radius: 3px;
 }
 
 .it-wallet-search-clear {
@@ -1196,6 +1238,11 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-grid-col {
   display: flex;
   justify-content: center;
+}
+
+#wallet-grid.row {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .it-wallet-card {
