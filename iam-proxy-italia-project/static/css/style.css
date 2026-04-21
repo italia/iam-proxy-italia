@@ -1268,6 +1268,7 @@ html.it-wallet-html body.it-wallet-body {
   gap: 12px;
   align-items: center;
   text-align: left;
+  flex-wrap: nowrap;
 }
 
 .it-wallet-card-hit {
@@ -1301,6 +1302,7 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-card-title {
+  margin: 0 !important;
   font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 600 !important;
   font-size: 1.5rem;
@@ -1313,6 +1315,16 @@ html.it-wallet-html body.it-wallet-body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.it-wallet-card-arrow {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.25rem;
+  min-width: 1.25rem;
+  visibility: visible !important;
+  opacity: 1;
 }
 
 .it-wallet-card-arrow .icon {
