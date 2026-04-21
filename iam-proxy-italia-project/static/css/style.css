@@ -1258,9 +1258,10 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-card .it-card-body {
-  height: 99px;
-  min-height: 99px;
-  padding: 24px;
+  height: 100%;
+  min-height: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
 }
 
 .it-wallet-card-main-row {
@@ -1278,6 +1279,11 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-card-hit:hover {
   text-decoration: none;
+}
+
+.it-wallet-card-hit:hover .it-wallet-card-title,
+.it-wallet-card-hit:focus-visible .it-wallet-card-title {
+  color: rgb(0 81 162);
 }
 
 .it-wallet-card-left {
