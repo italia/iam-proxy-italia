@@ -1265,8 +1265,7 @@ html.it-wallet-html body.it-wallet-body {
   #wallet-grid.row {
     display: grid;
     grid-template-columns: repeat(2, 387px);
-    column-gap: 1.5rem;
-    row-gap: 1.5rem;
+    gap: 1.5rem;
     justify-content: center;
   }
 
