@@ -1,6 +1,7 @@
 # Security-pinned versions (Django 4.2 LTS, djangosaml2 1.11.x).
 # Run: pip-audit -r requirements.txt
-Django>=4.2.17,<5.0
+# Django>=4.2.30: Apr 2026 security releases (e.g. GHSA-mvfq-ggxm-9mc5, GHSA-933h-hp56-hf7m) on 4.2.x
+Django>=4.2.30,<5.0
 cffi>=1.17.0
 # CVE-2026-26007: SECT curves subgroup validation; fixed in 46.0.5
 cryptography>=46.0.5

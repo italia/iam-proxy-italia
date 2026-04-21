@@ -34,7 +34,8 @@ test = [
     "pytest-asyncio",
     "pygments (>=2.20.0)",  # CVE-2026-4539
     "pyOpenSSL>=26.0.0",
-    "pip-audit (>=2.10.0,<3.0.0)"
+    "pip-audit (>=2.10.0,<3.0.0)",
+    "lxml (>=6.1.0)",  # CVE-2026-41066: safe resolve_entities default for all parsers
 ]
 
 [tool.poetry]
