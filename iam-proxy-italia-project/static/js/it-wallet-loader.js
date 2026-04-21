@@ -42,11 +42,11 @@ function loadDocument(resource) {
   const sortItemZa = document.getElementById('wallet-sort-item-za');
   if (sortItemZa) sortItemZa.textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   const backLink = document.getElementById('back-link');
-  const backText = resource?.nav?.back ?? 'Indietro';
+  const backText = resource?.nav?.back ?? 'Torna indietro';
   if (backLink) backLink.setAttribute('aria-label', backText);
   const backLabel = document.querySelector('.it-wallet-back-label');
   if (backLabel) {
-    backLabel.textContent = typeof backText === 'string' ? backText.toUpperCase() : 'INDIETRO';
+    backLabel.textContent = typeof backText === 'string' ? backText : 'Torna indietro';
   }
 
   const footerLegal = document.getElementById('footer-legal');

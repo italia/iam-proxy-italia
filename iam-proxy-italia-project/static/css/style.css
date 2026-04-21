@@ -923,7 +923,11 @@ html.it-wallet-html body.it-wallet-body {
   color: #0066CC;
   text-decoration: none;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: none;
+}
+
+.it-wallet-back-link .it-wallet-back-label {
+  text-decoration: underline;
 }
 
 .it-wallet-back-link .icon {
