@@ -79,7 +79,7 @@ services:
       - demo
       - dev
       - saml2
-    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:v3.1.0
+    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:v3.2.0
     build:
       context: ../
       args:
@@ -103,7 +103,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.2.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.3.0
     build:
         context: ../
         args:
