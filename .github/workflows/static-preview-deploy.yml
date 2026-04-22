@@ -13,6 +13,9 @@ on:
       - 'iam-proxy-italia-project/static/**'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   pre_job:
     runs-on: ubuntu-latest
@@ -20,10 +23,10 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v3.4.0
+        uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           skip_after_successful_duplicate: 'true'
-          same_content_newer: 'true'
+          concurrent_skipping: 'same_content_newer'
 
   lint:
     name: Lint static assets
@@ -53,8 +56,6 @@ jobs:
     needs: [pre_job, lint]
     if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     permissions:
       contents: write
     steps:
