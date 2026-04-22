@@ -109,5 +109,5 @@ jobs:
           cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
           touch .nojekyll
           git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
-          git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }} [skip ci]"
+          git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }}"
           git push origin gh-pages
