@@ -1545,3 +1545,43 @@ html.it-wallet-html body.it-wallet-body {
   }
 }
 
+/* IT-Wallet mobile/tablet: denser header strip and full-width cards up to 900px */
+@media (max-width: 900px) {
+  .it-wallet-body .header-title-section {
+    min-height: 72px;
+  }
+
+  .it-wallet-body .header-title-section .container.py-3 {
+    min-height: 72px;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+  }
+
+  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
+    height: 31px !important;
+    width: auto;
+  }
+
+  .it-wallet-page.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #wallet-grid.row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #wallet-grid.row > .it-wallet-grid-col {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .it-wallet-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
