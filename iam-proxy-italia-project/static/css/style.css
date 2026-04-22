@@ -1553,8 +1553,8 @@ html.it-wallet-html body.it-wallet-body {
 
   .it-wallet-body .header-title-section .container.py-3 {
     min-height: 72px;
-    padding-top: 0.625rem !important;
-    padding-bottom: 0.625rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
   }
 
   .it-wallet-body .header-title-section .it-wallet-navbar-logo {
@@ -1582,6 +1582,24 @@ html.it-wallet-html body.it-wallet-body {
   .it-wallet-card {
     width: 100%;
     max-width: 100%;
+  }
+
+  .it-wallet-title-heading {
+    font-family: var(--font-sans, "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif);
+    font-weight: 700 !important;
+    font-size: var(--heading-3-font-size-l, 2.5rem) !important;
+    line-height: 120% !important;
+    letter-spacing: var(--font-tracking-normal, 0) !important;
+    text-align: center !important;
+  }
+
+  .it-wallet-subtitle {
+    font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    line-height: 32px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
   }
 }
 
