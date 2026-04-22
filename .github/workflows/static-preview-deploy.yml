@@ -107,6 +107,15 @@ jobs:
           rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"
           mkdir -p preview/"${{ steps.prepare.outputs.safe_branch }}"
           cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Force a gh-pages commit for manual runs even when static files are unchanged.
+            {
+              echo "manual_dispatch=true"
+              echo "run_id=${{ github.run_id }}"
+              echo "run_attempt=${{ github.run_attempt }}"
+              echo "deployed_at=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            } > preview/"${{ steps.prepare.outputs.safe_branch }}"/.preview-deploy-meta
+          fi
           touch .nojekyll
           git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
           git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }}"
