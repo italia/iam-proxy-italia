@@ -46,11 +46,11 @@ def internal_attributes():
                 "oidc": ["preferred_username", "sub"],
                 "spid": ["spid_code"]
             },
-            "first_name": {
+            "given_name": {
                 "oidc": ["given_name"],
                 "ldap": ["cn"]
             },
-            "last_name": {
+            "family_name": {
                 "oidc": ["family_name"],
                 "ldap": ["sn"]
             },
@@ -63,7 +63,7 @@ def internal_attributes():
             }
         },
         "template_attributes": {
-            "full_name": "{first_name} {last_name}"
+            "full_name": "{given_name} {family_name}"
         }
     }
 

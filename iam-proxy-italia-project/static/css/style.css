@@ -423,10 +423,34 @@ main {
   text-decoration: none;
 }
 
+/* EID cards: no rounded corners on buttons */
+#eid-cards-container .btn,
+#eid-alternative-section .btn {
+  border-radius: 0 !important;
+}
+
+/* IT-Wallet button: rounded corners (only exception) */
+#eid-cards-container .eid-card-btn-wallet,
+#eid-alternative-section .eid-card-btn-wallet {
+  border-radius: 0.375rem !important;
+}
+
+/* eIDAS: rounded corners; vertical rule dark blue */
+#eid-cards-container .eid-card-btn-eidas,
+#eid-alternative-section .eid-card-btn-eidas {
+  border-radius: 0.375rem !important;
+}
+
+#eid-cards-container .eid-card-btn-eidas .eid-card-separator,
+#eid-alternative-section .eid-card-btn-eidas .eid-card-separator {
+  background: #00519D;
+}
+
 /* EID cards: responsive layout - buttons fill available space */
 .it-card {
   display: flex;
   flex-direction: column;
+  border-radius: 4px;
 }
 
 .it-card .it-card-body {
@@ -455,8 +479,29 @@ main {
   flex: 1;
   min-height: 2.75rem;
   max-height: 2.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 1rem;
   font-size: clamp(0.875rem, 2vw, 1rem);
+  flex-wrap: nowrap;
+}
+
+.eid-card-btn .eid-card-btn-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* EID cards grid: keep a minimum card width and wrap rows when needed */
+.eid-cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.eid-cards-row > .eid-card-col {
+  flex: 0 0 auto;
+  width: min(100%, 18rem);
+  max-width: 18rem;
 }
 
 .eid-card-logo {
@@ -466,7 +511,41 @@ main {
   min-height: 20px;
   max-width: 28px;
   max-height: 28px;
+  aspect-ratio: 1;
   object-fit: contain;
+  margin-right: 0.25rem;
+}
+
+/* Vertical line between logo and label (all buttons except IT-Wallet) */
+.eid-card-btn .eid-card-separator {
+  width: 1px;
+  min-width: 1px;
+  flex-shrink: 0;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.9);
+  margin-right: 0.5rem;
+}
+
+/* Responsive 577px–1279px: button labels wrap and stay centered */
+@media (max-width: 1279px) and (min-width: 577px) {
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: nowrap;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+    justify-content: flex-start;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
 }
 
 header svg.icon {
@@ -475,11 +554,20 @@ header svg.icon {
   fill: #6c757d;
 }
 
+/* "Non hai un'identità digitale?" — heading/5-l */
+.eid-havent-digital-id-heading {
+  color: #2f475e;
+  font-size: 24px;
+  line-height: 32px;
+}
+
 /* Find out how to get it link */
 .eid-find-how-link {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
+  font-size: 1rem !important;
+  margin-top: 0.75rem;
   cursor: pointer !important;
   text-decoration: underline !important;
   color: #0066cc !important;
@@ -514,6 +602,7 @@ header svg.icon {
 
 /* Learn more toggle */
 .eid-learn-more-toggle {
+  font-size: 1rem !important;
   color: #0066cc !important;
   text-decoration: underline !important;
   cursor: pointer;
@@ -556,42 +645,114 @@ header svg.icon {
   background-color: #004C99 !important;
 }
 
-#lang-select,
-#error-lang-select,
-.it-header-slim-wrapper.bg-primary #lang-select,
-.it-header-slim-wrapper.bg-primary #error-lang-select {
-  background-color: #004C99 !important;
+/* Language dropdown (developers.italia.it slim header pattern) */
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle {
   color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: none !important;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 16px 12px;
-  padding-right: 2.25rem;
+  font-weight: 400;
+  padding: 0.35rem 0.25rem;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
-#lang-select option,
-#error-lang-select option {
-  background-color: #fff !important;
-  color: #333 !important;
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle:hover,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle:focus {
+  color: #fff !important;
 }
 
-/* Header lang select: extra specificity to override Bootstrap Italia .form-select */
-.it-header-slim-wrapper.bg-primary #lang-select,
-.it-header-slim-wrapper.bg-primary #error-lang-select {
-  background-color: #004C99 !important;
-  color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: none !important;
-  outline: none !important;
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle::after {
+  display: none !important;
+}
+
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link .icon {
+  color: #fff;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.it-header-lang-dropdown .dropdown-menu {
+  z-index: 1050;
+}
+
+.it-header-lang-dropdown .dropdown-menu .dropdown-item,
+.it-header-lang-dropdown .dropdown-menu .dropdown-item.active,
+.it-header-lang-dropdown .dropdown-menu .dropdown-item:active {
+  font-weight: 400;
 }
 
 .header-title-section {
   background-color: #F2F7FC;
+}
+
+.header-title-section .navbar-separator {
+  display: inline-block;
+  width: 1px;
+  height: 32px;
+  background-color: #BFCAD5;
+  margin: 0 16px;
+}
+
+/* Error page body - layout from mockup */
+.error-page-body {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.error-page-description {
+  color: #003366;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error-page-icon {
+  margin: 0 auto 1.5rem;
+}
+
+.error-page-icon img {
+  max-width: 160px;
+  height: auto;
+}
+
+.error-page-guidance {
+  color: #5c6f82;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-page-cta {
+  padding: 0.5rem 1.5rem;
+}
+
+.error-page-assistance {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #5c6f82;
+  text-decoration: none;
+}
+
+.error-page-assistance:hover {
+  color: #004C99;
 }
 
 footer {
@@ -711,20 +872,594 @@ footer {
 }
 
 .eid-alternative-section {
-  background-color: #F5F5F0;
+  background-color: #f5f5f5;
   width: 100vw;
   margin-left: calc(50% - 50vw);
 }
 
+/* Pagina IT-Wallet: il layout globale html,body{height:100%} blocca l’altezza al viewport:
+   il footer resta “nella prima schermata”. Qui altezza = contenuto, scroll sul documento. */
+html.it-wallet-html {
+  height: auto;
+  min-height: 100%;
+}
+
+html.it-wallet-html body.it-wallet-body {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.it-wallet-body > .it-header-wrapper {
+  flex-shrink: 0;
+}
+
+.it-wallet-body > main.it-wallet-page {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+
+.it-wallet-body > footer {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+.it-wallet-page {
+  min-height: 0;
+}
+
+.it-wallet-back-link {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  color: #0066CC;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.it-wallet-back-link .it-wallet-back-label {
+  text-decoration: underline;
+}
+
+.it-wallet-back-link .icon {
+  width: 1rem;
+  height: 1rem;
+  color: #0066CC;
+  fill: currentColor;
+}
+
+/* Mobile / tablet stretto: solo freccia <- (testo da aria-label sul link) */
+@media (max-width: 991.98px) {
+  .it-wallet-page .it-wallet-back-link .it-wallet-back-label {
+    display: none !important;
+  }
+
+  .it-wallet-page .it-wallet-back-link .icon {
+    margin-right: 0 !important;
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+}
+
+.it-wallet-title-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  min-height: 2.75rem;
+}
+
+.it-wallet-title-slot {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  max-width: 38%;
+  position: relative;
+  z-index: 2;
+}
+
+.it-wallet-title-slot--start {
+  justify-content: flex-start;
+}
+
+.it-wallet-title-slot--end {
+  justify-content: flex-end;
+}
+
+.it-wallet-title-heading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 0.25rem;
+  text-align: center;
+  width: max-content;
+  max-width: min(20rem, calc(100% - 9.5rem));
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  line-height: 1.25;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.it-wallet-title-actions {
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.it-wallet-icon-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #0066CC;
+  border-radius: 8px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.it-wallet-icon-btn:focus-visible {
+  outline: 2px solid #0066CC;
+  outline-offset: 2px;
+}
+
+.it-wallet-icon-btn .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: #0066CC;
+  fill: currentColor;
+}
+
+.it-wallet-icon-chevron-up {
+  transform: rotate(180deg);
+}
+
+/* Due frecce su/giu affiancate: stesso verso verticale, parallele (non impilate) */
+.it-wallet-sort-icon-duo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1;
+}
+
+.it-wallet-sort-icon-duo .it-wallet-sort-arrow {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  color: #0066cc;
+  fill: currentColor;
+}
+
+.it-wallet-subtitle {
+  color: #17324D;
+}
+
+.it-wallet-layout-surface {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.it-wallet-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 40px;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 803px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.it-wallet-sort-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.it-wallet-sort-trigger {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 1px solid #0066CC;
+  border-radius: 4px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.it-wallet-sort-trigger:focus-visible {
+  outline: 2px solid #0066CC;
+  outline-offset: 2px;
+}
+
+.it-wallet-sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  border: 1px solid #D9E4F2;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(23, 50, 77, 0.14);
+  padding: 0.35rem 0;
+  z-index: 30;
+}
+
+.it-wallet-sort-menu-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #17324d;
+  text-align: left;
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  padding: 0.85rem 1.15rem;
+  cursor: pointer;
+}
+
+.it-wallet-sort-menu-item:hover,
+.it-wallet-sort-menu-item:focus-visible,
+.it-wallet-sort-menu-item.is-active {
+  background: #f2f7fc;
+  outline: none;
+}
+
+.it-wallet-sort-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+  .it-wallet-controls {
+    max-width: 387px;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel:not(.is-mobile-panel-open) {
+    display: none !important;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open {
+    display: flex !important;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-group {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open #search-btn {
+    width: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-sort-wrap {
+    flex-shrink: 0;
+  }
+}
+
+@media (min-width: 992px) {
+  .it-wallet-controls.it-wallet-controls-panel {
+    display: grid !important;
+  }
+
+  .it-wallet-title-actions {
+    display: none !important;
+  }
+}
+
+.it-wallet-search-group {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.it-wallet-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5C6F82;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.it-wallet-search-icon .icon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.it-wallet-search-group .form-control {
+  border: 1px solid #D9E4F2;
+  border-radius: 4px !important;
+  padding-left: 2.25rem;
+  padding-right: 2rem;
+}
+
+#search-btn {
+  min-height: 40px;
+  padding: 0.125rem 0.9rem;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  border-radius: 3px;
+}
+
+.it-wallet-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #5C6F82;
+  padding: 0;
+  line-height: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.it-wallet-search-clear .icon {
+  width: 1rem;
+  height: 1rem;
+  color: currentColor;
+  fill: currentColor;
+}
+
+.it-wallet-grid-col {
+  display: flex;
+  justify-content: center;
+}
+
+#wallet-grid.row {
+  margin-top: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (min-width: 992px) {
+  #wallet-grid.row {
+    display: grid;
+    grid-template-columns: repeat(2, 387px);
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  #wallet-grid.row > .it-wallet-grid-col {
+    width: 387px;
+    max-width: 387px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 0;
+  }
+
+  #wallet-grid.row > .col-12:not(.it-wallet-grid-col) {
+    grid-column: 1 / -1;
+  }
+}
+
+.it-wallet-card {
+  width: 387px;
+  max-width: 387px;
+  height: 99px;
+  min-height: 99px;
+  border-radius: 4px;
+}
+
+.it-wallet-card .it-card-body {
+  height: 100%;
+  min-height: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+
+.it-wallet-card-main-row {
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  flex-wrap: nowrap;
+}
+
+.it-wallet-card-hit {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.it-wallet-card-hit:hover {
+  text-decoration: none;
+}
+
+.it-wallet-card-hit:hover .it-wallet-card-title,
+.it-wallet-card-hit:focus-visible .it-wallet-card-title {
+  color: rgb(0 81 162);
+}
+
+.it-wallet-card-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.wallet-card-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.it-wallet-card-title {
+  margin: 0 !important;
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 600 !important;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: #0066CC;
+  text-decoration: underline;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.it-wallet-card-arrow {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.25rem;
+  min-width: 1.25rem;
+  visibility: visible !important;
+  opacity: 1;
+}
+
+.it-wallet-card-arrow .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #0066CC;
+  fill: currentColor;
+}
+
+.it-wallet-card .wallet-learn-more {
+  display: none !important;
+}
+
 @media (max-width: 576px) {
-  .container {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+  /* Card text: justified on mobile for easier reading */
+  .it-card .it-card-body,
+  .it-card .it-card-body p,
+  .it-card .it-card-body li {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  /* Button labels: logo left, text centered on mobile */
+  .it-card .it-card-body > .d-flex:first-child {
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+  }
+
+  /* Mobile: let cards use full row width */
+  #eid-cards-container.row,
+  #eid-cards-container .eid-cards-row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #eid-cards-container.row > [class*="col-"],
+  #eid-cards-container .eid-cards-row > .eid-card-col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .eid-cards-row > .eid-card-col {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    flex-wrap: nowrap;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
+    justify-content: flex-start !important;
+    position: relative !important;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: calc(100% - 3.5rem) !important;
+    min-width: 0;
+    text-align: center !important;
+    pointer-events: none;
+  }
+
+  main.container {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  footer .d-flex.flex-wrap {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem;
+  }
+
+  footer .d-flex.flex-wrap a {
+    margin-right: 0 !important;
   }
 
   header .it-header-slim-wrapper-content {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: nowrap;
+  }
+
+  header .it-header-slim-wrapper-content .navbar-brand {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100% - 4.5rem);
+    margin-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  header .it-header-slim-wrapper-content .it-header-slim-right-zone {
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 
   #eid-cards-container .col-12 {
@@ -735,9 +1470,136 @@ footer {
     font-size: 1rem !important;
   }
 
-  #lang-select,
-  #error-lang-select {
-    width: 100px;
+  .it-header-lang-dropdown .nav-link.dropdown-toggle {
+    padding-left: 0 !important;
+  }
+
+  .it-wallet-title-row {
+    padding-top: 2rem;
+  }
+
+  /* IT-Wallet header logo strip: tighter on mobile for more vertical breathing room */
+  .it-wallet-body .header-title-section .container.py-3 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .it-wallet-body .header-title-section .d-flex.align-items-center {
+    min-height: 0;
+  }
+
+  .it-wallet-body .header-title-section .icon.icon-lg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .it-wallet-body .header-title-section .navbar-separator {
+    height: 24px;
+    margin: 0 10px;
+  }
+
+  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
+    height: 26px !important;
+    width: auto;
+  }
+}
+
+/* Small tablets/large phones: keep cards wide up to 800px */
+@media (max-width: 800px) {
+  #eid-cards-container.row,
+  #eid-cards-container .eid-cards-row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #eid-cards-container.row > [class*="col-"],
+  #eid-cards-container .eid-cards-row > .eid-card-col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .eid-cards-row > .eid-card-col {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+
+  main.container {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .it-card .eid-card-btn,
+  .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
+    position: relative !important;
+  }
+
+  .eid-card-btn .eid-card-btn-label {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: calc(100% - 3.5rem) !important;
+    text-align: center !important;
+    pointer-events: none;
+  }
+}
+
+/* IT-Wallet mobile/tablet: denser header strip and full-width cards up to 900px */
+@media (max-width: 900px) {
+  .it-wallet-body .header-title-section {
+    min-height: 72px;
+  }
+
+  .it-wallet-body .header-title-section .container.py-3 {
+    min-height: 72px;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
+    height: 31px !important;
+    width: auto;
+  }
+
+  .it-wallet-page.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #wallet-grid.row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #wallet-grid.row > .it-wallet-grid-col {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .it-wallet-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .it-wallet-title-heading {
+    font-family: var(--font-sans, "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif);
+    font-weight: 700 !important;
+    font-size: var(--heading-3-font-size-l, 2.5rem) !important;
+    line-height: 120% !important;
+    letter-spacing: var(--font-tracking-normal, 0) !important;
+    text-align: center !important;
+  }
+
+  .it-wallet-subtitle {
+    font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    line-height: 32px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
   }
 }
 
