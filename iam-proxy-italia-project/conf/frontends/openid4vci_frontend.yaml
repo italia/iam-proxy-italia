@@ -71,7 +71,7 @@ config:
   network:
     httpc_params: &httpc_params
       connection:
-        ssl: true
+        ssl: false #CHANGE ME! We need SSL disable for testing with self-signed certificates, but in production environment this value MUST be set to true
       session:
         timeout: 6
   security:

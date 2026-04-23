@@ -452,6 +452,8 @@ services:
     environment:
       CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    ports:
+      - "3002:3002"
     networks:
       - iam-proxy-italia
     healthcheck:
