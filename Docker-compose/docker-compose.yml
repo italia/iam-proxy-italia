@@ -455,7 +455,9 @@ services:
     ports:
       - "3002:3002"
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - wallet-provider.wct.example.org
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://iam-proxy-italia:10000/OpenID4VCI/.well-known/openid-configuration || exit 1"]
       interval: 10s
