@@ -14,9 +14,21 @@ cd "$(dirname "$0")"
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
 DEFAULT_TRUST_ANCHOR_HOSTNAME="trust-anchor.example.org"
 DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
+DEFAULT_OPENID_CIE_PROVIDER_PORT=8002
+# END USER OIDC CONFIG
+END_USER_OIDC_USERNAME=user
+END_USER_OIDC_PASSWORD=oidcuser
+export END_USER_OIDC_USERNAME="${END_USER_OIDC_USERNAME}"
+export END_USER_OIDC_PASSWORD="${END_USER_OIDC_PASSWORD}"
+# ADMIN DJANGO CONFIG
+DJANGO_ADMIN_USERNAME=admin
+DJANGO_ADMIN_PASSWORD=oidcadmin
+export DJANGO_ADMIN_USERNAME="${DJANGO_ADMIN_USERNAME}"
+export DJANGO_ADMIN_PASSWORD="${DJANGO_ADMIN_PASSWORD}"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
 export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
+export DEFAULT_OPENID_CIE_PROVIDER_PORT="${DEFAULT_OPENID_CIE_PROVIDER_PORT}"
 DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 # URLs used by prepare_dump.py and containers (must match env.example)
@@ -206,9 +218,9 @@ function start {
   case "${COMPOSE_PROFILES}" in
     demo|*demo*|storage_mongo|oidc|*oidc*)
       echo -e "=== ${OPENID_CIE_PROVIDER_HOSTNAME} (CIE OIDC) — credentials from sample dump (see spid-cie-oidc-django README) ==="
-      echo -e "  Django admin:        username: admin    password: oidcadmin"
-      echo -e "  End-user OIDC login: username: user     password: oidcuser"
-      echo -e "  Base URL:            http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/"
+      echo -e "  Django admin:        username: ${DJANGO_ADMIN_USERNAME}    password: ${DJANGO_ADMIN_PASSWORD}"
+      echo -e "  End-user OIDC login: username: ${END_USER_OIDC_USERNAME}     password: ${END_USER_OIDC_PASSWORD}"
+      echo -e "  Base URL:            http://${OPENID_CIE_PROVIDER_HOSTNAME}:${DEFAULT_OPENID_CIE_PROVIDER_PORT}/"
       echo -e ""
       ;;
   esac
