@@ -675,8 +675,8 @@ header svg.icon {
 }
 
 .it-header-slim-wrapper.bg-primary #header-region-name {
-  font-size: 14px;
-  font-weight: 400 !important;
+  font-size: 18px;
+  font-weight: 600 !important;
 }
 
 /* Language dropdown (developers.italia.it slim header pattern) */
