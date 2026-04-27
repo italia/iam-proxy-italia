@@ -373,6 +373,12 @@ async function loadItWalletPage() {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
       syncSearchButtonState();
     };
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      if (searchBtn?.disabled) return;
+      searchBtn?.click();
+    });
   }
   if (searchBtn) {
     searchBtn.onclick = () => {
