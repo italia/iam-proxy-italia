@@ -464,6 +464,9 @@ async function loadItWalletPage() {
   syncSearchButtonState();
   applyFiltersAndSort();
   setupBackLink();
+  if (showControls && searchInput) {
+    requestAnimationFrame(() => searchInput.focus());
+  }
 }
 
 i18next
