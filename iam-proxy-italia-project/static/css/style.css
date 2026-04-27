@@ -675,8 +675,8 @@ header svg.icon {
 }
 
 .it-header-slim-wrapper.bg-primary #header-region-name {
-  font-size: 14px;
-  font-weight: 400 !important;
+  font-size: 18px;
+  font-weight: 600 !important;
 }
 
 /* Language dropdown (developers.italia.it slim header pattern) */
@@ -1100,26 +1100,22 @@ html.it-wallet-html body.it-wallet-body {
   fill: currentColor;
 }
 
+.it-wallet-icon-btn .it-wallet-toggle-img {
+  width: 1.15rem;
+  height: 1.15rem;
+  object-fit: contain;
+  display: block;
+}
+
 .it-wallet-icon-chevron-up {
   transform: rotate(180deg);
 }
 
-/* Due frecce su/giu affiancate: stesso verso verticale, parallele (non impilate) */
-.it-wallet-sort-icon-duo {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  line-height: 1;
-}
-
-.it-wallet-sort-icon-duo .it-wallet-sort-arrow {
-  width: 0.7rem;
-  height: 1rem;
+.it-wallet-sort-icon {
+  width: 1.25rem;
+  height: 1.25rem;
   flex-shrink: 0;
-  color: #0066cc;
-  fill: currentColor;
+  display: block;
 }
 
 .it-wallet-subtitle {
@@ -1315,6 +1311,11 @@ html.it-wallet-html body.it-wallet-body {
   font-size: 16px;
   line-height: 1;
   border-radius: 3px;
+  background-color: #0066cc !important;
+  border-color: #0066cc !important;
+}
+
+#search-btn[aria-pressed='true'] {
   background-color: #003366 !important;
   border-color: #003366 !important;
 }
@@ -1457,6 +1458,7 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-card-title {
   margin: 0 !important;
+  padding: 0 !important;
   font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 600 !important;
   font-size: 1.5rem;
@@ -1558,6 +1560,11 @@ html.it-wallet-html body.it-wallet-body {
     min-width: 0;
     text-align: center !important;
     pointer-events: none;
+  }
+
+  .eid-card-btn-wallet .eid-card-btn-label {
+    font-size: 16px !important;
+    font-weight: 600 !important;
   }
 
   main.container {
