@@ -1458,6 +1458,7 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-card-title {
   margin: 0 !important;
+  padding: 0 !important;
   font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 600 !important;
   font-size: 1.5rem;
