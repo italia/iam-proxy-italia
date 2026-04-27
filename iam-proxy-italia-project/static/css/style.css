@@ -1311,6 +1311,11 @@ html.it-wallet-html body.it-wallet-body {
   font-size: 16px;
   line-height: 1;
   border-radius: 3px;
+  background-color: #0066cc !important;
+  border-color: #0066cc !important;
+}
+
+#search-btn[aria-pressed='true'] {
   background-color: #003366 !important;
   border-color: #003366 !important;
 }

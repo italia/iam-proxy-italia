@@ -354,6 +354,9 @@ async function loadItWalletPage() {
     if (!searchBtn) return;
     const hasQuery = !!(searchInput?.value || '').trim();
     searchBtn.disabled = !hasQuery;
+    if (!hasQuery) {
+      searchBtn.setAttribute('aria-pressed', 'false');
+    }
   }
 
   function closeSortMenu() {
@@ -380,6 +383,7 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+      searchBtn?.setAttribute('aria-pressed', 'false');
       syncSearchButtonState();
     };
     searchInput.addEventListener('keydown', (event) => {
@@ -391,7 +395,9 @@ async function loadItWalletPage() {
   }
   if (searchBtn) {
     searchBtn.onclick = () => {
+      if (searchBtn.disabled) return;
       appliedQuery = (searchInput?.value || '').trim();
+      searchBtn.setAttribute('aria-pressed', 'true');
       applyFiltersAndSort();
     };
   }
