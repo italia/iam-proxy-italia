@@ -1387,7 +1387,7 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-card-left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   min-width: 0;
   flex: 1 1 auto;
 }
