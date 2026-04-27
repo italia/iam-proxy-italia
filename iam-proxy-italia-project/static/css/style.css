@@ -733,9 +733,19 @@ header svg.icon {
   display: block;
   height: auto;
   width: auto;
-  max-height: 44px;
+  max-height: 32px;
   max-width: 100%;
   object-fit: contain;
+}
+
+.header-title-section .icon.icon-lg {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Keep lower light-blue header content aligned with upper org name */
+.header-title-section .container.py-3 {
+  padding-left: calc(var(--bs-gutter-x, 2rem) * 1 + 0.5rem);
 }
 
 /* Error page body - layout from mockup */
@@ -1032,8 +1042,10 @@ html.it-wallet-html body.it-wallet-body {
   text-align: center;
   width: max-content;
   max-width: min(20rem, calc(100% - 9.5rem));
-  font-size: clamp(1.25rem, 4vw, 2rem);
-  line-height: 1.25;
+  /* Visual match with disco.html heading */
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 700;
   pointer-events: none;
   z-index: 1;
 }
@@ -1270,6 +1282,14 @@ html.it-wallet-html body.it-wallet-body {
   border-radius: 3px;
 }
 
+#search-btn:disabled {
+  background-color: #adb5bd !important;
+  border-color: #adb5bd !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
 .it-wallet-search-clear {
   position: absolute;
   top: 50%;
@@ -1330,6 +1350,7 @@ html.it-wallet-html body.it-wallet-body {
   max-width: 387px;
   height: 99px;
   min-height: 99px;
+  border: 1pt solid #C5C7C9;
   border-radius: 4px;
 }
 
@@ -1530,30 +1551,6 @@ html.it-wallet-html body.it-wallet-body {
     padding-top: 2rem;
   }
 
-  /* IT-Wallet header logo strip: tighter on mobile for more vertical breathing room */
-  .it-wallet-body .header-title-section .container.py-3 {
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-  }
-
-  .it-wallet-body .header-title-section .d-flex.align-items-center {
-    min-height: 0;
-  }
-
-  .it-wallet-body .header-title-section .icon.icon-lg {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-
-  .it-wallet-body .header-title-section .navbar-separator {
-    height: 24px;
-    margin: 0 10px;
-  }
-
-  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
-    height: 26px !important;
-    width: auto;
-  }
 }
 
 /* Small tablets/large phones: keep cards wide up to 800px */
@@ -1597,23 +1594,8 @@ html.it-wallet-html body.it-wallet-body {
   }
 }
 
-/* IT-Wallet mobile/tablet: denser header strip and full-width cards up to 900px */
+/* IT-Wallet mobile/tablet: full-width cards up to 900px */
 @media (max-width: 900px) {
-  .it-wallet-body .header-title-section {
-    min-height: 72px;
-  }
-
-  .it-wallet-body .header-title-section .container.py-3 {
-    min-height: 72px;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-  }
-
-  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
-    height: 31px !important;
-    width: auto;
-  }
-
   .it-wallet-page.container {
     padding-left: 8px !important;
     padding-right: 8px !important;
@@ -1639,7 +1621,7 @@ html.it-wallet-html body.it-wallet-body {
   .it-wallet-title-heading {
     font-family: var(--font-sans, "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif);
     font-weight: 700 !important;
-    font-size: var(--heading-3-font-size-l, 2.5rem) !important;
+    font-size: 2rem !important;
     line-height: 120% !important;
     letter-spacing: var(--font-tracking-normal, 0) !important;
     text-align: center !important;

@@ -341,6 +341,12 @@ async function loadItWalletPage() {
     searchClearBtn?.classList.toggle('d-none', !(searchInput?.value || '').trim());
   }
 
+  function syncSearchButtonState() {
+    if (!searchBtn) return;
+    const hasQuery = !!(searchInput?.value || '').trim();
+    searchBtn.disabled = !hasQuery;
+  }
+
   function closeSortMenu() {
     if (!sortMenu || !sortTrigger) return;
     sortMenu.hidden = true;
@@ -365,6 +371,7 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+      syncSearchButtonState();
     };
   }
   if (searchBtn) {
@@ -403,6 +410,7 @@ async function loadItWalletPage() {
         searchInput.focus();
       }
       appliedQuery = '';
+      syncSearchButtonState();
       applyFiltersAndSort();
     };
   }
@@ -446,6 +454,7 @@ async function loadItWalletPage() {
   else syncMobilePanelUi(false);
 
   setSortMenuSelection(sortSelect?.value || 'default');
+  syncSearchButtonState();
   applyFiltersAndSort();
   setupBackLink();
 }
