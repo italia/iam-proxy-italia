@@ -315,14 +315,16 @@ async function loadItWalletPage() {
   function syncMobilePanelUi(open) {
     if (!searchToggle) return;
     searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    const openUse = iconSearchOpen?.querySelector('use');
-    if (openUse) {
-      const iconRef = open ? '/static/svg/sprites.svg#it-arrow-up' : '/static/svg/sprites.svg#it-search';
-      openUse.setAttribute('href', iconRef);
-      openUse.setAttribute('xlink:href', iconRef);
+    if (iconSearchOpen) {
+      iconSearchOpen.hidden = open;
+      iconSearchOpen.style.display = open ? 'none' : '';
+      iconSearchOpen.setAttribute('aria-hidden', open ? 'true' : 'false');
     }
-    if (iconSearchOpen) iconSearchOpen.hidden = false;
-    if (iconSearchClose) iconSearchClose.hidden = true;
+    if (iconSearchClose) {
+      iconSearchClose.hidden = !open;
+      iconSearchClose.style.display = open ? 'block' : 'none';
+      iconSearchClose.setAttribute('aria-hidden', open ? 'false' : 'true');
+    }
   }
 
   function setMobilePanelOpen(open) {

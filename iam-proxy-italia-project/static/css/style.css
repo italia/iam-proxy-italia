@@ -1100,26 +1100,22 @@ html.it-wallet-html body.it-wallet-body {
   fill: currentColor;
 }
 
+.it-wallet-icon-btn .it-wallet-toggle-img {
+  width: 1.15rem;
+  height: 1.15rem;
+  object-fit: contain;
+  display: block;
+}
+
 .it-wallet-icon-chevron-up {
   transform: rotate(180deg);
 }
 
-/* Due frecce su/giu affiancate: stesso verso verticale, parallele (non impilate) */
-.it-wallet-sort-icon-duo {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  line-height: 1;
-}
-
-.it-wallet-sort-icon-duo .it-wallet-sort-arrow {
-  width: 0.7rem;
-  height: 1rem;
+.it-wallet-sort-icon {
+  width: 1.25rem;
+  height: 1.25rem;
   flex-shrink: 0;
-  color: #0066cc;
-  fill: currentColor;
+  display: block;
 }
 
 .it-wallet-subtitle {
