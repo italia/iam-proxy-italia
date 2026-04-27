@@ -1683,10 +1683,15 @@ html.it-wallet-html body.it-wallet-body {
   .it-wallet-title-heading {
     font-family: var(--font-sans, "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif);
     font-weight: 700 !important;
-    font-size: 2rem !important;
+    font-size: 28px !important;
     line-height: 120% !important;
     letter-spacing: var(--font-tracking-normal, 0) !important;
     text-align: center !important;
+  }
+
+  .it-wallet-card-title {
+    font-size: 20px !important;
+    line-height: 1.4 !important;
   }
 
   .it-wallet-subtitle {
