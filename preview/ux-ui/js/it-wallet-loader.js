@@ -31,12 +31,12 @@ function loadDocument(resource) {
   const sortSelect = document.getElementById('wallet-sort');
   if (sortSelect) {
     const options = sortSelect.options;
-    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Predefinito';
+    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Ordinamento predefinito';
     if (options[1]) options[1].textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
     if (options[2]) options[2].textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   }
   const sortItemDefault = document.getElementById('wallet-sort-item-default');
-  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Predefinito';
+  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Ordinamento predefinito';
   const sortItemAz = document.getElementById('wallet-sort-item-az');
   if (sortItemAz) sortItemAz.textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
   const sortItemZa = document.getElementById('wallet-sort-item-za');
@@ -233,6 +233,7 @@ function createWalletCard(wallet, resource, basePath) {
 function renderWallets(wallets, resource, basePath) {
   const grid = document.getElementById('wallet-grid');
   grid.innerHTML = '';
+  grid.classList.toggle('it-wallet-grid-single', wallets.length === 1);
   if (wallets.length === 0) {
     const noResultsLabel = resource?.search?.no_results ?? 'Nessun risultato';
     const emptyDiv = document.createElement('div');
@@ -243,7 +244,7 @@ function renderWallets(wallets, resource, basePath) {
     img.className = 'it-wallet-no-results-icon mb-3';
     img.setAttribute('aria-hidden', 'true');
     const msg = document.createElement('h5');
-    msg.className = 'h5 text-muted mb-0';
+    msg.className = 'h5 it-wallet-no-results-text mb-0';
     msg.textContent = noResultsLabel;
     emptyDiv.appendChild(img);
     emptyDiv.appendChild(msg);
@@ -341,6 +342,12 @@ async function loadItWalletPage() {
     searchClearBtn?.classList.toggle('d-none', !(searchInput?.value || '').trim());
   }
 
+  function syncSearchButtonState() {
+    if (!searchBtn) return;
+    const hasQuery = !!(searchInput?.value || '').trim();
+    searchBtn.disabled = !hasQuery;
+  }
+
   function closeSortMenu() {
     if (!sortMenu || !sortTrigger) return;
     sortMenu.hidden = true;
@@ -365,7 +372,14 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+      syncSearchButtonState();
     };
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      if (searchBtn?.disabled) return;
+      searchBtn?.click();
+    });
   }
   if (searchBtn) {
     searchBtn.onclick = () => {
@@ -403,6 +417,7 @@ async function loadItWalletPage() {
         searchInput.focus();
       }
       appliedQuery = '';
+      syncSearchButtonState();
       applyFiltersAndSort();
     };
   }
@@ -446,8 +461,12 @@ async function loadItWalletPage() {
   else syncMobilePanelUi(false);
 
   setSortMenuSelection(sortSelect?.value || 'default');
+  syncSearchButtonState();
   applyFiltersAndSort();
   setupBackLink();
+  if (showControls && searchInput) {
+    requestAnimationFrame(() => searchInput.focus());
+  }
 }
 
 i18next
