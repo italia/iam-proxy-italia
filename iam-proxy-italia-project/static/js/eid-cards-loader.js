@@ -444,7 +444,7 @@ function createLearnMore(resource, eid) {
     link.href = eid.learn_more_link;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.className = 'd-block mt-2';
+    link.className = 'eid-find-how-link d-block mt-2';
     link.textContent = ctaLabelText;
     appendExternalIcon(link);
     return link;
