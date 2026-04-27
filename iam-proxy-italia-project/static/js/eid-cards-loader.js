@@ -126,7 +126,7 @@ function loadEidCards(resource) {
     altSection.className = 'container mb-0';
     const title = document.createElement('h3');
     title.textContent = resource.titles.login_alternative_method;
-    title.className = 'text-center mb-3 pb-4';
+    title.className = 'text-center mb-3 pb-4 eid-login-title';
     altSection.appendChild(title);
 
     createEidCardsRow(resource, "alternative_id", altSection);

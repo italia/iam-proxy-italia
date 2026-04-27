@@ -428,8 +428,9 @@ main {
   color: #2F475E;
 }
 
-#eid-cards-container .eid-login-title {
-  color: #17324D;
+#eid-cards-container .eid-login-title,
+#eid-alternative-section .eid-login-title {
+  color: #17324D !important;
 }
 
 /* EID cards: no rounded corners on buttons */
