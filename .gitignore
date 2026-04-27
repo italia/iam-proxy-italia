@@ -65,3 +65,5 @@ coverage.xml
 iam-proxy-italia-project/static/node_modules/
 .venv*
 iam-proxy-italia-project/static/static
+.node
+.bin
