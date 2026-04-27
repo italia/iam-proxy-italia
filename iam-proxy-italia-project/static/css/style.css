@@ -1423,6 +1423,15 @@ html.it-wallet-html body.it-wallet-body {
     text-justify: inter-word;
   }
 
+  /* "Scopri di più" content must stay left-aligned on small screens */
+  .it-card .eid-learn-more-content,
+  .it-card .eid-learn-more-content p,
+  .it-card .eid-learn-more-content li,
+  .it-card .eid-learn-more-content a {
+    text-align: left !important;
+    text-justify: auto;
+  }
+
   /* Button labels: logo left, text centered on mobile */
   .it-card .it-card-body > .d-flex:first-child {
     min-height: 3rem;
