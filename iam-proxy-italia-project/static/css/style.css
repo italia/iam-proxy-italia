@@ -428,6 +428,10 @@ main {
   color: #2F475E;
 }
 
+#eid-cards-container .eid-login-title {
+  color: #17324D;
+}
+
 /* EID cards: no rounded corners on buttons */
 #eid-cards-container .btn,
 #eid-alternative-section .btn {
@@ -722,6 +726,15 @@ header svg.icon {
   height: 32px;
   background-color: #BFCAD5;
   margin: 0 16px;
+}
+
+.header-title-section .header-main-logo {
+  display: block;
+  height: auto;
+  width: auto;
+  max-height: 44px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 /* Error page body - layout from mockup */

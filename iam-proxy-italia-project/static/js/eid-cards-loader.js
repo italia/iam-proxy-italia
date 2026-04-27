@@ -74,7 +74,7 @@ function loadEidCards(resource) {
     digitalSection.className = 'mb-4';
     const title = document.createElement('h3');
     title.textContent = resource.titles.login_digital_identity;
-    title.className = 'text-center mb-4';
+    title.className = 'text-center mb-4 eid-login-title';
     digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
