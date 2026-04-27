@@ -1324,12 +1324,25 @@ html.it-wallet-html body.it-wallet-body {
   margin-right: 0;
 }
 
+#wallet-grid.row.it-wallet-grid-single {
+  justify-content: center;
+}
+
+#wallet-grid.row.it-wallet-grid-single > .it-wallet-grid-col {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media (min-width: 992px) {
   #wallet-grid.row {
     display: grid;
     grid-template-columns: repeat(2, 387px);
     gap: 1.5rem;
     justify-content: center;
+  }
+
+  #wallet-grid.row.it-wallet-grid-single {
+    grid-template-columns: 387px;
   }
 
   #wallet-grid.row > .it-wallet-grid-col {

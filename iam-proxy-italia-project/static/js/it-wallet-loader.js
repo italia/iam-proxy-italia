@@ -233,6 +233,7 @@ function createWalletCard(wallet, resource, basePath) {
 function renderWallets(wallets, resource, basePath) {
   const grid = document.getElementById('wallet-grid');
   grid.innerHTML = '';
+  grid.classList.toggle('it-wallet-grid-single', wallets.length === 1);
   if (wallets.length === 0) {
     const noResultsLabel = resource?.search?.no_results ?? 'Nessun risultato';
     const emptyDiv = document.createElement('div');
