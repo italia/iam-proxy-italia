@@ -31,12 +31,12 @@ function loadDocument(resource) {
   const sortSelect = document.getElementById('wallet-sort');
   if (sortSelect) {
     const options = sortSelect.options;
-    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Predefinito';
+    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Ordine predefinito';
     if (options[1]) options[1].textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
     if (options[2]) options[2].textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   }
   const sortItemDefault = document.getElementById('wallet-sort-item-default');
-  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Predefinito';
+  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Ordine predefinito';
   const sortItemAz = document.getElementById('wallet-sort-item-az');
   if (sortItemAz) sortItemAz.textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
   const sortItemZa = document.getElementById('wallet-sort-item-za');
@@ -354,6 +354,9 @@ async function loadItWalletPage() {
     if (!searchBtn) return;
     const hasQuery = !!(searchInput?.value || '').trim();
     searchBtn.disabled = !hasQuery;
+    if (!hasQuery) {
+      searchBtn.setAttribute('aria-pressed', 'false');
+    }
   }
 
   function closeSortMenu() {
@@ -380,6 +383,7 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+      searchBtn?.setAttribute('aria-pressed', 'false');
       syncSearchButtonState();
     };
     searchInput.addEventListener('keydown', (event) => {
@@ -391,7 +395,9 @@ async function loadItWalletPage() {
   }
   if (searchBtn) {
     searchBtn.onclick = () => {
+      if (searchBtn.disabled) return;
       appliedQuery = (searchInput?.value || '').trim();
+      searchBtn.setAttribute('aria-pressed', 'true');
       applyFiltersAndSort();
     };
   }
