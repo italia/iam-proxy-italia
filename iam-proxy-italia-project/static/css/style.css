@@ -502,6 +502,7 @@ main {
 }
 
 .eid-card-btn .eid-card-btn-label {
+  font-weight: 600;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -620,6 +621,7 @@ header svg.icon {
 /* Learn more toggle */
 .eid-learn-more-toggle {
   font-size: 1rem !important;
+  font-weight: 600;
   color: #0066cc !important;
   text-decoration: underline !important;
   cursor: pointer;
