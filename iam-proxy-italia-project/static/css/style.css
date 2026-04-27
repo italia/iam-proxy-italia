@@ -1324,7 +1324,7 @@ html.it-wallet-html body.it-wallet-body {
   color: #5C6F82;
   width: 40px;
   height: 40px;
-  padding: 8px;
+  padding: 6px;
   line-height: 0;
   cursor: pointer;
   display: inline-flex;
@@ -1334,8 +1334,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-search-clear-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: block;
 }
 
