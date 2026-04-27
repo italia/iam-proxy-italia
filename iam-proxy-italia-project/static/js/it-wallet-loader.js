@@ -31,12 +31,12 @@ function loadDocument(resource) {
   const sortSelect = document.getElementById('wallet-sort');
   if (sortSelect) {
     const options = sortSelect.options;
-    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Ordinamento predefinito';
+    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Predefinito';
     if (options[1]) options[1].textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
     if (options[2]) options[2].textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   }
   const sortItemDefault = document.getElementById('wallet-sort-item-default');
-  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Ordinamento predefinito';
+  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Predefinito';
   const sortItemAz = document.getElementById('wallet-sort-item-az');
   if (sortItemAz) sortItemAz.textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
   const sortItemZa = document.getElementById('wallet-sort-item-za');
