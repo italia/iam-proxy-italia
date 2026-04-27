@@ -1282,6 +1282,8 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-search-group .form-control {
   border: 1px solid #D9E4F2;
   border-radius: 4px !important;
+  height: 48px;
+  min-height: 48px;
   padding-left: 2.25rem;
   padding-right: 3rem;
 }
@@ -1299,11 +1301,14 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 #search-btn {
-  min-height: 40px;
-  padding: 0.125rem 0.9rem;
-  font-size: 1.0625rem;
-  line-height: 1.25;
+  height: 48px;
+  min-height: 48px;
+  padding: 12px 24px;
+  font-size: 16px;
+  line-height: 1;
   border-radius: 3px;
+  background-color: #003366 !important;
+  border-color: #003366 !important;
 }
 
 #search-btn:disabled {
@@ -1459,12 +1464,12 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-card-arrow {
-  display: inline-flex !important;
+  display: none !important;
   align-items: center;
   justify-content: center;
   flex: 0 0 1.25rem;
   min-width: 1.25rem;
-  visibility: visible !important;
+  visibility: hidden !important;
   opacity: 1;
 }
 
@@ -1480,6 +1485,11 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 @media (max-width: 576px) {
+  .it-wallet-card-arrow {
+    display: inline-flex !important;
+    visibility: visible !important;
+  }
+
   /* Card text: justified on mobile for easier reading */
   .it-card .it-card-body,
   .it-card .it-card-body p,
