@@ -23,6 +23,9 @@ on:
       - '.github/workflows/cie-oidc-backend.yml'
       - '.github/scripts/patch-pyeudiw-branch.sh'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   pre_job:
     runs-on: ubuntu-latest
@@ -30,10 +33,10 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v3.4.0
+        uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           skip_after_successful_duplicate: 'true'
-          same_content_newer: 'true'
+          concurrent_skipping: 'same_content_newer'
 
   coverage:
     needs: pre_job
@@ -61,7 +64,7 @@ jobs:
 
       - name: Install dependencies with Poetry
         run: |
-          pip install poetry
+          pip install "poetry>=2.3.3"
           poetry install --extras test
 
       - name: Run pytest with coverage

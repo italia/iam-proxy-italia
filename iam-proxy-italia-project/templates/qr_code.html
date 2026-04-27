@@ -87,7 +87,7 @@
       let countdown;
 
       function initI18n() {
-        const initialLang = localStorage.getItem('lang') || $('#lang-select').val() || 'it';
+        const initialLang = localStorage.getItem('lang') || 'it';
 
         i18next
         .use(i18nextHttpBackend)
@@ -101,21 +101,17 @@
           if (err) {
             console.error("Error i18next:", err);
           }
-          $('#lang-select').val(initialLang);
+          if (typeof initHeaderLangDropdown === 'function') {
+            initHeaderLangDropdown(i18next, {
+              afterLanguageChange: function (lng) {
+                const code = (lng || 'it').split('-')[0];
+                localStorage.setItem('lang', code === 'en' ? 'en' : 'it');
+                updateTexts(i18next.t);
+              }
+            });
+          }
           StartQRcodeScanCheck(t);
           updateTexts(t);
-        });
-
-        // change language on select change in header
-        $('#lang-select').on('change', function () {
-          const newLang = $(this).val();
-          i18next.changeLanguage(newLang, function (err, t) {
-            if (err) {
-              return console.error('Error during change language:', err);
-            }
-            localStorage.setItem('lang', newLang);
-            updateTexts(t);
-          });
         });
       }
 

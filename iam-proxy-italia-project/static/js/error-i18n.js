@@ -1,3 +1,4 @@
+/* global initHeaderLangDropdown */
 /**
  * i18n for error_page.html: load locale and apply to data-i18n / data-i18n-title elements.
  */
@@ -31,14 +32,8 @@ function applyErrorTranslations() {
 
 function initErrorI18n() {
   applyErrorTranslations();
-  var langSelect = document.getElementById('error-lang-select');
-  if (langSelect) {
-    var lng = (i18next.language || '').split('-')[0];
-    if (lng === 'it' || lng === 'en') langSelect.value = lng;
-    else langSelect.value = 'it';
-    langSelect.addEventListener('change', function (e) {
-      i18next.changeLanguage(e.target.value).then(applyErrorTranslations);
-    });
+  if (typeof initHeaderLangDropdown === 'function') {
+    initHeaderLangDropdown(i18next, { afterLanguageChange: applyErrorTranslations });
   }
 }
 

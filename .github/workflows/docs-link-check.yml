@@ -11,6 +11,9 @@ on:
     branches: [ master, dev ]
     paths: [ '**.md', 'docs/**' ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   pre_job:
     runs-on: ubuntu-latest
@@ -18,10 +21,10 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v3.4.0
+        uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           skip_after_successful_duplicate: 'true'
-          same_content_newer: 'true'
+          concurrent_skipping: 'same_content_newer'
 
   linkcheck:
     needs: pre_job

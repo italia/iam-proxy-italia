@@ -23,6 +23,7 @@ example_sp/djangosaml2_sp/sqlite3.db
 iam-proxy-italia-project-demo-examples/djangosaml2_sp/sqlite3.db
 project/*
 docker-example/*
+Docker-compose/wallet-instance-demo/
 Docker-compose/iam-proxy-italia-project/*
 Docker-compose/djangosaml2_sp/*
 Docker-compose/mongo/db/*
@@ -63,5 +64,9 @@ coverage.xml
 # Static assets (Bootstrap Italia via npm)
 iam-proxy-italia-project/static/node_modules/
 .venv*
+<<<<<<< HEAD
+=======
+iam-proxy-italia-project/static/static
+>>>>>>> ux-ui
 .node
 .bin

@@ -11,6 +11,13 @@ on:
   pull_request:
     paths:
       - 'iam-proxy-italia-project/static/**'
+<<<<<<< HEAD
+=======
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+>>>>>>> ux-ui
 
 jobs:
   pre_job:
@@ -19,10 +26,17 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
+<<<<<<< HEAD
         uses: fkirc/skip-duplicate-actions@v3.4.0
         with:
           skip_after_successful_duplicate: 'true'
           same_content_newer: 'true'
+=======
+        uses: fkirc/skip-duplicate-actions@v5.3.1
+        with:
+          skip_after_successful_duplicate: 'true'
+          concurrent_skipping: 'same_content_newer'
+>>>>>>> ux-ui
 
   lint:
     name: Lint static assets
@@ -35,7 +49,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: '20'
+=======
+          node-version: '24'
+>>>>>>> ux-ui
           cache: 'npm'
           cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
 
@@ -52,8 +70,11 @@ jobs:
     needs: [pre_job, lint]
     if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+=======
+>>>>>>> ux-ui
     permissions:
       contents: write
     steps:
@@ -62,7 +83,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: '20'
+=======
+          node-version: '24'
+>>>>>>> ux-ui
           cache: 'npm'
           cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
 
@@ -78,7 +103,12 @@ jobs:
           SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
           PREVIEW_DIR="preview/${SAFE_BRANCH}"
           mkdir -p deploy/"${PREVIEW_DIR}"
+<<<<<<< HEAD
           (cd iam-proxy-italia-project/static && tar --exclude=node_modules -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
+=======
+          # Exclude the legacy "static -> ./" symlink to avoid recursive paths on Pages builds.
+          (cd iam-proxy-italia-project/static && tar --exclude=node_modules --exclude=static -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
+>>>>>>> ux-ui
           # Rewrite /static/ to ./ for GitHub Pages relative paths
           find deploy/"${PREVIEW_DIR}" \( -name '*.html' -o -name '*.json' -o -name '*.js' \) -type f \
             -exec sed -i 's|/static/|./|g' {} \;
@@ -105,7 +135,90 @@ jobs:
           rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"
           mkdir -p preview/"${{ steps.prepare.outputs.safe_branch }}"
           cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
+<<<<<<< HEAD
           touch .nojekyll
           git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
           git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }} [skip ci]"
+=======
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Force a gh-pages commit for manual runs even when static files are unchanged.
+            {
+              echo "manual_dispatch=true"
+              echo "run_id=${{ github.run_id }}"
+              echo "run_attempt=${{ github.run_attempt }}"
+              echo "deployed_at=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            } > preview/"${{ steps.prepare.outputs.safe_branch }}"/.preview-deploy-meta
+          fi
+          # Rebuild preview index listing all available branch previews.
+          mkdir -p preview
+          ASSET_PREFIX=""
+          for dir in preview/*; do
+            [ -d "$dir" ] || continue
+            ASSET_PREFIX="./$(basename "$dir")"
+            break
+          done
+          {
+            echo '<!doctype html>'
+            echo '<html lang="it">'
+            echo '<head>'
+            echo '  <meta charset="utf-8">'
+            echo '  <meta name="viewport" content="width=device-width, initial-scale=1">'
+            echo '  <title>IAM Proxy Italia - Static Preview Index</title>'
+            if [ -n "$ASSET_PREFIX" ]; then
+              printf '  <link rel="stylesheet" href="%s/css/style.css">\n' "$ASSET_PREFIX"
+              printf '  <link rel="stylesheet" href="%s/css/bootstrap-italia.min.css">\n' "$ASSET_PREFIX"
+              printf '  <link rel="stylesheet" href="%s/css/ita.min.css">\n' "$ASSET_PREFIX"
+            fi
+            echo '</head>'
+            echo '<body>'
+            echo '  <header class="it-header-wrapper">'
+            echo '    <div class="it-header-slim-wrapper bg-primary">'
+            echo '      <div class="container">'
+            echo '        <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">'
+            echo '          <span class="navbar-brand text-white"><strong>IAM Proxy Italia</strong></span>'
+            echo '        </div>'
+            echo '      </div>'
+            echo '    </div>'
+            echo '    <div class="header-title-section">'
+            echo '      <div class="container py-3">'
+            echo '        <div class="d-flex align-items-center">'
+            if [ -n "$ASSET_PREFIX" ]; then
+              printf '          <svg class="icon icon-lg me-2" aria-hidden="true"><use xlink:href="%s/svg/sprites.svg#it-code-circle"></use></svg>\n' "$ASSET_PREFIX"
+            fi
+            echo '          <h2 class="mb-0">Static previews per branch</h2>'
+            echo '        </div>'
+            echo '      </div>'
+            echo '    </div>'
+            echo '  </header>'
+            echo '  <main class="container my-4">'
+            echo '    <p class="mb-3">Seleziona una branch per aprire la preview statica.</p>'
+            echo '    <div class="link-list-wrapper">'
+            echo '      <ul class="link-list">'
+            has_entries=false
+            for dir in preview/*; do
+              [ -d "$dir" ] || continue
+              branch=$(basename "$dir")
+              has_entries=true
+              printf '        <li><a class="list-item" href="./%s/"><span>%s</span></a></li>\n' "$branch" "$branch"
+            done
+            if [ "$has_entries" = false ]; then
+              echo '        <li><span class="list-item disabled"><span>Nessuna preview disponibile</span></span></li>'
+            fi
+            echo '      </ul>'
+            echo '    </div>'
+            echo '  </main>'
+            echo '  <footer>'
+            echo '    <div class="container h-100 d-flex align-items-center">'
+            echo '      <div class="d-flex flex-wrap justify-content-start text-white">'
+            echo '        <span class="mb-2">Generated by Static Preview Deploy workflow</span>'
+            echo '      </div>'
+            echo '    </div>'
+            echo '  </footer>'
+            echo '</body>'
+            echo '</html>'
+          } > preview/index.html
+          touch .nojekyll
+          git add preview/"${{ steps.prepare.outputs.safe_branch }}" preview/index.html .nojekyll
+          git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }}"
+>>>>>>> ux-ui
           git push origin gh-pages

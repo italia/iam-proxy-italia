@@ -32,7 +32,7 @@ config:
           function: idpyoidc.server.oauth2.add_on.pkce.add_support
           kwargs:
             code_challenge_method: S256 S384 S512
-            essential: false
+            essential: true
       authentication:
         user:
           acr: urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocolPassword
