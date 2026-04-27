@@ -1411,6 +1411,11 @@ html.it-wallet-html body.it-wallet-body {
   object-fit: contain;
 }
 
+.it-wallet-no-results-text {
+  color: #2F475E;
+  font-weight: 600;
+}
+
 .it-wallet-card-title {
   margin: 0 !important;
   font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
