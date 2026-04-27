@@ -423,6 +423,11 @@ main {
   text-decoration: none;
 }
 
+#eid-cards-container .it-card-title,
+#eid-alternative-section .it-card-title {
+  color: #2F475E;
+}
+
 /* EID cards: no rounded corners on buttons */
 #eid-cards-container .btn,
 #eid-alternative-section .btn {
