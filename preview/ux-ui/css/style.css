@@ -1115,8 +1115,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-sort-icon-duo .it-wallet-sort-arrow {
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0.7rem;
+  height: 1rem;
   flex-shrink: 0;
   color: #0066cc;
   fill: currentColor;
@@ -1133,7 +1133,7 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-controls {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto 40px;
+  grid-template-columns: minmax(0, 1fr) auto 48px;
   align-items: center;
   gap: 1rem;
   width: 100%;
@@ -1145,8 +1145,8 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-sort-wrap {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
   box-sizing: border-box;
 }
