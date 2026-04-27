@@ -439,11 +439,23 @@ main {
 #eid-cards-container .eid-card-btn-eidas,
 #eid-alternative-section .eid-card-btn-eidas {
   border-radius: 0.375rem !important;
+  background-color: #005EAC !important;
+  border-color: #005EAC !important;
+}
+
+#eid-cards-container .eid-card-btn-eidas:hover,
+#eid-cards-container .eid-card-btn-eidas:focus,
+#eid-cards-container .eid-card-btn-eidas:focus-visible,
+#eid-alternative-section .eid-card-btn-eidas:hover,
+#eid-alternative-section .eid-card-btn-eidas:focus,
+#eid-alternative-section .eid-card-btn-eidas:focus-visible {
+  background-color: #005EAC !important;
+  border-color: #005EAC !important;
 }
 
 #eid-cards-container .eid-card-btn-eidas .eid-card-separator,
 #eid-alternative-section .eid-card-btn-eidas .eid-card-separator {
-  background: #00519D;
+  background: #005EAC;
 }
 
 /* EID cards: responsive layout - buttons fill available space */
