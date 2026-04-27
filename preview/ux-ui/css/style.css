@@ -1010,8 +1010,8 @@ html.it-wallet-html body.it-wallet-body {
 
   .it-wallet-page .it-wallet-back-link .icon {
     margin-right: 0 !important;
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -1215,8 +1215,15 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 @media (max-width: 991.98px) {
+  .it-wallet-layout-surface {
+    max-width: none;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .it-wallet-controls {
-    max-width: 387px;
+    max-width: none;
   }
 
   .it-wallet-controls.it-wallet-controls-panel:not(.is-mobile-panel-open) {
@@ -1285,7 +1292,7 @@ html.it-wallet-html body.it-wallet-body {
   border-radius: 4px !important;
   height: 48px;
   min-height: 48px;
-  padding-left: 2.25rem;
+  padding-left: 2.75rem;
   padding-right: 3rem;
 }
 
