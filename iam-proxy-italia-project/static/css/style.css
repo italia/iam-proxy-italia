@@ -480,22 +480,22 @@ main {
 /* Button row: fixed height, never grows when learn-more expands */
 .it-card .it-card-body > .d-flex:first-child {
   flex: 0 0 auto;
-  min-height: 2.75rem;
-  max-height: 2.75rem;
+  min-height: 3rem;
+  max-height: 3rem;
 }
 
 .it-card .eid-card-btn,
 .it-card .eid-cie-dropdown-wrapper {
   width: 100%;
-  min-height: 2.75rem;
-  max-height: 2.75rem;
+  min-height: 3rem;
+  max-height: 3rem;
 }
 
 .it-card .eid-card-btn {
   justify-content: flex-start;
   flex: 1;
-  min-height: 2.75rem;
-  max-height: 2.75rem;
+  min-height: 3rem;
+  max-height: 3rem;
   padding: 0.2rem 1rem;
   font-size: clamp(0.875rem, 2vw, 1rem);
   flex-wrap: nowrap;
@@ -546,15 +546,15 @@ main {
 /* Responsive 577px–1279px: button labels wrap and stay centered */
 @media (max-width: 1279px) and (min-width: 577px) {
   .it-card .it-card-body > .d-flex:first-child {
-    min-height: 2.75rem;
-    max-height: 2.75rem;
+    min-height: 3rem;
+    max-height: 3rem;
   }
 
   .it-card .eid-card-btn,
   .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
     flex-wrap: nowrap;
-    min-height: 2.75rem;
-    max-height: 2.75rem;
+    min-height: 3rem;
+    max-height: 3rem;
     justify-content: flex-start;
   }
 
@@ -1399,8 +1399,8 @@ html.it-wallet-html body.it-wallet-body {
 
   /* Button labels: logo left, text centered on mobile */
   .it-card .it-card-body > .d-flex:first-child {
-    min-height: 2.75rem;
-    max-height: 2.75rem;
+    min-height: 3rem;
+    max-height: 3rem;
   }
 
   /* Mobile: let cards use full row width */
@@ -1425,8 +1425,8 @@ html.it-wallet-html body.it-wallet-body {
   .it-card .eid-card-btn,
   .it-card .eid-cie-dropdown-wrapper .eid-card-btn {
     flex-wrap: nowrap;
-    min-height: 2.75rem;
-    max-height: 2.75rem;
+    min-height: 3rem;
+    max-height: 3rem;
     justify-content: flex-start !important;
     position: relative !important;
   }
