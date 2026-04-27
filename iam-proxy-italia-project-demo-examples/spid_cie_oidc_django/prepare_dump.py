@@ -28,7 +28,6 @@ def main():
     orig = content
     content = content.replace("http://127.0.0.1:5002", trust_anchor)
     content = content.replace("http://127.0.0.1:8002", prov_base)
-    content = content.replace("https://satosa.example.org/CieOidcRp", rp_sub)
     content = content.replace(
         "http://wallet-instance.example.org:8080/provider", wallet_provider_url
     )
@@ -42,7 +41,6 @@ def main():
         for p in (
             "http://127.0.0.1:5002",
             "http://127.0.0.1:8002",
-            "https://satosa.example.org/CieOidcRp",
             "http://wallet-instance.example.org:8080/provider",
             "https://satosa.example.org/OpenID4VP",
             "https://satosa.example.org/OpenID4VCI",

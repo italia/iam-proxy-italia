@@ -1,5 +1,5 @@
 # Use iam-proxy-italia as base — opencv, pyeudiw, satosa already installed
-FROM ghcr.io/italia/iam-proxy-italia:v3.3.0
+FROM ghcr.io/italia/iam-proxy-italia:v3.3
 
 RUN apk add --no-cache git ca-certificates && update-ca-certificates
 
