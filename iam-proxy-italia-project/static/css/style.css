@@ -1054,6 +1054,7 @@ html.it-wallet-html body.it-wallet-body {
   text-align: center;
   width: max-content;
   max-width: min(20rem, calc(100% - 9.5rem));
+
   /* Visual match with disco.html heading */
   font-size: 2rem;
   line-height: 1.2;
