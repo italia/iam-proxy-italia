@@ -674,9 +674,11 @@ header svg.icon {
   background-color: #004D99 !important;
 }
 
-.it-header-slim-wrapper.bg-primary #header-region-name {
-  font-size: 18px;
-  font-weight: 600 !important;
+.it-header-slim-wrapper.bg-primary #header-region-name,
+.it-header-slim-wrapper.bg-primary .navbar-brand,
+.it-header-slim-wrapper.bg-primary .navbar-brand strong {
+  font-size: 14px !important;
+  font-weight: 400 !important;
 }
 
 /* Language dropdown (developers.italia.it slim header pattern) */
