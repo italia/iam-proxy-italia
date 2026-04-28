@@ -134,6 +134,7 @@ config:
         - https://trust-registry.eid-wallet.example.it/loa/substantial
         - https://trust-registry.eid-wallet.example.it/loa/high
       scopes_supported:
+        - pid
         - EuropeanDisabilityCard
         - mDL
       response_modes_supported:
@@ -875,6 +876,7 @@ config:
           conf:
             db_name: pyeudiw_openid4vci
             db_sessions_collection: sessions
+            db_nonce_cache: nonce_cache
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
             db_trust_sources_collection: trust_sources
