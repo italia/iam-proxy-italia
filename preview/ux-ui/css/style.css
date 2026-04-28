@@ -1401,10 +1401,13 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-card {
+  --bs-it-card-spacer-y: 4px;
+  --bs-it-card-spacer-x: 24px;
+
   width: 387px;
   max-width: 387px;
-  height: 99px;
-  min-height: 99px;
+  height: auto;
+  min-height: 0;
   border: 1pt solid #C5C7C9;
   border-radius: 4px;
 }
@@ -1412,7 +1415,8 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-card .it-card-body {
   height: 100%;
   min-height: 0;
-  padding: 12px 24px;
+  justify-content: center !important;
+  padding: 16px 16px 9px 17px !important;
   box-sizing: border-box;
 }
 
@@ -1448,8 +1452,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .wallet-card-logo {
-  width: 72px;
-  height: 72px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
 }
 
