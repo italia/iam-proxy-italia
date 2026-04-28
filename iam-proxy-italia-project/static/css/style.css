@@ -1403,6 +1403,7 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-card {
   --bs-it-card-spacer-y: 4px;
   --bs-it-card-spacer-x: 24px;
+
   width: 387px;
   max-width: 387px;
   height: auto;
@@ -1415,10 +1416,7 @@ html.it-wallet-html body.it-wallet-body {
   height: 100%;
   min-height: 0;
   justify-content: center !important;
-  padding-top: 16px !important;
-  padding-bottom: 9px !important;
-  padding-left: 17px !important;
-  padding-right: 16px !important;
+  padding: 16px 16px 9px 17px !important;
   box-sizing: border-box;
 }
 
