@@ -1415,9 +1415,9 @@ html.it-wallet-html body.it-wallet-body {
   height: 100%;
   min-height: 0;
   justify-content: center !important;
-  padding-top: 14px !important;
+  padding-top: 16px !important;
   padding-bottom: 9px !important;
-  padding-left: 16px !important;
+  padding-left: 17px !important;
   padding-right: 16px !important;
   box-sizing: border-box;
 }
