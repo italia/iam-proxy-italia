@@ -1415,7 +1415,7 @@ html.it-wallet-html body.it-wallet-body {
   height: 100%;
   min-height: 0;
   justify-content: center !important;
-  padding-top: 10px !important;
+  padding-top: 11px !important;
   padding-bottom: 4px !important;
   padding-left: 24px !important;
   padding-right: 24px !important;
@@ -1454,8 +1454,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .wallet-card-logo {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
 }
 
