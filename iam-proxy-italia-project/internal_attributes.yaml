@@ -49,7 +49,6 @@ attributes:
     openid: [email]
     saml: [mail, email]
     openid4vp: [mail, email]
-    openid4vci: [mail, email]
     cie_oidc: [email]
   name:
     facebook: [name]
@@ -107,19 +106,16 @@ attributes:
     saml: [digitalAddress]
   placeOfBirth:
     saml: [placeOfBirth]
-    openid4vci: [placeOfBirth]
   countyOfBirth:
     saml: [countyOfBirth]
-    openid4vci: [countyOfBirth]
   dateOfBirth:
     saml: [dateOfBirth]
-    openid4vci: [dateOfBirth]
   mobilePhone:
     saml: [mobilePhone]
   expirationDate:
     saml: [expirationDate]
   fiscal_code:
-    openid4vci: [fiscal_code]
+    openid4vci: [fiscal_code, fiscalnumber]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

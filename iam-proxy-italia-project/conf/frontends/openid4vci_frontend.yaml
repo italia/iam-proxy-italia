@@ -662,6 +662,23 @@ config:
       exp: 90 # minutes
       ttl: 43200
     credential_specification:
+      dc_sd_jwt_pid:
+        expiry_days: 365
+        template: |
+          holder_disclosed_claims:
+            birthdate: "{{dateOfBirth}}"
+            family_name: "{{surname}}"
+            given_name: "{{name}}"
+            place_of_birth:
+              locality: "{{placeOfBirth}}"
+          key_binding: true
+          user_claims:
+            birthdate: "{{dateOfBirth}}"
+            family_name: "{{surname}}"
+            given_name: "{{name}}"
+            place_of_birth:
+              locality: "{{placeOfBirth}}"
+            tax_id_code: "TINIT-{{fiscal_code}}"
       mso_mdoc_mDL:
         expiry_days: 365
         template: |
