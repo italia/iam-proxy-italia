@@ -458,8 +458,9 @@ services:
       iam-proxy-italia:
         aliases:
           - wallet-provider.wct.example.org
+          - trust-anchor.wct.example.org
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://iam-proxy-italia:10000/OpenID4VCI/.well-known/openid-configuration || exit 1"]
+      test: ["CMD-SHELL", "curl -sf  $$ID4VCI_WELL_KNOWN_OPENID_CONFIGURATION || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12
