@@ -1674,6 +1674,9 @@ html.it-wallet-html body.it-wallet-body {
   }
 
   #wallet-grid.row {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 12px;
+
     margin-left: 0;
     margin-right: 0;
   }
