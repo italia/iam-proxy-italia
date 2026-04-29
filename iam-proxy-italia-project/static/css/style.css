@@ -1564,13 +1564,10 @@ html.it-wallet-html body.it-wallet-body {
     width: 100% !important;
     max-width: calc(100% - 3.5rem) !important;
     min-width: 0;
-    text-align: center !important;
-    pointer-events: none;
-  }
-
-  .eid-card-btn-wallet .eid-card-btn-label {
     font-size: 16px !important;
     font-weight: 600 !important;
+    text-align: center !important;
+    pointer-events: none;
   }
 
   main.container {
