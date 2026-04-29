@@ -78,7 +78,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.3.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.3
     build:
         context: ../
         args:
@@ -260,7 +260,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.2
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -298,7 +298,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.2
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -420,15 +420,21 @@ services:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
     ports:
-      - "8080:8080"
+      - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
-      - ./wallet-instance-demo/config:/config:rw
+      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+    environment:
+      FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
+      FLASK_RUN_PORT: 8080
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-}
+      DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
+      WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
     networks:
       iam-proxy-italia:
         aliases:
-          - demo-wi.example.org
-    environment:
-      EXAMPLE_ENV: EXAMPLE_ENV
+          - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
   pagopa-wallet-cli:
     profiles:
@@ -442,11 +448,22 @@ services:
       dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
     depends_on:
       iam-proxy-italia:
-        condition: service_started
+        condition: service_healthy
     environment:
       CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    ports:
+      - "3002:3002"
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - wallet-provider.wct.example.org
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://iam-proxy-italia:10000/OpenID4VCI/.well-known/openid-configuration || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
 
 networks:
   iam-proxy-italia:

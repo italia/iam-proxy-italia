@@ -5,18 +5,26 @@ echo "*********************************************"
 
 cd /wallet-conformance-test/
 
-CONFIG_ARG=""
 if [ -n "$CUSTOM_CONFIG_PATH" ] && [ -f "$CUSTOM_CONFIG_PATH" ]; then
     echo "Using custom configuration from: $CUSTOM_CONFIG_PATH"
-    cp "$CUSTOM_CONFIG_PATH" /wallet-conformance-test/config.ini
-    CONFIG_ARG="--file-ini $CUSTOM_CONFIG_PATH"
-else
-    if [ -f "/wallet-conformance-test/config.ini" ]; then
-      echo "Using default configuration from: /wallet-conformance-test/config.ini"
-      CONFIG_ARG="--file-ini /wallet-conformance-test/config.ini"
+
+    DEST_DIR="/wallet-conformance-test"
+
+    DEST_PATH="$DEST_DIR/config.ini"
+
+    find "$DEST_DIR" -type f -name "config.ini" -delete
+
+    if [ "$CUSTOM_CONFIG_PATH" != "$DEST_PATH" ]; then
+
+        cp "$CUSTOM_CONFIG_PATH" "$DEST_PATH"
     fi
+
+    CONFIG_FILE="$DEST_PATH"
+else
+    CONFIG_FILE="/wallet-conformance-test/config.ini"
 fi
 
+echo "Using config: $CONFIG_FILE"
 
 echo "*********************************************"
 echo "          VERSION                            "
@@ -27,8 +35,7 @@ echo "*************************************************"
 echo "          TEST:ISSUANCE                          "
 echo "*************************************************"
 
-RESULT=$(./bin/wct test:issuance "$CONFIG_ARG" --credential-issuer-uri https://my-issuer.example.com)
-
+RESULT=$(./bin/wct test:issuance --file-ini "$CONFIG_FILE")
 STATUS=$?
 
 echo "*************************************************"
@@ -39,14 +46,14 @@ if [ $STATUS -eq 0 ]; then
     echo "Test success!"
 else
     echo "Test failed! Status: $STATUS"
+    exit $STATUS
 fi
 
 echo "*************************************************"
 echo "          TEST:PRESENTATION                      "
 echo "*************************************************"
 
-RESULT=$(./bin/wct test:presentation "$CONFIG_ARG" --credential-issuer-uri https://my-issuer.example.com)
-
+RESULT=$(./bin/wct test:presentation --file-ini "$CONFIG_FILE")
 STATUS=$?
 
 echo "*************************************************"
@@ -57,6 +64,7 @@ if [ $STATUS -eq 0 ]; then
     echo "Test success!"
 else
     echo "Test failed! Status: $STATUS"
+    exit $STATUS
 fi
 
 echo "Finish Testing!"

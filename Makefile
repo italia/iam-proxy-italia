@@ -15,7 +15,7 @@
 #   make ci-lint     - run lint only
 #   make ci-<target> - run specific CI job
 
-.PHONY: ci ci-lint ci-static-lint ci-security-audit ci-docs-link-check ci-cie-oidc ci-docker-compose patch-pyeudiw venv node-env lychee-env help
+.PHONY: ci ci-lint ci-static-lint ci-security-audit ci-docs-link-check ci-cie-oidc ci-docker-compose patch-pyeudiw patch-wallet-instance-demo venv node-env lychee-env help
 
 VENV := .venv
 NODE_DIR := .node
@@ -163,3 +163,7 @@ ci-docker-compose: venv patch-pyeudiw
 # Patch pyproject.toml for eudi-wallet-it-python branch (used by security-audit, cie-oidc, docker-compose)
 patch-pyeudiw:
 	CURRENT_BRANCH="$(CURRENT_BRANCH)" TARGET_BRANCH="$(TARGET_BRANCH)" bash .github/scripts/patch-pyeudiw-branch.sh
+
+# Patch wallet_instance_demo.Dockerfile for wallet-instance-demo branch (used by docker-compose)
+patch-wallet-instance-demo:
+	CURRENT_BRANCH="$(CURRENT_BRANCH)" TARGET_BRANCH="$(TARGET_BRANCH)" bash .github/scripts/patch-wallet-instance-demo-branch.sh
