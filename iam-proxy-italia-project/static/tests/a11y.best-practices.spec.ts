@@ -37,18 +37,23 @@ test("best-practice checks on disco dynamic sections", async ({ page }) => {
   expect(summary, JSON.stringify(summary, null, 2)).toEqual([]);
 });
 
-test("spid menu does not open on Tab focus only", async ({ page }) => {
+test("spid menu stays closed during Tab-only navigation", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
   const spidTrigger = page.locator("[spid-idp-button]").first();
   await expect(spidTrigger).toBeVisible();
-  await spidTrigger.focus();
+  const spidMenu = page.locator("#spid-idp-button-xlarge-post");
 
-  const menuSelector = await spidTrigger.getAttribute("spid-idp-button");
-  if (menuSelector) {
-    const spidMenu = page.locator(menuSelector);
-    await expect(spidMenu).toBeHidden();
+  // Use real keyboard navigation to reach the trigger.
+  for (let i = 0; i < 30; i += 1) {
+    await page.keyboard.press("Tab");
+    const isFocused = await spidTrigger.evaluate((el) => document.activeElement === el);
+    if (isFocused) break;
   }
+
+  await expect(spidTrigger).toBeFocused();
+  await expect(spidTrigger).not.toHaveClass(/spid-idp-button-open/);
+  await expect(spidMenu).toBeHidden();
 });
 
 test("spid menu opens only with Enter or Space", async ({ page }) => {
