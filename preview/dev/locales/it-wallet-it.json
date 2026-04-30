@@ -3,7 +3,8 @@
     "region_name": "Nome dell'Organizzazione"
   },
   "titles": {
-    "page_title": "Seleziona il tuo IT-Wallet",
+    "page_title": "Scegli l'app",
+    "page_subtitle": "Seleziona il portafoglio digitale con cui proseguire",
     "logo_title": "Il tuo logo"
   },
   "search": {
@@ -11,11 +12,16 @@
     "button": "Cerca",
     "no_results": "Nessun risultato"
   },
+  "sort": {
+    "default": "Ordine predefinito",
+    "az": "Alfabetico A-Z",
+    "za": "Alfabetico Z-A"
+  },
   "wallets": {
     "load_more": "Carica altri"
   },
   "nav": {
-    "back": "Indietro"
+    "back": "Torna indietro"
   },
   "footer": {
     "legal_notice": "Note legali",

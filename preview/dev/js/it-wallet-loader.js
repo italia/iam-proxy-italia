@@ -1,6 +1,10 @@
 /**
- * IT-Wallet selection page: load wallet data, render cards, filter by id or name (LIKE).
+ * IT-Wallet selection page: load wallets, random default order,
+ * optional search/sort controls and card rendering.
  */
+
+const SHOW_CARD_LEARN_MORE = false;
+const SEARCH_MIN_WALLETS = 7;
 
 function getBasePath() {
   const path = window.location.pathname;
@@ -17,20 +21,33 @@ function loadDocument(resource) {
   if (tabTitle) tabTitle.textContent = resource?.titles?.page_title ?? '';
   const pageTitle = document.getElementById('page-title');
   if (pageTitle) pageTitle.textContent = resource?.titles?.page_title ?? '';
+  const pageSubtitle = document.getElementById('page-subtitle');
+  if (pageSubtitle) pageSubtitle.textContent = resource?.titles?.page_subtitle ?? '';
 
   const searchInput = document.getElementById('wallet-search');
   if (searchInput) searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
   const searchBtn = document.getElementById('search-btn');
   if (searchBtn) searchBtn.textContent = resource?.search?.button ?? 'Cerca';
-  const loadMoreBtn = document.getElementById('load-more-btn');
-  if (loadMoreBtn) loadMoreBtn.textContent = resource?.wallets?.load_more ?? 'Carica altri';
+  const sortSelect = document.getElementById('wallet-sort');
+  if (sortSelect) {
+    const options = sortSelect.options;
+    if (options[0]) options[0].textContent = resource?.sort?.default ?? 'Ordine predefinito';
+    if (options[1]) options[1].textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
+    if (options[2]) options[2].textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
+  }
+  const sortItemDefault = document.getElementById('wallet-sort-item-default');
+  if (sortItemDefault) sortItemDefault.textContent = resource?.sort?.default ?? 'Ordine predefinito';
+  const sortItemAz = document.getElementById('wallet-sort-item-az');
+  if (sortItemAz) sortItemAz.textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
+  const sortItemZa = document.getElementById('wallet-sort-item-za');
+  if (sortItemZa) sortItemZa.textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
   const backLink = document.getElementById('back-link');
-  if (backLink) backLink.textContent = resource?.nav?.back ?? 'Indietro';
-
-  const infoWhatIs = document.getElementById('info-what-is');
-  if (infoWhatIs) infoWhatIs.textContent = resource?.learn_more?.question ?? 'Non sai cos\'è IT-Wallet?';
-  const infoLearnMoreText = document.getElementById('info-learn-more-text');
-  if (infoLearnMoreText) infoLearnMoreText.textContent = resource?.learn_more?.link ?? 'Scopri di più';
+  const backText = resource?.nav?.back ?? 'Torna indietro';
+  if (backLink) backLink.setAttribute('aria-label', backText);
+  const backLabel = document.querySelector('.it-wallet-back-label');
+  if (backLabel) {
+    backLabel.textContent = typeof backText === 'string' ? backText : 'Torna indietro';
+  }
 
   const footerLegal = document.getElementById('footer-legal');
   if (footerLegal) footerLegal.textContent = resource?.footer?.legal_notice ?? '';
@@ -38,6 +55,25 @@ function loadDocument(resource) {
   if (footerPrivacy) footerPrivacy.textContent = resource?.footer?.privacy_policy ?? '';
   const footerAccess = document.getElementById('footer-accessibility');
   if (footerAccess) footerAccess.textContent = resource?.footer?.accessibility_statement ?? '';
+}
+
+function shuffleWallets(wallets) {
+  const shuffled = [...wallets];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function sortWallets(wallets, sortValue) {
+  if (sortValue === 'az') {
+    return [...wallets].sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+  }
+  if (sortValue === 'za') {
+    return [...wallets].sort((a, b) => (b.name || '').localeCompare(a.name || '', undefined, { sensitivity: 'base' }));
+  }
+  return wallets;
 }
 
 /** LIKE-style match: substring, case-insensitive */
@@ -76,108 +112,119 @@ function buildWalletUri(uri) {
 
 function createWalletCard(wallet, resource, basePath) {
   const col = document.createElement('div');
-  col.className = 'col';
+  col.className = 'col-12 col-lg-6 it-wallet-grid-col';
   const card = document.createElement('article');
-  card.className = 'it-card shadow';
+  card.className = 'it-card shadow it-wallet-card';
 
   const body = document.createElement('div');
-  body.className = 'it-card-body d-flex flex-column';
+  body.className = 'it-card-body d-flex flex-column justify-content-center';
 
-  const link = document.createElement('a');
-  link.href = buildWalletUri(wallet.uri);
-  link.className = 'text-decoration-none text-dark d-flex flex-column';
-  link.style.minHeight = '80px';
+  const cardLink = document.createElement('a');
+  cardLink.href = buildWalletUri(wallet.uri);
+  cardLink.className = 'it-wallet-card-hit';
+  cardLink.title = wallet.name;
 
-  const logoTitleRow = document.createElement('div');
-  logoTitleRow.className = 'd-flex align-items-center mb-2';
+  const row = document.createElement('div');
+  row.className = 'd-flex align-items-center w-100 it-wallet-card-main-row';
+
+  const left = document.createElement('div');
+  left.className = 'it-wallet-card-left';
   const img = document.createElement('img');
   img.src = (wallet.logo_uri || '').startsWith('/') ? wallet.logo_uri : basePath + (wallet.logo_uri || '');
   img.alt = wallet.name;
-  img.className = 'wallet-card-logo me-3 flex-shrink-0';
-  img.style.width = '48px';
-  img.style.height = '48px';
-  img.style.objectFit = 'contain';
-  logoTitleRow.appendChild(img);
+  img.className = 'wallet-card-logo flex-shrink-0';
+  left.appendChild(img);
 
   const title = document.createElement('h5');
-  title.className = 'it-card-title mb-0 flex-grow-1';
+  title.className = 'it-card-title mb-0 it-wallet-card-title text-start';
   title.textContent = wallet.name;
-  title.style.webkitLineClamp = '2';
-  title.style.display = '-webkit-box';
-  title.style.WebkitBoxOrient = 'vertical';
-  title.style.overflow = 'hidden';
-  logoTitleRow.appendChild(title);
+  left.appendChild(title);
 
-  link.appendChild(logoTitleRow);
-  body.appendChild(link);
-
-  const learnMoreLabel = resource?.learn_more?.link ?? 'Scopri di più';
-  const descContainer = document.createElement('div');
-  descContainer.className = 'wallet-learn-more';
-
-  const toggle = document.createElement('a');
-  toggle.href = '#';
-  toggle.className = 'eid-learn-more-toggle';
-  toggle.textContent = learnMoreLabel;
-
-  const svgNs = 'http://www.w3.org/2000/svg';
-  const arrow = document.createElementNS(svgNs, 'svg');
-  arrow.setAttribute('class', 'eid-learn-more-arrow');
+  const arrow = document.createElement('span');
+  arrow.className = 'it-wallet-card-arrow flex-shrink-0';
   arrow.setAttribute('aria-hidden', 'true');
-  arrow.setAttribute('width', '4');
-  arrow.setAttribute('height', '3');
-  arrow.setAttribute('viewBox', '0 0 16 16');
-  const arrowPath = document.createElementNS(svgNs, 'path');
-  arrowPath.setAttribute('fill', 'none');
-  arrowPath.setAttribute('stroke', '#0066cc');
-  arrowPath.setAttribute('stroke-width', '2');
-  arrowPath.setAttribute('stroke-linecap', 'round');
-  arrowPath.setAttribute('stroke-linejoin', 'round');
-  arrowPath.setAttribute('d', 'm2 5 6 6 6-6');
-  arrow.appendChild(arrowPath);
-  toggle.appendChild(arrow);
+  const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  arrowSvg.setAttribute('class', 'icon');
+  const arrowUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  arrowUse.setAttribute('href', basePath + 'svg/sprites.svg#it-arrow-right');
+  arrowSvg.appendChild(arrowUse);
+  arrow.appendChild(arrowSvg);
 
-  const desc = document.createElement('p');
-  desc.className = 'text-muted small mb-0 mt-2';
-  desc.textContent = wallet.description || '';
+  row.appendChild(left);
+  row.appendChild(arrow);
+  cardLink.appendChild(row);
+  body.appendChild(cardLink);
 
-  const howToGetLabel = resource?.learn_more?.how_to_get ?? 'Scopri come ottenerlo';
-  const howToGetLink = document.createElement('a');
-  howToGetLink.href = wallet.how_to_get_url || '#';
-  howToGetLink.className = 'wallet-how-to-get-link text-decoration-none d-inline-flex align-items-center gap-1 mt-2';
-  howToGetLink.textContent = howToGetLabel;
-  const extIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  extIcon.setAttribute('class', 'icon icon-sm ms-1');
-  extIcon.setAttribute('aria-hidden', 'true');
-  const useEl = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-  useEl.setAttribute('href', basePath + 'svg/sprites.svg#it-external-link');
-  extIcon.appendChild(useEl);
-  howToGetLink.appendChild(extIcon);
+  if (SHOW_CARD_LEARN_MORE) {
+    const learnMoreLabel = resource?.learn_more?.link ?? 'Scopri di più';
+    const descContainer = document.createElement('div');
+    descContainer.className = 'wallet-learn-more';
 
-  const contentWrapper = document.createElement('div');
-  contentWrapper.className = 'eid-learn-more-content';
-  contentWrapper.appendChild(desc);
-  contentWrapper.appendChild(howToGetLink);
+    const toggle = document.createElement('a');
+    toggle.href = '#';
+    toggle.className = 'eid-learn-more-toggle';
+    toggle.textContent = learnMoreLabel;
 
-  toggle.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const box = toggle.closest('.it-card');
-    const isExpanded = toggle.classList.contains('expanded');
-    if (!isExpanded) {
-      toggle.classList.add('expanded');
-      contentWrapper.classList.add('is-open');
-      if (box) box.style.height = 'auto';
-    } else {
-      toggle.classList.remove('expanded');
-      contentWrapper.classList.remove('is-open');
-      if (box) box.style.height = '';
-    }
-  });
+    const svgNs = 'http://www.w3.org/2000/svg';
+    const arrow = document.createElementNS(svgNs, 'svg');
+    arrow.setAttribute('class', 'eid-learn-more-arrow');
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.setAttribute('width', '4');
+    arrow.setAttribute('height', '3');
+    arrow.setAttribute('viewBox', '0 0 16 16');
+    const arrowPath = document.createElementNS(svgNs, 'path');
+    arrowPath.setAttribute('fill', 'none');
+    arrowPath.setAttribute('stroke', '#0066cc');
+    arrowPath.setAttribute('stroke-width', '2');
+    arrowPath.setAttribute('stroke-linecap', 'round');
+    arrowPath.setAttribute('stroke-linejoin', 'round');
+    arrowPath.setAttribute('d', 'm2 5 6 6 6-6');
+    arrow.appendChild(arrowPath);
+    toggle.appendChild(arrow);
 
-  descContainer.appendChild(toggle);
-  descContainer.appendChild(contentWrapper);
-  body.appendChild(descContainer);
+    const desc = document.createElement('p');
+    desc.className = 'text-muted small mb-0 mt-2';
+    desc.textContent = wallet.description || '';
+
+    const howToGetLabel = resource?.learn_more?.how_to_get ?? 'Scopri come ottenerlo';
+    const howToGetLink = document.createElement('a');
+    howToGetLink.href = wallet.how_to_get_url || '#';
+    howToGetLink.className = 'wallet-how-to-get-link text-decoration-none d-inline-flex align-items-center gap-1 mt-2';
+    howToGetLink.textContent = howToGetLabel;
+    const extIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    extIcon.setAttribute('class', 'icon icon-sm ms-1');
+    extIcon.setAttribute('aria-hidden', 'true');
+    const useEl = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    useEl.setAttribute('href', basePath + 'svg/sprites.svg#it-external-link');
+    extIcon.appendChild(useEl);
+    howToGetLink.appendChild(extIcon);
+
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'eid-learn-more-content';
+    contentWrapper.appendChild(desc);
+    contentWrapper.appendChild(howToGetLink);
+
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const box = toggle.closest('.it-card');
+      const isExpanded = toggle.classList.contains('expanded');
+      if (!isExpanded) {
+        toggle.classList.add('expanded');
+        contentWrapper.classList.add('is-open');
+        if (box) box.style.height = 'auto';
+      } else {
+        toggle.classList.remove('expanded');
+        contentWrapper.classList.remove('is-open');
+        if (box) box.style.height = '';
+      }
+    });
+
+    descContainer.appendChild(toggle);
+    descContainer.appendChild(contentWrapper);
+    body.appendChild(descContainer);
+  }
+
   card.appendChild(body);
   col.appendChild(card);
   return col;
@@ -186,6 +233,7 @@ function createWalletCard(wallet, resource, basePath) {
 function renderWallets(wallets, resource, basePath) {
   const grid = document.getElementById('wallet-grid');
   grid.innerHTML = '';
+  grid.classList.toggle('it-wallet-grid-single', wallets.length === 1);
   if (wallets.length === 0) {
     const noResultsLabel = resource?.search?.no_results ?? 'Nessun risultato';
     const emptyDiv = document.createElement('div');
@@ -196,7 +244,7 @@ function renderWallets(wallets, resource, basePath) {
     img.className = 'it-wallet-no-results-icon mb-3';
     img.setAttribute('aria-hidden', 'true');
     const msg = document.createElement('h5');
-    msg.className = 'h5 text-muted mb-0';
+    msg.className = 'h5 it-wallet-no-results-text mb-0';
     msg.textContent = noResultsLabel;
     emptyDiv.appendChild(img);
     emptyDiv.appendChild(msg);
@@ -206,6 +254,15 @@ function renderWallets(wallets, resource, basePath) {
       grid.appendChild(createWalletCard(w, resource, basePath));
     });
   }
+}
+
+function getWalletResource() {
+  const lang = i18next.language || 'it';
+  let resource = i18next.getResourceBundle(lang, 'translation');
+  if (!resource) {
+    resource = i18next.store?.getDataByLanguage?.(lang)?.translation ?? i18next.store?.data?.[lang]?.translation ?? {};
+  }
+  return resource;
 }
 
 function setupBackLink() {
@@ -219,12 +276,7 @@ function setupBackLink() {
 
 async function loadItWalletPage() {
   const basePath = getBasePath();
-  const lang = i18next.language || 'it';
-
-  let resource = i18next.getResourceBundle(lang, 'translation');
-  if (!resource) {
-    resource = i18next.store?.getDataByLanguage?.(lang)?.translation ?? i18next.store?.data?.[lang]?.translation ?? {};
-  }
+  const resource = getWalletResource();
   loadDocument(resource);
 
   let wallets = [];
@@ -238,21 +290,197 @@ async function loadItWalletPage() {
     console.error('Error loading it-wallets.json:', err);
   }
 
+  const defaultWalletOrder = shuffleWallets(wallets);
   const searchInput = document.getElementById('wallet-search');
   const searchBtn = document.getElementById('search-btn');
+  const searchClearBtn = document.getElementById('search-clear-btn');
+  const sortSelect = document.getElementById('wallet-sort');
+  const sortTrigger = document.getElementById('wallet-sort-trigger');
+  const sortMenu = document.getElementById('wallet-sort-menu');
+  const sortMenuItems = Array.from(document.querySelectorAll('.it-wallet-sort-menu-item'));
+  const controls = document.getElementById('wallet-controls');
+  const titleActions = document.getElementById('wallet-title-actions');
+  const searchToggle = document.getElementById('wallet-search-toggle');
+  const iconSearchOpen = document.getElementById('wallet-search-toggle-icon-open');
+  const iconSearchClose = document.getElementById('wallet-search-toggle-icon-close');
+  const showControls = defaultWalletOrder.length >= SEARCH_MIN_WALLETS;
+  controls?.classList.toggle('d-none', !showControls);
+  if (titleActions) titleActions.hidden = !showControls;
+  let appliedQuery = '';
 
-  function applyFilter() {
-    const query = (searchInput?.value || '').trim();
-    const filtered = filterWallets(wallets, query);
-    renderWallets(filtered, resource, basePath);
+  function isWalletDesktopLayout() {
+    return window.matchMedia('(min-width: 992px)').matches;
   }
 
-  searchInput?.addEventListener('input', () => applyFilter());
-  searchInput?.addEventListener('keyup', (e) => { if (e.key === 'Enter') applyFilter(); });
-  searchBtn?.addEventListener('click', () => applyFilter());
+  function syncMobilePanelUi(open) {
+    if (!searchToggle) return;
+    searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (iconSearchOpen) {
+      iconSearchOpen.hidden = open;
+      iconSearchOpen.style.display = open ? 'none' : '';
+      iconSearchOpen.setAttribute('aria-hidden', open ? 'true' : 'false');
+    }
+    if (iconSearchClose) {
+      iconSearchClose.hidden = !open;
+      iconSearchClose.style.display = open ? 'block' : 'none';
+      iconSearchClose.setAttribute('aria-hidden', open ? 'false' : 'true');
+    }
+  }
 
-  applyFilter();
+  function setMobilePanelOpen(open) {
+    if (!controls || !showControls) return;
+    if (isWalletDesktopLayout()) return;
+    controls.classList.toggle('is-mobile-panel-open', open);
+    syncMobilePanelUi(open);
+  }
+
+  function resetMobilePanelForDesktop() {
+    if (!controls) return;
+    controls.classList.remove('is-mobile-panel-open');
+    syncMobilePanelUi(false);
+  }
+
+  function applyFiltersAndSort() {
+    const res = getWalletResource();
+    const query = showControls ? appliedQuery : '';
+    const sortValue = showControls ? (sortSelect?.value || 'default') : 'default';
+    const filtered = filterWallets(defaultWalletOrder, query);
+    const sorted = sortWallets(filtered, sortValue);
+    renderWallets(sorted, res, basePath);
+    searchClearBtn?.classList.toggle('d-none', !(searchInput?.value || '').trim());
+  }
+
+  function syncSearchButtonState() {
+    if (!searchBtn) return;
+    const hasQuery = !!(searchInput?.value || '').trim();
+    searchBtn.disabled = !hasQuery;
+    if (!hasQuery) {
+      searchBtn.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  function closeSortMenu() {
+    if (!sortMenu || !sortTrigger) return;
+    sortMenu.hidden = true;
+    sortTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function setSortMenuSelection(value) {
+    sortMenuItems.forEach((item) => {
+      const isActive = item.dataset.value === value;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-checked', isActive ? 'true' : 'false');
+    });
+  }
+
+  function setSortValue(value) {
+    if (!sortSelect) return;
+    sortSelect.value = value;
+    setSortMenuSelection(value);
+    applyFiltersAndSort();
+  }
+
+  if (searchInput) {
+    searchInput.oninput = () => {
+      searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
+      searchBtn?.setAttribute('aria-pressed', 'false');
+      syncSearchButtonState();
+    };
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      if (searchBtn?.disabled) return;
+      searchBtn?.click();
+    });
+  }
+  if (searchBtn) {
+    searchBtn.onclick = () => {
+      if (searchBtn.disabled) return;
+      appliedQuery = (searchInput?.value || '').trim();
+      searchBtn.setAttribute('aria-pressed', 'true');
+      applyFiltersAndSort();
+    };
+  }
+  if (sortSelect) {
+    sortSelect.onchange = () => {
+      setSortMenuSelection(sortSelect.value || 'default');
+      applyFiltersAndSort();
+    };
+  }
+  if (sortTrigger && sortMenu) {
+    sortTrigger.onclick = (event) => {
+      event.stopPropagation();
+      const nextOpen = sortMenu.hidden;
+      sortMenu.hidden = !nextOpen;
+      sortTrigger.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+    };
+  }
+  if (sortMenuItems.length > 0) {
+    sortMenuItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        const value = item.dataset.value || 'default';
+        setSortValue(value);
+        closeSortMenu();
+      });
+    });
+  }
+  if (searchClearBtn) {
+    searchClearBtn.onclick = () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      appliedQuery = '';
+      syncSearchButtonState();
+      applyFiltersAndSort();
+    };
+  }
+
+  if (searchToggle) {
+    searchToggle.onclick = () => {
+      if (!showControls || isWalletDesktopLayout()) return;
+      const next = !controls?.classList.contains('is-mobile-panel-open');
+      setMobilePanelOpen(next);
+    };
+  }
+  if (!window.__itWalletLayoutListenersBound) {
+    window.__itWalletLayoutListenersBound = true;
+    window.addEventListener('resize', () => {
+      if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
+    });
+  }
+  if (!window.__itWalletSortMenuListenersBound) {
+    window.__itWalletSortMenuListenersBound = true;
+    document.addEventListener('click', (event) => {
+      const menu = document.getElementById('wallet-sort-menu');
+      const trigger = document.getElementById('wallet-sort-trigger');
+      if (!menu || !trigger || menu.hidden) return;
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (menu.contains(target) || trigger.contains(target)) return;
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const menu = document.getElementById('wallet-sort-menu');
+      const trigger = document.getElementById('wallet-sort-trigger');
+      if (!menu || !trigger) return;
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
+  else syncMobilePanelUi(false);
+
+  setSortMenuSelection(sortSelect?.value || 'default');
+  syncSearchButtonState();
+  applyFiltersAndSort();
   setupBackLink();
+  if (showControls && searchInput) {
+    requestAnimationFrame(() => searchInput.focus());
+  }
 }
 
 i18next
@@ -262,9 +490,10 @@ i18next
     fallbackLng: 'it',
     backend: { loadPath: getBasePath() + 'locales/it-wallet-{{lng}}.json' }
   })
-  .then(loadItWalletPage)
+  .then(() => {
+    if (typeof window.initHeaderLangDropdown === 'function') {
+      window.initHeaderLangDropdown(i18next, { afterLanguageChange: () => loadItWalletPage() });
+    }
+    return loadItWalletPage();
+  })
   .catch((err) => console.error('Error loading it-wallet page:', err));
-
-document.getElementById('lang-select')?.addEventListener('change', (e) => {
-  i18next.changeLanguage(e.target.value).then(loadItWalletPage);
-});

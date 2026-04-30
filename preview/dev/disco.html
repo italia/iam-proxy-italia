@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="disco-html">
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -25,6 +25,7 @@
   <script src="spid/spid-sp-access-button.js"></script>
   <script src="js/ita.min.js"></script>
   <script src="js/bootstrap-italia.bundle.min.js"></script>
+  <script src="js/header-lang-dropdown.js"></script>
 
 </head>
 
@@ -35,12 +36,37 @@
       <div class="container">
         <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
           <span class="navbar-brand text-white"><strong id="header-region-name"></strong></span>
-          <!-- Dropdown language -->
-          <div>
-            <select id="lang-select" class="form-select form-select-sm text-white">
-              <option value="it" selected>ITA</option>
-              <option value="en">EN</option>
-            </select>
+          <div class="it-header-slim-right-zone">
+            <div class="nav-item dropdown it-header-lang-dropdown">
+              <a href="#" id="languagesDropButton" role="button" class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="visually-hidden">lingua attiva:</span>
+                <span class="it-header-lang-label">ITA</span>
+                <svg class="icon icon-sm ms-1" aria-hidden="true">
+                  <use xlink:href="./svg/sprites.svg#it-expand"></use>
+                </svg>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="link-list-wrapper">
+                      <ul class="link-list" aria-labelledby="languagesDropButton">
+                        <li>
+                          <a class="dropdown-item list-item it-lang-option active" href="#" data-lang="it" role="button">
+                            <span lang="it">Italiano</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item list-item it-lang-option" href="#" data-lang="en" role="button">
+                            <span lang="en">English</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -48,11 +74,10 @@
     <div class="header-title-section">
       <div class="container py-3">
         <div class="d-flex align-items-center">
-          <svg class="icon icon-lg me-2" aria-hidden="true">
+          <svg class="icon icon-lg" aria-hidden="true">
             <!-- YOUR LOGO HERE -->
             <use xlink:href="./svg/sprites.svg#it-code-circle"></use>
           </svg>
-          <h2 id="eid-title"></h2>
         </div>
       </div>
     </div>
