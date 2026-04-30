@@ -13,7 +13,7 @@
     "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
   },
   "devDependencies": {
-    "bootstrap-italia": "^2.18.0",
+    "bootstrap-italia": "^2.18.1",
     "eslint": "^9.0.0",
     "htmlhint": "^1.1.4",
     "playwright": "^1.59.1",
