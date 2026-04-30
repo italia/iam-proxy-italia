@@ -11,13 +11,10 @@ on:
   pull_request:
     paths:
       - 'iam-proxy-italia-project/static/**'
-<<<<<<< HEAD
-=======
   workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
->>>>>>> ux-ui
 
 jobs:
   pre_job:
@@ -26,17 +23,10 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-<<<<<<< HEAD
-        uses: fkirc/skip-duplicate-actions@v3.4.0
-        with:
-          skip_after_successful_duplicate: 'true'
-          same_content_newer: 'true'
-=======
         uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           skip_after_successful_duplicate: 'true'
           concurrent_skipping: 'same_content_newer'
->>>>>>> ux-ui
 
   lint:
     name: Lint static assets
@@ -49,11 +39,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-<<<<<<< HEAD
-          node-version: '20'
-=======
           node-version: '24'
->>>>>>> ux-ui
           cache: 'npm'
           cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
 
@@ -70,11 +56,6 @@ jobs:
     needs: [pre_job, lint]
     if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
-<<<<<<< HEAD
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-=======
->>>>>>> ux-ui
     permissions:
       contents: write
     steps:
@@ -83,11 +64,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-<<<<<<< HEAD
-          node-version: '20'
-=======
           node-version: '24'
->>>>>>> ux-ui
           cache: 'npm'
           cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
 
@@ -103,12 +80,8 @@ jobs:
           SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
           PREVIEW_DIR="preview/${SAFE_BRANCH}"
           mkdir -p deploy/"${PREVIEW_DIR}"
-<<<<<<< HEAD
-          (cd iam-proxy-italia-project/static && tar --exclude=node_modules -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
-=======
           # Exclude the legacy "static -> ./" symlink to avoid recursive paths on Pages builds.
           (cd iam-proxy-italia-project/static && tar --exclude=node_modules --exclude=static -cf - .) | (cd deploy/"${PREVIEW_DIR}" && tar -xf -)
->>>>>>> ux-ui
           # Rewrite /static/ to ./ for GitHub Pages relative paths
           find deploy/"${PREVIEW_DIR}" \( -name '*.html' -o -name '*.json' -o -name '*.js' \) -type f \
             -exec sed -i 's|/static/|./|g' {} \;
@@ -135,11 +108,6 @@ jobs:
           rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"
           mkdir -p preview/"${{ steps.prepare.outputs.safe_branch }}"
           cp -r deploy/"${{ steps.prepare.outputs.preview_dir }}"/* preview/"${{ steps.prepare.outputs.safe_branch }}"/
-<<<<<<< HEAD
-          touch .nojekyll
-          git add preview/"${{ steps.prepare.outputs.safe_branch }}" .nojekyll
-          git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }} [skip ci]"
-=======
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # Force a gh-pages commit for manual runs even when static files are unchanged.
             {
@@ -220,5 +188,4 @@ jobs:
           touch .nojekyll
           git add preview/"${{ steps.prepare.outputs.safe_branch }}" preview/index.html .nojekyll
           git diff --staged --quiet || git commit -m "Deploy static preview for ${{ steps.prepare.outputs.safe_branch }}"
->>>>>>> ux-ui
           git push origin gh-pages

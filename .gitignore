@@ -65,9 +65,6 @@ coverage.xml
 # Static assets (Bootstrap Italia via npm)
 iam-proxy-italia-project/static/node_modules/
 .venv*
-<<<<<<< HEAD
-=======
 iam-proxy-italia-project/static/static
->>>>>>> ux-ui
 .node
 .bin
