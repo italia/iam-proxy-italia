@@ -31,7 +31,7 @@
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="visually-hidden">lingua attiva:</span>
                 <span class="it-header-lang-label">ITA</span>
-                <svg class="icon icon-sm ms-1 d-none d-lg-block" aria-hidden="true">
+                <svg class="icon icon-sm ms-1" aria-hidden="true">
                   <use xlink:href="/static/svg/sprites.svg#it-expand"></use>
                 </svg>
               </a>
@@ -87,8 +87,7 @@
           <span class="it-wallet-back-label">Torna indietro</span>
         </a>
       </div>
-      <h1 class="it-wallet-title-heading mb-0" id="page-title"
-        style="font-family: var(--font-sans, 'Titillium Web', HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif); font-weight: 700; font-style: normal; font-size: var(--heading-3-font-size-l, 40px); line-height: 120%; letter-spacing: var(--font-tracking-normal, 0); text-align: center;">Scegli l'app</h1>
+      <h1 class="it-wallet-title-heading mb-0" id="page-title">Scegli l'app</h1>
       <div class="it-wallet-title-slot it-wallet-title-slot--end">
       <div id="wallet-title-actions" class="it-wallet-title-actions" hidden>
         <button type="button" id="wallet-search-toggle" class="it-wallet-icon-btn" aria-expanded="false"
@@ -96,15 +95,13 @@
           <svg id="wallet-search-toggle-icon-open" class="icon" aria-hidden="true">
             <use href="/static/svg/sprites.svg#it-search"></use>
           </svg>
-          <svg id="wallet-search-toggle-icon-close" class="icon it-wallet-icon-chevron-up" aria-hidden="true" hidden>
-            <use href="/static/svg/sprites.svg#it-expand"></use>
-          </svg>
+          <img id="wallet-search-toggle-icon-close" class="it-wallet-toggle-img" src="/static/img/it-wallet-search-toggle-close.svg" alt=""
+            aria-hidden="true" hidden>
         </button>
       </div>
       </div>
     </div>
-    <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle"
-      style="font-family: 'Titillium Web', sans-serif; font-weight: 400; font-style: normal; font-size: 24px; line-height: 32px; letter-spacing: 0; text-align: center;">Seleziona il portafoglio digitale con cui proseguire</p>
+    <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle">Seleziona il portafoglio digitale con cui proseguire</p>
 
     <section class="it-wallet-layout-surface">
       <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4">
@@ -116,34 +113,25 @@
           </span>
           <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per Nome" aria-label="Cerca wallet per nome">
           <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">
-            <svg class="icon" aria-hidden="true">
-              <use href="/static/svg/sprites.svg#it-close-big"></use>
-            </svg>
+            <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt="" aria-hidden="true">
           </button>
         </div>
-        <button class="btn btn-primary btn-sm" type="button" id="search-btn">Cerca</button>
+        <button class="btn btn-primary btn-sm" type="button" id="search-btn" aria-pressed="false">Cerca</button>
         <div class="it-wallet-sort-wrap">
           <button type="button" id="wallet-sort-trigger" class="it-wallet-sort-trigger" aria-haspopup="menu"
             aria-expanded="false" aria-controls="wallet-sort-menu" aria-label="Ordina wallet">
-            <span class="it-wallet-sort-icon-duo" aria-hidden="true">
-              <svg class="icon it-wallet-sort-arrow">
-                <use href="/static/svg/sprites.svg#it-arrow-up"></use>
-              </svg>
-              <svg class="icon it-wallet-sort-arrow">
-                <use href="/static/svg/sprites.svg#it-arrow-down"></use>
-              </svg>
-            </span>
+            <img src="/static/img/it-wallet-sort-icon.svg" class="it-wallet-sort-icon" alt="" aria-hidden="true">
           </button>
           <div id="wallet-sort-menu" class="it-wallet-sort-menu" role="menu" hidden>
             <button type="button" class="it-wallet-sort-menu-item is-active" role="menuitemradio" aria-checked="true"
-              data-value="default" id="wallet-sort-item-default">Predefinito</button>
+              data-value="default" id="wallet-sort-item-default">Ordine predefinito</button>
             <button type="button" class="it-wallet-sort-menu-item" role="menuitemradio" aria-checked="false"
               data-value="az" id="wallet-sort-item-az">Alfabetico A-Z</button>
             <button type="button" class="it-wallet-sort-menu-item" role="menuitemradio" aria-checked="false"
               data-value="za" id="wallet-sort-item-za">Alfabetico Z-A</button>
           </div>
           <select id="wallet-sort" class="it-wallet-sort-native" aria-label="Ordina wallet" tabindex="-1">
-            <option value="default">Predefinito</option>
+            <option value="default">Ordine predefinito</option>
             <option value="az">Alfabetico A-Z</option>
             <option value="za">Alfabetico Z-A</option>
           </select>

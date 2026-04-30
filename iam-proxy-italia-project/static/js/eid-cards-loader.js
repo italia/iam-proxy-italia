@@ -74,7 +74,7 @@ function loadEidCards(resource) {
     digitalSection.className = 'mb-4';
     const title = document.createElement('h3');
     title.textContent = resource.titles.login_digital_identity;
-    title.className = 'text-center mb-4';
+    title.className = 'text-center mb-4 eid-login-title';
     digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
@@ -126,7 +126,7 @@ function loadEidCards(resource) {
     altSection.className = 'container mb-0';
     const title = document.createElement('h3');
     title.textContent = resource.titles.login_alternative_method;
-    title.className = 'text-center mb-3 pb-4';
+    title.className = 'text-center mb-3 pb-4 eid-login-title';
     altSection.appendChild(title);
 
     createEidCardsRow(resource, "alternative_id", altSection);
@@ -444,7 +444,7 @@ function createLearnMore(resource, eid) {
     link.href = eid.learn_more_link;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.className = 'd-block mt-2';
+    link.className = 'eid-find-how-link d-block mt-2';
     link.textContent = ctaLabelText;
     appendExternalIcon(link);
     return link;
