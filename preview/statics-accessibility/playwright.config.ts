@@ -30,7 +30,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npx http-server . -p 8080 -a 127.0.0.1 -c-1 --silent",
+    command:
+      "sh -c 'if [ ! -e static ]; then ln -s . static; fi; npx http-server . -p 8080 -a 127.0.0.1 -c-1 --silent'",
     port: 8080,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
