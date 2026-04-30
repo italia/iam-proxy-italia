@@ -674,9 +674,11 @@ header svg.icon {
   background-color: #004D99 !important;
 }
 
-.it-header-slim-wrapper.bg-primary #header-region-name {
-  font-size: 18px;
-  font-weight: 600 !important;
+.it-header-slim-wrapper.bg-primary #header-region-name,
+.it-header-slim-wrapper.bg-primary .navbar-brand,
+.it-header-slim-wrapper.bg-primary .navbar-brand strong {
+  font-size: 14px !important;
+  font-weight: 400 !important;
 }
 
 /* Language dropdown (developers.italia.it slim header pattern) */
@@ -1399,10 +1401,13 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-card {
+  --bs-it-card-spacer-y: 4px;
+  --bs-it-card-spacer-x: 24px;
+
   width: 387px;
   max-width: 387px;
-  height: 99px;
-  min-height: 99px;
+  height: auto;
+  min-height: 0;
   border: 1pt solid #C5C7C9;
   border-radius: 4px;
 }
@@ -1410,7 +1415,8 @@ html.it-wallet-html body.it-wallet-body {
 .it-wallet-card .it-card-body {
   height: 100%;
   min-height: 0;
-  padding: 12px 24px;
+  justify-content: center !important;
+  padding: 16px 16px 9px 17px !important;
   box-sizing: border-box;
 }
 
@@ -1446,8 +1452,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .wallet-card-logo {
-  width: 72px;
-  height: 72px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
 }
 
@@ -1558,13 +1564,10 @@ html.it-wallet-html body.it-wallet-body {
     width: 100% !important;
     max-width: calc(100% - 3.5rem) !important;
     min-width: 0;
-    text-align: center !important;
-    pointer-events: none;
-  }
-
-  .eid-card-btn-wallet .eid-card-btn-label {
     font-size: 16px !important;
     font-weight: 600 !important;
+    text-align: center !important;
+    pointer-events: none;
   }
 
   main.container {
@@ -1671,6 +1674,9 @@ html.it-wallet-html body.it-wallet-body {
   }
 
   #wallet-grid.row {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 12px;
+
     margin-left: 0;
     margin-right: 0;
   }
