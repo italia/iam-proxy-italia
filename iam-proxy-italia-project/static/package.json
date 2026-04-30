@@ -8,16 +8,24 @@
     "update-wallet-it-assets": "bash scripts/update-wallet-it-assets.sh",
     "postinstall": "npm run update-bootstrap-italia",
     "lint:html": "htmlhint '**/*.html'",
+    "lint:w3c:html": "node node_modules/vnu-jar/vnu-jar.js --errors-only --skip-non-html disco.html it-wallet.html",
     "lint:css": "stylelint 'css/style.css' --allow-empty-input",
     "lint:js": "eslint 'js/eid-cards-loader.js' 'js/error-i18n.js'",
-    "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
+    "lint": "npm run lint:html && npm run lint:w3c:html && npm run lint:css && npm run lint:js",
+    "test:a11y": "playwright test",
+    "test:a11y:ci": "playwright test --reporter=line",
+    "test:a11y:best-practices": "playwright test tests/a11y.best-practices.spec.ts --reporter=line"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.59.1",
     "bootstrap-italia": "^2.18.0",
     "eslint": "^9.0.0",
     "htmlhint": "^1.1.4",
+    "http-server": "^14.1.1",
     "playwright": "^1.59.1",
     "stylelint": "^16.0.0",
-    "stylelint-config-standard": "^36.0.0"
+    "stylelint-config-standard": "^36.0.0",
+    "vnu-jar": "^26.4.16"
   }
 }

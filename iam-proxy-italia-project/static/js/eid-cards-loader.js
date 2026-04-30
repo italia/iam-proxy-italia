@@ -72,9 +72,9 @@ function loadEidCards(resource) {
   if (checkId(resource.digital_id)) {
     const digitalSection = document.createElement('div');
     digitalSection.className = 'mb-4';
-    const title = document.createElement('h3');
+    const title = document.createElement('h1');
     title.textContent = resource.titles.login_digital_identity;
-    title.className = 'text-center mb-4';
+    title.className = 'text-center mb-4 h3';
     digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
@@ -84,8 +84,8 @@ function loadEidCards(resource) {
     infoDiv.className = 'd-flex flex-column align-items-center mb-4';
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
-      const infoTitle = document.createElement('h4');
-      infoTitle.className = 'eid-havent-digital-id-heading';
+      const infoTitle = document.createElement('h2');
+      infoTitle.className = 'eid-havent-digital-id-heading h4';
       infoTitle.textContent = havenDigitalId;
 
       const infoLink = document.createElement('a');
@@ -118,20 +118,24 @@ function loadEidCards(resource) {
   }
 
   if (checkId(resource.alternative_id)) {
-    const altWrapper = document.createElement('div');
+    const altWrapper = document.createElement('section');
     altWrapper.id = 'eid-alternative-section';
     altWrapper.className = 'py-4 eid-alternative-section';
+    altWrapper.setAttribute('role', 'region');
 
     const altSection = document.createElement('div');
     altSection.className = 'container mb-0';
-    const title = document.createElement('h3');
+    const title = document.createElement('h2');
+    const altTitleId = 'eid-alternative-title';
+    title.id = altTitleId;
     title.textContent = resource.titles.login_alternative_method;
-    title.className = 'text-center mb-3 pb-4';
+    title.className = 'text-center mb-3 pb-4 h2';
+    altWrapper.setAttribute('aria-labelledby', altTitleId);
     altSection.appendChild(title);
 
     createEidCardsRow(resource, "alternative_id", altSection);
     altWrapper.appendChild(altSection);
-    // Insert after main so altWrapper spans full viewport (full-width row)
+    // Keep full-width layout by rendering this section outside the constrained main container.
     const main = container.closest('main');
     main.insertAdjacentElement('afterend', altWrapper);
   }
@@ -192,8 +196,8 @@ function createEidCardBox(resource, eid) {
   const card = document.createElement('article');
   card.className = 'it-card shadow h-100';
 
-  const title = document.createElement('h4');
-  title.className = 'it-card-title mb-3';
+  const title = document.createElement('h2');
+  title.className = 'it-card-title mb-3 h4';
   title.textContent = eid.name;
 
   const body = document.createElement('div');
@@ -223,7 +227,8 @@ function createLogoButton(eid, _hasLearnMore = false) {
   const createLogoImg = () => {
     const img = document.createElement('img');
     img.src = eid.logo;
-    img.alt = eid.name;
+    img.alt = '';
+    img.setAttribute('aria-hidden', 'true');
     img.className = 'eid-card-logo';
     return img;
   };
@@ -271,9 +276,17 @@ function createLogoButton(eid, _hasLearnMore = false) {
       menu.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       document.removeEventListener('click', outsideClick);
+      document.removeEventListener('keydown', onDocumentKeydown);
     };
     const outsideClick = (e) => {
       if (!wrapper.contains(e.target)) closeMenu();
+    };
+    const onDocumentKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+        btn.focus();
+      }
     };
 
     const toggleMenu = (e) => {
@@ -286,11 +299,22 @@ function createLogoButton(eid, _hasLearnMore = false) {
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => document.addEventListener('click', outsideClick));
+          requestAnimationFrame(() => {
+            document.addEventListener('click', outsideClick);
+            document.addEventListener('keydown', onDocumentKeydown);
+          });
         });
       }
     };
-    btn.addEventListener('pointerdown', toggleMenu, { capture: true });
+    btn.addEventListener('click', toggleMenu);
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        toggleMenu(e);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+      }
+    });
 
     wrapper.appendChild(btn);
     wrapper.appendChild(menu);
@@ -300,10 +324,12 @@ function createLogoButton(eid, _hasLearnMore = false) {
 
   if (eid.login_url?.includes("#spid-idp-button")) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'ita ita-dropdown ita-l ita-fixed eid-cie-dropdown-wrapper';
+    // Do not use `ita-dropdown` here: that style can open menu on focus.
+    // SPID menu must open only on explicit activation (click/Enter/Space).
+    wrapper.className = 'ita ita-l ita-fixed eid-cie-dropdown-wrapper';
 
-    const btn = document.createElement('a');
-    btn.href = "#";
+    const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn eid-card-btn-spid';
     btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
     btn.setAttribute('aria-haspopup', 'true');
@@ -317,34 +343,78 @@ function createLogoButton(eid, _hasLearnMore = false) {
     btn.appendChild(createTextSpan());
 
     const menu = document.createElement('div');
+    menu.id = 'spid-idp-button-xlarge-post';
     menu.className = 'ita-menu';
     menu.setAttribute('role', 'menu');
     menu.setAttribute('data-spid-remote', '');
+    // Prevent CSS `:focus-within` from auto-opening on Tab focus.
+    // The menu is shown only by explicit activation handled by the SPID plugin.
+    menu.style.display = 'none';
 
     wrapper.appendChild(btn);
     wrapper.appendChild(menu);
 
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (typeof window.jQuery === 'function') {
+          window.jQuery(btn).spidIDPButton('hide');
+        }
+        menu.style.display = 'none';
+        btn.focus();
+      }
+    });
+
+    if (!window.__eidSpidEscListenerBound) {
+      window.__eidSpidEscListenerBound = true;
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const activeTrigger = document.querySelector('.eid-card-btn-spid.spid-idp-button-open');
+        if (!(activeTrigger instanceof HTMLElement)) return;
+        const selector = activeTrigger.getAttribute('spid-idp-button');
+        if (typeof window.jQuery === 'function') {
+          window.jQuery(activeTrigger).spidIDPButton('hide');
+        }
+        if (selector) {
+          const activeMenu = document.querySelector(selector);
+          if (activeMenu instanceof HTMLElement) {
+            activeMenu.style.display = 'none';
+          }
+        }
+        activeTrigger.focus();
+      });
+    }
+
     return wrapper;
   }
 
-  const btn = document.createElement('a');
   let href = eid.login_url;
   const isWallet = eid.name?.toLowerCase().includes('it-wallet') || eid.logo?.toLowerCase().includes('it-wallet');
   if (isWallet && window.location.search) {
     const sep = href.includes('?') ? '&' : '?';
     href = href + sep + window.location.search.slice(1);
   }
-  btn.href = href;
   const isCie = eid.name?.toLowerCase().includes('cie') || eid.logo?.toLowerCase().includes('cie');
   const isEidas =
     eid.name?.toLowerCase().includes('eidas') ||
     eid.logo_text?.toLowerCase().includes('eidas') ||
     eid.logo?.toLowerCase().includes('eidas');
-  btn.className =
+  const btnClassName =
     'btn btn-primary d-flex align-items-center eid-card-btn' +
     (isCie ? ' eid-card-btn-cie' : '') +
     (isWallet ? ' eid-card-btn-wallet' : '') +
     (isEidas ? ' eid-card-btn-eidas' : '');
+
+  const btn = document.createElement(isWallet ? 'button' : 'a');
+  btn.className = btnClassName;
+  if (isWallet) {
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      window.location.href = href;
+    });
+  } else {
+    btn.href = href;
+  }
 
   btn.appendChild(createLogoImg());
   if (!isWallet) {

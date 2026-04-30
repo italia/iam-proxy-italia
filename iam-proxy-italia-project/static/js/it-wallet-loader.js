@@ -131,12 +131,13 @@ function createWalletCard(wallet, resource, basePath) {
   left.className = 'it-wallet-card-left';
   const img = document.createElement('img');
   img.src = (wallet.logo_uri || '').startsWith('/') ? wallet.logo_uri : basePath + (wallet.logo_uri || '');
-  img.alt = wallet.name;
+  img.alt = '';
+  img.setAttribute('aria-hidden', 'true');
   img.className = 'wallet-card-logo flex-shrink-0';
   left.appendChild(img);
 
-  const title = document.createElement('h5');
-  title.className = 'it-card-title mb-0 it-wallet-card-title text-start';
+  const title = document.createElement('h2');
+  title.className = 'it-card-title mb-0 it-wallet-card-title text-start h5';
   title.textContent = wallet.name;
   left.appendChild(title);
 
@@ -318,12 +319,12 @@ async function loadItWalletPage() {
     if (iconSearchOpen) {
       iconSearchOpen.hidden = open;
       iconSearchOpen.style.display = open ? 'none' : '';
-      iconSearchOpen.setAttribute('aria-hidden', open ? 'true' : 'false');
+      iconSearchOpen.setAttribute('aria-hidden', 'true');
     }
     if (iconSearchClose) {
       iconSearchClose.hidden = !open;
       iconSearchClose.style.display = open ? 'block' : 'none';
-      iconSearchClose.setAttribute('aria-hidden', open ? 'false' : 'true');
+      iconSearchClose.setAttribute('aria-hidden', 'true');
     }
   }
 

@@ -51,9 +51,36 @@ jobs:
         working-directory: iam-proxy-italia-project/static
         run: npm run lint
 
+  a11y:
+    name: Accessibility checks
+    needs: [pre_job, lint]
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: iam-proxy-italia-project/static
+        run: npx playwright install --with-deps chromium
+
+      - name: Run accessibility test suite
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:ci
+
   deploy:
     name: Deploy to GitHub Pages
-    needs: [pre_job, lint]
+    needs: [pre_job, lint, a11y]
     if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     permissions:
