@@ -402,15 +402,10 @@ function createLearnMore(resource, eid) {
     arrow.appendChild(arrowPath);
     toggle.appendChild(arrow);
 
-    const content = document.createElement('div');
-    content.className = 'mt-2 eid-learn-more-content';
-
     const text = document.createElement('p');
-    text.className = 'mb-0';
     text.innerHTML = eid.learn_more_descr;
-    content.appendChild(text);
-
     if (eid.learn_more_link) {
+      text.appendChild(document.createTextNode(' '));
       const inlineCta = document.createElement('a');
       inlineCta.href = eid.learn_more_link;
       inlineCta.target = '_blank';
@@ -418,8 +413,9 @@ function createLearnMore(resource, eid) {
       inlineCta.className = 'eid-find-how-link';
       inlineCta.textContent = ctaLabelText;
       appendExternalIcon(inlineCta);
-      content.appendChild(inlineCta);
+      text.appendChild(inlineCta);
     }
+    text.className = 'mt-2 eid-learn-more-content';
 
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
@@ -427,17 +423,17 @@ function createLearnMore(resource, eid) {
       const isExpanded = toggle.classList.contains('expanded');
       if (!isExpanded) {
         toggle.classList.add('expanded');
-        content.classList.add('is-open');
+        text.classList.add('is-open');
         if (box) box.style.height = 'auto';
       } else {
         toggle.classList.remove('expanded');
-        content.classList.remove('is-open');
+        text.classList.remove('is-open');
         if (box) box.style.height = '';
       }
     });
 
     container.appendChild(toggle);
-    container.appendChild(content);
+    container.appendChild(text);
     return container;
   } else if (eid.learn_more_link) {
     const link = document.createElement('a');

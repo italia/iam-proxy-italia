@@ -9,9 +9,9 @@
       "how_to_get_url": "#"
     },
     {
-      "id": "https://pwallet.example.org",
-      "logo_uri": "it-wallet/pwallet_logo.svg",
-      "name": "Pwallet",
+      "id": "https://wallet-demo.example.org",
+      "logo_uri": "img/wallet-placeholder.svg",
+      "name": "Wallet Demo",
       "description": "Esempio di wallet digitale per l'autenticazione e la gestione delle credenziali verificate.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
