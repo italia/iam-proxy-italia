@@ -1,0 +1,36 @@
+{
+  "header": {
+    "region_name": "Organization Name"
+  },
+  "titles": {
+    "page_title": "Choose the app",
+    "page_subtitle": "Select the digital wallet to continue",
+    "logo_title": "Your logo"
+  },
+  "search": {
+    "placeholder": "Search by name",
+    "button": "Search",
+    "no_results": "No results"
+  },
+  "sort": {
+    "default": "Default sorting",
+    "az": "Alphabetical A-Z",
+    "za": "Alphabetical Z-A"
+  },
+  "wallets": {
+    "load_more": "Load more"
+  },
+  "nav": {
+    "back": "Back"
+  },
+  "footer": {
+    "legal_notice": "Legal notes",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Accessibility statement"
+  },
+  "learn_more": {
+    "question": "Don't know what IT-Wallet is?",
+    "link": "Find out more",
+    "how_to_get": "Find out how to get it"
+  }
+}
