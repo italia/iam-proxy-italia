@@ -15,6 +15,7 @@ from satosa.response import Redirect
 from ..models.oidc_auth import OidcAuthentication
 from ..storage.db_engine import OidcDbEngine
 from ..utils import KeyUsage
+from ..utils.exceptions import TrustChainNotFoundError
 from ..utils.handlers.base_endpoint import BaseEndpoint
 from ..utils.helpers.jwtse import create_jws
 from ..utils.helpers.jwks import public_jwk_from_private_jwk
@@ -106,8 +107,27 @@ class AuthorizationHandler(BaseEndpoint):
         )
 
         provider_url = context.internal_data.get("target_entity_id")
+        if not provider_url:
+            return self._handle_400(
+                context,
+                "No identity provider was selected. The request is missing target_entity_id.",
+            )
 
-        trust_chain = self.__get_trust_chain(provider_url)
+        try:
+            trust_chain = self.__get_trust_chain(provider_url)
+        except TrustChainNotFoundError as exc:
+            logger.warning(
+                "Trust chain not found for provider %s: %s",
+                provider_url,
+                exc,
+                exc_info=False,
+            )
+            return self._handle_500(
+                context,
+                "The selected identity provider is temporarily unavailable. "
+                "Please try again later or choose another provider.",
+                exc,
+            )
 
         metadata = trust_chain.subject_configuration.payload["metadata"]["openid_provider"]
         authorization_endpoint = metadata["authorization_endpoint"]
@@ -148,21 +168,39 @@ class AuthorizationHandler(BaseEndpoint):
 
     def __get_trust_chain(self, provider: str) -> TrustChainBuilder:
         """
-        Private method __get_trust_chain:
-        This method get Trust chain from provider url from Trust Chains dictionary.
-
-        :type self: object
-        :rtype: TrustChainBuilder
-
-        :param self: object
-        :param provider: Trust chain provider
-        :return: TrustChainBuilder
+        Get trust chain from cache or via on-demand discovery.
+        When the trust chain is not in cache, a TrustChainResolver (if present)
+        will discover and build it, then store it for reuse.
         """
         logger.debug(
             f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}."
             f"Params[provider: {provider}]"
         )
-        return self.trust_chains[provider]
+        # Try cache first (dict lookup with URL normalization)
+        for key in (provider, provider.rstrip("/"), provider + "/" if not provider.endswith("/") else None):
+            if key and key in self.trust_chains:
+                return self.trust_chains[key]
+
+        # On-demand discovery: resolver builds and stores the chain
+        if hasattr(self.trust_chains, "get_or_build"):
+            return self.trust_chains.get_or_build(provider)
+
+        configured = list(self.trust_chains.keys()) if hasattr(self.trust_chains, "keys") else []
+        if not configured:
+            raise TrustChainNotFoundError(
+                "The selected identity provider could not be used: no trust chains "
+                "are available. This usually means trust chain generation failed during "
+                "startup—for example, the trust anchor or CIE provider was unreachable. "
+                "Please check the server logs at startup for details, and ensure the "
+                "trust anchor and provider services are healthy."
+            ) from None
+        raise TrustChainNotFoundError(
+            f"The identity provider '{provider}' is not available. "
+            f"Available providers: {', '.join(configured)}. "
+            "If you expected this provider to be available, trust chain generation "
+            "may have failed for it at startup. Check the server logs for "
+            "'Exception ... generated from this provider' messages."
+        ) from None
 
     def __authorization_data(self, provider_authorization_endpoint: str) -> dict:
         """

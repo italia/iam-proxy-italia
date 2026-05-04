@@ -22,6 +22,9 @@ die-on-term
 # respawn processes taking more than takes more then ... seconds
 harakiri    = 20000
 
+# buffer POST body before passing to worker (required when harakiri is enabled)
+post-buffering = 8192
+
 vacuum      = True
 
 # respawn processes after serving ... requests

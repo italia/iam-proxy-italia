@@ -1,28 +1,3 @@
-
-# Template for django
-x-django-build: &django-build
-  context: ../
-  dockerfile: iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/Dockerfile
-
-# Common template for Django project
-x-django-common: &django-common
-  working_dir: /django-project
-  entrypoint: "sh /entrypoint.sh"
-  networks:
-    - iam-proxy-italia
-  restart: unless-stopped
-
-x-rp-demo-build: &demo-rp-build
-  context: ../
-  dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
-
-x-rp-demo-common: &demo-rp-common
-  working_dir: /rp-demo-project
-  entrypoint: "sh /entrypoint.sh"
-  networks:
-    - iam-proxy-italia
-  restart: unless-stopped
-
 services:
   satosa-mongo:
     profiles:
@@ -103,7 +78,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.3.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.3
     build:
         context: ../
         args:
@@ -153,6 +128,7 @@ services:
       - MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION=${MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION:-cie_oidc_authentication}
       - MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION=${MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION:-cie_oidc_authentication_token}
       - MONGO_CIE_OIDC_BACKEND_USER_COLLECTION=${MONGO_CIE_OIDC_BACKEND_USER_COLLECTION:-cie_oidc_users}
+      - MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION=${MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION:-cie_oidc_trust_chains}
       - MONGODB_CIE_OIDC_BACKEND_USERNAME=${MONGO_CIE_OIDC_BACKEND_DBUSER:-${MONGO_DBUSER:-satosa}}
       - MONGODB_CIE_OIDC_BACKEND_PASSWORD=${MONGO_CIE_OIDC_BACKEND_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}
 
@@ -199,6 +175,10 @@ services:
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
+
+      # CIE OIDC backend: trust anchor and provider URLs (reachable from this container)
+      - TRUST_ANCHOR_URL=${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      - OPENID_CIE_PROVIDER_URL=${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
     expose:
       - 10000
     ports:
@@ -280,30 +260,37 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *django-common
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
     container_name: trust-anchor
-    build:
-      <<: *django-build
-      args:
-        MODULE_NAME: federation_authority
-        RUNNING_PORT: 5002
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     ports:
       - "5002:5002"
     volumes:
       - ./spid_cie_oidc_django/federation_authority:/django-project:rw
+      - ./spid_cie_oidc_django/entrypoint.sh:/entrypoint.sh:ro
+      - ./spid_cie_oidc_django/prepare.sh:/prepare.sh:ro
+      - ./spid_cie_oidc_django/prepare_dump.py:/prepare_dump.py:ro
+      - ./spid_cie_oidc_django/healthcheck.sh:/healthcheck.sh:ro
     networks:
       iam-proxy-italia:
         aliases:
           - ${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}
     healthcheck:
-      test: [ "CMD", "/bin/bash", "/healthcheck.sh", "http://${TRUST_ANCHOR_HOSTNAME:-trust-anchor.example.org}:5002"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
+      # Use FQDN so entity_configuration lookup (by request sub) matches DB entity IDs
+      test: ["CMD", "sh", "-c", "/bin/bash /healthcheck.sh \"$$TRUST_ANCHOR_URL\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+    stop_grace_period: 5s
     environment:
+      MODULE_NAME: federation_authority
+      RUNNING_PORT: "5002"
+      SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   cie-provider:
@@ -311,32 +298,40 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *django-common
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
     container_name: cie-provider
-    build:
-      <<: *django-build
-      args:
-        MODULE_NAME: provider
-        RUNNING_PORT: 8002
+    working_dir: /django-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     ports:
       - "8002:8002"
     volumes:
-      - ./spid_cie_oidc_django/provider:/django-project
+      - ./spid_cie_oidc_django/provider:/django-project:rw
+      - ./spid_cie_oidc_django/entrypoint.sh:/entrypoint.sh:ro
+      - ./spid_cie_oidc_django/prepare.sh:/prepare.sh:ro
+      - ./spid_cie_oidc_django/prepare_dump.py:/prepare_dump.py:ro
+      - ./spid_cie_oidc_django/healthcheck.sh:/healthcheck.sh:ro
     networks:
       iam-proxy-italia:
         aliases:
-          - ${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
+          - ${OPENID_CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}
     depends_on:
-      - trust-anchor
+      trust-anchor:
+        condition: service_started
     healthcheck:
-      test: [ "CMD", "/bin/bash", "/healthcheck.sh" , "http://${CIE_PROVIDER_HOSTNAME:-cie-provider.example.org}:8002/oidc/op"]
-      interval: 15s
-      timeout: 10s
+      # Use FQDN from OPENID_CIE_PROVIDER_URL so entity_configuration lookup (by request sub) matches DB entity IDs
+      test: ["CMD", "sh", "-c", "/bin/bash /healthcheck.sh \"$$OPENID_CIE_PROVIDER_URL\""]
+      interval: 5s
+      timeout: 3s
       retries: 10
       start_period: 30s
+    stop_grace_period: 3s
     environment:
+      MODULE_NAME: provider
+      RUNNING_PORT: "8002"
+      SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      PROVIDER_URL: ${PROVIDER_URL:-http://cie-provider.example.org:8002}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).
@@ -348,7 +343,8 @@ services:
       - storage_mongo
       - oidc
     build:
-      <<: *demo-rp-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
     container_name: relying-party-demo-mongo
     working_dir: /rp-demo-project
     entrypoint: ["python3", "init_oidcop_mongo.py"]
@@ -382,10 +378,13 @@ services:
       - demo
       - storage_mongo
       - oidc
-    <<: *demo-rp-common
     container_name: relying-party-demo
+    working_dir: /rp-demo-project
+    entrypoint: "sh /entrypoint.sh"
+    restart: unless-stopped
     build:
-      <<: *demo-rp-build
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
     ports:
       - "8090:8090"
     networks:
@@ -410,6 +409,62 @@ services:
       CLIENT_ID: "${OIDC_RP_DEMO_CLIENT_ID:-jbxedfmfyc}"
       CLIENT_SECRET: "${OIDC_RP_DEMO_CLIENT_SECRET:-19cc69b70d0108f630e52f72f7a3bd37ba4e11678ad1a7434e9818e1}"
 
+  wallet-instance-demo:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+      - wallet_instance_demo
+    container_name: wallet-instance-demo
+    build:
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
+    ports:
+      - "${WALLET_INSTANCE_PORT:-8080}:8080"
+    volumes:
+      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+    environment:
+      FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
+      FLASK_RUN_PORT: 8080
+      TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-}
+      DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
+      WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
+      OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
+
+  pagopa-wallet-cli:
+    profiles:
+      - demo
+      - storage_mongo
+      - oidc
+      - wallet_instance_demo
+    container_name: pagopa-wallet-cli
+    build:
+      context: ../
+      dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
+    depends_on:
+      iam-proxy-italia:
+        condition: service_healthy
+    environment:
+      CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    ports:
+      - "3002:3002"
+    networks:
+      iam-proxy-italia:
+        aliases:
+          - wallet-provider.wct.example.org
+          - trust-anchor.wct.example.org
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf  $$ID4VCI_WELL_KNOWN_OPENID_CONFIGURATION || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
 
 networks:
   iam-proxy-italia:

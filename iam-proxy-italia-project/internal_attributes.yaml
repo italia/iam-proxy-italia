@@ -33,7 +33,6 @@ attributes:
     openid: [email]
     saml: [mail, email]
     openid4vp: [mail, email]
-    openid4vci: [mail, email]
   name:
     openid: [name]
     saml: [name, Name]
@@ -80,23 +79,19 @@ attributes:
     saml: [digitalAddress]
   placeOfBirth:
     saml: [placeOfBirth]
-    openid4vci: [placeOfBirth]
     openid: [place_of_birth]
   countyOfBirth:
     saml: [countyOfBirth]
-    openid4vci: [countyOfBirth]
   dateOfBirth:
     saml: [dateOfBirth]
-    openid4vci: [dateOfBirth]
     openid: [birthdate]
   birthdate:
     saml: [dateOfBirth]
-    openid4vci: [dateOfBirth]
     openid: [birthdate]
   expirationDate:
     saml: [expirationDate]
   fiscal_code:
-    openid4vci: [fiscal_code]
+    openid4vci: [fiscal_code, fiscalnumber]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

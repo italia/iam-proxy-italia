@@ -164,6 +164,66 @@ def test_us05():
         )
 
 
+def test_us07_missing_target_entity_id(handler):
+    """When target_entity_id is missing, returns 400 Bad Request."""
+    ctx = MagicMock()
+    ctx.internal_data = {}
+    response = handler.endpoint(ctx)
+    assert response.status == "400"
+    assert "error" in str(response.message).lower() or "invalid_request" in str(response.message)
+
+
+def test_us08_trust_chain_not_found_returns_500(handler):
+    """When provider is not in trust chains, returns 500 with eloquent message."""
+    ctx = MagicMock()
+    ctx.internal_data = {"target_entity_id": "http://unknown-provider.example.org/oidc/op/"}
+    response = handler.endpoint(ctx)
+    assert response.status == "500"
+    assert "error" in str(response.message).lower() or "server_error" in str(response.message)
+
+
+@patch("backends.cieoidc.utils.helpers.misc.get_pkce")
+@patch("backends.cieoidc.utils.helpers.jwtse.create_jws")
+@patch("backends.cieoidc.utils.helpers.misc.get_key")
+@patch("satosa.response.Redirect")
+def test_us09_on_demand_discovery_builds_and_stores_trust_chain(
+    redirect_mock, get_key_mock, create_jws_mock, get_pkce_mock, minimal_config, trust_chain, context
+):
+    """When provider not in cache but resolver has get_or_build, discovery runs and chain is stored."""
+    from backends.cieoidc.cieoidc import TrustChainResolver
+
+    chains = {}
+    def build(provider):
+        chains[provider] = trust_chain
+        chains[provider.rstrip("/") if provider.endswith("/") else provider + "/"] = trust_chain
+        return trust_chain
+
+    resolver = TrustChainResolver(chains, build)
+    context.internal_data = {"target_entity_id": "http://other-provider.example.org/oidc/op"}
+
+    with patch("backends.cieoidc.storage.db_engine.OidcDbEngine") as db_mock:
+        db_mock.return_value.connect.return_value = None
+        db_mock.return_value.add_session.return_value = 1
+        get_pkce_mock.return_value = {"code_challenge": "abc", "code_challenge_method": "S256"}
+        get_key_mock.return_value = {"kty": "RSA"}
+        create_jws_mock.return_value = "signed.jwt"
+
+        handler = AuthorizationHandler(
+            config=minimal_config,
+            internal_attributes={},
+            base_url="https://iam-proxy-italia.example.org",
+            name="authz",
+            auth_callback_func=MagicMock(),
+            converter=MagicMock(),
+            trust_chains=resolver,
+        )
+        response = handler.endpoint(context)
+
+    assert response is not None
+    assert "http://other-provider.example.org/oidc/op" in chains
+    assert "http://other-provider.example.org/oidc/op/" in chains
+
+
 @patch("backends.cieoidc.models.oidc_auth.OidcAuthentication")
 def test_us06(mock_auth, handler):
     handler._db_engine.add_session = MagicMock(return_value=1)
