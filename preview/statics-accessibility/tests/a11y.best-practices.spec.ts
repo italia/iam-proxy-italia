@@ -17,7 +17,7 @@ function summarizeViolations(results: { violations: Array<{ id: string; impact?:
   }));
 }
 
-test("best-practice checks on disco dynamic sections", async ({ page }) => {
+test("@best-practice best-practice checks on disco dynamic sections", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
   await page.keyboard.press("Tab");
@@ -37,7 +37,7 @@ test("best-practice checks on disco dynamic sections", async ({ page }) => {
   expect(summary, JSON.stringify(summary, null, 2)).toEqual([]);
 });
 
-test("spid menu stays closed during Tab-only navigation", async ({ page }) => {
+test("@keyboard spid menu stays closed during Tab-only navigation", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
   const spidTrigger = page.locator("[spid-idp-button]").first();
@@ -56,7 +56,7 @@ test("spid menu stays closed during Tab-only navigation", async ({ page }) => {
   await expect(spidMenu).toBeHidden();
 });
 
-test("spid menu opens only with Enter or Space", async ({ page }) => {
+test("@keyboard spid menu opens only with Enter or Space", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
   const spidTrigger = page.locator("[spid-idp-button]").first();
@@ -94,7 +94,7 @@ test("spid menu opens only with Enter or Space", async ({ page }) => {
   await expect(spidMenu).toBeHidden();
 });
 
-test("cie menu opens with Enter/Space and closes with Escape", async ({ page }) => {
+test("@keyboard cie menu opens with Enter/Space and closes with Escape", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
   const cieTrigger = page.locator(".eid-card-btn-cie").first();
@@ -118,7 +118,7 @@ test("cie menu opens with Enter/Space and closes with Escape", async ({ page }) 
   await expect(cieMenu).not.toHaveClass(/is-open/);
 });
 
-test("best-practice checks on it-wallet interactive controls", async ({ page }) => {
+test("@best-practice best-practice checks on it-wallet interactive controls", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
 
   const searchToggle = page.locator("#wallet-search-toggle");
