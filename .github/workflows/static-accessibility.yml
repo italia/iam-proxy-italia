@@ -59,6 +59,10 @@ jobs:
         working-directory: iam-proxy-italia-project/static
         run: npm run test:a11y:keyboard
 
+      - name: Run zoom/reflow checks (400%)
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:reflow
+
   a11y_warning:
     name: A11y warning checks (best-practice)
     needs: [pre_job, a11y_required]
