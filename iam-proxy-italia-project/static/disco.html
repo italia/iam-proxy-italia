@@ -30,6 +30,7 @@
 </head>
 
 <body>
+  <a class="visually-hidden-focusable" href="#main-content">Vai al contenuto principale</a>
   <!-- HEADER -->
   <header class="it-header-wrapper">
     <div class="it-header-slim-wrapper bg-primary">
@@ -39,6 +40,7 @@
           <div class="it-header-slim-right-zone">
             <div class="nav-item dropdown it-header-lang-dropdown">
               <a href="#" id="languagesDropButton" role="button" class="nav-link dropdown-toggle"
+                aria-label="Selezione lingua"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="visually-hidden">lingua attiva:</span>
                 <span class="it-header-lang-label">ITA</span>
@@ -84,14 +86,17 @@
   </header>
 
   <!-- SEZIONE LOGIN -->
-  <main class="container my-4">
-    <div class="row" id="eid-cards-container">
+  <main id="main-content" class="container my-4" aria-labelledby="eid-selection-title">
+    <h1 id="eid-selection-title" class="visually-hidden">Selezione identita digitale</h1>
+    <section aria-label="Metodi di autenticazione disponibili">
+      <div class="row" id="eid-cards-container" aria-live="polite">
       <script type="module" src="js/eid-cards-loader.js"></script>
-    </div>
+      </div>
+    </section>
   </main>
 
   <!-- FOOTER -->
-  <footer>
+  <footer role="contentinfo">
     <div class="container h-100 d-flex align-items-center">
       <div class="d-flex flex-wrap justify-content-start">
         <a id="footer-legal" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener">Note legali</a>
