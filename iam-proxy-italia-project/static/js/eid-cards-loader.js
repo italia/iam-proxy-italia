@@ -72,9 +72,9 @@ function loadEidCards(resource) {
   if (checkId(resource.digital_id)) {
     const digitalSection = document.createElement('div');
     digitalSection.className = 'mb-4';
-    const title = document.createElement('h1');
+    const title = document.createElement('h3');
     title.textContent = resource.titles.login_digital_identity;
-    title.className = 'text-center mb-4 h3';
+    title.className = 'text-center mb-4';
     digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
@@ -84,8 +84,8 @@ function loadEidCards(resource) {
     infoDiv.className = 'd-flex flex-column align-items-center mb-4';
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
-      const infoTitle = document.createElement('h2');
-      infoTitle.className = 'eid-havent-digital-id-heading h4';
+      const infoTitle = document.createElement('h4');
+      infoTitle.className = 'eid-havent-digital-id-heading';
       infoTitle.textContent = havenDigitalId;
 
       const infoLink = document.createElement('a');
@@ -125,11 +125,11 @@ function loadEidCards(resource) {
 
     const altSection = document.createElement('div');
     altSection.className = 'container mb-0';
-    const title = document.createElement('h2');
+    const title = document.createElement('h3');
     const altTitleId = 'eid-alternative-title';
     title.id = altTitleId;
     title.textContent = resource.titles.login_alternative_method;
-    title.className = 'text-center mb-3 pb-4 h2';
+    title.className = 'text-center mb-3 pb-4';
     altWrapper.setAttribute('aria-labelledby', altTitleId);
     altSection.appendChild(title);
 
