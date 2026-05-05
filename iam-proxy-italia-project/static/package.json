@@ -14,7 +14,8 @@
     "lint": "npm run lint:html && npm run lint:w3c:html && npm run lint:css && npm run lint:js",
     "test:a11y": "playwright test",
     "test:a11y:ci": "playwright test --reporter=line",
-    "test:a11y:best-practices": "playwright test tests/a11y.best-practices.spec.ts --reporter=line"
+    "test:a11y:keyboard": "playwright test tests/a11y.best-practices.spec.ts --grep @keyboard --reporter=line",
+    "test:a11y:best-practices": "playwright test tests/a11y.best-practices.spec.ts --grep @best-practice --reporter=line"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
