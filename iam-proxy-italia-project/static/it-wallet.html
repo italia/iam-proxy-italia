@@ -4,8 +4,8 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title id="tab-title"></title>
-  <meta name="description" content="">
+  <title id="tab-title">IAM Proxy Italia - IT Wallet</title>
+  <meta name="description" content="Scelta del wallet digitale per proseguire con l'autenticazione.">
   <link rel="shortcut icon" href="spid/favicon-32x32.png">
 
   <link rel="stylesheet" href="/static/css/style.css?v=wallet-ui-20260422">
@@ -19,8 +19,9 @@
 </head>
 
 <body class="it-wallet-body">
+  <a class="visually-hidden-focusable" href="#main-content">Vai al contenuto principale</a>
   <!-- HEADER (same structure as disco.html) -->
-  <header class="it-header-wrapper">
+  <header class="it-header-wrapper" role="banner">
     <div class="it-header-slim-wrapper bg-primary">
       <div class="container">
         <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
@@ -28,6 +29,8 @@
           <div class="it-header-slim-right-zone">
             <div class="nav-item dropdown it-header-lang-dropdown">
               <a href="#" id="languagesDropButton" role="button" class="nav-link dropdown-toggle"
+                aria-label="Selezione lingua"
+                aria-controls="language-menu"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="visually-hidden">lingua attiva:</span>
                 <span class="it-header-lang-label">ITA</span>
@@ -35,13 +38,14 @@
                   <use xlink:href="/static/svg/sprites.svg#it-expand"></use>
                 </svg>
               </a>
-              <div class="dropdown-menu dropdown-menu-end">
+              <div id="language-menu" class="dropdown-menu dropdown-menu-end">
                 <div class="row">
                   <div class="col-12">
                     <div class="link-list-wrapper">
                       <ul class="link-list" aria-labelledby="languagesDropButton">
                         <li>
-                          <a class="dropdown-item list-item it-lang-option active" href="#" data-lang="it" role="button">
+                          <a class="dropdown-item list-item it-lang-option active" href="#" data-lang="it" role="button"
+                            aria-current="true">
                             <span lang="it">Italiano</span>
                           </a>
                         </li>
@@ -77,10 +81,10 @@
   </header>
 
   <!-- MAIN -->
-  <main class="container my-4 it-wallet-page">
+  <main id="main-content" class="container my-4 it-wallet-page" aria-labelledby="page-title">
     <div class="it-wallet-title-row">
       <div class="it-wallet-title-slot it-wallet-title-slot--start">
-        <a href="#" id="back-link" class="it-wallet-back-link">
+        <a href="#" id="back-link" class="it-wallet-back-link" aria-label="Torna alla pagina precedente">
           <svg class="icon icon-sm me-1" aria-hidden="true">
             <use href="/static/svg/sprites.svg#it-arrow-left"></use>
           </svg>
@@ -89,40 +93,42 @@
       </div>
       <h1 class="it-wallet-title-heading mb-0" id="page-title">Scegli l'app</h1>
       <div class="it-wallet-title-slot it-wallet-title-slot--end">
-      <div id="wallet-title-actions" class="it-wallet-title-actions" hidden>
-        <button type="button" id="wallet-search-toggle" class="it-wallet-icon-btn" aria-expanded="false"
-          aria-controls="wallet-controls">
-          <svg id="wallet-search-toggle-icon-open" class="icon" aria-hidden="true">
-            <use href="/static/svg/sprites.svg#it-search"></use>
-          </svg>
-          <img id="wallet-search-toggle-icon-close" class="it-wallet-toggle-img" src="/static/img/it-wallet-search-toggle-close.svg" alt=""
-            aria-hidden="true" hidden>
-        </button>
-      </div>
+        <div id="wallet-title-actions" class="it-wallet-title-actions" hidden>
+          <button type="button" id="wallet-search-toggle" class="it-wallet-icon-btn" aria-expanded="false"
+            aria-controls="wallet-controls" aria-label="Cerca wallet">
+            <svg id="wallet-search-toggle-icon-open" class="icon" aria-hidden="true">
+              <use href="/static/svg/sprites.svg#it-search"></use>
+            </svg>
+            <img id="wallet-search-toggle-icon-close" class="it-wallet-toggle-img"
+              src="/static/img/it-wallet-search-toggle-close.svg" alt="" aria-hidden="true" hidden>
+          </button>
+        </div>
       </div>
     </div>
     <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle">Seleziona il portafoglio digitale con cui proseguire</p>
 
-    <section class="it-wallet-layout-surface">
-      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4">
+    <section class="it-wallet-layout-surface" aria-labelledby="page-title">
+      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4" role="search"
+        aria-label="Ricerca e ordinamento wallet">
         <div class="it-wallet-search-group">
           <span class="it-wallet-search-icon" aria-hidden="true">
             <svg class="icon icon-sm">
               <use href="/static/svg/sprites.svg#it-search"></use>
             </svg>
           </span>
-          <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per Nome" aria-label="Cerca wallet per nome">
+          <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per Nome"
+            aria-label="Cerca wallet per nome" autocomplete="off" enterkeyhint="search">
           <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">
             <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt="" aria-hidden="true">
           </button>
         </div>
-        <button class="btn btn-primary btn-sm" type="button" id="search-btn" aria-pressed="false">Cerca</button>
+        <button class="btn btn-primary btn-sm" type="button" id="search-btn" aria-pressed="false" data-i18n="search.button">Cerca</button>
         <div class="it-wallet-sort-wrap">
           <button type="button" id="wallet-sort-trigger" class="it-wallet-sort-trigger" aria-haspopup="menu"
             aria-expanded="false" aria-controls="wallet-sort-menu" aria-label="Ordina wallet">
             <img src="/static/img/it-wallet-sort-icon.svg" class="it-wallet-sort-icon" alt="" aria-hidden="true">
           </button>
-          <div id="wallet-sort-menu" class="it-wallet-sort-menu" role="menu" hidden>
+          <div id="wallet-sort-menu" class="it-wallet-sort-menu" role="menu" aria-labelledby="wallet-sort-trigger" hidden>
             <button type="button" class="it-wallet-sort-menu-item is-active" role="menuitemradio" aria-checked="true"
               data-value="default" id="wallet-sort-item-default">Ordine predefinito</button>
             <button type="button" class="it-wallet-sort-menu-item" role="menuitemradio" aria-checked="false"
@@ -138,20 +144,24 @@
         </div>
       </div>
 
-      <div id="wallet-grid" class="row g-4 justify-content-center align-items-start">
+      <div id="wallet-grid" class="row g-4 justify-content-center align-items-start" aria-live="polite"
+        aria-relevant="additions text">
         <!-- Wallet cards rendered by it-wallet-loader.js -->
       </div>
     </section>
+    <noscript>
+      <p class="visually-hidden">Per usare la selezione dei wallet e necessario abilitare JavaScript.</p>
+    </noscript>
   </main>
 
   <!-- FOOTER (same structure as disco.html) -->
-  <footer>
+  <footer role="contentinfo">
     <div class="container h-100 d-flex align-items-center">
-      <div class="d-flex flex-wrap justify-content-start">
-        <a id="footer-legal" href="" class="text-white me-4 mb-2" target="_blank" rel="noopener"></a>
-        <a id="footer-privacy" href="" class="text-white me-4 mb-2" target="_blank" rel="noopener"></a>
-        <a id="footer-accessibility" href="" class="text-white mb-2" target="_blank" rel="noopener"></a>
-      </div>
+      <nav class="d-flex flex-wrap justify-content-start" aria-label="Link legali">
+        <a id="footer-legal" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener">Note legali</a>
+        <a id="footer-privacy" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener">Privacy</a>
+        <a id="footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener">Dichiarazione di accessibilita</a>
+      </nav>
     </div>
   </footer>
 
