@@ -354,13 +354,27 @@ function createLogoButton(eid, _hasLearnMore = false) {
     wrapper.appendChild(btn);
     wrapper.appendChild(menu);
 
+    const hideSpidMenu = () => {
+      if (typeof window.jQuery === 'function') {
+        window.jQuery(btn).spidIDPButton('hide');
+      }
+      menu.style.display = 'none';
+      btn.classList.remove('spid-idp-button-open');
+      btn.setAttribute('aria-expanded', 'false');
+    };
+
+    // Toggle behavior: second click on an open SPID trigger closes the menu.
+    btn.addEventListener('click', (e) => {
+      if (!btn.classList.contains('spid-idp-button-open')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      hideSpidMenu();
+    }, { capture: true });
+
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        if (typeof window.jQuery === 'function') {
-          window.jQuery(btn).spidIDPButton('hide');
-        }
-        menu.style.display = 'none';
+        hideSpidMenu();
         btn.focus();
       }
     });
@@ -375,6 +389,8 @@ function createLogoButton(eid, _hasLearnMore = false) {
         if (typeof window.jQuery === 'function') {
           window.jQuery(activeTrigger).spidIDPButton('hide');
         }
+        activeTrigger.classList.remove('spid-idp-button-open');
+        activeTrigger.setAttribute('aria-expanded', 'false');
         if (selector) {
           const activeMenu = document.querySelector(selector);
           if (activeMenu instanceof HTMLElement) {
