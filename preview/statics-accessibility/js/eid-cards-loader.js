@@ -222,6 +222,66 @@ function createEidCardBox(resource, eid) {
   return card;
 }
 
+const EID_SPID_DISCOVERY_MENU_ID = 'spid-idp-button-xlarge-post';
+
+function ensureEidSpidGlobalListeners() {
+  if (window.__eidSpidGlobalListenersBound) return;
+  window.__eidSpidGlobalListenersBound = true;
+
+  // Clear inline display (including prior !important close) before the SPID jQuery
+  // handler runs, so .show() can open the panel.
+  document.addEventListener(
+    'click',
+    (e) => {
+      const trigger = e.target?.closest?.('[spid-idp-button]');
+      if (!(trigger instanceof HTMLElement)) return;
+      const sel = trigger.getAttribute('spid-idp-button');
+      if (!sel) return;
+      const panel = document.querySelector(sel);
+      if (panel instanceof HTMLElement) panel.style.removeProperty('display');
+    },
+    true
+  );
+
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key !== 'Escape') return;
+      if (!closeEidSpidDiscoveryMenu()) return;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    true
+  );
+}
+
+/**
+ * Closes the SPID discovery panel. Uses display:none !important so Italia .ita
+ * focus-within rules cannot keep the menu visible while focus is on an IdP link.
+ */
+function closeEidSpidDiscoveryMenu(trigger, menuEl) {
+  let t = trigger;
+  let m = menuEl;
+  if (!m) m = document.getElementById(EID_SPID_DISCOVERY_MENU_ID);
+  if (!t) t = document.querySelector('.eid-card-btn-spid.spid-idp-button-open');
+  if (!t && m instanceof HTMLElement) {
+    const cs = getComputedStyle(m);
+    if (cs.display !== 'none' && cs.visibility !== 'hidden') {
+      t = document.querySelector(`[spid-idp-button="#${EID_SPID_DISCOVERY_MENU_ID}"]`);
+    }
+  }
+  if (!(t instanceof HTMLElement) || !(m instanceof HTMLElement)) return false;
+  t.focus({ preventScroll: true });
+  if (typeof window.jQuery === 'function') {
+    window.jQuery(m).removeData('spid-idp-button-trigger');
+    window.jQuery(t).spidIDPButton('hide');
+  }
+  t.classList.remove('spid-idp-button-open');
+  t.setAttribute('aria-expanded', 'false');
+  m.style.setProperty('display', 'none', 'important');
+  return true;
+}
+
 // ----------------------- Logo Button -----------------------
 function createLogoButton(eid, _hasLearnMore = false) {
   const createLogoImg = () => {
@@ -276,7 +336,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
       menu.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       document.removeEventListener('click', outsideClick);
-      document.removeEventListener('keydown', onDocumentKeydown);
+      document.removeEventListener('keydown', onDocumentKeydown, true);
     };
     const outsideClick = (e) => {
       if (!wrapper.contains(e.target)) closeMenu();
@@ -301,7 +361,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             document.addEventListener('click', outsideClick);
-            document.addEventListener('keydown', onDocumentKeydown);
+            document.addEventListener('keydown', onDocumentKeydown, true);
           });
         });
       }
@@ -331,7 +391,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'btn btn-primary d-flex align-items-center eid-card-btn eid-card-btn-spid';
-    btn.setAttribute('spid-idp-button', '#spid-idp-button-xlarge-post');
+    btn.setAttribute('spid-idp-button', `#${EID_SPID_DISCOVERY_MENU_ID}`);
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
 
@@ -343,7 +403,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
     btn.appendChild(createTextSpan());
 
     const menu = document.createElement('div');
-    menu.id = 'spid-idp-button-xlarge-post';
+    menu.id = EID_SPID_DISCOVERY_MENU_ID;
     menu.className = 'ita-menu';
     menu.setAttribute('role', 'menu');
     menu.setAttribute('data-spid-remote', '');
@@ -355,12 +415,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
     wrapper.appendChild(menu);
 
     const hideSpidMenu = () => {
-      if (typeof window.jQuery === 'function') {
-        window.jQuery(btn).spidIDPButton('hide');
-      }
-      menu.style.display = 'none';
-      btn.classList.remove('spid-idp-button-open');
-      btn.setAttribute('aria-expanded', 'false');
+      closeEidSpidDiscoveryMenu(btn, menu);
     };
 
     // Toggle behavior: second click on an open SPID trigger closes the menu.
@@ -375,31 +430,10 @@ function createLogoButton(eid, _hasLearnMore = false) {
       if (e.key === 'Escape') {
         e.preventDefault();
         hideSpidMenu();
-        btn.focus();
       }
     });
 
-    if (!window.__eidSpidEscListenerBound) {
-      window.__eidSpidEscListenerBound = true;
-      document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        const activeTrigger = document.querySelector('.eid-card-btn-spid.spid-idp-button-open');
-        if (!(activeTrigger instanceof HTMLElement)) return;
-        const selector = activeTrigger.getAttribute('spid-idp-button');
-        if (typeof window.jQuery === 'function') {
-          window.jQuery(activeTrigger).spidIDPButton('hide');
-        }
-        activeTrigger.classList.remove('spid-idp-button-open');
-        activeTrigger.setAttribute('aria-expanded', 'false');
-        if (selector) {
-          const activeMenu = document.querySelector(selector);
-          if (activeMenu instanceof HTMLElement) {
-            activeMenu.style.display = 'none';
-          }
-        }
-        activeTrigger.focus();
-      });
-    }
+    ensureEidSpidGlobalListeners();
 
     return wrapper;
   }
