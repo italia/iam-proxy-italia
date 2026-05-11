@@ -94,6 +94,32 @@ test("@keyboard spid menu opens only with Enter or Space", async ({ page }) => {
   await expect(spidMenu).toBeHidden();
 });
 
+test("@keyboard spid menu closes with Escape when focus is inside IdP entries", async ({ page }) => {
+  await page.goto("/disco.html", { waitUntil: "networkidle" });
+
+  const spidTrigger = page.locator("[spid-idp-button]").first();
+  const spidMenu = page.locator("#spid-idp-button-xlarge-post");
+  const firstIdpLink = spidMenu.locator("a[href]").first();
+
+  for (let i = 0; i < 30; i += 1) {
+    await page.keyboard.press("Tab");
+    const isFocused = await spidTrigger.evaluate((el) => document.activeElement === el);
+    if (isFocused) break;
+  }
+  await expect(spidTrigger).toBeFocused();
+
+  await page.keyboard.press("Enter");
+  await expect(spidTrigger).toHaveClass(/spid-idp-button-open/);
+  await expect(spidMenu).toBeVisible();
+
+  await page.keyboard.press("Tab");
+  await expect(firstIdpLink).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(spidTrigger).not.toHaveClass(/spid-idp-button-open/);
+  await expect(spidMenu).toBeHidden();
+});
+
 test("@keyboard cie menu opens with Enter/Space and closes with Escape", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
