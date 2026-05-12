@@ -32,6 +32,7 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_endpoint
       class: CredentialHandler
       path: '/credential'
+      revoke_on_credential_reissuance: false
     #    deferred_credential:
     #      module: pyeudiw.satosa.frontends.openid4vci.endpoints.deferred_credential_endpoint
     #      class: DeferredCredentialHandler

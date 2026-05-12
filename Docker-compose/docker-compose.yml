@@ -446,7 +446,10 @@ services:
     environment:
       CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - wallet-provider.wct.example.org
+          - trust-anchor.wct.example.org
 
 networks:
   iam-proxy-italia:
