@@ -259,3 +259,11 @@ X509_LOCALITY_NAME = "Rome"
 X509_ORGANIZATION_NAME = "Example Wallet Trust Anchor"
 X509_COMMON_NAME = urlparse(OIDCFED_DEFAULT_TRUST_ANCHOR).hostname
 
+ENTITY_TYPE_LEAFS = [
+    "openid_relying_party",
+    "openid_provider",
+    "openid_credential_issuer",
+    "oauth_resource",
+    "wallet_solution",
+    "openid_credential_verifier"
+]

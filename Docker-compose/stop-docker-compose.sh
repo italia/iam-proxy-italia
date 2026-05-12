@@ -6,6 +6,8 @@ DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
 export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
+DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 
 function help {
   echo ""
@@ -19,7 +21,7 @@ function help {
   echo "-i remove iam-proxy-italia image after down"
   echo "-h print this help"
   echo ""
-  echo "If present, SATOSA_HOSTNAME (${SATOSA_HOSTNAME}) and demo hostnames (cie-provider.example.org, trust-anchor.example.org) are removed from /etc/hosts (see run-docker-compose.sh -h)."
+  echo "If present, SATOSA_HOSTNAME (${SATOSA_HOSTNAME}), demo hostnames (${OPENID_CIE_PROVIDER_HOSTNAME}, ${TRUST_ANCHOR_HOSTNAME}, ${DEMO_WALLET_INSTANCE_HOSTNAME}) are removed from /etc/hosts (see run-docker-compose.sh -h)."
   echo "The iam-proxy-italia Docker network is retained (external) to avoid host network interface teardown that can disconnect the machine from the internet."
   echo ""
 }
@@ -63,7 +65,7 @@ docker compose -f docker-compose.yml --profile "*" down -v --remove-orphans
 remove_image "$DJANGO_SP" "docker-compose-django_sp"
 remove_image "$IAM_PROXY_ITALIA" "iam-proxy-italia"
 
-for _h in "${SATOSA_HOSTNAME}" "${OPENID_CIE_PROVIDER_HOSTNAME}" "${TRUST_ANCHOR_HOSTNAME}"; do
+for _h in "${SATOSA_HOSTNAME}" "${OPENID_CIE_PROVIDER_HOSTNAME}" "${TRUST_ANCHOR_HOSTNAME}" "${DEMO_WALLET_INSTANCE_HOSTNAME}"; do
   if grep -q "${_h}" /etc/hosts 2>/dev/null; then
     tmp=$(mktemp)
     grep -v "${_h}" /etc/hosts > "$tmp"

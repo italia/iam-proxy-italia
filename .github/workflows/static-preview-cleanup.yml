@@ -31,14 +31,6 @@ jobs:
           PREVIEW_DIR="preview/${SAFE_BRANCH}"
           if [ -d "$PREVIEW_DIR" ]; then
             git rm -rf "$PREVIEW_DIR" 2>/dev/null || rm -rf "$PREVIEW_DIR"
-<<<<<<< HEAD
-            git add -A
-            git diff --staged --quiet || git commit -m "Remove preview for deleted branch ${SAFE_BRANCH} [skip ci]"
-            git push origin gh-pages
-          else
-            echo "Preview folder $PREVIEW_DIR does not exist, nothing to remove"
-          fi
-=======
           else
             echo "Preview folder $PREVIEW_DIR does not exist, nothing to remove"
           fi
@@ -115,4 +107,3 @@ jobs:
             git commit -m "Update preview index after branch cleanup ${SAFE_BRANCH}"
             git push origin gh-pages
           fi
->>>>>>> ux-ui

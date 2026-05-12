@@ -26,7 +26,7 @@
     "ec_duration_seconds": 1980,
     "nbf_attestation": 0,
     "spec_version": "1.3.3",
-    "public_url": "http://localhost:8080/provider",
+    "public_url": "https://wallet-provider.example.org",
     "federation_jwks": [
       {
         "alg": "ES256",
@@ -57,7 +57,7 @@
         ]
       }
     ],
-    "authority_hints": [],
+    "authority_hints": ["http://trust-anchor.example.org:5002"],
     "metadata_group": {
       "federation_entity": {
         "organization_name": "IAM PROXY ITALIA DEMO",
@@ -66,8 +66,8 @@
         "tos_uri": "https://wallet-provider.example.org/info_policy",
         "logo_uri": "https://wallet-provider.example.org/logo.svg"
       },
-      "wallet_solution": {
-        "logo_uri": "https://wallet-solution.example.org/compact-logo.svg",
+      "wallet_provider": {
+        "logo_uri": "https://wallet-provider.example.org/compact-logo.svg",
         "wallet_metadata": {
           "wallet_name": "WALLET DEMO",
           "credential_offer_endpoint": "https://wallet-solution.digital-strategy.europa.eu/credential_offer",
@@ -99,7 +99,7 @@
   },
   "ms_trust_configuration": {
     "IT": {
-      "trust_root": "https://trust-anchor.example.org",
+      "trust_root": "http://trust-anchor.example.org:5002",
       "trust_framework": "oid-fed"
     }
   },
@@ -114,16 +114,16 @@
         "CIE2": "https://cie-provider.example.org",
         "SPID2": "https://demo.spid.gov.it"
       },
-      "credential_configuration_id": "dc_sd_jwt_PersonIdentificationData",
+      "credential_configuration_id": "dc_sd_jwt_pid",
       "response_mode": "query",
       "response_type": "code",
-      "redirect_uri": "http://localhost:8080/wallet/cb"
+      "redirect_uri": "https://wallet-solution.example.org/wallet/cb"
     },
     "credential_flow": {
       "_response_mode": "query",
       "response_mode": "form_post.jwt",
       "response_type": "code",
-      "redirect_uri": "http://localhost:8080/wallet/cb",
+      "redirect_uri": "https://wallet-solution.example.org/wallet/cb",
       "credential_configurations_supported": [
         "dc_sd_jwt_EuropeanDisabilityCard",
         "dc_sd_jwt_EuropeanHealthInsuranceCard",
