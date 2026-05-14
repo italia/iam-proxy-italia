@@ -24,8 +24,7 @@ class MongoStorage(OidcStorage):
         self._db_name = conf.get("db_name")
         self._data_ttl = conf.get("data_ttl")
         self._url = url
-        self._username = (connection_params or {}).get("username")
-        self._password = (connection_params or {}).get("password")
+        self._connection_params = connection_params or {}
         self._auth_collection = conf.get("db_auth_collection")
         self.__client = None
 
@@ -37,7 +36,7 @@ class MongoStorage(OidcStorage):
 
     def connect(self) -> None:
         if self.__client is None:
-            self.__client = MongoClient(self._url, username=self._username, password=self._password)
+            self.__client = MongoClient(self._url, **self._connection_params)
 
     def close(self) -> None:
         if self.__client is not None:
