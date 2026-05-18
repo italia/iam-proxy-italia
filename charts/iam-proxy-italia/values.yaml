@@ -86,6 +86,8 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/large-client-header-buffers: "4 16k"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
   hosts:
     - host: chart-example.local
       paths:
@@ -359,7 +361,7 @@ proxyConf:
     - "conf/backends/spidsaml2_backend.yaml"
     #- "conf/backends/ciesaml2_backend.yaml"
     #- "conf/backends/pyeudiw_backend.yaml"
-    #- "conf/backends/cieoidc_backend.yaml"
+    - "conf/backends/cieoidc_backend.yaml"
   frontendModules:
     - "conf/frontends/saml2_frontend.yaml"
     - "conf/frontends/oidcop_frontend.yaml"
