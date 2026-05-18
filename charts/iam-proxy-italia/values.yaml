@@ -63,8 +63,6 @@ service:
 
 # Static files server — a separate Deployment/Service that serves assets under `staticPath`.
 staticFiles:
-  # Enable the static files server alongside the main proxy.
-  enabled: true
   # Number of replicas for the static server.
   replicaCount: 1
   image:
@@ -75,6 +73,8 @@ staticFiles:
     tag: ""
   # URL path prefix served by the static server (keep in sync with SATOSA_BASE_STATIC).
   staticPath: /static
+  # URL of the static storage.
+  externalUrl: ""
   service:
     port: 8000
   resources: {}
@@ -83,11 +83,11 @@ staticFiles:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/large-client-header-buffers: "4 16k"
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/large-client-header-buffers: 4 16k
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 16k
   hosts:
     - host: chart-example.local
       paths:
@@ -595,14 +595,15 @@ uwsgi:
 # - mongodb-password
 # - mongodb-backend-password
 # - mongodb-frontend-password
-dataVolume:
-  # Volume per i dati runtime del proxy (jwks, chiavi oidcop, ecc.)
-  # Di default viene creato un PVC montato in mountPath.
-  # Fornire existingClaim per usare un PVC già esistente.
+oidcop:
+  # Provide either an existing secret name or leave empty to create a new one.
+  # The secret must contain privateJwks and publicJwks keys.
+  existingSecret: ""
+  # If existingSecret is not set, provide privateJwks and publicJwks keys here.
+  privateJwks: ""
+  publicJwks: ""
+  # Mount path for the secret volume.
   mountPath: /satosa_proxy/data
-  existingClaim: ""
-  storageClassName: ""
-  size: 1Gi
 
 secret:
   # The name of the secret to use.

@@ -96,15 +96,15 @@ spec:
             - name: SATOSA_BASE
               value: "https://{{ .Values.satosa.hostname }}"
             - name: SATOSA_BASE_STATIC
-              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}"
+              value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | quote }}
             - name: SATOSA_DISCO_SRV
-              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}/disco.html"
+              value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/disco.html" | quote }}
             - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
-              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}/error_page.html"
+              value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/error_page.html" | quote }}
             - name: FEDERATION_RESOLVE_ENDPOINT
               value: {{ .Values.openid.federation.resolveEndpoint }}
             - name: SAMPLE_CIE_LOGO_URI
-              value: "https://{{ .Values.satosa.hostname }}{{ .Values.staticFiles.staticPath }}/cie/sample-cie-logo.png"
+              value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/cie/sample-cie-logo.png" | quote }}
             - name: FEDERATION_LEGAL_INFORMATION_URI
               value: {{ .Values.openid.federation.legalInformationUri }}
             - name: OPENID_RP_CLIENT_ID
@@ -245,8 +245,9 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
-            - name: data
-              mountPath: {{ .Values.dataVolume.mountPath }}
+            - name: jwks
+              mountPath: {{ .Values.oidcop.mountPath }}
+              readOnly: true
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -289,9 +290,14 @@ spec:
         - name: tmp
           emptyDir:
             medium: Memory
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ .Values.dataVolume.existingClaim | default (include "iam-proxy-italia.fullname" .) }}
+        - name: jwks
+          secret:
+            secretName: {{ .Values.oidcop.existingSecret | default (printf "%s-jwks" (include "iam-proxy-italia.fullname" .)) }}
+            items:
+              - key: privateJwks
+                path: oidc_op/private/jwks.json
+              - key: publicJwks
+                path: static/jwks.json
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

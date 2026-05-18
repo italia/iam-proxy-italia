@@ -21,7 +21,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   rules:
-    {{- if .Values.staticFiles.enabled }}
+    {{- if not .Values.staticFiles.externalUrl }}
     - matches:
         - path:
             type: PathPrefix

@@ -28,7 +28,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- if $.Values.staticFiles.enabled }}
+          {{- if not $.Values.staticFiles.externalUrl }}
           - path: {{ $.Values.staticFiles.staticPath }}
             pathType: Prefix
             backend:
