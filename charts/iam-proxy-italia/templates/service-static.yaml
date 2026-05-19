@@ -1,4 +1,4 @@
-{{- if .Values.staticFiles.enabled -}}
+{{- if not .Values.staticFiles.externalUrl -}}
 apiVersion: v1
 kind: Service
 metadata:
