@@ -357,13 +357,13 @@ proxyConf:
     - "conf/frontends"
     - "conf/micro_services"
   backendModules:
-    - "conf/backends/saml2_backend.yaml"
+    #- "conf/backends/saml2_backend.yaml"
     - "conf/backends/spidsaml2_backend.yaml"
     #- "conf/backends/ciesaml2_backend.yaml"
     #- "conf/backends/pyeudiw_backend.yaml"
     - "conf/backends/cieoidc_backend.yaml"
   frontendModules:
-    - "conf/frontends/saml2_frontend.yaml"
+    #- "conf/frontends/saml2_frontend.yaml"
     - "conf/frontends/oidcop_frontend.yaml"
     #- "conf/frontends/openid4vci_frontend.yaml"
   microServices:
@@ -623,3 +623,745 @@ openid:
     jwksUri: "openid_relying_party/jwks.json"
     signedJwksUri: "openid_relying_party/jwks.jose"
     callbackUri: "oidc/callback"
+
+backendsConfig:
+  cieoidc: |
+    module: backends.cieoidc.CieOidcBackend
+    name: CieOidcRp
+    config:
+      network:
+        httpc_params: &httpc_params
+          connection:
+            ssl: true
+          session:
+            timeout: 6
+      storage: &db_config
+        mongo_db:
+          module: backends.cieoidc.storage.impl.mongo_storage
+          class: MongoStorage
+          init_params:
+            url: !ENV MONGO_CIE_OIDC_BACKEND_HOST
+            conf:
+              db_name: !ENV MONGO_CIE_OIDC_BACKEND_DB_NAME
+              db_auth_collection: !ENV MONGO_CIE_OIDC_BACKEND_AUTH_COLLECTION
+              db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
+              db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
+              data_ttl: 63072000 # 2 years
+            connection_params:
+              username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
+              password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
+              authSource: cie_oidc
+
+      providers:
+        - https://scenes-activity-committee-ties.trycloudflare.com/oidc/op/
+
+      security_operations:
+        hash:
+          default:
+            func: SHA-256 #DEFAULT_HASH_FUNC
+        sign:
+          default:
+            alg: &default_sign_alg "RS256" #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+          supported:
+            alg: &supported_sign_alg #SIGNING_ALG_VALUES_SUPPORTED
+              - RS256
+              - RS384
+              - RS512
+              - ES256
+              - ES384
+              - ES512
+        encrypt:
+          default:
+            alg: &default_enc_alg RSA-OAEP #DEFAULT_JWE_ALG
+            enc: &default_enc_enc A256CBC-HS512 #DEFAULT_JWE_ENC
+          supported:
+            alg: &supported_enc_alg #ENCRYPTION_ALG_VALUES_SUPPORTED
+              - RSA-OAEP
+              - RSA-OAEP-256
+              - ECDH-ES
+              - ECDH-ES+A128KW
+              - ECDH-ES+A192KW
+              - ECDH-ES+A256KW
+            enc: &supported_enc_enc #ENCRYPTION_ENC_SUPPORTED
+              - A128CBC-HS256
+              - A192CBC-HS384
+              - A256CBC-HS512
+              - A128GCM
+              - A192GCM
+              - A256GCM
+
+      jwks:
+        federation: &jwks_federation
+          - d: "Npw19klvaNLdUWZRwe4MjPIgD8AH5BjfU5_dM05Gb6lBRWQKSWNlqP8bET-oZbWSw3zMaOAy2-k2GnYVXBYKu9WnjFFFPlbH-sVPfdKQLYzEABmxR_aaeSHrnDfKozTtFsYEgtI_WoGEaxPoE0P-Ds11Tp9h9ovZM48sDGnEdyjopnLPEZBR6VinP_yF1kfDg0kcIPmM1ZchIqJrnQpoKWeVTXtFFGrVqOAYmm4xBfP4U8TEimbeJJuYkJ9gLNnRDg_FC-ZPUiBIXigWZsEeJyevymP-NH4lq3osLgFOq0sqPxS3zkDwx9tWfT5UyqrCCortiQd2dxKzxZlEEvlQAQ"
+            e: "AQAB"
+            kid: "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+            kty: "RSA"
+            n: "6SDksa64IjBk7HNQC7x5C9nMARGaanfaUm3wC2WulwG_8a5aIy4CEwXN2LENkCyypODqWZcTAwCzWsiihVN9kDcEs7UNu-X1WokK252D7_DRY-FXI8AB3P0CxTngs0k-OjcmbxqVW2U8G56rJFp4G_CYA4vzBoAP_5skFBt-4a5lYJlBfJ2gJlE0vh4_46oyNuUT9kmKauR7npVSHjBUSxYyDELzoaPmvR7SkX4sJe0MK39HES6s4no9G7BraLp75eOwEQmHgEhESWscSOf_CmC5ALnzWJ3FcFhxgsuMkdjoU7bH09y8pdKs64kR2znxs-yIWrPFW8hJKnySc2fk8w"
+            p: "-1JcdcT2FdwavmPqtfOEKFUGBM9hhvwgX7KyCwl8tmresJQz8pNDkILMeKJf8ZCDVU7v4_i4C_P8oe41f2_SDsv9AIYh09zu_tQsMMdH_lqNx0YP8Yv25N5KOxnSOBO837SieFZ2xkbolXXIV7WIHrdFiyAOMOSWlETEO6JNu_M"
+            q: "7XfVt4ArSMLmRvvSl11yDF25t1aR3ylUmwZgLAJTNo76j-zo8Q2Ty7GfCIQmLOhOZTkwqnrbmwEBMEBsomWZFh_j90CLMyn1ccYUjiTI4CHJOTLMA8rYVWeArYkqek1jC4TQ9e1PkRrPcEvq2Tak8GFsBhnhOCzejJrMDgqkcwE"
+
+        core: &jwks_core
+          - use: "sig"
+            d: "n_ePK5DdOxqArf75tDGaViYrXDqRVk8zyl2dfKiiR0dXQJK7tbzJtHoGQeH4E-sw3_-Bc7OKY7DcbBWgHTijMRWj9LkAu9uCvqqGMaAroWH0aBcUmZAsNjcyUIyJ3_JRcNfUDiX3nVg67qe4ZWnMDogowaVZv3aXJiCvKE8aJK4BV_nF3Nt5R6zUYpjZQ8T1GDZCV3vza3qglDrXe8zoc-p8cLs3rJn7tMVSJVznCIqOfeM1VIg0I3n2bubYOx88sckHuDnfXTiTDlyq5IwDyBHmiIe3fpu-c4e1tiBmbOf2IqDCaX8SdpnU2gTj9YlZtRNqmh3NB_rksBKWLz3uIQ"
+            e: "AQAB"
+            kid: "YhuIJU6o15EUCyqA0LHEqJd-xVPJgoyW5wZ1o4padWs"
+            kty: "RSA"
+            n: "uXfJA-wTlTCA4FdsoE0qZfmKIgedmarrtWgQbElKbWg9RDR7Z8JVBaRLFqwyfyG1JJFm64G51cBJwLIFwWoF7nxsH9VYLm5ocjAnsR4RhlfVE0y_60wjf8skJgBRpiXQPlwH9jDGaqVE_PEBTObDO5w3XourD1F360-v5cLDLRHdFJIitdEVtqATqY5DglRDaKiBhis7a5_1bk839PDLaQhju4XJk4tvDy5-LVkMy5sP2zU6-1tJdA-VmaBZLXy9n0967FGIWmMzpafrBMOuHFcUOH56o-clDah_CITH1dq2D64K0MYhEpACO2p8AH4K8Q6YuJ1dnkVDDwZp2C84sQ"
+            p: "5PA7lJEDd3vrw5hlolFzvjvRriOu1SMHXx9Y52AgpOeQ6MnE1pO8qwn33lwYTSPGYinaq4jS3FKF_U5vOZltJAGBMa4ByEvAROJVCh958rKVRWKIqVXLOi8Gk11kHbVKw6oDXAd8Qt_y_ff8k_K6jW2EbWm1K6kfTvTMzoHkqrU"
+            q: "z2QeMH4WtrdiWUET7JgZNX0TbcaVBgd2Gpo8JHnfnGOUsvO_euKGgqpCcxiWVXSlqffQyTgVzl4iMROP8bEaQwvueHurtziMDSy9Suumyktu3PbGgjqu_izRim8Xlg7sz8Hs2quJPII_fQ8BCoaWpg30osFZqCBarQM7CWhxR40"
+
+          - use: "enc"
+            alg: "RSA-OAEP"
+            d: "Agb1P-F-bVupnNWH_5ZYh-8S7qb5I500yyjS6A9dVfvs736BGZYhQc5uoZQtrglwzgIA96uOmwW3h6Mx-469h1gTny3FE3vrmNEvIKogRRATssxMR8VWXU4Nma6gz4jp0MlgApKKPhPmkBrN925i9a_ODNeBI9dSKYP-Y4RPJb5RWBj2SwL62AwfSAYD012qUQAOw9uYP9c2gIA2sWRnNG0ufe6YTh0UDZub3B34BCoMf8Cr0cZZ4AvjVqoPBWWLZm265TDRHmJ3cS8EdMsSYCzQSaMy5B2wEwGmilO14TiNroDN1UcdoANhmXC9lzZWYx8Iz6BYH4ybk4fwGinEWQ"
+            e: "AQAB"
+            kid: "dlDtBxB1sKzY5hZTxJRLpvKVLeWHy5QYsFTSxETF5qM"
+            kty: "RSA"
+            n: "rZDx5jxztL4RL4obgFtOZCCelabRolJo_WHdvHVM0Pe5M1rCYXmcnGq5I2M7MdXrFHLa_Yl5rAzkxKyFgpB48vkmqIGNl8NX-6c95XDMQttHmp_atrPnKyJ0E2Zk1ZTomZMWnQCIXQYfcJI2x4W5Mjyh8Ip0ZDDUiqlYsADkHCThj0q6RjJRXtmK_rrt1-tcHOQbIHDVKXYACMWOzUr1YDGWgrFjPu2D2QAXmO3qxhaqIdABwim6XKuLYwzTlIeHJyeEZQiVLEY_Notu5GVQGeL8qMnW3SsqBw7rMYxKgLOcSk2-2J5_orToRNy0x1LQfMtHG3ic8KcFefV7UZeR3w"
+            p: "7-9WcW5dg64vEAok88rZESb9ZXP6FgPMrZ2wCIDxP3XxhqQlaVANE2bSBLQYrwxCpKlIznCJOvOY2FALhBcF5GKdBhUrBhs7Iz46ACr2HKr7mQ5EiigDwMmdIJ5LGJL-RVevP2Ye4QxOWQbn3jttc9fsj2Pw3FjYaeUurs9AnUs"
+            q: "uS__hm1ZVGN1FPmT6LfiM5-_xPmZwNwKRWV02e4drqa_qXQgbaMzZoSAc4duXXXgbyXc7LaJF4_fqR3Cpr1rXsXMTuJf9rb0uN4wZ9awZgmwbBx1JM2ikoQt08xvdxuH_7_0j584Ta7Go1TO2XX1QII06nr7EkVJ8HJqsE665T0"
+
+      metadata: &metadata
+        federation_entity:
+          federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
+          organization_name: Example RP
+          homepage_uri: <base_url>/<name>
+          policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
+          logo_uri: !ENV SAMPLE_CIE_LOGO_URI
+          contacts:
+            - ops@rp.example.it
+        openid_relying_party:
+          application_type: web
+          client_id: <base_url>/<name> # The ability to dynamically update on a periodic discovery depends on company policies, therefore it is possible to configure the provider of your choice and the related trustchain
+          client_name: Name of an example organization
+          organization_name: Example RP
+          client_registration_types:
+            - automatic
+          jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
+          signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
+          jwks: # this field is autopopulated
+          contacts:
+            - ops@rp.example.it
+          grant_types:
+            - refresh_token
+            - authorization_code
+          redirect_uris:
+            - <base_url>/<name>/oidc/callback
+          response_types:
+            - code
+          subject_type: pairwise
+          id_token_signed_response_alg: *default_sign_alg #RS256
+          #      id_token_encrypted_response_alg [OPTIONAL]
+          #id_token_encrypted_response_enc [MANDATORY ONLY IF id_token_encrypted_response_alg]
+          userinfo_signed_response_alg: *default_sign_alg #RS256
+          userinfo_encrypted_response_alg: *default_enc_alg #RSA-OAEP
+          userinfo_encrypted_response_enc: *default_enc_enc #A128CBC-HS256
+          token_endpoint_auth_method: private_key_jwt
+          scope: "openid"
+          code_challenge:
+            length: 64
+            method: "S256"
+          claim:
+            id_token:
+              family_name:
+                essential: true
+              given_name:
+                essential: true
+            userinfo:
+              given_name: null
+              family_name: null
+              email: null
+              https://attributes.eid.gov.it/fiscal_number: null
+      trust_chain:
+        config:
+          cache_ttl: 0
+          httpc_params: *httpc_params
+          trust_anchor:
+            - https://edit-previous-matt-moms.trycloudflare.com
+
+      endpoints:
+        entity_config_endpoint:
+          module: backends.cieoidc.endpoints.entity_configuration
+          class: EntityConfigHandler
+          routes:
+            - /.well-known/openid-federation
+            - /openid_relying_party/jwks.json
+            - /openid_relying_party/jwks.jose
+          config:
+            metadata: *metadata
+            jwks_federation: *jwks_federation
+            jwks_core: *jwks_core
+            entity_type: openid_relying_party
+            entity_configuration_exp: 2800
+            default_sig_alg: *default_sign_alg #RS256
+            authority_hints:
+              - https://edit-previous-matt-moms.trycloudflare.com
+            trust_marks:
+              - id: https://registry.agid.gov.it/openid_relying_party/public/
+                trust_mark: eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL29pZGMvcnAvIiwiaWF0IjoxNjQ1NjEyNDAxLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig
+        authorization_endpoint:
+          module: backends.cieoidc.endpoints.authorization_endpoint
+          class: AuthorizationHandler
+          routes:
+            - /oidc/authorization
+          config:
+            db_config: *db_config
+            entity_type: openid_relying_party
+            entity_configuration_exp: 2800
+            default_sig_alg: RS256
+            metadata: *metadata
+            jwks_federation: *jwks_federation
+            jwks_core: *jwks_core
+            prompt: "consent login"
+
+        authorization_callback_endpoint:
+          module: backends.cieoidc.endpoints.authorization_callback_endpoint
+          class: AuthorizationCallBackHandler
+          routes:
+            - /oidc/callback
+          config:
+            entity_type: openid_relying_party
+            entity_configuration_exp: 2800
+            default_sig_alg: RS256
+            db_config: *db_config
+            metadata: *metadata
+            jwks_federation: *jwks_federation
+            jwks_core: *jwks_core
+            httpc_params: *httpc_params
+            default_sign_alg: *default_sign_alg #DEFAULT_JWS_ALG # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
+            supported_sign_alg: *supported_sign_alg
+            default_enc_alg: *default_enc_alg #DEFAULT_JWE_ALG
+            default_enc_enc: *default_enc_enc #DEFAULT_JWE_ENC
+            supported_enc_alg: *supported_enc_alg
+            client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+            grant_type: "authorization_code"
+            claims:
+              sub:
+                - sub
+              username:
+                - func: backends.cieoidc.utils.helpers.misc.issuer_prefixed_sub
+                  kwargs:
+                    sep: "__"
+              first_name:
+                - given_name
+                - given_name
+              last_name:
+                - family_name
+                - last_name
+              email:
+                - email
+                - email
+              fiscal_number:
+                - https://attributes.eid.gov.it/fiscal_number
+                - fiscal_number
+        extends_session_endpoint:
+          module: backends.cieoidc.endpoints.extend_session_endpoint
+          class: ExtendSessionHandler
+          routes:
+            - /extend_session
+          config:
+            entity_type: openid_relying_party
+            entity_configuration_exp: 2800
+            default_sig_alg: RS256
+            metadata: *metadata
+            jwks_federation: *jwks_federation
+            jwks_core: *jwks_core
+            httpc_params: *httpc_params
+            client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+            grant_type: "refresh_token"
+  spidsaml2: |
+    module: backends.spidsaml2.SpidSAMLBackend
+
+    name: spidSaml2
+    config:
+      # idp_blacklist_file: /path/to/blacklist.json
+
+      # error templates
+      static_storage_url: !ENV SATOSA_BASE_STATIC
+      error_template: "spid_login_error.html"
+      template_folder: "templates" # project root
+
+      # make metadata downloadable from entityid url
+      entityid_endpoint: true
+
+      spid_allowed_acrs:
+        - https://www.spid.gov.it/SpidL1
+        - https://www.spid.gov.it/SpidL2
+        - https://www.spid.gov.it/SpidL3
+
+      spid_acr_comparison: "minimum"
+
+      acr_mapping:
+        "": 'https://www.spid.gov.it/SpidL2'
+        # specify AuthnContext per IdP
+        # "https://identity.sieltecloud.it": 'https://www.spid.gov.it/SpidL1'
+        # "https://idp.namirialtsp.com/idp": 'https://www.spid.gov.it/SpidL1'
+        # "https://identity.infocert.it": 'https://www.spid.gov.it/SpidL1'
+
+      sp_config:
+        key_file: !ENV SATOSA_PRIVATE_KEY
+        cert_file: !ENV SATOSA_PUBLIC_KEY
+        encryption_keypairs:
+        - {'key_file': !ENV SATOSA_PRIVATE_KEY, 'cert_file': !ENV SATOSA_PUBLIC_KEY}
+
+        attribute_map_dir: 'attributes-map'
+
+        organization:
+          display_name:
+            - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_EN, 'en']
+            - [ !ENV SATOSA_ORGANIZATION_DISPLAY_NAME_IT, 'it']
+          name:
+            - [ !ENV SATOSA_ORGANIZATION_NAME_EN, 'en']
+            - [ !ENV SATOSA_ORGANIZATION_NAME_IT, 'it']
+          url:
+            - [ !ENV SATOSA_ORGANIZATION_URL_EN, 'en']
+            - [ !ENV SATOSA_ORGANIZATION_URL_IT, 'it']
+
+        contact_person:
+          - contact_type: 'other'
+            given_name: !ENV SATOSA_CONTACT_PERSON_GIVEN_NAME
+            email_address: !ENV SATOSA_CONTACT_PERSON_EMAIL_ADDRESS
+            telephone_number: !ENV SATOSA_CONTACT_PERSON_TELEPHONE_NUMBER
+            FiscalCode: !ENV SATOSA_CONTACT_PERSON_FISCALCODE
+            IPACode: !ENV SATOSA_CONTACT_PERSON_IPA_CODE
+            Public: ''
+            # PublicServicesFullAggregator: '' # nel caso di aggregatore di servizi
+          # - {'contact_type': 'other', 'telephone_number': '+3984756344785', 'email_address': 'info@example.org', 'VATNumber': 'IT12345678901', 'FiscalCode': 'XYasdasdadasdGGJ000W', 'Private': '' }
+          # - {'contact_type': 'billing', 'telephone_number': '+3984756344785', 'email_address': 'info@example.org', 'company': 'example s.p.a.', 'CodiceFiscale': 'NGLMRA80A01D086T', 'IdCodice': '983745349857', 'IdPaese': 'IT', 'Denominazione': 'Destinatario Fatturazione', 'Indirizzo': 'via tante cose', 'NumeroCivico': '12', 'CAP': '87100', 'Comune': 'Cosenza', 'Provincia': 'CS', 'Nazione': 'IT' }
+
+          # nel caso di aggregatore di servizi
+          # - contact_type: 'other'
+          #   Public: ''
+          #   IPACode: 'c_l102'
+          #   company: 'Comune di Demo'
+          #   Aggregated: ''
+
+        metadata:
+          local: [./metadata/idp/]
+          # using pyFF or other MDX server
+          # mdq:
+              # cert: mdq.pem
+        ficep_enable: True
+        ficep_entity_id: https://sp-proxy.eid.gov.it/spproxy/idpit
+        ficep_default_acs_index: 99
+
+        entityid: '<base_url>/<name>/metadata'
+        accepted_time_diff: 10
+
+        # Specify the AttributeConsumingServiceIndex attribute in the request (default 0).
+        # acs_index: 0
+
+        service:
+          sp:
+            ui_info:
+              display_name:
+                - lang: en
+                  text: !ENV SATOSA_UI_DISPLAY_NAME_EN
+                - lang: it
+                  text: !ENV SATOSA_UI_DISPLAY_NAME_IT
+              description:
+                - lang: en
+                  text: !ENV SATOSA_UI_DESCRIPTION_EN
+                - lang: it
+                  text: !ENV SATOSA_UI_DESCRIPTION_IT
+              information_url:
+                - lang: en
+                  text: !ENV SATOSA_UI_INFORMATION_URL_EN
+                - lang: it
+                  text: !ENV SATOSA_UI_INFORMATION_URL_IT
+              privacy_statement_url:
+                - lang: en
+                  text: !ENV SATOSA_UI_PRIVACY_URL_EN
+                - lang: it
+                  text: !ENV SATOSA_UI_PRIVACY_URL_IT
+              keywords:
+                - lang: it
+                  text: ["SPID Authentication Proxy", "SPID Service Provider IT"]
+                - lang: en
+                  text: ["SPID Authentication Proxy", "SPID Service Provider EN"]
+              logo:
+                text: !ENV SATOSA_UI_LOGO_URL
+                width: !ENV SATOSA_UI_LOGO_WIDTH
+                height: !ENV SATOSA_UI_LOGO_HEIGHT
+
+            # sign dig and enc
+            authn_requests_signed: true
+            want_response_signed: true
+            want_assertions_signed: true
+
+            signing_algorithm: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+            digest_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+
+            # security
+            only_use_keys_in_metadata: true
+
+            # it depends by acr level, see spidsaml2.authn_request
+            # force_authn: false
+
+            name_id_format_allow_create: false
+            name_id_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+            requested_attribute_name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic'
+            allow_unknown_attributes: true
+
+            # in production different workers do not share the same storage!
+            allow_unsolicited: true
+
+            # this instantiate the attribute_consuming_service
+            required_attributes: ['spidCode', 'name', 'familyName', 'fiscalNumber', 'email']
+            requested_attributes: []
+            #optional_attributes: ['gender',
+            #                      'companyName',
+            #                      'registeredOffice',
+            #                      'ivaCode',
+            #                      'idCard',
+            #                      'digitalAddress',
+            #                      'placeOfBirth',
+            #                      'countyOfBirth',
+            #                      'dateOfBirth',
+            #                      'address',
+            #                      'mobilePhone',
+            #                      'expirationDate']
+
+            endpoints:
+              assertion_consumer_service:
+              - [<base_url>/<name>/acs/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+              - [<base_url>/<name>/acs/99/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+              - [<base_url>/<name>/acs/100/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+              single_logout_service:
+              - [<base_url>/<name>/ls/post/, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
+              discovery_response:
+              - [<base_url>/<name>/disco, 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol']
+
+      # disco_srv must be defined if there is more than one IdP in the metadata specified above
+      # disco_srv: change with $SATOSA_DISCO_SRV
+      disco_srv: !ENV SATOSA_DISCO_SRV
+
+frontendsConfig:
+  oidcop: |
+    module: satosa_oidcop.idpy_oidcop.OidcOpFrontend
+    name: OIDC
+
+    config:
+      domain: !ENV &domain SATOSA_HOSTNAME
+      server_name: *domain
+      base_url: &base_url <base_url>
+
+      storage:
+        class: "satosa_oidcop.core.storage.mongo.Mongodb"
+        kwargs:
+          url: !ENV MONGO_OIDCOP_HOST
+          connection_params:
+            username: !ENV MONGODB_OIDCOP_USERNAME
+            password: !ENV MONGODB_OIDCOP_PASSWORD
+            connectTimeoutMS: 5000
+            socketTimeoutMS: 5000
+            serverSelectionTimeoutMS: 5000
+            authSource: oidcop
+        db_name: oidcop
+        collections:
+          # type: collection name
+          session: session
+          client: client
+
+      default_target_backend: spidSaml2
+      salt_size: 8
+
+      op:
+        server_info:
+          add_on:
+            pkce:
+              function: idpyoidc.server.oauth2.add_on.pkce.add_support
+              kwargs:
+                code_challenge_method: S256 S384 S512
+                essential: false
+          authentication:
+            user:
+              acr: urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocolPassword
+              class: satosa_oidcop.core.user_authn.SatosaAuthnMethod
+          authz:
+            class: idpyoidc.server.authz.AuthzHandling
+            kwargs:
+              grant_config:
+                expires_in: 43200
+                usage_rules:
+                  access_token: {}
+                  authorization_code:
+                    max_usage: 1
+                    supports_minting:
+                      - access_token
+                      - refresh_token
+                      - id_token
+                  refresh_token:
+                    supports_minting:
+                      - access_token
+                      - refresh_token
+          capabilities:
+            grant_types_supported:
+              - authorization_code
+              - urn:ietf:params:oauth:grant-type:jwt-bearer
+              - refresh_token
+            subject_types_supported:
+              - public
+              - pairwise
+            scopes_supported:
+              - openid
+              - profile
+              - offline_access
+            claims_supported:
+              - sub
+              - given_name
+              - birthdate
+              - email
+          endpoint:
+            provider_info:
+              class: idpyoidc.server.oidc.provider_config.ProviderConfiguration
+              kwargs:
+                client_authn_method: null
+              path: .well-known/openid-configuration
+            authorization:
+              class: idpyoidc.server.oidc.authorization.Authorization
+              kwargs:
+                claims_parameter_supported: true
+                client_authn_method: null
+                request_object_encryption_alg_values_supported: &id001
+                  - RSA-OAEP
+                  - RSA-OAEP-256
+                request_parameter_supported: true
+                request_uri_parameter_supported: true
+                response_modes_supported:
+                  - query
+                  - fragment
+                  - form_post
+                response_types_supported:
+                  - code
+              path: OIDCOP/authorization
+            token:
+              class: idpyoidc.server.oidc.token.Token
+              kwargs:
+                client_authn_method:
+                  - client_secret_post
+                  - client_secret_basic
+                  - client_secret_jwt
+                  - private_key_jwt
+              path: OIDCOP/token
+            userinfo:
+              class: idpyoidc.server.oidc.userinfo.UserInfo
+              kwargs:
+                claim_types_supported:
+                  - normal
+                  - aggregated
+                  - distributed
+                userinfo_encryption_alg_values_supported: *id001
+                userinfo_signing_alg_values_supported: &id002
+                  - RS256
+                  - RS512
+                  - ES256
+                  - ES512
+              path: OIDCOP/userinfo
+            introspection:
+              class: idpyoidc.server.oauth2.introspection.Introspection
+              kwargs:
+                client_authn_method:
+                  - client_secret_post
+                  - client_secret_basic
+                  - client_secret_jwt
+                  - private_key_jwt
+                release:
+                  - username
+              path: OIDCOP/introspection
+            # uncomment this for dynamic client registration
+            #registration:
+            #class: idpyoidc.server.oidc.registration.Registration
+            #kwargs:
+            #client_authn_method: null
+            #client_id_generator:
+            #class: idpyoidc.server.oidc.registration.random_client_id
+            #kwargs: {}
+            #client_secret_expiration_time: 432000
+            #path: OIDC/registration
+            registration_read:
+              class: idpyoidc.server.oidc.read_registration.RegistrationRead
+              kwargs:
+                client_authn_method:
+                  - bearer_header
+              path: OIDCOP/registration_read
+            # TODO - Logout in SATOSA haven't been implemented
+            #end_session:
+            #class: idpyoidc.server.oidc.session.Session
+            #kwargs:
+            #backchannel_logout_session_supported: true
+            #backchannel_logout_supported: true
+            #frontchannel_logout_session_supported: true
+            #frontchannel_logout_supported: true
+            #logout_verify_url: verify_logout
+            #post_logout_uri_path: post_logout
+            #signing_alg: ES256
+            #path: OIDC/session
+          httpc_params:
+            verify: false
+          issuer: *base_url
+          keys:
+            key_defs:
+              - type: RSA
+                use:
+                  - sig
+              - crv: P-256
+                type: EC
+                use:
+                  - sig
+            private_path: data/oidc_op/private/jwks.json
+            public_path: data/static/jwks.json
+            read_only: true
+            uri_path: OIDCOP/jwks.json
+          login_hint2acrs:
+            class: idpyoidc.server.login_hint.LoginHint2Acrs
+            kwargs:
+              scheme_map:
+                email:
+                  - urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocolPassword
+          session_params:
+            encrypter:
+              class: cryptojwt.jwe.fernet.FernetEncrypter
+              kwargs:
+                password: !ENV SATOSA_ENCRYPTION_KEY
+                salt: !ENV SATOSA_SALT
+                keys:
+                  key_defs:
+                    - type: OCT
+                      use:
+                        - enc
+                      kid: password
+                    - type: OCT
+                      use:
+                        - enc
+                      kid: salt
+            sub_func:
+              pairwise:
+                class: idpyoidc.server.session.manager.PairWiseID
+                kwargs:
+                  salt: !ENV SATOSA_SALT
+              public:
+                class: idpyoidc.server.session.manager.PublicID
+                kwargs:
+                  salt: !ENV SATOSA_SALT
+          template_dir: templates
+          token_handler_args:
+            code:
+              kwargs:
+                lifetime: 600
+                crypt_conf:
+                  kwargs:
+                    password: !ENV SATOSA_ENCRYPTION_KEY
+                    salt: !ENV SATOSA_SALT
+                    keys:
+                      key_defs:
+                        - type: OCT
+                          use:
+                            - enc
+                          kid: password
+                        - type: OCT
+                          use:
+                            - enc
+                          kid: salt
+            id_token:
+              class: idpyoidc.server.token.id_token.IDToken
+              kwargs:
+                id_token_encryption_alg_values_supported: *id001
+                id_token_encryption_enc_values_supported:
+                  - A128CBC-HS256
+                  - A192CBC-HS384
+                  - A256CBC-HS512
+                  - A128GCM
+                  - A192GCM
+                  - A256GCM
+                id_token_signing_alg_values_supported: *id002
+            #jwks_file: data/oidc_op/private/token_jwks.json
+            # jwks_def:
+            # private_path: data/oidc_op/private/token_jwks.json
+            # read_only: False
+            # key_defs:
+            # - type: oct
+            # bytes: 24
+            # use:
+            # - enc
+            # kid: code
+            # - type: oct
+            # bytes: 24
+            # use:
+            # - enc
+            # kid: token
+            # - type: oct
+            # bytes: 24
+            # use:
+            # - enc
+            # kid: refresh
+            refresh:
+              kwargs:
+                lifetime: 86400
+                crypt_conf:
+                  kwargs:
+                    password: !ENV SATOSA_ENCRYPTION_KEY
+                    salt: !ENV SATOSA_SALT
+                    keys:
+                      key_defs:
+                        - type: OCT
+                          use:
+                            - enc
+                          kid: password
+                        - type: OCT
+                          use:
+                            - enc
+                          kid: salt
+            token:
+              class: idpyoidc.server.token.jwt_token.JWTToken
+              kwargs:
+                lifetime: 3600
+          userinfo:
+            class: satosa_oidcop.core.user_info.SatosaOidcUserInfo
+
+microservicesConfig:
+  idp_hinting:
+    module: satosa.micro_services.idp_hinting.IdpHinting
+    name: IdpHinting
+    config:
+      allowed_params:
+        - idp_hinting
+        - idp_hint
+        - idphint
+  disco_to_target_issuer:
+    module: satosa.micro_services.disco.DiscoToTargetIssuer
+    name: DiscoToTargetIssuer
+    config:
+      # the regex that will intercept http requests to be handled with this microservice
+      disco_endpoints:
+        - ".*/disco"
+  target_based_routing:
+    module: satosa.micro_services.custom_routing.DecideBackendByTargetIssuer
+    name: TargetRouter
+    config:
+      default_backend: Saml2
+
+      target_mapping:
+        # test platforms
+        "http://idpspid.testunical.it:8088": "spidSaml2"
+        "https://validator.spid.gov.it": "spidSaml2"
+        "https://localhost:8443": "spidSaml2"
+        "https://preproduzione.idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
+        # put here all the others
+        "https://loginspid.aruba.it": "spidSaml2"
+        "https://identity.infocert.it": "spidSaml2"
+        "https://spid.intesa.it": "spidSaml2"
+        "https://id.lepida.it/idp/shibboleth": "spidSaml2"
+        "https://idp.namirialtsp.com/idp": "spidSaml2"
+        "https://posteid.poste.it": "spidSaml2"
+        "https://identity.sieltecloud.it": "spidSaml2"
+        "https://spid.register.it": "spidSaml2"
+        "https://login.id.tim.it/affwebservices/public/saml2sso": "spidSaml2"
+        "https://sp-proxy.eid.gov.it/spproxy/idpit": "spidSaml2"
+        "https://spid.teamsystem.com/idp": "spidSaml2"
+        "https://id.eht.eu": "spidSaml2"
+        "https://loginspid.infocamere.it": "spidSaml2"
+        "https://idp.intesigroup.com": "spidSaml2"
+        "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
+        #IT Wallet
+        "wallet": "OpenID4VP"
+        "http://cie-provider.example.org:8002/oidc/op/": "CieOidcRp"

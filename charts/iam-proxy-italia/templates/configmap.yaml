@@ -81,7 +81,7 @@ data:
   {{- $root := . }}
   {{- range $path, $_ := .Files.Glob "config-files/**" }}
   {{- $filename := trimPrefix "config-files/" $path }}
-  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (ne $filename "proxy_conf.yaml") (ne $filename "internal_attributes.yaml") }}
+  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) (ne $filename "proxy_conf.yaml") (ne $filename "internal_attributes.yaml") }}
   {{ $filename | replace "/" "__" }}: |
 {{ $root.Files.Get $path | indent 4 }}
   {{- end }}

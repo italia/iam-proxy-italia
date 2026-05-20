@@ -248,6 +248,21 @@ spec:
             - name: jwks
               mountPath: {{ .Values.oidcop.mountPath }}
               readOnly: true
+            {{- if .Values.backendsConfig }}
+            - name: backends-config
+              mountPath: {{ .Values.configVolume.mountPath }}/conf/backends
+              readOnly: true
+            {{- end }}
+            {{- if .Values.frontendsConfig }}
+            - name: frontends-config
+              mountPath: {{ .Values.configVolume.mountPath }}/conf/frontends
+              readOnly: true
+            {{- end }}
+            {{- if .Values.microservicesConfig }}
+            - name: microservices-config
+              mountPath: {{ .Values.configVolume.mountPath }}/conf/microservices
+              readOnly: true
+            {{- end }}
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -268,7 +283,7 @@ spec:
               path: internal_attributes.yaml
             {{- range $path, $_ := .Files.Glob "config-files/**" }}
             {{- $filename := trimPrefix "config-files/" $path }}
-            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) }}
+            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) }}
             - key: {{ $filename | replace "/" "__" }}
               path: {{ $filename }}
             {{- end }}
@@ -298,6 +313,21 @@ spec:
                 path: oidc_op/private/jwks.json
               - key: publicJwks
                 path: static/jwks.json
+        {{- if .Values.backendsConfig }}
+        - name: backends-config
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-backends-config
+        {{- end }}
+        {{- if .Values.frontendsConfig }}
+        - name: frontends-config
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-frontends-config
+        {{- end }}
+        {{- if .Values.microservicesConfig }}
+        - name: microservices-config
+          secret:
+            secretName: {{ include "iam-proxy-italia.fullname" . }}-microservices-config
+        {{- end }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
