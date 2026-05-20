@@ -263,6 +263,16 @@ spec:
               mountPath: {{ .Values.configVolume.mountPath }}/conf/microservices
               readOnly: true
             {{- end }}
+            {{- if .Values.metadata.idp }}
+            - name: metadata-idp
+              mountPath: {{ .Values.configVolume.mountPath }}/metadata/idp
+              readOnly: true
+            {{- end }}
+            {{- if .Values.metadata.sp }}
+            - name: metadata-sp
+              mountPath: {{ .Values.configVolume.mountPath }}/metadata/sp
+              readOnly: true
+            {{- end }}
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -283,7 +293,7 @@ spec:
               path: internal_attributes.yaml
             {{- range $path, $_ := .Files.Glob "config-files/**" }}
             {{- $filename := trimPrefix "config-files/" $path }}
-            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) }}
+            {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) (not (hasPrefix "metadata/" $filename)) }}
             - key: {{ $filename | replace "/" "__" }}
               path: {{ $filename }}
             {{- end }}
@@ -327,6 +337,16 @@ spec:
         - name: microservices-config
           secret:
             secretName: {{ include "iam-proxy-italia.fullname" . }}-microservices-config
+        {{- end }}
+        {{- if .Values.metadata.idp }}
+        - name: metadata-idp
+          configMap:
+            name: {{ include "iam-proxy-italia.fullname" . }}-metadata-idp
+        {{- end }}
+        {{- if .Values.metadata.sp }}
+        - name: metadata-sp
+          configMap:
+            name: {{ include "iam-proxy-italia.fullname" . }}-metadata-sp
         {{- end }}
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}

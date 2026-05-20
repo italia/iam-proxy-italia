@@ -81,9 +81,37 @@ data:
   {{- $root := . }}
   {{- range $path, $_ := .Files.Glob "config-files/**" }}
   {{- $filename := trimPrefix "config-files/" $path }}
-  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) (ne $filename "proxy_conf.yaml") (ne $filename "internal_attributes.yaml") }}
+  {{- if and (not (hasSuffix "/" $filename)) (not (hasPrefix "backends/" $filename)) (not (hasPrefix "conf/backends/" $filename)) (not (hasPrefix "conf/frontends/" $filename)) (not (hasPrefix "conf/microservices/" $filename)) (not (hasPrefix "metadata/" $filename)) (ne $filename "proxy_conf.yaml") (ne $filename "internal_attributes.yaml") }}
   {{ $filename | replace "/" "__" }}: |
 {{ $root.Files.Get $path | indent 4 }}
   {{- end }}
+  {{- end }}
+{{- end }}
+{{- if and (not .Values.configVolume.existingConfigMap) .Values.metadata.idp }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}-metadata-idp
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  {{- range $key, $val := .Values.metadata.idp }}
+  {{ $key }}.xml: |
+{{ $val | indent 4 }}
+  {{- end }}
+{{- end }}
+{{- if and (not .Values.configVolume.existingConfigMap) .Values.metadata.sp }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iam-proxy-italia.fullname" . }}-metadata-sp
+  labels:
+    {{- include "iam-proxy-italia.labels" . | nindent 4 }}
+data:
+  {{- range $key, $val := .Values.metadata.sp }}
+  {{ $key }}.xml: |
+{{ $val | indent 4 }}
   {{- end }}
 {{- end }}
