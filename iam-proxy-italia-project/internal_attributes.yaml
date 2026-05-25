@@ -54,7 +54,6 @@ attributes:
     openid: [email]
     openid4vp: [mail, email]
     saml: [mail]
-    cie_oidc: [email]
   email_verified:
     openid: [email_verified]
   familyname:
@@ -91,7 +90,7 @@ attributes:
   expirationDate:
     saml: [expirationDate]
   fiscal_code:
-    openid4vci: [fiscal_code, fiscalnumber]
+    openid4vci: [fiscal_code, fiscal_number]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

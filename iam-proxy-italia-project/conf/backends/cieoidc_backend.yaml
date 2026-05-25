@@ -219,18 +219,15 @@ config:
             - func: backends.cieoidc.utils.helpers.misc.issuer_prefixed_sub
               kwargs:
                 sep: "__"
-          first_name:
+          given_name:
             - given_name
-            - given_name
-          last_name:
+          family_name:
             - family_name
-            - last_name
           email:
-            - email
             - email
           fiscal_number:
             - https://attributes.eid.gov.it/fiscal_number
-            - fiscal_number
+
     extends_session_endpoint:
       module: backends.cieoidc.endpoints.extend_session_endpoint
       class: ExtendSessionHandler
