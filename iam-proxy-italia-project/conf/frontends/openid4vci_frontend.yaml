@@ -32,6 +32,7 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_endpoint
       class: CredentialHandler
       path: '/credential'
+      revoke_on_credential_reissuance: 'true_same_wallet_solution' # True if you need to revoke the previous credential. False if you want to add a new credential without revoking the existing one. Use true_same_wallet_solution/default if you want to check whether a credential with the same type is already present and revoke the previous credential.
     #    deferred_credential:
     #      module: pyeudiw.satosa.frontends.openid4vci.endpoints.deferred_credential_endpoint
     #      class: DeferredCredentialHandler
