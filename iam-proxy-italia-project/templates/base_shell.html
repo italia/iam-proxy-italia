@@ -48,7 +48,7 @@
     footer {
       margin: 0;
       padding: 1rem 0;
-      background-color: #0072CE;
+      background-color: #004C99;
       color: white;
       position: relative;
       width: 100%;
@@ -117,11 +117,13 @@
   </div>
   <div style="background-color: #F2F7FC;">
     <div class="container py-3">
-      <div class="d-flex align-items-center">
-        <svg class="icon icon-lg me-2" aria-hidden="true">
-          <use xlink:href="/static/svg/sprites.svg#it-code-circle"></use>
+      <div class="d-flex align-items-center gap-3">
+        <!-- Logo ente (placeholder: it-code-circle; sostituire con organization_logo se configurato) -->
+        <svg class="icon icon-lg qr-header-logo-ente" aria-hidden="true" style="width: 2.5rem; height: 2.5rem;">
+          <use xlink:href="{{ static }}svg/sprites.svg#it-code-circle"></use>
         </svg>
-        <h2 id="wallet-title"></h2>
+        <div style="width: 1px; height: 1.5rem; background-color: #999; flex-shrink: 0;" aria-hidden="true"></div>
+        <img src="{{ static }}img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet" class="qr-header-logo-wallet" style="height: 2rem; width: auto;" />
       </div>
     </div>
   </div>
@@ -132,7 +134,7 @@
 </main>
 
 <!-- FOOTER -->
-<footer class="w-100" style="background-color: #0072CE; color: white;">
+<footer class="w-100" style="background-color: #004C99; color: white;">
   <div class="container h-100 d-flex align-items-center">
     <div class="d-flex flex-wrap justify-content-start">
       <a id="footer-legal" href="" class="text-white me-4 mb-2" target="_blank" rel="noopener"></a>

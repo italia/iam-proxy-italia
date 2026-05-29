@@ -5,6 +5,7 @@ import sys
 import logging
 
 from spid_cie_oidc import __version__
+from urllib.parse import urlparse
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'test':
@@ -26,13 +27,17 @@ ADMIN_PATH = 'admin/'
 APPEND_SLASH = False
 
 # required for onboarding checks and also for all the leafs
-OIDCFED_DEFAULT_TRUST_ANCHOR = "http://trust-anchor.example.org:5002"
-
+# URLs from env; defaults for local dev (127.0.0.1)
+OIDCFED_DEFAULT_TRUST_ANCHOR = os.environ.get(
+    "TRUST_ANCHOR_URL", "http://127.0.0.1:5002"
+)
 OIDCFED_TRUST_ANCHORS = [OIDCFED_DEFAULT_TRUST_ANCHOR]
 
+TRUST_ANCHOR_URL = os.environ.get("TRUST_ANCHOR_URL", "http://127.0.0.1:5002")
 
 OIDCFED_REQUIRED_TRUST_MARKS = []
 
+# Trust mark profiles for entity types the TA onboards (config only, TA does not act as RP/OP)
 OIDCFED_FEDERATION_TRUST_MARKS_PROFILES = {
     "openid_relying_party__public": {},
     "openid_relying_party__private": {},
@@ -43,20 +48,19 @@ HTTPC_PARAMS = {
     "session": {"timeout": aiohttp.ClientTimeout(total=4)},
 }
 
-LOGIN_REDIRECT_URL = "/oidc/rp/echo_attributes"
-LOGOUT_REDIRECT_URL = "/oidc/rp/landing"
-LOGIN_URL = "/oidc/rp/landing"
+# TA is admin-only; no RP/OP user-facing pages
+LOGIN_REDIRECT_URL = "/admin/"
+LOGOUT_REDIRECT_URL = "/admin/"
+LOGIN_URL = "/admin/login/"
 
 
 FEDERATION_DEFAULT_POLICY = {
-    "wallet_provider": {},
-    "wallet_relying_party": {},
     "openid_relying_party": {
       # TODO: to be customized for each entities, not somethinf to default!
       # "client_id": {"value":  "https://rp.example.it/spid"},
       # "redirect_uris": {
         # "subset_of": [
-          # "https://rp.example.it/spid/cb1", 
+          # "https://rp.example.it/spid/cb1",
           # "https://rp.example.it/spid/cb2"
         # ]
       # },
@@ -95,7 +99,9 @@ FEDERATION_DEFAULT_POLICY = {
   # TODO: TBD
   "openid_provider": {},
   "federation_entity": {},
-  "oauth_resource": {}
+  "oauth_resource": {},
+  "wallet_provider": {},
+  "openid_credential_verifier": {}
 }
 
 ALLOWED_HOSTS = ['*']
@@ -123,8 +129,8 @@ TEMPLATE_LOADERS = (
 
 DJAGGER_DOCUMENT = {
     "info": dict(
-        title = "SPID/CIE OIDC OpenAPI 3.0 Documentation",
-        description = "OpenAPI 3.0 Document Description",
+        title = "OIDC Federation Trust Anchor API",
+        description = "OpenAPI 3.0 - Trust Anchor federation endpoints (fetch, resolve, list, trust_mark_status)",
         termsOfService = "",
         contact = {
             "email": "contatti@developers.italia.it",
@@ -147,7 +153,7 @@ DJAGGER_DOCUMENT = {
         'oidcfed_resolve',
         'oidcfed_list',
         'oidcfed_trust_mark_status',
-        'oidcfed_advanced_entity_listing'
+        'oidcfed_advanced_entity_listing',
     ]
 }
 
@@ -242,3 +248,22 @@ LOGGING = {
         }
     }
 }
+
+#wallet trust anchor settings
+PRIVATE_KEY_TYPE = "EC"
+
+# X.509 parade
+X509_COUNTRY_NAME = "IT"
+X509_STATE_OR_PROVINCE_NAME = "Lazio"
+X509_LOCALITY_NAME = "Rome"
+X509_ORGANIZATION_NAME = "Example Wallet Trust Anchor"
+X509_COMMON_NAME = urlparse(OIDCFED_DEFAULT_TRUST_ANCHOR).hostname
+
+ENTITY_TYPE_LEAFS = [
+    "openid_relying_party",
+    "openid_provider",
+    "openid_credential_issuer",
+    "oauth_resource",
+    "wallet_solution",
+    "openid_credential_verifier"
+]

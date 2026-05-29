@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from typing import Optional, Any, List, TypeVar
 
 from backends.cieoidc.models.oidc_auth import OidcAuthentication
+from backends.cieoidc.models.trust_chain_cache import TrustChainCache
 from backends.cieoidc.storage.interfaces.storage import OidcStorage
 
 E = TypeVar("E", bound=BaseModel)
@@ -27,6 +28,7 @@ class MongoStorage(OidcStorage):
         self._username = (connection_params or {}).get("username")
         self._password = (connection_params or {}).get("password")
         self._auth_collection = conf.get("db_auth_collection")
+        self._trust_chain_collection = conf.get("db_trust_chain_collection") or "cie_oidc_trust_chains"
         self.__client = None
 
     @property
@@ -139,6 +141,39 @@ class MongoStorage(OidcStorage):
 
     def get_sessions(self, state: str) -> list[OidcAuthentication]:
         return self._find_all(self._auth_collection, {"state": state}, OidcAuthentication)
+
+    def get_trust_chain_by_provider(self, provider_url: str) -> Optional[TrustChainCache]:
+        try:
+            doc = self._db[self._trust_chain_collection].find_one(
+                {"provider_url": provider_url}
+            )
+            if doc is None:
+                return None
+            return self._trust_chain_from_doc(doc)
+        except PyMongoError as e:
+            logger.debug(e)
+            return None
+
+    def add_or_update_trust_chain(self, entity: TrustChainCache) -> int:
+        try:
+            doc = self._trust_chain_to_doc(entity)
+            result = self._db[self._trust_chain_collection].replace_one(
+                {"provider_url": entity.provider_url},
+                doc,
+                upsert=True,
+            )
+            return 1
+        except PyMongoError as e:
+            logger.debug(e)
+            return 0
+
+    def _trust_chain_to_doc(self, entity: TrustChainCache) -> dict:
+        d = entity.model_dump(mode="json")
+        return d
+
+    def _trust_chain_from_doc(self, doc: dict) -> TrustChainCache:
+        doc = {k: v for k, v in doc.items() if k != "_id"}
+        return TrustChainCache(**doc)
 
     def _to_uuid(self, _id: str) -> Optional[uuid.UUID]:
         try:

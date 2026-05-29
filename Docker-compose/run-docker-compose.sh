@@ -1,10 +1,41 @@
 #!/bin/bash
 # Run from script directory so paths and .env resolve correctly
+if [ -f .env ]; then
+  set -o allexport
+  source .env
+  set +o allexport
+fi
+
 cd "$(dirname "$0")"
+
+
 
 # Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+DEFAULT_TRUST_ANCHOR_HOSTNAME="trust-anchor.example.org"
+DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
+DEFAULT_OPENID_CIE_PROVIDER_PORT=8002
+# END USER OIDC CONFIG
+END_USER_OIDC_USERNAME=user
+END_USER_OIDC_PASSWORD=oidcuser
+export END_USER_OIDC_USERNAME="${END_USER_OIDC_USERNAME}"
+export END_USER_OIDC_PASSWORD="${END_USER_OIDC_PASSWORD}"
+# ADMIN DJANGO CONFIG
+DJANGO_ADMIN_USERNAME=admin
+DJANGO_ADMIN_PASSWORD=oidcadmin
+export DJANGO_ADMIN_USERNAME="${DJANGO_ADMIN_USERNAME}"
+export DJANGO_ADMIN_PASSWORD="${DJANGO_ADMIN_PASSWORD}"
 export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
+export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
+export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
+export DEFAULT_OPENID_CIE_PROVIDER_PORT="${DEFAULT_OPENID_CIE_PROVIDER_PORT}"
+DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
+# URLs used by prepare_dump.py and containers (must match env.example)
+export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-http://${TRUST_ANCHOR_HOSTNAME}:5002}"
+export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/oidc/op/}"
+export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
+export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
 export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
@@ -47,49 +78,52 @@ function add_iam_cert () {
   cd ../..
 }
 
-# Ensure a hostname resolves to 127.0.0.1; if not, add to /etc/hosts or prompt the user.
-# Usage: ensure_host_resolvable "hostname"
+# Ensure hostname resolves to 127.0.0.1. Warn if it resolves elsewhere; try to add to /etc/hosts if missing.
 function ensure_host_resolvable {
   local hostname="$1"
-  if getent hosts "${hostname}" >/dev/null 2>&1; then
+  local ip
+  ip=$(getent hosts "${hostname}" 2>/dev/null | awk '{print $1; exit}')
+
+  # Resolves to loopback — OK
+  [[ "$ip" == "127.0.0.1" ]] || [[ "$ip" == "::1" ]] && return 0
+
+  # Resolves to something else — warn only
+  if [[ -n "$ip" ]]; then
+    echo ""
+    echo "WARNING: ${hostname} resolves to ${ip}. For local demo add to /etc/hosts:  127.0.0.1 ${hostname}"
+    echo ""
     return 0
   fi
+
+  # Does not resolve — try to add
+  grep -q "${hostname}" /etc/hosts 2>/dev/null && return 0
   echo ""
-  echo "Hostname '${hostname}' does not resolve. It must point to 127.0.0.1 for local access (e.g. HTTPS)."
-  if grep -q "${hostname}" /etc/hosts 2>/dev/null; then
-    echo "An entry for ${hostname} already exists in /etc/hosts."
+  echo "Adding 127.0.0.1 ${hostname} to /etc/hosts (may prompt for sudo)."
+  if echo "127.0.0.1 ${hostname}" | sudo tee -a /etc/hosts >/dev/null 2>&1; then
     return 0
   fi
-  echo "Adding '127.0.0.1 ${hostname}' to /etc/hosts (may prompt for sudo)."
-  if (echo "127.0.0.1 ${hostname}" | sudo tee -a /etc/hosts >/dev/null 2>&1); then
-    echo "Added. ${hostname} now resolves to 127.0.0.1."
-    return 0
-  fi
-  echo ""
-  echo "Could not write to /etc/hosts. Add this line manually (e.g. with sudo):"
-  echo "  127.0.0.1 ${hostname}"
-  echo ""
+  echo "Could not write. Add manually:  127.0.0.1 ${hostname}"
   read -r -p "Continue anyway? [y/N] " reply
-  if [[ ! "${reply}" =~ ^[yY]$ ]]; then
-    exit 1
-  fi
+  [[ "${reply}" =~ ^[yY]$ ]] || exit 1
 }
 
 function ensure_satosa_hostname_resolvable {
   ensure_host_resolvable "${SATOSA_HOSTNAME}"
-  ensure_host_resolvable "cie-provider.example.org"
-  ensure_host_resolvable "trust-anchor.example.org"
+  ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOSTNAME}"
+  ensure_host_resolvable "${TRUST_ANCHOR_HOSTNAME}"
+  ensure_host_resolvable "${DEMO_WALLET_INSTANCE_HOSTNAME}"
 }
 
 function initialize_satosa {
   echo "WARNING: creating directories with read/write/execute permissions to anybody"
-  
+
   mkdir -p ./iam-proxy-italia-project
   mkdir -p ./djangosaml2_sp
   mkdir -p ./mongo/db
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
+  mkdir -p ./wallet-instance-demo/config
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -98,7 +132,14 @@ function initialize_satosa {
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
+  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
 
+  # Apply placeholder replacement in dumps so entity IDs match runtime hostnames/URLs
+  PREPARE_SCRIPT="../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/prepare_dump.py"
+  if [ -f "$PREPARE_SCRIPT" ] && [ -f "./spid_cie_oidc_django/federation_authority/dumps/example.json" ]; then
+    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/federation_authority/dumps/example.json
+    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/provider/dumps/example.json
+  fi
   rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
@@ -124,11 +165,33 @@ function update {
 function start {
   # Ensure external network exists (avoids host interface teardown on compose down)
   docker network create iam-proxy-italia 2>/dev/null || true
-  if [ "$SATOSA_BUILD" == "true" ]; then
-    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans --build
-  else
-    docker compose -f docker-compose.yml up --wait --wait-timeout 60 --remove-orphans
-  fi
+
+  # NEW BUSINESS
+
+  DOCKER_UP_ARGS=(
+  -f docker-compose.yml up
+  --wait
+  --wait-timeout 60
+  --remove-orphans
+  )
+  echo -e "Starting compose with args: ${DOCKER_UP_ARGS[*]} \n"
+  docker compose "${DOCKER_UP_ARGS[@]}"
+  EXIT_CODE=$?
+  echo -e "\n Compose finished with exit code: $EXIT_CODE\n"
+  # @TODO handle exit code and perform cleanup if needed (e.g. to avoid stale containers on next run if compose up fails)
+# if [[ "${EXIT_CODE}" -ne 0 ]]; then
+#   echo "Errore rilevato: processo di pulizia"
+#
+#   if [[ -n "${PAGOPA_CLI_SERVICE_NAME}" ]]; then
+#     echo "PAGOPA_CLI_SERVICE_NAME presente: eseguo cleanup specifico"
+#     docker compose -f docker-compose.yml down -v
+#   fi
+#
+#   exit $EXIT_CODE
+# fi
+
+  # END NEW BUSINESS
+
   echo -e "\n"
   echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
   echo -e "\n"
@@ -137,18 +200,30 @@ function start {
     demo|*demo*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       echo -e "  OIDC RP demo:              http://localhost:8090"
+      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
       ;;
     dev|*saml2*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       ;;
     storage_mongo|*oidc*)
       echo -e "  OIDC RP demo:              http://localhost:8090"
+      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
       ;;
     *)
       echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
       ;;
   esac
-  echo -e ""
+
+  # cie-provider (spid-cie-oidc-django sample dump): same profiles as in docker-compose.yml for that service
+  case "${COMPOSE_PROFILES}" in
+    demo|*demo*|storage_mongo|oidc|*oidc*)
+      echo -e "=== ${OPENID_CIE_PROVIDER_HOSTNAME} (CIE OIDC) — credentials from sample dump (see spid-cie-oidc-django README) ==="
+      echo -e "  Django admin:        username: ${DJANGO_ADMIN_USERNAME}    password: ${DJANGO_ADMIN_PASSWORD}"
+      echo -e "  End-user OIDC login: username: ${END_USER_OIDC_USERNAME}     password: ${END_USER_OIDC_PASSWORD}"
+      echo -e "  Base URL:            http://${OPENID_CIE_PROVIDER_HOSTNAME}:${DEFAULT_OPENID_CIE_PROVIDER_PORT}/"
+      echo -e ""
+      ;;
+  esac
 
   if [[ -n "${RUN_SPID_TEST}" ]]; then
     echo -e "\n"

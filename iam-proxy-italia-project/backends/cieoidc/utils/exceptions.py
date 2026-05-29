@@ -81,3 +81,14 @@ class UnknownKid(Exception):
     Raised when not found kid from JWK
     """
     pass
+
+
+class TrustChainNotFoundError(InternalServerError):
+    """
+    Raised when the requested OIDC provider is not found in the trust chains.
+
+    This typically indicates that trust chain generation failed at startup for
+    the given provider (e.g. trust anchor or provider unreachable, federation
+    metadata mismatch). Check startup logs for the underlying exception.
+    """
+    pass
