@@ -94,9 +94,18 @@ _STATIC_DIR = Path(__file__).resolve().parent / "static"
 app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 
-def render_template(template_name: str, request: Request, context: dict = {}):
-    context.update({"request": request, "settings": settings})
-    return templates.TemplateResponse(template_name, context)
+def render_template(template_name: str, request: Request, context: dict | None = None):
+    if context is None:
+        context = {}
+    context.update({
+        "request": request,
+        "settings": settings
+    })
+    return templates.TemplateResponse(
+        name=template_name,
+        request=request,
+        context=context
+    )
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
