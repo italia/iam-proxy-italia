@@ -171,10 +171,10 @@ test("@keyboard cie menu opens with Enter/Space and closes with Escape", async (
   await expect(cieMenu).not.toHaveClass(/is-open/);
 });
 
-test("@focus it-wallet initial focus is on page heading", async ({ page }) => {
+test("@focus it-wallet initial load does not move focus to heading or search", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
-  await expect(page.locator("#page-title")).toBeFocused();
+  await expect(page.locator("#page-title")).not.toBeFocused();
   await expect(page.locator("#wallet-search")).not.toBeFocused();
 
   const firstCard = page.locator(".it-wallet-card").first();
@@ -188,6 +188,7 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
+  await expect(page.locator("#wallet-controls")).toHaveAttribute("aria-label", /Strumenti elenco wallet/i);
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("aria-labelledby", "wallet-search-legend");
   await expect(page.locator("#wallet-search-legend")).toHaveCount(1);
   await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);

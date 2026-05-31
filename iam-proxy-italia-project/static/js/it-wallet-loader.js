@@ -62,6 +62,14 @@ function loadDocument(resource) {
   if (sortItemAz) sortItemAz.textContent = resource?.sort?.az ?? 'Alfabetico A-Z';
   const sortItemZa = document.getElementById('wallet-sort-item-za');
   if (sortItemZa) sortItemZa.textContent = resource?.sort?.za ?? 'Alfabetico Z-A';
+  const sortTrigger = document.getElementById('wallet-sort-trigger');
+  const sortLabel = resource?.sort?.trigger_label ?? 'Ordina wallet';
+  if (sortTrigger) sortTrigger.setAttribute('aria-label', sortLabel);
+  if (sortSelect) sortSelect.setAttribute('aria-label', sortLabel);
+  const walletControls = document.getElementById('wallet-controls');
+  if (walletControls) {
+    walletControls.setAttribute('aria-label', resource?.controls?.label ?? 'Strumenti elenco wallet');
+  }
   const backLink = document.getElementById('back-link');
   const backText = resource?.nav?.back ?? 'Torna indietro';
   if (backLink) backLink.setAttribute('aria-label', backText);
@@ -307,14 +315,6 @@ function setupBackLink() {
     const search = params.toString();
     backLink.href = search ? 'disco.html?' + search : 'disco.html';
   }
-}
-
-function focusPageHeading() {
-  const heading = document.getElementById('page-title');
-  if (!heading) return;
-  heading.setAttribute('tabindex', '-1');
-  heading.focus({ preventScroll: true });
-  heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
 }
 
 function walletResultsStatusMessage(resource, count, context) {
@@ -701,7 +701,6 @@ async function loadItWalletPage() {
   syncSearchButtonState();
   applyFiltersAndSort();
   setupBackLink();
-  focusPageHeading();
 }
 
 i18next

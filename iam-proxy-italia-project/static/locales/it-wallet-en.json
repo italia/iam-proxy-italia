@@ -26,7 +26,11 @@
   "sort": {
     "default": "Default sorting",
     "az": "Alphabetical A-Z",
-    "za": "Alphabetical Z-A"
+    "za": "Alphabetical Z-A",
+    "trigger_label": "Sort wallets"
+  },
+  "controls": {
+    "label": "Wallet list tools"
   },
   "wallets": {
     "load_more": "Load more"

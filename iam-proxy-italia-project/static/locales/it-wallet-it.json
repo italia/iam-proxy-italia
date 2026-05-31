@@ -26,7 +26,11 @@
   "sort": {
     "default": "Ordine predefinito",
     "az": "Alfabetico A-Z",
-    "za": "Alfabetico Z-A"
+    "za": "Alfabetico Z-A",
+    "trigger_label": "Ordina wallet"
+  },
+  "controls": {
+    "label": "Strumenti elenco wallet"
   },
   "wallets": {
     "load_more": "Carica altri"
