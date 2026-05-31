@@ -92,7 +92,6 @@ function loadEidCards(resource) {
   if (checkId(resource.digital_id)) {
     const digitalSection = document.createElement('section');
     digitalSection.className = 'mb-4';
-    digitalSection.setAttribute('aria-labelledby', 'eid-selection-title');
     const title = document.createElement('h1');
     title.id = 'eid-selection-title';
     title.textContent = resource.titles.login_digital_identity;
@@ -525,10 +524,13 @@ function createLearnMore(resource, eid) {
     const container = document.createElement('div');
     container.className = 'mt-2';
 
-    const toggle = document.createElement('a');
-    toggle.href = '#';
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
     toggle.className = 'eid-learn-more-toggle';
     toggle.textContent = toggleLabelText;
+    const contentId = `eid-learn-more-${(eid.name || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    toggle.setAttribute('aria-controls', contentId);
+    toggle.setAttribute('aria-expanded', 'false');
 
     const svgNs = 'http://www.w3.org/2000/svg';
     const arrow = document.createElementNS(svgNs, 'svg');
@@ -548,6 +550,7 @@ function createLearnMore(resource, eid) {
     toggle.appendChild(arrow);
 
     const text = document.createElement('p');
+    text.id = contentId;
     text.innerHTML = eid.learn_more_descr;
     if (eid.learn_more_link) {
       text.appendChild(document.createTextNode(' '));
@@ -562,17 +565,18 @@ function createLearnMore(resource, eid) {
     }
     text.className = 'mt-2 eid-learn-more-content';
 
-    toggle.addEventListener('click', (e) => {
-      e.preventDefault();
+    toggle.addEventListener('click', () => {
       const box = toggle.closest('.it-card');
       const isExpanded = toggle.classList.contains('expanded');
       if (!isExpanded) {
         toggle.classList.add('expanded');
         text.classList.add('is-open');
+        toggle.setAttribute('aria-expanded', 'true');
         if (box) box.style.height = 'auto';
       } else {
         toggle.classList.remove('expanded');
         text.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
         if (box) box.style.height = '';
       }
     });

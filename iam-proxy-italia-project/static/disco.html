@@ -42,7 +42,7 @@
           <span class="navbar-brand text-white"><strong id="header-region-name"></strong></span>
           <div class="it-header-slim-right-zone">
             <div class="nav-item dropdown it-header-lang-dropdown">
-              <a href="#" id="languagesDropButton" role="button" class="nav-link dropdown-toggle"
+              <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
                 aria-label="Selezione lingua, Italiano selezionata"
                 aria-controls="language-menu"
                 data-bs-toggle="dropdown" aria-haspopup="menu" aria-expanded="false">
@@ -51,23 +51,23 @@
                 <svg class="icon icon-sm ms-1" aria-hidden="true">
                   <use xlink:href="/static/svg/sprites.svg#it-expand"></use>
                 </svg>
-              </a>
+              </button>
               <div id="language-menu" class="dropdown-menu dropdown-menu-end">
                 <div class="row">
                   <div class="col-12">
                     <div class="link-list-wrapper">
                       <ul class="link-list" role="menu" aria-labelledby="languagesDropButton">
                         <li>
-                          <a class="dropdown-item list-item it-lang-option active" href="#" data-lang="it" role="menuitemradio"
-                            aria-checked="true" aria-current="true">
+                          <button type="button" class="dropdown-item list-item it-lang-option active" data-lang="it"
+                            role="menuitemradio" aria-checked="true" aria-current="true">
                             <span lang="it">Italiano</span>
-                          </a>
+                          </button>
                         </li>
                         <li>
-                          <a class="dropdown-item list-item it-lang-option" href="#" data-lang="en" role="menuitemradio"
-                            aria-checked="false">
+                          <button type="button" class="dropdown-item list-item it-lang-option" data-lang="en"
+                            role="menuitemradio" aria-checked="false">
                             <span lang="en">English</span>
-                          </a>
+                          </button>
                         </li>
                       </ul>
                     </div>
@@ -94,7 +94,7 @@
 
   <!-- SEZIONE LOGIN -->
   <main id="main-content" class="container my-4" aria-labelledby="eid-selection-title">
-    <section id="auth-methods" aria-labelledby="eid-selection-title">
+    <section id="auth-methods">
       <div class="row" id="eid-cards-container" aria-live="polite" aria-relevant="additions text">
         <script type="module" src="js/eid-cards-loader.js"></script>
       </div>
