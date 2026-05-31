@@ -1,4 +1,46 @@
 /* global initHeaderLangDropdown */
+
+const EID_LOADING_FALLBACK = 'Caricamento in corso...';
+const EID_ERROR_FALLBACK = 'Impossibile caricare i metodi di autenticazione. Ricarica la pagina.';
+
+function getEidCardsContainer() {
+  return document.getElementById('eid-cards-container');
+}
+
+function eidLoadingMessage(resource) {
+  return resource?.loading?.in_progress ?? EID_LOADING_FALLBACK;
+}
+
+function eidErrorMessage(resource) {
+  return resource?.loading?.error ?? EID_ERROR_FALLBACK;
+}
+
+function setEidCardsLoading(message) {
+  const container = getEidCardsContainer();
+  if (!container) return;
+  container.setAttribute('aria-busy', 'true');
+  container.replaceChildren();
+  const status = document.createElement('p');
+  status.className = 'eid-list-state eid-list-state--loading';
+  status.setAttribute('role', 'status');
+  status.textContent = message;
+  container.appendChild(status);
+}
+
+function setEidCardsError(message) {
+  const container = getEidCardsContainer();
+  if (!container) return;
+  container.setAttribute('aria-busy', 'false');
+  container.replaceChildren();
+  const alert = document.createElement('p');
+  alert.className = 'eid-list-state eid-list-state--error';
+  alert.setAttribute('role', 'alert');
+  alert.textContent = message;
+  container.appendChild(alert);
+}
+
+setEidCardsLoading(EID_LOADING_FALLBACK);
+
 // ----------------------- i18next -----------------------
 function loadEidCardsi18next() {
   const lang = i18next.language;
@@ -8,8 +50,10 @@ function loadEidCardsi18next() {
   }
   if (!eidBundle) {
     console.error("eid-cards: locale bundle not loaded for", lang);
+    setEidCardsError(EID_ERROR_FALLBACK);
     return;
   }
+  setEidCardsLoading(eidLoadingMessage(eidBundle));
   loadDocument(eidBundle);
   loadEidCards(eidBundle);
   if (typeof Ita !== "undefined") {
@@ -38,7 +82,10 @@ i18next
     }
     loadEidCardsi18next();
   })
-  .catch(err => console.error('Error loading eid-cards:', err));
+  .catch((err) => {
+    console.error('Error loading eid-cards:', err);
+    setEidCardsError(EID_ERROR_FALLBACK);
+  });
 
 function newWindowHintText(resource) {
   return resource?.footer?.new_window_hint ?? 'si apre in una nuova finestra';
@@ -127,12 +174,21 @@ function loadDocument(resource) {
 
 // ----------------------- Eid Cards Loader -----------------------
 function loadEidCards(resource) {
-  const container = document.getElementById('eid-cards-container');
+  const container = getEidCardsContainer();
+  if (!container) return;
   updatePageHeading(resource);
+  container.setAttribute('aria-busy', 'false');
   container.innerHTML = '';
   document.getElementById('eid-alternative-section')?.remove();
 
-  if (checkId(resource.digital_id)) {
+  const hasDigital = checkId(resource.digital_id);
+  const hasAlternative = checkId(resource.alternative_id);
+  if (!hasDigital && !hasAlternative) {
+    setEidCardsError(eidErrorMessage(resource));
+    return;
+  }
+
+  if (hasDigital) {
     const digitalSection = document.createElement('section');
     digitalSection.className = 'mb-4';
 

@@ -5,6 +5,46 @@
 
 const SHOW_CARD_LEARN_MORE = false;
 const SEARCH_MIN_WALLETS = 7;
+const WALLET_LOADING_FALLBACK = 'Caricamento in corso...';
+const WALLET_ERROR_FALLBACK = 'Impossibile caricare l\'elenco wallet. Ricarica la pagina.';
+
+function getWalletGrid() {
+  return document.getElementById('wallet-grid');
+}
+
+function walletLoadingMessage(resource) {
+  return resource?.loading?.in_progress ?? WALLET_LOADING_FALLBACK;
+}
+
+function walletErrorMessage(resource) {
+  return resource?.loading?.error ?? WALLET_ERROR_FALLBACK;
+}
+
+function setWalletGridLoading(message) {
+  const grid = getWalletGrid();
+  if (!grid) return;
+  grid.setAttribute('aria-busy', 'true');
+  grid.replaceChildren();
+  const status = document.createElement('p');
+  status.className = 'it-wallet-list-state it-wallet-list-state--loading col-12 text-center';
+  status.setAttribute('role', 'status');
+  status.textContent = message;
+  grid.appendChild(status);
+}
+
+function setWalletGridError(message) {
+  const grid = getWalletGrid();
+  if (!grid) return;
+  grid.setAttribute('aria-busy', 'false');
+  grid.replaceChildren();
+  const alert = document.createElement('p');
+  alert.className = 'it-wallet-list-state it-wallet-list-state--error col-12 text-center';
+  alert.setAttribute('role', 'alert');
+  alert.textContent = message;
+  grid.appendChild(alert);
+}
+
+setWalletGridLoading(WALLET_LOADING_FALLBACK);
 
 function getBasePath() {
   const path = window.location.pathname;
@@ -170,7 +210,6 @@ function createWalletCard(wallet, resource, basePath) {
   const cardLink = document.createElement('a');
   cardLink.href = buildWalletUri(wallet.uri);
   cardLink.className = 'it-wallet-card-hit';
-  cardLink.title = wallet.name;
 
   const row = document.createElement('div');
   row.className = 'd-flex align-items-center w-100 it-wallet-card-main-row';
@@ -282,7 +321,9 @@ function createWalletCard(wallet, resource, basePath) {
 }
 
 function renderWallets(wallets, resource, basePath) {
-  const grid = document.getElementById('wallet-grid');
+  const grid = getWalletGrid();
+  if (!grid) return;
+  grid.setAttribute('aria-busy', 'false');
   grid.innerHTML = '';
   grid.classList.toggle('it-wallet-grid-single', wallets.length === 1);
   if (wallets.length === 0) {
@@ -357,16 +398,31 @@ async function loadItWalletPage() {
   const basePath = getBasePath();
   const resource = getWalletResource();
   loadDocument(resource);
+  setWalletGridLoading(walletLoadingMessage(resource));
 
   let wallets = [];
+  let loadFailed = false;
   try {
     const resp = await fetch(basePath + 'data/it-wallets.json');
-    if (resp.ok) {
+    if (!resp.ok) {
+      loadFailed = true;
+      console.error('Error loading it-wallets.json: HTTP', resp.status);
+    } else {
       const data = await resp.json();
       wallets = data.immediate_subordinate_entities || [];
     }
   } catch (err) {
+    loadFailed = true;
     console.error('Error loading it-wallets.json:', err);
+  }
+
+  if (loadFailed) {
+    setWalletGridError(walletErrorMessage(resource));
+    document.getElementById('wallet-controls')?.classList.add('d-none');
+    const titleActions = document.getElementById('wallet-title-actions');
+    if (titleActions) titleActions.hidden = true;
+    setupBackLink();
+    return;
   }
 
   const defaultWalletOrder = shuffleWallets(wallets);
@@ -725,4 +781,7 @@ i18next
     }
     return loadItWalletPage();
   })
-  .catch((err) => console.error('Error loading it-wallet page:', err));
+  .catch((err) => {
+    console.error('Error loading it-wallet page:', err);
+    setWalletGridError(WALLET_ERROR_FALLBACK);
+  });

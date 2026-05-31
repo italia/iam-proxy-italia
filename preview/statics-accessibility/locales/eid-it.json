@@ -17,6 +17,10 @@
     },
     "cards_load_status": "Elenco metodi di autenticazione aggiornato"
   },
+  "loading": {
+    "in_progress": "Caricamento in corso...",
+    "error": "Impossibile caricare i metodi di autenticazione. Ricarica la pagina."
+  },
   "digital_id": {
     "it_wallet": {
       "name": "IT-Wallet",

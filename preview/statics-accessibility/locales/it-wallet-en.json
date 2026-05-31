@@ -32,6 +32,10 @@
   "controls": {
     "label": "Wallet list tools"
   },
+  "loading": {
+    "in_progress": "Loading...",
+    "error": "Unable to load the wallet list. Reload the page."
+  },
   "wallets": {
     "load_more": "Load more"
   },

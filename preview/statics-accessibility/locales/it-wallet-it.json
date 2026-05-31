@@ -32,6 +32,10 @@
   "controls": {
     "label": "Strumenti elenco wallet"
   },
+  "loading": {
+    "in_progress": "Caricamento in corso...",
+    "error": "Impossibile caricare l'elenco wallet. Ricarica la pagina."
+  },
   "wallets": {
     "load_more": "Carica altri"
   },
