@@ -820,6 +820,22 @@ header svg.icon {
   height: 2rem;
 }
 
+.it-header-logo-placeholder {
+  display: block;
+  width: auto;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.it-header-logo-placeholder__text {
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  fill: #17324d;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .header-title-section .eid-navbar-title {
   font-size: 2rem;
   line-height: 1;

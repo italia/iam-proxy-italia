@@ -22,7 +22,15 @@ function loadDocument(resource) {
   const skipFooter = document.getElementById('skip-footer');
   if (skipFooter) skipFooter.textContent = resource?.skip_links?.footer ?? 'Vai al piè di pagina';
   const eidTitle = document.getElementById('eid-title');
-  if (eidTitle) eidTitle.textContent = resource?.titles?.logo_title ?? '';
+  const logoText = resource?.titles?.logo_title ?? 'Il tuo logo';
+  if (eidTitle) eidTitle.textContent = logoText;
+  const headerLogoText = document.getElementById('header-logo-text');
+  if (headerLogoText) headerLogoText.textContent = logoText;
+  const headerLogo = document.getElementById('header-logo');
+  if (headerLogo instanceof SVGElement && eidTitle) {
+    headerLogo.setAttribute('role', 'img');
+    headerLogo.setAttribute('aria-labelledby', 'eid-title');
+  }
   const tabTitle = document.getElementById('tab-title');
   if (tabTitle) tabTitle.textContent = resource?.titles?.page_title ?? '';
   const pageTitle = document.getElementById('page-title');
