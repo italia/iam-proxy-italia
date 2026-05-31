@@ -210,11 +210,16 @@ function loadEidCards(resource) {
 
 // ----------------------- Create Eid Cards Row -----------------------
 function createEidCardsRow(resource, id_key, container) {
-  const row = document.createElement('div');
-  row.className = 'row justify-content-center align-items-start eid-cards-row';
+  const listLabel = id_key === 'alternative_id'
+    ? (resource?.titles?.login_alternative_method ?? '')
+    : (resource?.titles?.login_digital_identity ?? '');
+  const row = document.createElement('ul');
+  row.className = 'row it-card-list justify-content-center align-items-start eid-cards-row';
+  if (listLabel) row.setAttribute('aria-label', listLabel);
+
   const entries = getEidEntriesForRow(resource[id_key]);
   entries.forEach((eid) => {
-    const col = document.createElement('div');
+    const col = document.createElement('li');
     col.className = 'col-12 col-md-3 mb-3 mb-md-4 eid-card-col';
     col.appendChild(createEidCardBox(resource, eid));
     row.appendChild(col);

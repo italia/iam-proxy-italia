@@ -528,7 +528,8 @@ main {
   justify-content: center;
 }
 
-.eid-cards-row > .eid-card-col {
+.eid-cards-row > .eid-card-col,
+.it-card-list.eid-cards-row > .eid-card-col {
   flex: 0 0 auto;
   width: min(100%, 18rem);
   max-width: 18rem;
@@ -1685,12 +1686,14 @@ html.it-wallet-html body.it-wallet-body {
   }
 
   #eid-cards-container.row > [class*="col-"],
-  #eid-cards-container .eid-cards-row > .eid-card-col {
+  #eid-cards-container .eid-cards-row > .eid-card-col,
+  #eid-cards-container .it-card-list > .eid-card-col {
     padding-left: 0;
     padding-right: 0;
   }
 
-  .eid-cards-row > .eid-card-col {
+  .eid-cards-row > .eid-card-col,
+  .it-card-list.eid-cards-row > .eid-card-col {
     width: 100%;
     max-width: 100%;
     flex: 0 0 100%;
@@ -1755,7 +1758,8 @@ html.it-wallet-html body.it-wallet-body {
     margin-left: auto;
   }
 
-  #eid-cards-container .col-12 {
+  #eid-cards-container .col-12,
+  #eid-cards-container .eid-card-col {
     margin-bottom: 1rem;
   }
 
@@ -1783,12 +1787,14 @@ html.it-wallet-html body.it-wallet-body {
   }
 
   #eid-cards-container.row > [class*="col-"],
-  #eid-cards-container .eid-cards-row > .eid-card-col {
+  #eid-cards-container .eid-cards-row > .eid-card-col,
+  #eid-cards-container .it-card-list > .eid-card-col {
     padding-left: 0;
     padding-right: 0;
   }
 
-  .eid-cards-row > .eid-card-col {
+  .eid-cards-row > .eid-card-col,
+  .it-card-list.eid-cards-row > .eid-card-col {
     width: 100%;
     max-width: 100%;
     flex: 0 0 100%;
