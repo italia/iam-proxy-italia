@@ -232,6 +232,26 @@ test("@keyboard it-wallet sort menu Escape restores focus from menu item", async
   await expect(sortTrigger).toBeFocused();
 });
 
+test("@keyboard it-wallet sort menu arrow key navigation", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  const defaultItem = page.locator("#wallet-sort-item-default");
+  const azItem = page.locator("#wallet-sort-item-az");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
+    test.skip(true, "Sort controls not visible on this viewport");
+  }
+
+  await sortTrigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(defaultItem).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(azItem).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await expect(defaultItem).toBeFocused();
+});
+
 test("@status it-wallet mobile search panel announces on open", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });

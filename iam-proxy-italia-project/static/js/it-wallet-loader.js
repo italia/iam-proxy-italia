@@ -445,9 +445,33 @@ async function loadItWalletPage() {
     if (!sortMenu || !sortTrigger) return;
     sortMenu.hidden = true;
     sortTrigger.setAttribute('aria-expanded', 'false');
+    sortMenuItems.forEach((item) => {
+      item.tabIndex = -1;
+    });
     if (restoreFocus) {
       requestAnimationFrame(() => sortTrigger.focus());
     }
+  }
+
+  function getActiveSortMenuIndex() {
+    const activeIndex = sortMenuItems.findIndex((item) => item.classList.contains('is-active'));
+    return activeIndex >= 0 ? activeIndex : 0;
+  }
+
+  function focusSortMenuItem(index) {
+    if (sortMenuItems.length === 0) return;
+    const normalized = ((index % sortMenuItems.length) + sortMenuItems.length) % sortMenuItems.length;
+    sortMenuItems.forEach((item, itemIndex) => {
+      item.tabIndex = itemIndex === normalized ? 0 : -1;
+    });
+    sortMenuItems[normalized].focus();
+  }
+
+  function openSortMenu(focusIndex) {
+    if (!sortMenu || !sortTrigger) return;
+    sortMenu.hidden = false;
+    sortTrigger.setAttribute('aria-expanded', 'true');
+    focusSortMenuItem(typeof focusIndex === 'number' ? focusIndex : getActiveSortMenuIndex());
   }
 
   function setSortMenuSelection(value) {
@@ -490,13 +514,56 @@ async function loadItWalletPage() {
   if (sortTrigger && sortMenu) {
     sortTrigger.onclick = (event) => {
       event.stopPropagation();
-      const nextOpen = sortMenu.hidden;
-      sortMenu.hidden = !nextOpen;
-      sortTrigger.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+      if (sortMenu.hidden) {
+        openSortMenu(getActiveSortMenuIndex());
+      } else {
+        closeSortMenu(true);
+      }
     };
+    sortTrigger.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (sortMenu.hidden) {
+          openSortMenu(getActiveSortMenuIndex());
+        } else {
+          focusSortMenuItem(getActiveSortMenuIndex() + 1);
+        }
+        return;
+      }
+      if (event.key === 'ArrowUp' && sortMenu.hidden) {
+        event.preventDefault();
+        openSortMenu(sortMenuItems.length - 1);
+      }
+    });
+    sortMenu.addEventListener('keydown', (event) => {
+      if (sortMenu.hidden || sortMenuItems.length === 0) return;
+      const currentIndex = sortMenuItems.findIndex((item) => item === document.activeElement);
+      const baseIndex = currentIndex >= 0 ? currentIndex : getActiveSortMenuIndex();
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        focusSortMenuItem(baseIndex + 1);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        focusSortMenuItem(baseIndex - 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        focusSortMenuItem(0);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        focusSortMenuItem(sortMenuItems.length - 1);
+      } else if (event.key === 'Enter' || event.key === ' ') {
+        const activeItem = document.activeElement;
+        if (activeItem instanceof HTMLElement && activeItem.classList.contains('it-wallet-sort-menu-item')) {
+          event.preventDefault();
+          activeItem.click();
+        }
+      }
+    });
   }
   if (sortMenuItems.length > 0) {
     sortMenuItems.forEach((item) => {
+      item.tabIndex = -1;
       item.addEventListener('click', () => {
         const value = item.dataset.value || 'default';
         setSortValue(value);
