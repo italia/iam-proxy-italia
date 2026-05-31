@@ -90,6 +90,8 @@ function loadDocument(resource) {
   const eidTitle = document.getElementById('eid-title');
   const logoText = resource?.titles?.login_logo ?? resource?.header?.region_name ?? '';
   if (eidTitle) eidTitle.textContent = logoText;
+  const headerLogoText = document.getElementById('header-logo-text');
+  if (headerLogoText) headerLogoText.textContent = logoText;
   const headerLogo = document.getElementById('header-logo');
   if (headerLogo instanceof HTMLImageElement) {
     headerLogo.setAttribute('alt', logoText);
@@ -625,7 +627,6 @@ function createLearnMore(resource, eid, cardTitleId) {
     text.setAttribute('aria-labelledby', `${resolvedCardTitleId} ${actionId}`);
     text.innerHTML = eid.learn_more_descr;
     if (eid.learn_more_link) {
-      text.appendChild(document.createTextNode(' '));
       const inlineCta = document.createElement('a');
       inlineCta.href = eid.learn_more_link;
       inlineCta.target = '_blank';

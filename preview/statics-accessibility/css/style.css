@@ -608,7 +608,11 @@ header svg.icon {
   transition: color 0.15s ease;
 }
 
-.eid-learn-more-content > a {
+.eid-learn-more-content > a,
+.eid-learn-more-content > .eid-find-how-link {
+  display: flex !important;
+  width: fit-content;
+  margin-top: 0.75rem;
   font-weight: 600 !important;
 }
 
@@ -814,6 +818,22 @@ header svg.icon {
 .header-title-section .icon.icon-lg {
   width: 2rem;
   height: 2rem;
+}
+
+.it-header-logo-placeholder {
+  display: block;
+  width: auto;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.it-header-logo-placeholder__text {
+  font-family: "Titillium Web", HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  fill: #17324d;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .header-title-section .eid-navbar-title {
