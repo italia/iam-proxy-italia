@@ -287,6 +287,14 @@ function setupBackLink() {
   }
 }
 
+function focusPageHeading() {
+  const heading = document.getElementById('page-title');
+  if (!heading) return;
+  heading.setAttribute('tabindex', '-1');
+  heading.focus({ preventScroll: true });
+  heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
+}
+
 async function loadItWalletPage() {
   const basePath = getBasePath();
   const resource = getWalletResource();
@@ -345,6 +353,9 @@ async function loadItWalletPage() {
     if (isWalletDesktopLayout()) return;
     controls.classList.toggle('is-mobile-panel-open', open);
     syncMobilePanelUi(open);
+    if (open && searchInput) {
+      requestAnimationFrame(() => searchInput.focus());
+    }
   }
 
   function resetMobilePanelForDesktop() {
@@ -491,9 +502,7 @@ async function loadItWalletPage() {
   syncSearchButtonState();
   applyFiltersAndSort();
   setupBackLink();
-  if (showControls && searchInput) {
-    requestAnimationFrame(() => searchInput.focus());
-  }
+  focusPageHeading();
 }
 
 i18next

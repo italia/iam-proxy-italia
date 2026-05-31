@@ -171,6 +171,13 @@ test("@keyboard cie menu opens with Enter/Space and closes with Escape", async (
   await expect(cieMenu).not.toHaveClass(/is-open/);
 });
 
+test("@focus it-wallet initial focus is on page heading", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+  await expect(page.locator("#page-title")).toBeFocused();
+  await expect(page.locator("#wallet-search")).not.toBeFocused();
+});
+
 test("@best-practice best-practice checks on it-wallet interactive controls", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
 
