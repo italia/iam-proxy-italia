@@ -765,20 +765,20 @@ header svg.icon {
 }
 
 .it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item span {
-  color: hsl(210, 100%, 40%);
+  color: hsl(210deg, 100%, 40%);
   display: inline-block;
   margin-right: 24px;
   line-height: normal;
 }
 
 .it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item:hover:not(.disabled) span {
-  color: hsl(210, 100%, 40%);
+  color: hsl(210deg, 100%, 40%);
   text-decoration: underline;
 }
 
 .it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active span,
 .it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active:hover span {
-  color: hsl(210, 100%, 15%);
+  color: hsl(210deg, 100%, 15%);
   text-decoration: none;
 }
 
@@ -1241,7 +1241,7 @@ html.it-wallet-html body.it-wallet-body {
   margin: -0.25rem 0 0;
   font-size: 0.875rem;
   line-height: 1.25;
-  color: hsl(350, 60%, 50%);
+  color: hsl(350deg, 60%, 50%);
 }
 
 .it-wallet-sort-wrap {
