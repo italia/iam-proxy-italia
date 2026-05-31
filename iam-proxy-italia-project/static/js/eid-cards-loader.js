@@ -51,14 +51,26 @@ function setExternalLinkA11y(linkEl, visibleText, resource) {
 
 let eidCardsLoadedOnce = false;
 
-function announceEidCardsUpdated(resource) {
-  const status = document.getElementById('eid-cards-status');
-  if (!status) return;
-  const message = resource?.titles?.cards_load_status ?? 'Elenco metodi di autenticazione aggiornato';
-  status.textContent = '';
-  requestAnimationFrame(function () {
-    status.textContent = message;
-  });
+function focusPageHeadingAfterUpdate() {
+  const heading = document.getElementById('eid-selection-title');
+  if (!heading) return;
+  heading.setAttribute('tabindex', '-1');
+  heading.focus({ preventScroll: true });
+  heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
+}
+
+function updatePageHeading(resource) {
+  const heading = document.getElementById('eid-selection-title');
+  if (!heading) return;
+  const hasDigital = checkId(resource.digital_id);
+  const hasAlternative = checkId(resource.alternative_id);
+  if (hasDigital) {
+    heading.textContent = resource.titles.login_digital_identity;
+    heading.className = 'h2 text-center mb-4';
+  } else if (hasAlternative) {
+    heading.textContent = resource.titles.login_alternative_method;
+    heading.className = 'h2 text-center mb-3 pb-4';
+  }
 }
 
 // ----------------------- Document Loader -----------------------
@@ -98,26 +110,29 @@ function loadDocument(resource) {
   setFooterLink(footerPrivacy, resource?.footer?.privacy_policy ?? '');
   setFooterLink(footerAccess, resource?.footer?.accessibility_statement ?? '');
   const tabTitle = document.getElementById("tab-title");
-  if (tabTitle) tabTitle.textContent = resource?.titles?.page_title ?? '';
+  const pageTitle = resource?.titles?.page_title ?? '';
+  if (tabTitle && tabTitle.textContent !== pageTitle) {
+    tabTitle.textContent = pageTitle;
+  }
+  if (pageTitle && document.title !== pageTitle) {
+    document.title = pageTitle;
+  }
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', resource?.titles?.page_title ?? '');
+  if (metaDesc && pageTitle && metaDesc.getAttribute('content') !== pageTitle) {
+    metaDesc.setAttribute('content', pageTitle);
+  }
 }
 
 // ----------------------- Eid Cards Loader -----------------------
 function loadEidCards(resource) {
   const container = document.getElementById('eid-cards-container');
+  updatePageHeading(resource);
   container.innerHTML = '';
-  // Remove existing alt section (lives outside container) to prevent duplication on language change
   document.getElementById('eid-alternative-section')?.remove();
 
   if (checkId(resource.digital_id)) {
     const digitalSection = document.createElement('section');
     digitalSection.className = 'mb-4';
-    const title = document.createElement('h1');
-    title.id = 'eid-selection-title';
-    title.textContent = resource.titles.login_digital_identity;
-    title.className = 'h2 text-center mb-4';
-    digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
     container.appendChild(digitalSection);
@@ -181,13 +196,12 @@ function loadEidCards(resource) {
 
     createEidCardsRow(resource, "alternative_id", altSection);
     altWrapper.appendChild(altSection);
-    // Keep full-width layout by rendering this section outside the constrained main container.
-    const main = container.closest('main');
-    main.insertAdjacentElement('afterend', altWrapper);
+    const authMethods = document.getElementById('auth-methods');
+    (authMethods || container.closest('main'))?.appendChild(altWrapper);
   }
 
   if (eidCardsLoadedOnce) {
-    announceEidCardsUpdated(resource);
+    focusPageHeadingAfterUpdate();
   }
   eidCardsLoadedOnce = true;
 }
@@ -245,12 +259,13 @@ function getEidEntriesForRow(entriesObj) {
 function createEidCardBox(resource, eid) {
   // Bootstrap Italia card: https://italia.github.io/bootstrap-italia/docs/componenti/card/
   const card = document.createElement('article');
-  card.className = 'it-card shadow h-100';
+  card.className = 'it-card shadow';
 
-  const title = document.createElement('p');
+  const title = document.createElement('h2');
   title.className = 'it-card-title mb-3 h4';
   title.id = `eid-card-title-${eidCardSlug(eid)}`;
   title.textContent = eid.name;
+  card.setAttribute('aria-labelledby', title.id);
 
   const body = document.createElement('div');
   body.className = 'it-card-body d-flex flex-column';
@@ -535,18 +550,9 @@ function eidCardSlug(eid) {
   return (eid.name || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
-function learnMoreToggleStateText(resource, isExpanded) {
-  const templates = resource.titles?.learn_more_a11y ?? {};
-  return isExpanded
-    ? (templates.expanded ?? 'additional information shown')
-    : (templates.collapsed ?? 'additional information hidden');
-}
-
-function syncLearnMoreToggleA11y(toggle, content, resource, cardTitleId, actionId, stateId, isExpanded) {
+function syncLearnMoreToggleA11y(toggle, content, cardTitleId, actionId, isExpanded) {
   toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-  toggle.setAttribute('aria-labelledby', `${actionId} ${cardTitleId} ${stateId}`);
-  const stateEl = document.getElementById(stateId);
-  if (stateEl) stateEl.textContent = learnMoreToggleStateText(resource, isExpanded);
+  toggle.setAttribute('aria-labelledby', `${actionId} ${cardTitleId}`);
   toggle.classList.toggle('expanded', isExpanded);
   content.classList.toggle('is-open', isExpanded);
   if (isExpanded) {
@@ -581,7 +587,6 @@ function createLearnMore(resource, eid, cardTitleId) {
     const contentId = `eid-learn-more-${cardSlug}`;
     const toggleId = `${contentId}-toggle`;
     const actionId = `${contentId}-action`;
-    const stateId = `${contentId}-state`;
     const resolvedCardTitleId = cardTitleId || `eid-card-title-${cardSlug}`;
 
     const toggle = document.createElement('button');
@@ -595,11 +600,6 @@ function createLearnMore(resource, eid, cardTitleId) {
     toggleLabel.className = 'eid-learn-more-toggle-label';
     toggleLabel.textContent = toggleLabelText;
     toggle.appendChild(toggleLabel);
-
-    const stateLabel = document.createElement('span');
-    stateLabel.id = stateId;
-    stateLabel.className = 'visually-hidden';
-    toggle.appendChild(stateLabel);
 
     const svgNs = 'http://www.w3.org/2000/svg';
     const arrow = document.createElementNS(svgNs, 'svg');
@@ -638,14 +638,11 @@ function createLearnMore(resource, eid, cardTitleId) {
     }
     text.className = 'mt-2 eid-learn-more-content';
 
-    syncLearnMoreToggleA11y(toggle, text, resource, resolvedCardTitleId, actionId, stateId, false);
+    syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, false);
 
     toggle.addEventListener('click', () => {
-      const box = toggle.closest('.it-card');
       const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-      const nextExpanded = !isExpanded;
-      syncLearnMoreToggleA11y(toggle, text, resource, resolvedCardTitleId, actionId, stateId, nextExpanded);
-      if (box) box.style.height = nextExpanded ? 'auto' : '';
+      syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, !isExpanded);
     });
 
     container.appendChild(toggle);
