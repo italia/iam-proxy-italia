@@ -170,7 +170,6 @@ function createWalletCard(wallet, resource, basePath) {
   const cardLink = document.createElement('a');
   cardLink.href = buildWalletUri(wallet.uri);
   cardLink.className = 'it-wallet-card-hit';
-  cardLink.title = wallet.name;
 
   const row = document.createElement('div');
   row.className = 'd-flex align-items-center w-100 it-wallet-card-main-row';
