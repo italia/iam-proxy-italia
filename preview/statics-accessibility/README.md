@@ -74,6 +74,7 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 
 - `locales/eid-it.json`, `locales/eid-en.json`
 - Keys: `header.*`, `titles.*`, `loading.*`, `digital_id.*`, `alternative_id.*`, `footer.*`, `skip_links.*`
+- Loader: `js/eid-cards-loader.js` (`loadPath: locales/eid-{{lng}}.json`)
 
 ### IT-Wallet page (`it-wallet.html`)
 
