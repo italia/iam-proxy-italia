@@ -27,11 +27,19 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
   if (await learnMoreToggle.count()) {
     await expect(learnMoreToggle).toHaveAttribute("aria-controls", /.+/);
     await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "false");
-    await expect(learnMoreToggle).toHaveAttribute("aria-label", /.+/);
+    const labelledBy = await learnMoreToggle.getAttribute("aria-labelledby");
+    expect(labelledBy).toBeTruthy();
+    const labelledByIds = labelledBy!.split(/\s+/);
+    expect(labelledByIds.length).toBeGreaterThanOrEqual(2);
+    const cardTitle = page.locator(`#${labelledByIds[1]}`);
+    await expect(cardTitle).toHaveClass(/it-card-title/);
+    await expect(learnMoreToggle).not.toHaveAttribute("aria-label");
     const controlsId = await learnMoreToggle.getAttribute("aria-controls");
     const panel = page.locator(`#${controlsId}`);
     await expect(panel).toHaveAttribute("role", "region");
     await expect(panel).toHaveAttribute("hidden", "");
+    const panelLabelledBy = await panel.getAttribute("aria-labelledby");
+    expect(panelLabelledBy).toContain(labelledByIds[1]);
     await learnMoreToggle.focus();
     await page.keyboard.press("Enter");
     await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "true");
