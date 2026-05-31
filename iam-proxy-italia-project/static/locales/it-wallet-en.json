@@ -29,6 +29,11 @@
     "accessibility_statement": "Accessibility statement",
     "new_window_hint": "opens in a new window"
   },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
+  },
   "learn_more": {
     "question": "Don't know what IT-Wallet is?",
     "link": "Find out more",

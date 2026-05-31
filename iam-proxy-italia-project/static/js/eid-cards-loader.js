@@ -48,6 +48,12 @@ function loadDocument(resource) {
     const regionName = resource?.header?.region_name ?? i18next.t('header.region_name');
     regionEl.textContent = regionName || '';
   }
+  const skipNav = document.querySelector('.it-skip-links');
+  if (skipNav) skipNav.setAttribute('aria-label', resource?.skip_links?.nav_label ?? 'Collegamenti di salto');
+  const skipMain = document.getElementById('skip-main');
+  if (skipMain) skipMain.textContent = resource?.skip_links?.main_content ?? 'Vai al contenuto principale';
+  const skipFooter = document.getElementById('skip-footer');
+  if (skipFooter) skipFooter.textContent = resource?.skip_links?.footer ?? 'Vai al piè di pagina';
   const eidTitle = document.getElementById('eid-title');
   if (eidTitle) eidTitle.textContent = resource?.titles?.login_logo ?? '';
   const footerLegal = document.getElementById('footer-legal');

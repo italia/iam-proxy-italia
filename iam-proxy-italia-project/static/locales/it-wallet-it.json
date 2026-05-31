@@ -29,6 +29,11 @@
     "accessibility_statement": "Dichiarazione Accessibilità",
     "new_window_hint": "si apre in una nuova finestra"
   },
+  "skip_links": {
+    "nav_label": "Collegamenti di salto",
+    "main_content": "Vai al contenuto principale",
+    "footer": "Vai al piè di pagina"
+  },
   "learn_more": {
     "question": "Non sai cos'è IT-Wallet?",
     "link": "Scopri di più",

@@ -15,6 +15,12 @@ function getBasePath() {
 function loadDocument(resource) {
   const regionEl = document.getElementById('header-region-name');
   if (regionEl) regionEl.textContent = resource?.header?.region_name ?? '';
+  const skipNav = document.querySelector('.it-skip-links');
+  if (skipNav) skipNav.setAttribute('aria-label', resource?.skip_links?.nav_label ?? 'Collegamenti di salto');
+  const skipMain = document.getElementById('skip-main');
+  if (skipMain) skipMain.textContent = resource?.skip_links?.main_content ?? 'Vai al contenuto principale';
+  const skipFooter = document.getElementById('skip-footer');
+  if (skipFooter) skipFooter.textContent = resource?.skip_links?.footer ?? 'Vai al piè di pagina';
   const eidTitle = document.getElementById('eid-title');
   if (eidTitle) eidTitle.textContent = resource?.titles?.logo_title ?? '';
   const tabTitle = document.getElementById('tab-title');

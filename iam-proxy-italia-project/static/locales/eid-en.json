@@ -81,5 +81,10 @@
     "privacy_policy": "Privacy Policy",
     "accessibility_statement": "Accessibility statement",
     "new_window_hint": "opens in a new window"
+  },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
   }
 }
