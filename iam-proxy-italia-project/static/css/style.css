@@ -721,9 +721,17 @@ header svg.icon {
 .it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link .icon,
 .it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link .icon {
   color: #fff;
-  width: 1.25rem;
-  height: 1.25rem;
+  fill: currentColor;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+  transition: all 0.3s;
+  transform-origin: center;
+}
+
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle[aria-expanded="true"] > .icon:last-of-type,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle[aria-expanded="true"] > .icon:last-of-type {
+  transform: scaleY(-1);
 }
 
 .it-header-lang-dropdown .dropdown-menu {
@@ -732,16 +740,54 @@ header svg.icon {
 
 .it-header-lang-dropdown .dropdown-menu .dropdown-item,
 .it-header-lang-dropdown .dropdown-menu .dropdown-item.active,
-.it-header-lang-dropdown .dropdown-menu .dropdown-item:active,
-.it-header-lang-dropdown .dropdown-menu button.dropdown-item {
+.it-header-lang-dropdown .dropdown-menu .dropdown-item:active {
   font-weight: 400;
 }
 
-.it-header-lang-dropdown .dropdown-menu button.dropdown-item {
+/* link-list styles in Bootstrap Italia target `li a`; mirror them for native buttons. */
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item {
+  font-size: 1rem;
+  line-height: 2rem;
+  display: block;
   width: 100%;
-  text-align: inherit;
-  background: transparent;
+  padding: 0.25rem 24px;
+  text-align: left;
+  text-decoration: none;
+  position: relative;
   border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  appearance: none;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item span {
+  color: hsl(210, 100%, 40%);
+  display: inline-block;
+  margin-right: 24px;
+  line-height: normal;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item:hover:not(.disabled) span {
+  color: hsl(210, 100%, 40%);
+  text-decoration: underline;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active span,
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active:hover span {
+  color: hsl(210, 100%, 15%);
+  text-decoration: none;
+}
+
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item.active,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:active,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:hover,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:focus {
+  background-color: transparent;
+  color: inherit;
 }
 
 .header-title-section {
