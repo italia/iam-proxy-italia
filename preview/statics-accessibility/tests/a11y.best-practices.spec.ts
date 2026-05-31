@@ -17,6 +17,19 @@ function summarizeViolations(results: { violations: Array<{ id: string; impact?:
   }));
 }
 
+test("@i18n disco html lang updates on language change", async ({ page }) => {
+  await page.goto("/disco.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("eid-cards-container")?.children.length > 0);
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "it");
+  await page.locator("#languagesDropButton").click();
+  await page.locator(".it-lang-option[data-lang='en']").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.locator("#languagesDropButton").click();
+  await page.locator(".it-lang-option[data-lang='it']").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "it");
+});
+
 test("@best-practice best-practice checks on disco dynamic sections", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
@@ -177,6 +190,16 @@ test("@keyboard cie menu opens with Enter/Space and closes with Escape", async (
 
   await page.keyboard.press("Escape");
   await expect(cieMenu).not.toHaveClass(/is-open/);
+});
+
+test("@i18n it-wallet html lang updates on language change", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "it");
+  await page.locator("#languagesDropButton").click();
+  await page.locator(".it-lang-option[data-lang='en']").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
 test("@focus it-wallet initial load does not move focus to heading or search", async ({ page }) => {
