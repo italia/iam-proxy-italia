@@ -31,6 +31,10 @@ function loadDocument(resource) {
   if (pageSubtitle) pageSubtitle.textContent = resource?.titles?.page_subtitle ?? '';
 
   const searchInput = document.getElementById('wallet-search');
+  const searchLabel = document.getElementById('wallet-search-label');
+  const searchForm = document.getElementById('wallet-search-form');
+  if (searchLabel) searchLabel.textContent = resource?.search?.label ?? 'Cerca wallet per nome';
+  if (searchForm) searchForm.setAttribute('aria-label', resource?.search?.form_label ?? 'Ricerca wallet');
   if (searchInput) searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
   const searchBtn = document.getElementById('search-btn');
   if (searchBtn) searchBtn.textContent = resource?.search?.button ?? 'Cerca';
@@ -338,6 +342,7 @@ async function loadItWalletPage() {
   const defaultWalletOrder = shuffleWallets(wallets);
   const searchInput = document.getElementById('wallet-search');
   const searchBtn = document.getElementById('search-btn');
+  const searchForm = document.getElementById('wallet-search-form');
   const searchClearBtn = document.getElementById('search-clear-btn');
   const sortSelect = document.getElementById('wallet-sort');
   const sortTrigger = document.getElementById('wallet-sort-trigger');
@@ -441,20 +446,15 @@ async function loadItWalletPage() {
       searchBtn?.setAttribute('aria-pressed', 'false');
       syncSearchButtonState();
     };
-    searchInput.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter') return;
+  }
+  if (searchForm) {
+    searchForm.addEventListener('submit', (event) => {
       event.preventDefault();
       if (searchBtn?.disabled) return;
-      searchBtn?.click();
-    });
-  }
-  if (searchBtn) {
-    searchBtn.onclick = () => {
-      if (searchBtn.disabled) return;
       appliedQuery = (searchInput?.value || '').trim();
-      searchBtn.setAttribute('aria-pressed', 'true');
+      searchBtn?.setAttribute('aria-pressed', 'true');
       applyFiltersAndSort({ announce: true, announceContext: 'search' });
-    };
+    });
   }
   if (sortSelect) {
     sortSelect.onchange = () => {

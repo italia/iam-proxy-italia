@@ -112,21 +112,28 @@
     <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle">Seleziona il portafoglio digitale con cui proseguire</p>
 
     <section class="it-wallet-layout-surface" aria-labelledby="page-title">
-      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4" role="search"
-        aria-label="Ricerca e ordinamento wallet">
-        <div class="it-wallet-search-group">
-          <span class="it-wallet-search-icon" aria-hidden="true">
-            <svg class="icon icon-sm">
-              <use href="/static/svg/sprites.svg#it-search"></use>
-            </svg>
-          </span>
-          <input type="text" id="wallet-search" class="form-control" placeholder="Cerca per Nome"
-            aria-label="Cerca wallet per nome" autocomplete="off" enterkeyhint="search">
-          <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn" aria-label="Reset ricerca">
-            <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt="" aria-hidden="true">
-          </button>
-        </div>
-        <button class="btn btn-primary btn-sm" type="button" id="search-btn" aria-pressed="false" data-i18n="search.button">Cerca</button>
+      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4"
+        aria-label="Strumenti elenco wallet">
+        <form id="wallet-search-form" class="it-wallet-search-form" role="search"
+          aria-label="Ricerca wallet">
+          <div class="it-wallet-search-group">
+            <label for="wallet-search" class="visually-hidden" id="wallet-search-label">Cerca wallet per nome</label>
+            <span class="it-wallet-search-icon" aria-hidden="true">
+              <svg class="icon icon-sm">
+                <use href="/static/svg/sprites.svg#it-search"></use>
+              </svg>
+            </span>
+            <input type="search" id="wallet-search" name="wallet-query" class="form-control"
+              placeholder="Cerca per Nome" autocomplete="off" enterkeyhint="search">
+            <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn"
+              aria-label="Reset ricerca">
+              <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt=""
+                aria-hidden="true">
+            </button>
+          </div>
+          <button class="btn btn-primary btn-sm" type="submit" id="search-btn" aria-pressed="false"
+            data-i18n="search.button">Cerca</button>
+        </form>
         <div class="it-wallet-sort-wrap">
           <button type="button" id="wallet-sort-trigger" class="it-wallet-sort-trigger" aria-haspopup="menu"
             aria-expanded="false" aria-controls="wallet-sort-menu" aria-label="Ordina wallet">

@@ -182,6 +182,10 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
+  await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
+  await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);
+  await expect(page.locator("#search-btn")).toHaveAttribute("type", "submit");
+
   const searchInput = page.locator("#wallet-search");
   if (!(await searchInput.count()) || !(await searchInput.isVisible())) {
     test.skip(true, "Search controls not visible on this viewport");

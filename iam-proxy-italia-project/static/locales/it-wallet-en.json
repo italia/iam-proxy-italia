@@ -8,6 +8,8 @@
     "logo_title": "Your logo"
   },
   "search": {
+    "label": "Search wallet by name",
+    "form_label": "Wallet search",
     "placeholder": "Search by name",
     "button": "Search",
     "no_results": "No results",
