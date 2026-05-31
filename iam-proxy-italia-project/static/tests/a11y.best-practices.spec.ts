@@ -193,6 +193,20 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await expect(page.locator("#wallet-results-status")).toHaveText(/\d|nessun|no results/i);
 });
 
+test("@focus it-wallet sort restores focus on trigger", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
+    test.skip(true, "Sort controls not visible on this viewport");
+  }
+
+  await sortTrigger.click();
+  await page.locator("#wallet-sort-item-az").click();
+  await expect(sortTrigger).toBeFocused();
+});
+
 test("@best-practice best-practice checks on it-wallet interactive controls", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
 
@@ -208,6 +222,7 @@ test("@best-practice best-practice checks on it-wallet interactive controls", as
     await page.keyboard.press("Enter");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Escape");
+    await expect(sortTrigger).toBeFocused();
   }
 
   const searchInput = page.locator("#wallet-search");

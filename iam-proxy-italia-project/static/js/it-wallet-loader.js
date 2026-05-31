@@ -411,10 +411,13 @@ async function loadItWalletPage() {
     }
   }
 
-  function closeSortMenu() {
+  function closeSortMenu(restoreFocus = false) {
     if (!sortMenu || !sortTrigger) return;
     sortMenu.hidden = true;
     sortTrigger.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) {
+      requestAnimationFrame(() => sortTrigger.focus());
+    }
   }
 
   function setSortMenuSelection(value) {
@@ -472,7 +475,7 @@ async function loadItWalletPage() {
       item.addEventListener('click', () => {
         const value = item.dataset.value || 'default';
         setSortValue(value);
-        closeSortMenu();
+        closeSortMenu(true);
       });
     });
   }
@@ -517,9 +520,10 @@ async function loadItWalletPage() {
       if (event.key !== 'Escape') return;
       const menu = document.getElementById('wallet-sort-menu');
       const trigger = document.getElementById('wallet-sort-trigger');
-      if (!menu || !trigger) return;
+      if (!menu || !trigger || menu.hidden) return;
       menu.hidden = true;
       trigger.setAttribute('aria-expanded', 'false');
+      trigger.focus();
     });
   }
 
