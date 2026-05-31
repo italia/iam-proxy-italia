@@ -32,10 +32,15 @@ function loadDocument(resource) {
 
   const searchInput = document.getElementById('wallet-search');
   const searchLabel = document.getElementById('wallet-search-label');
+  const searchLegend = document.getElementById('wallet-search-legend');
   const searchForm = document.getElementById('wallet-search-form');
+  if (searchLegend) searchLegend.textContent = resource?.search?.form_label ?? 'Ricerca wallet';
   if (searchLabel) searchLabel.textContent = resource?.search?.label ?? 'Cerca wallet per nome';
-  if (searchForm) searchForm.setAttribute('aria-label', resource?.search?.form_label ?? 'Ricerca wallet');
-  if (searchInput) searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
+  if (searchForm) searchForm.setAttribute('aria-labelledby', 'wallet-search-legend');
+  if (searchInput) {
+    searchInput.removeAttribute('aria-label');
+    searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
+  }
   const searchToggle = document.getElementById('wallet-search-toggle');
   if (searchToggle) {
     searchToggle.setAttribute('aria-label', resource?.search?.toggle_open ?? 'Apri ricerca e ordinamento wallet');

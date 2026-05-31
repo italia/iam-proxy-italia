@@ -1223,11 +1223,18 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-search-form {
   grid-column: 1 / 3;
+  min-width: 0;
+}
+
+.it-wallet-search-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
-  min-width: 0;
 }
 
 .it-wallet-search-error {
@@ -1333,12 +1340,18 @@ html.it-wallet-html body.it-wallet-body {
     width: 100%;
   }
 
-  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-form {
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-fieldset {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-form {
+    display: flex;
+    flex: 1 1 auto;
     min-width: 0;
   }
 

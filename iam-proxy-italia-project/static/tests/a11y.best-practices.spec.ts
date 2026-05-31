@@ -188,8 +188,12 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
+  await expect(page.locator("#wallet-search-form")).toHaveAttribute("aria-labelledby", "wallet-search-legend");
+  await expect(page.locator("#wallet-search-legend")).toHaveCount(1);
   await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);
+  await expect(page.locator("#wallet-search")).not.toHaveAttribute("aria-label", /.+/);
   await expect(page.locator("#search-btn")).toHaveAttribute("type", "submit");
+  await expect(page.locator("#wallet-search-form #search-btn")).toHaveCount(1);
   await expect(page.locator("#search-btn")).toBeEnabled();
 
   const searchInput = page.locator("#wallet-search");

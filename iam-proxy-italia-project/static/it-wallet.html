@@ -115,25 +115,28 @@
       <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4"
         aria-label="Strumenti elenco wallet">
         <form id="wallet-search-form" class="it-wallet-search-form" role="search"
-          aria-label="Ricerca wallet">
-          <div class="it-wallet-search-group">
-            <label for="wallet-search" class="visually-hidden" id="wallet-search-label">Cerca wallet per nome</label>
-            <span class="it-wallet-search-icon" aria-hidden="true">
-              <svg class="icon icon-sm">
-                <use href="/static/svg/sprites.svg#it-search"></use>
-              </svg>
-            </span>
-            <input type="search" id="wallet-search" name="wallet-query" class="form-control"
-              placeholder="Cerca per Nome" autocomplete="off" enterkeyhint="search">
-            <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn"
-              aria-label="Reset ricerca">
-              <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt=""
-                aria-hidden="true">
-            </button>
-          </div>
-          <button class="btn btn-primary btn-sm" type="submit" id="search-btn" aria-pressed="false"
-            data-i18n="search.button">Cerca</button>
-          <p id="wallet-search-error" class="it-wallet-search-error" role="alert" hidden></p>
+          aria-labelledby="wallet-search-legend">
+          <fieldset class="it-wallet-search-fieldset">
+            <legend id="wallet-search-legend" class="visually-hidden">Ricerca wallet</legend>
+            <div class="it-wallet-search-group">
+              <label for="wallet-search" class="visually-hidden" id="wallet-search-label">Cerca wallet per nome</label>
+              <span class="it-wallet-search-icon" aria-hidden="true">
+                <svg class="icon icon-sm">
+                  <use href="/static/svg/sprites.svg#it-search"></use>
+                </svg>
+              </span>
+              <input type="search" id="wallet-search" name="q" class="form-control"
+                placeholder="Cerca per Nome" autocomplete="off" enterkeyhint="search">
+              <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn"
+                aria-label="Reset ricerca">
+                <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt=""
+                  aria-hidden="true">
+              </button>
+            </div>
+            <button class="btn btn-primary btn-sm" type="submit" id="search-btn" aria-pressed="false"
+              data-i18n="search.button">Cerca</button>
+            <p id="wallet-search-error" class="it-wallet-search-error" role="alert" hidden></p>
+          </fieldset>
         </form>
         <div class="it-wallet-sort-wrap">
           <button type="button" id="wallet-sort-trigger" class="it-wallet-sort-trigger" aria-haspopup="menu"
