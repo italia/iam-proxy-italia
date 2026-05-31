@@ -84,9 +84,10 @@ function loadEidCards(resource) {
   if (checkId(resource.digital_id)) {
     const digitalSection = document.createElement('div');
     digitalSection.className = 'mb-4';
-    const title = document.createElement('h2');
+    const title = document.createElement('h1');
+    title.id = 'eid-selection-title';
     title.textContent = resource.titles.login_digital_identity;
-    title.className = 'text-center mb-4';
+    title.className = 'h2 text-center mb-4';
     digitalSection.appendChild(title);
 
     createEidCardsRow(resource, "digital_id", digitalSection);
@@ -96,7 +97,7 @@ function loadEidCards(resource) {
     infoDiv.className = 'd-flex flex-column align-items-center mb-4';
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
-      const infoTitle = document.createElement('h3');
+      const infoTitle = document.createElement('h2');
       infoTitle.className = 'eid-havent-digital-id-heading';
       infoTitle.textContent = havenDigitalId;
 
@@ -137,12 +138,13 @@ function loadEidCards(resource) {
 
     const altSection = document.createElement('div');
     altSection.className = 'container mb-0';
-    const title = document.createElement('h2');
+    const hasDigitalSection = checkId(resource.digital_id);
     const altTitleId = 'eid-alternative-title';
-    title.id = altTitleId;
+    const title = document.createElement(hasDigitalSection ? 'h2' : 'h1');
+    title.id = hasDigitalSection ? altTitleId : 'eid-selection-title';
     title.textContent = resource.titles.login_alternative_method;
-    title.className = 'text-center mb-3 pb-4';
-    altWrapper.setAttribute('aria-labelledby', altTitleId);
+    title.className = 'h2 text-center mb-3 pb-4';
+    altWrapper.setAttribute('aria-labelledby', hasDigitalSection ? altTitleId : 'eid-selection-title');
     altSection.appendChild(title);
 
     createEidCardsRow(resource, "alternative_id", altSection);
@@ -208,7 +210,7 @@ function createEidCardBox(resource, eid) {
   const card = document.createElement('article');
   card.className = 'it-card shadow h-100';
 
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.className = 'it-card-title mb-3 h4';
   title.textContent = eid.name;
 

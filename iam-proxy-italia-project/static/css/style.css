@@ -433,6 +433,13 @@ main {
   color: #17324D !important;
 }
 
+.eid-page-title {
+  color: #17324D;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
 /* EID cards: no rounded corners on buttons */
 #eid-cards-container .btn,
 #eid-alternative-section .btn {
