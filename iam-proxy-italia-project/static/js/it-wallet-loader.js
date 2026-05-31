@@ -36,6 +36,10 @@ function loadDocument(resource) {
   if (searchLabel) searchLabel.textContent = resource?.search?.label ?? 'Cerca wallet per nome';
   if (searchForm) searchForm.setAttribute('aria-label', resource?.search?.form_label ?? 'Ricerca wallet');
   if (searchInput) searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
+  const searchToggle = document.getElementById('wallet-search-toggle');
+  if (searchToggle) {
+    searchToggle.setAttribute('aria-label', resource?.search?.toggle_open ?? 'Apri ricerca e ordinamento wallet');
+  }
   const searchBtn = document.getElementById('search-btn');
   if (searchBtn) searchBtn.textContent = resource?.search?.button ?? 'Cerca';
   const sortSelect = document.getElementById('wallet-sort');
@@ -313,14 +317,17 @@ function walletResultsStatusMessage(resource, count, context) {
   return template.replace('{{count}}', String(count));
 }
 
-function announceWalletResults(resource, count, context) {
+function announceWalletStatusMessage(message) {
   const status = document.getElementById('wallet-results-status');
   if (!status) return;
-  const message = walletResultsStatusMessage(resource, count, context);
   status.textContent = '';
   requestAnimationFrame(() => {
     status.textContent = message;
   });
+}
+
+function announceWalletResults(resource, count, context) {
+  announceWalletStatusMessage(walletResultsStatusMessage(resource, count, context));
 }
 
 async function loadItWalletPage() {
@@ -365,6 +372,13 @@ async function loadItWalletPage() {
   function syncMobilePanelUi(open) {
     if (!searchToggle) return;
     searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const searchLabels = getWalletResource()?.search ?? {};
+    searchToggle.setAttribute(
+      'aria-label',
+      open
+        ? (searchLabels.toggle_close ?? 'Chiudi ricerca e ordinamento wallet')
+        : (searchLabels.toggle_open ?? 'Apri ricerca e ordinamento wallet')
+    );
     if (iconSearchOpen) {
       iconSearchOpen.hidden = open;
       iconSearchOpen.style.display = open ? 'none' : '';
@@ -380,16 +394,27 @@ async function loadItWalletPage() {
   function setMobilePanelOpen(open) {
     if (!controls || !showControls) return;
     if (isWalletDesktopLayout()) return;
+    const resource = getWalletResource();
     controls.classList.toggle('is-mobile-panel-open', open);
+    controls.hidden = !open;
     syncMobilePanelUi(open);
-    if (open && searchInput) {
-      requestAnimationFrame(() => searchInput.focus());
+    if (open) {
+      announceWalletStatusMessage(resource?.search?.panel_open ?? 'Strumenti di ricerca e ordinamento visualizzati');
+      if (searchInput) {
+        requestAnimationFrame(() => searchInput.focus());
+      }
+    } else {
+      announceWalletStatusMessage(resource?.search?.panel_closed ?? 'Strumenti di ricerca e ordinamento nascosti');
+      if (searchToggle) {
+        requestAnimationFrame(() => searchToggle.focus());
+      }
     }
   }
 
   function resetMobilePanelForDesktop() {
     if (!controls) return;
     controls.classList.remove('is-mobile-panel-open');
+    controls.hidden = false;
     syncMobilePanelUi(false);
   }
 
@@ -498,6 +523,23 @@ async function loadItWalletPage() {
       setMobilePanelOpen(next);
     };
   }
+  window.__itWalletCloseMobilePanel = () => {
+    if (!controls?.classList.contains('is-mobile-panel-open')) return;
+    setMobilePanelOpen(false);
+  };
+  if (!window.__itWalletMobilePanelListenersBound) {
+    window.__itWalletMobilePanelListenersBound = true;
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (window.matchMedia('(min-width: 992px)').matches) return;
+      const panel = document.getElementById('wallet-controls');
+      if (!panel?.classList.contains('is-mobile-panel-open')) return;
+      if (typeof window.__itWalletCloseMobilePanel === 'function') {
+        window.__itWalletCloseMobilePanel();
+        event.preventDefault();
+      }
+    });
+  }
   if (!window.__itWalletLayoutListenersBound) {
     window.__itWalletLayoutListenersBound = true;
     window.addEventListener('resize', () => {
@@ -528,7 +570,10 @@ async function loadItWalletPage() {
   }
 
   if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
-  else syncMobilePanelUi(false);
+  else {
+    syncMobilePanelUi(false);
+    if (controls) controls.hidden = true;
+  }
 
   setSortMenuSelection(sortSelect?.value || 'default');
   syncSearchButtonState();

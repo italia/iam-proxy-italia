@@ -211,6 +211,24 @@ test("@focus it-wallet sort restores focus on trigger", async ({ page }) => {
   await expect(sortTrigger).toBeFocused();
 });
 
+test("@status it-wallet mobile search panel announces on open", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const searchToggle = page.locator("#wallet-search-toggle");
+  if (!(await searchToggle.count()) || !(await searchToggle.isVisible())) {
+    test.skip(true, "Mobile search toggle not visible");
+  }
+
+  await expect(page.locator("#wallet-controls")).toHaveAttribute("hidden", "");
+  await searchToggle.click();
+  await expect(page.locator("#wallet-controls")).not.toHaveAttribute("hidden", "");
+  await expect(searchToggle).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#wallet-search")).toBeFocused();
+  await expect(page.locator("#wallet-results-status")).toContainText(/visualizzati|displayed/i);
+});
+
 test("@best-practice best-practice checks on it-wallet interactive controls", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
 

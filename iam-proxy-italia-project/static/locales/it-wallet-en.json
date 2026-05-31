@@ -16,7 +16,11 @@
     "results_one": "{{count}} result found",
     "results_many": "{{count}} results found",
     "results_none": "No results found",
-    "results_reset": "Search cleared, {{count}} wallets available"
+    "results_reset": "Search cleared, {{count}} wallets available",
+    "toggle_open": "Open wallet search and sort tools",
+    "toggle_close": "Close wallet search and sort tools",
+    "panel_open": "Search and sort tools displayed",
+    "panel_closed": "Search and sort tools hidden"
   },
   "sort": {
     "default": "Default sorting",
