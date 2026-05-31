@@ -210,11 +210,16 @@ function loadEidCards(resource) {
 
 // ----------------------- Create Eid Cards Row -----------------------
 function createEidCardsRow(resource, id_key, container) {
-  const row = document.createElement('div');
-  row.className = 'row justify-content-center align-items-start eid-cards-row';
+  const listLabel = id_key === 'alternative_id'
+    ? (resource?.titles?.login_alternative_method ?? '')
+    : (resource?.titles?.login_digital_identity ?? '');
+  const row = document.createElement('ul');
+  row.className = 'row it-card-list justify-content-center align-items-start eid-cards-row';
+  if (listLabel) row.setAttribute('aria-label', listLabel);
+
   const entries = getEidEntriesForRow(resource[id_key]);
   entries.forEach((eid) => {
-    const col = document.createElement('div');
+    const col = document.createElement('li');
     col.className = 'col-12 col-md-3 mb-3 mb-md-4 eid-card-col';
     col.appendChild(createEidCardBox(resource, eid));
     row.appendChild(col);
@@ -380,6 +385,9 @@ function createLogoButton(eid, _hasLearnMore = false) {
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
 
+    const menuId = `eid-cie-menu-${eidCardSlug(eid)}`;
+    btn.setAttribute('aria-controls', menuId);
+
     btn.appendChild(createLogoImg());
     const cieSep = document.createElement('span');
     cieSep.className = 'eid-card-separator';
@@ -388,8 +396,9 @@ function createLogoButton(eid, _hasLearnMore = false) {
     btn.appendChild(createTextSpan());
 
     const menu = document.createElement('ul');
+    menu.id = menuId;
     menu.className = 'cie-dropdown-menu spid-idp-button-link';
-    menu.setAttribute('role', 'menu');
+    menu.setAttribute('role', 'list');
 
     eid._cieOptions.forEach((opt) => {
       const li = document.createElement('li');
@@ -463,6 +472,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
     btn.setAttribute('spid-idp-button', `#${EID_SPID_DISCOVERY_MENU_ID}`);
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', EID_SPID_DISCOVERY_MENU_ID);
 
     btn.appendChild(createLogoImg());
     const spidSep = document.createElement('span');
@@ -474,7 +484,6 @@ function createLogoButton(eid, _hasLearnMore = false) {
     const menu = document.createElement('div');
     menu.id = EID_SPID_DISCOVERY_MENU_ID;
     menu.className = 'ita-menu';
-    menu.setAttribute('role', 'menu');
     menu.setAttribute('data-spid-remote', '');
     // Prevent CSS `:focus-within` from auto-opening on Tab focus.
     // The menu is shown only by explicit activation handled by the SPID plugin.
