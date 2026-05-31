@@ -433,6 +433,13 @@ main {
   color: #17324D !important;
 }
 
+.eid-page-title {
+  color: #17324D;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
 /* EID cards: no rounded corners on buttons */
 #eid-cards-container .btn,
 #eid-alternative-section .btn {
@@ -638,6 +645,10 @@ header svg.icon {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
 }
 
 .eid-learn-more-toggle:hover {
@@ -682,11 +693,13 @@ header svg.icon {
 }
 
 /* Language dropdown (developers.italia.it slim header pattern) */
-.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle {
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle {
   color: #fff !important;
   font-weight: 400;
   padding: 0.35rem 0.25rem;
   border: none;
+  background: transparent;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -694,19 +707,31 @@ header svg.icon {
 }
 
 .it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle:hover,
-.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle:focus {
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle:focus,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle:hover,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle:focus {
   color: #fff !important;
 }
 
-.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle::after {
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle::after,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle::after {
   display: none !important;
 }
 
-.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link .icon {
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link .icon,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link .icon {
   color: #fff;
-  width: 1.25rem;
-  height: 1.25rem;
+  fill: currentColor;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+  transition: all 0.3s;
+  transform-origin: center;
+}
+
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown .nav-link.dropdown-toggle[aria-expanded="true"] > .icon:last-of-type,
+.it-header-slim-wrapper.bg-primary .it-header-lang-dropdown button.nav-link.dropdown-toggle[aria-expanded="true"] > .icon:last-of-type {
+  transform: scaleY(-1);
 }
 
 .it-header-lang-dropdown .dropdown-menu {
@@ -717,6 +742,52 @@ header svg.icon {
 .it-header-lang-dropdown .dropdown-menu .dropdown-item.active,
 .it-header-lang-dropdown .dropdown-menu .dropdown-item:active {
   font-weight: 400;
+}
+
+/* link-list styles in Bootstrap Italia target `li a`; mirror them for native buttons. */
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item {
+  font-size: 1rem;
+  line-height: 2rem;
+  display: block;
+  width: 100%;
+  padding: 0.25rem 24px;
+  text-align: left;
+  text-decoration: none;
+  position: relative;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  appearance: none;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item span {
+  color: hsl(210deg, 100%, 40%);
+  display: inline-block;
+  margin-right: 24px;
+  line-height: normal;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item:hover:not(.disabled) span {
+  color: hsl(210deg, 100%, 40%);
+  text-decoration: underline;
+}
+
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active span,
+.it-header-lang-dropdown .link-list-wrapper ul.link-list li button.list-item.active:hover span {
+  color: hsl(210deg, 100%, 15%);
+  text-decoration: none;
+}
+
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item.active,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:active,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:hover,
+.it-header-lang-dropdown .dropdown-menu button.dropdown-item:focus {
+  background-color: transparent;
+  color: inherit;
 }
 
 .header-title-section {
@@ -1070,7 +1141,6 @@ html.it-wallet-html body.it-wallet-body {
   font-size: 2rem;
   line-height: 1.2;
   font-weight: 700;
-  pointer-events: none;
   z-index: 1;
 }
 
@@ -1148,6 +1218,30 @@ html.it-wallet-html body.it-wallet-body {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2rem;
+}
+
+.it-wallet-search-form {
+  grid-column: 1 / 3;
+  min-width: 0;
+}
+
+.it-wallet-search-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.it-wallet-search-error {
+  grid-column: 1 / -1;
+  margin: -0.25rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: hsl(350deg, 60%, 50%);
 }
 
 .it-wallet-sort-wrap {
@@ -1245,6 +1339,26 @@ html.it-wallet-html body.it-wallet-body {
     width: 100%;
   }
 
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-fieldset {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-form {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-error {
+    flex: 1 1 100%;
+    margin: 0;
+  }
+
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-group {
     flex: 1 1 auto;
     min-width: 0;
@@ -1303,6 +1417,19 @@ html.it-wallet-html body.it-wallet-body {
   padding-right: 3rem;
 }
 
+.it-wallet-search-group .form-control[type='search']::-webkit-search-cancel-button,
+.it-wallet-search-group .form-control[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.it-wallet-search-group .form-control[type='search']::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 .it-wallet-search-group .form-control:focus {
   border-color: #D9E4F2 !important;
   outline: none !important;
@@ -1329,14 +1456,6 @@ html.it-wallet-html body.it-wallet-body {
 #search-btn[aria-pressed='true'] {
   background-color: #003366 !important;
   border-color: #003366 !important;
-}
-
-#search-btn:disabled {
-  background-color: #adb5bd !important;
-  border-color: #adb5bd !important;
-  color: #fff !important;
-  opacity: 1 !important;
-  cursor: not-allowed;
 }
 
 .it-wallet-search-clear {
@@ -1624,7 +1743,8 @@ html.it-wallet-html body.it-wallet-body {
     font-size: 1rem !important;
   }
 
-  .it-header-lang-dropdown .nav-link.dropdown-toggle {
+  .it-header-lang-dropdown .nav-link.dropdown-toggle,
+  .it-header-lang-dropdown button.nav-link.dropdown-toggle {
     padding-left: 0 !important;
   }
 

@@ -10,7 +10,12 @@
     "havent_digital_identy": "Non hai un'identità digitale?",
     "find_how_to_get_digital_id": "Scopri come ottenerla",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
-    "learn_more": "Scopri di più"
+    "learn_more": "Scopri di più",
+    "learn_more_a11y": {
+      "collapsed": "informazioni aggiuntive nascoste",
+      "expanded": "informazioni aggiuntive visibili"
+    },
+    "cards_load_status": "Elenco metodi di autenticazione aggiornato"
   },
   "digital_id": {
     "it_wallet": {
@@ -81,6 +86,12 @@
   "footer": {
     "legal_notice": "Note legali",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Dichiarazione Accessibilità"
+    "accessibility_statement": "Dichiarazione Accessibilità",
+    "new_window_hint": "si apre in una nuova finestra"
+  },
+  "skip_links": {
+    "nav_label": "Collegamenti di salto",
+    "main_content": "Vai al contenuto principale",
+    "footer": "Vai al piè di pagina"
   }
 }

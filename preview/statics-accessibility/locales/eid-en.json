@@ -10,7 +10,12 @@
     "havent_digital_identy": "Don't have a digital identity yet?",
     "find_how_to_get_digital_id": "Find out how to get it",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
-    "learn_more": "Learn more"
+    "learn_more": "Learn more",
+    "learn_more_a11y": {
+      "collapsed": "additional information hidden",
+      "expanded": "additional information shown"
+    },
+    "cards_load_status": "Authentication methods list updated"
   },
   "digital_id": {
     "it_wallet": {
@@ -79,6 +84,12 @@
   "footer": {
     "legal_notice": "Legal notes",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Accessibility statement"
+    "accessibility_statement": "Accessibility statement",
+    "new_window_hint": "opens in a new window"
+  },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
   }
 }
