@@ -12,6 +12,7 @@
     "form_label": "Wallet search",
     "placeholder": "Search by name",
     "button": "Search",
+    "empty_error": "Enter a search term",
     "no_results": "No results",
     "results_one": "{{count}} result found",
     "results_many": "{{count}} results found",

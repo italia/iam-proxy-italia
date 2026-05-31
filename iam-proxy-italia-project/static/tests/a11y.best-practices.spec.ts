@@ -190,6 +190,7 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
   await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);
   await expect(page.locator("#search-btn")).toHaveAttribute("type", "submit");
+  await expect(page.locator("#search-btn")).toBeEnabled();
 
   const searchInput = page.locator("#wallet-search");
   if (!(await searchInput.count()) || !(await searchInput.isVisible())) {
@@ -200,6 +201,23 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.locator("#search-btn").click();
   await expect(page.locator("#wallet-results-status")).not.toHaveText("");
   await expect(page.locator("#wallet-results-status")).toHaveText(/\d|nessun|no results/i);
+});
+
+test("@keyboard it-wallet empty search shows inline error", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const searchInput = page.locator("#wallet-search");
+  const searchBtn = page.locator("#search-btn");
+  if (!(await searchInput.count()) || !(await searchInput.isVisible())) {
+    test.skip(true, "Search controls not visible on this viewport");
+  }
+
+  await expect(searchBtn).toBeEnabled();
+  await searchBtn.click();
+  await expect(page.locator("#wallet-search-error")).toBeVisible();
+  await expect(page.locator("#wallet-search")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#wallet-search")).toHaveAttribute("aria-describedby", "wallet-search-error");
 });
 
 test("@focus it-wallet sort restores focus on trigger", async ({ page }) => {

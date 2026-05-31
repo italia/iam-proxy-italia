@@ -12,6 +12,7 @@
     "form_label": "Ricerca wallet",
     "placeholder": "Cerca per nome",
     "button": "Cerca",
+    "empty_error": "Inserisci un termine di ricerca",
     "no_results": "Nessun risultato",
     "results_one": "{{count}} risultato trovato",
     "results_many": "{{count}} risultati trovati",

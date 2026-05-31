@@ -1230,6 +1230,14 @@ html.it-wallet-html body.it-wallet-body {
   min-width: 0;
 }
 
+.it-wallet-search-error {
+  grid-column: 1 / -1;
+  margin: -0.25rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: hsl(350, 60%, 50%);
+}
+
 .it-wallet-sort-wrap {
   position: relative;
   width: 48px;
@@ -1328,9 +1336,15 @@ html.it-wallet-html body.it-wallet-body {
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-form {
     display: flex;
     flex: 1 1 auto;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
     min-width: 0;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-error {
+    flex: 1 1 100%;
+    margin: 0;
   }
 
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-group {
@@ -1417,14 +1431,6 @@ html.it-wallet-html body.it-wallet-body {
 #search-btn[aria-pressed='true'] {
   background-color: #003366 !important;
   border-color: #003366 !important;
-}
-
-#search-btn:disabled {
-  background-color: #adb5bd !important;
-  border-color: #adb5bd !important;
-  color: #fff !important;
-  opacity: 1 !important;
-  cursor: not-allowed;
 }
 
 .it-wallet-search-clear {

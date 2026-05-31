@@ -41,7 +41,9 @@ function loadDocument(resource) {
     searchToggle.setAttribute('aria-label', resource?.search?.toggle_open ?? 'Apri ricerca e ordinamento wallet');
   }
   const searchBtn = document.getElementById('search-btn');
+  const searchError = document.getElementById('wallet-search-error');
   if (searchBtn) searchBtn.textContent = resource?.search?.button ?? 'Cerca';
+  if (searchError) searchError.textContent = resource?.search?.empty_error ?? 'Inserisci un termine di ricerca';
   const sortSelect = document.getElementById('wallet-sort');
   if (sortSelect) {
     const options = sortSelect.options;
@@ -439,11 +441,36 @@ async function loadItWalletPage() {
     }
   }
 
+  function clearSearchError() {
+    const errorEl = document.getElementById('wallet-search-error');
+    if (errorEl) errorEl.hidden = true;
+    if (searchInput) {
+      searchInput.removeAttribute('aria-invalid');
+      searchInput.removeAttribute('aria-describedby');
+    }
+  }
+
+  function showSearchError() {
+    const resource = getWalletResource();
+    const errorEl = document.getElementById('wallet-search-error');
+    const message = resource?.search?.empty_error ?? 'Inserisci un termine di ricerca';
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+    }
+    if (searchInput) {
+      searchInput.setAttribute('aria-invalid', 'true');
+      searchInput.setAttribute('aria-describedby', 'wallet-search-error');
+      searchInput.focus();
+    }
+  }
+
   function syncSearchButtonState() {
-    if (!searchBtn) return;
+    if (searchBtn) searchBtn.disabled = false;
     const hasQuery = !!(searchInput?.value || '').trim();
-    searchBtn.disabled = !hasQuery;
-    if (!hasQuery) {
+    if (hasQuery) {
+      clearSearchError();
+    } else if (searchBtn) {
       searchBtn.setAttribute('aria-pressed', 'false');
     }
   }
@@ -506,8 +533,13 @@ async function loadItWalletPage() {
   if (searchForm) {
     searchForm.addEventListener('submit', (event) => {
       event.preventDefault();
-      if (searchBtn?.disabled) return;
-      appliedQuery = (searchInput?.value || '').trim();
+      const query = (searchInput?.value || '').trim();
+      if (!query) {
+        showSearchError();
+        return;
+      }
+      clearSearchError();
+      appliedQuery = query;
       searchBtn?.setAttribute('aria-pressed', 'true');
       applyFiltersAndSort({ announce: true, announceContext: 'search' });
     });
@@ -584,6 +616,7 @@ async function loadItWalletPage() {
         searchInput.value = '';
         searchInput.focus();
       }
+      clearSearchError();
       appliedQuery = '';
       syncSearchButtonState();
       applyFiltersAndSort({ announce: true, announceContext: 'clear' });
