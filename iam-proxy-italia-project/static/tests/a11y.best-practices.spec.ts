@@ -29,6 +29,9 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
     await expect(findHowLink).toHaveAttribute("aria-label", /si apre in una nuova finestra|opens in a new window/i);
   }
 
+  await expect(page.locator("#eid-cards-container")).not.toHaveAttribute("aria-live", /.+/);
+  await expect(page.locator("#eid-cards-status")).toHaveAttribute("aria-live", "polite");
+
   const learnMoreToggle = page.locator(".eid-learn-more-toggle").first();
   if (await learnMoreToggle.count()) {
     await expect(learnMoreToggle).toHaveAttribute("aria-controls", /.+/);

@@ -95,7 +95,8 @@
   <!-- SEZIONE LOGIN -->
   <main id="main-content" class="container my-4" aria-labelledby="eid-selection-title">
     <section id="auth-methods">
-      <div class="row" id="eid-cards-container" aria-live="polite" aria-relevant="additions text">
+      <div id="eid-cards-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+      <div class="row" id="eid-cards-container">
         <script type="module" src="js/eid-cards-loader.js"></script>
       </div>
     </section>

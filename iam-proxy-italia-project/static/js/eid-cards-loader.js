@@ -49,6 +49,18 @@ function setExternalLinkA11y(linkEl, visibleText, resource) {
   linkEl.setAttribute('aria-label', `${visibleText} (${newWindowHintText(resource)})`);
 }
 
+let eidCardsLoadedOnce = false;
+
+function announceEidCardsUpdated(resource) {
+  const status = document.getElementById('eid-cards-status');
+  if (!status) return;
+  const message = resource?.titles?.cards_load_status ?? 'Elenco metodi di autenticazione aggiornato';
+  status.textContent = '';
+  requestAnimationFrame(function () {
+    status.textContent = message;
+  });
+}
+
 // ----------------------- Document Loader -----------------------
 function loadDocument(resource) {
   // header (use bundle or i18next.t so it works regardless of bundle structure)
@@ -173,6 +185,11 @@ function loadEidCards(resource) {
     const main = container.closest('main');
     main.insertAdjacentElement('afterend', altWrapper);
   }
+
+  if (eidCardsLoadedOnce) {
+    announceEidCardsUpdated(resource);
+  }
+  eidCardsLoadedOnce = true;
 }
 
 // ----------------------- Create Eid Cards Row -----------------------
@@ -604,6 +621,7 @@ function createLearnMore(resource, eid, cardTitleId) {
     const text = document.createElement('div');
     text.id = contentId;
     text.setAttribute('role', 'region');
+    text.setAttribute('aria-live', 'off');
     text.setAttribute('aria-labelledby', `${resolvedCardTitleId} ${actionId}`);
     text.innerHTML = eid.learn_more_descr;
     if (eid.learn_more_link) {
