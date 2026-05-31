@@ -524,16 +524,12 @@ function createLogoButton(eid, _hasLearnMore = false) {
     (isWallet ? ' eid-card-btn-wallet' : '') +
     (isEidas ? ' eid-card-btn-eidas' : '');
 
-  const btn = document.createElement(isWallet ? 'button' : 'a');
+  const btn = document.createElement('button');
+  btn.type = 'button';
   btn.className = btnClassName;
-  if (isWallet) {
-    btn.type = 'button';
-    btn.addEventListener('click', () => {
-      window.location.href = href;
-    });
-  } else {
-    btn.href = href;
-  }
+  btn.addEventListener('click', () => {
+    window.location.href = href;
+  });
 
   btn.appendChild(createLogoImg());
   if (!isWallet) {
