@@ -176,6 +176,11 @@ test("@focus it-wallet initial focus is on page heading", async ({ page }) => {
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
   await expect(page.locator("#page-title")).toBeFocused();
   await expect(page.locator("#wallet-search")).not.toBeFocused();
+
+  const firstCard = page.locator(".it-wallet-card").first();
+  const labelledBy = await firstCard.getAttribute("aria-labelledby");
+  expect(labelledBy).toBeTruthy();
+  await expect(page.locator(`#${labelledBy}`)).toHaveClass(/it-wallet-card-title/);
 });
 
 test("@status it-wallet search announces result count", async ({ page }) => {

@@ -130,6 +130,11 @@ function buildWalletUri(uri) {
   }
 }
 
+function walletCardSlug(wallet) {
+  const raw = wallet.id || wallet.name || 'wallet';
+  return String(raw).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'wallet';
+}
+
 function createWalletCard(wallet, resource, basePath) {
   const col = document.createElement('div');
   col.className = 'col-12 col-lg-6 it-wallet-grid-col';
@@ -157,8 +162,10 @@ function createWalletCard(wallet, resource, basePath) {
   left.appendChild(img);
 
   const title = document.createElement('h2');
+  title.id = `it-wallet-card-title-${walletCardSlug(wallet)}`;
   title.className = 'it-card-title mb-0 it-wallet-card-title text-start h5';
   title.textContent = wallet.name;
+  card.setAttribute('aria-labelledby', title.id);
   left.appendChild(title);
 
   const arrow = document.createElement('span');
