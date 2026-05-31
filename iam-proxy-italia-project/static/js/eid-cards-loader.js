@@ -55,7 +55,15 @@ function loadDocument(resource) {
   const skipFooter = document.getElementById('skip-footer');
   if (skipFooter) skipFooter.textContent = resource?.skip_links?.footer ?? 'Vai al piè di pagina';
   const eidTitle = document.getElementById('eid-title');
-  if (eidTitle) eidTitle.textContent = resource?.titles?.login_logo ?? '';
+  const logoText = resource?.titles?.login_logo ?? resource?.header?.region_name ?? '';
+  if (eidTitle) eidTitle.textContent = logoText;
+  const headerLogo = document.getElementById('header-logo');
+  if (headerLogo instanceof HTMLImageElement) {
+    headerLogo.setAttribute('alt', logoText);
+  } else if (headerLogo instanceof SVGElement && eidTitle) {
+    headerLogo.setAttribute('role', 'img');
+    headerLogo.setAttribute('aria-labelledby', 'eid-title');
+  }
   const footerLegal = document.getElementById('footer-legal');
   const footerPrivacy = document.getElementById('footer-privacy');
   const footerAccess = document.getElementById('footer-accessibility');
