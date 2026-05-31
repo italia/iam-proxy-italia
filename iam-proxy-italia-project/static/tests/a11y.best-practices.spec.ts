@@ -23,6 +23,12 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
   await page.keyboard.press("Tab");
   await page.keyboard.press("Tab");
 
+  const findHowLink = page.locator(".eid-find-how-link").first();
+  if (await findHowLink.count()) {
+    await expect(findHowLink).toHaveAttribute("target", "_blank");
+    await expect(findHowLink).toHaveAttribute("aria-label", /si apre in una nuova finestra|opens in a new window/i);
+  }
+
   const learnMoreToggle = page.locator(".eid-learn-more-toggle").first();
   if (await learnMoreToggle.count()) {
     await expect(learnMoreToggle).toHaveAttribute("aria-controls", /.+/);

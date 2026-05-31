@@ -40,6 +40,15 @@ i18next
   })
   .catch(err => console.error('Error loading eid-cards:', err));
 
+function newWindowHintText(resource) {
+  return resource?.footer?.new_window_hint ?? 'si apre in una nuova finestra';
+}
+
+function setExternalLinkA11y(linkEl, visibleText, resource) {
+  if (!linkEl || visibleText == null) return;
+  linkEl.setAttribute('aria-label', `${visibleText} (${newWindowHintText(resource)})`);
+}
+
 // ----------------------- Document Loader -----------------------
 function loadDocument(resource) {
   // header (use bundle or i18next.t so it works regardless of bundle structure)
@@ -67,7 +76,7 @@ function loadDocument(resource) {
   const footerLegal = document.getElementById('footer-legal');
   const footerPrivacy = document.getElementById('footer-privacy');
   const footerAccess = document.getElementById('footer-accessibility');
-  const newWindowHint = resource?.footer?.new_window_hint ?? 'si apre in una nuova finestra';
+  const newWindowHint = newWindowHintText(resource);
   const setFooterLink = (el, text) => {
     if (!el || text == null) return;
     el.textContent = text;
@@ -119,6 +128,7 @@ function loadEidCards(resource) {
         infoLink.href = findUrl;
         infoLink.target = '_blank';
         infoLink.rel = 'noopener noreferrer';
+        setExternalLinkA11y(infoLink, resource.titles.find_how_to_get_digital_id, resource);
       } else {
         infoLink.href = 'javascript:void(0)';
         infoLink.addEventListener('click', (e) => e.preventDefault());
@@ -604,6 +614,7 @@ function createLearnMore(resource, eid, cardTitleId) {
       inlineCta.rel = 'noopener noreferrer';
       inlineCta.className = 'eid-find-how-link';
       inlineCta.textContent = ctaLabelText;
+      setExternalLinkA11y(inlineCta, ctaLabelText, resource);
       appendExternalIcon(inlineCta);
       text.appendChild(inlineCta);
     }
@@ -629,6 +640,7 @@ function createLearnMore(resource, eid, cardTitleId) {
     link.rel = 'noopener noreferrer';
     link.className = 'd-block mt-2';
     link.textContent = ctaLabelText;
+    setExternalLinkA11y(link, ctaLabelText, resource);
     appendExternalIcon(link);
     return link;
   }
