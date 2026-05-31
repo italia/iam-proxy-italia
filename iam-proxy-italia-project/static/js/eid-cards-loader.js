@@ -625,7 +625,6 @@ function createLearnMore(resource, eid, cardTitleId) {
     text.setAttribute('aria-labelledby', `${resolvedCardTitleId} ${actionId}`);
     text.innerHTML = eid.learn_more_descr;
     if (eid.learn_more_link) {
-      text.appendChild(document.createTextNode(' '));
       const inlineCta = document.createElement('a');
       inlineCta.href = eid.learn_more_link;
       inlineCta.target = '_blank';

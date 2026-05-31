@@ -608,7 +608,11 @@ header svg.icon {
   transition: color 0.15s ease;
 }
 
-.eid-learn-more-content > a {
+.eid-learn-more-content > a,
+.eid-learn-more-content > .eid-find-how-link {
+  display: flex !important;
+  width: fit-content;
+  margin-top: 0.75rem;
   font-weight: 600 !important;
 }
 
