@@ -50,11 +50,17 @@ function loadDocument(resource) {
   }
 
   const footerLegal = document.getElementById('footer-legal');
-  if (footerLegal) footerLegal.textContent = resource?.footer?.legal_notice ?? '';
   const footerPrivacy = document.getElementById('footer-privacy');
-  if (footerPrivacy) footerPrivacy.textContent = resource?.footer?.privacy_policy ?? '';
   const footerAccess = document.getElementById('footer-accessibility');
-  if (footerAccess) footerAccess.textContent = resource?.footer?.accessibility_statement ?? '';
+  const newWindowHint = resource?.footer?.new_window_hint ?? 'si apre in una nuova finestra';
+  const setFooterLink = (el, text) => {
+    if (!el || text == null) return;
+    el.textContent = text;
+    el.setAttribute('aria-label', `${text} (${newWindowHint})`);
+  };
+  setFooterLink(footerLegal, resource?.footer?.legal_notice ?? '');
+  setFooterLink(footerPrivacy, resource?.footer?.privacy_policy ?? '');
+  setFooterLink(footerAccess, resource?.footer?.accessibility_statement ?? '');
 }
 
 function shuffleWallets(wallets) {

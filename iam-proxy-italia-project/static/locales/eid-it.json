@@ -81,6 +81,7 @@
   "footer": {
     "legal_notice": "Note legali",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Dichiarazione Accessibilità"
+    "accessibility_statement": "Dichiarazione Accessibilità",
+    "new_window_hint": "si apre in una nuova finestra"
   }
 }
