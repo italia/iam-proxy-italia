@@ -527,10 +527,24 @@ async function loadItWalletPage() {
     if (!controls?.classList.contains('is-mobile-panel-open')) return;
     setMobilePanelOpen(false);
   };
-  if (!window.__itWalletMobilePanelListenersBound) {
-    window.__itWalletMobilePanelListenersBound = true;
+  window.__itWalletCloseSortMenu = () => closeSortMenu(true);
+  if (!window.__itWalletEscapeListenerBound) {
+    window.__itWalletEscapeListenerBound = true;
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
+      const menu = document.getElementById('wallet-sort-menu');
+      const trigger = document.getElementById('wallet-sort-trigger');
+      if (menu && trigger && !menu.hidden) {
+        if (typeof window.__itWalletCloseSortMenu === 'function') {
+          window.__itWalletCloseSortMenu();
+        } else {
+          menu.hidden = true;
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.focus();
+        }
+        event.preventDefault();
+        return;
+      }
       if (window.matchMedia('(min-width: 992px)').matches) return;
       const panel = document.getElementById('wallet-controls');
       if (!panel?.classList.contains('is-mobile-panel-open')) return;
@@ -555,17 +569,13 @@ async function loadItWalletPage() {
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (menu.contains(target) || trigger.contains(target)) return;
-      menu.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape') return;
-      const menu = document.getElementById('wallet-sort-menu');
-      const trigger = document.getElementById('wallet-sort-trigger');
-      if (!menu || !trigger || menu.hidden) return;
-      menu.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.focus();
+      if (typeof window.__itWalletCloseSortMenu === 'function') {
+        window.__itWalletCloseSortMenu();
+      } else {
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
+      }
     });
   }
 

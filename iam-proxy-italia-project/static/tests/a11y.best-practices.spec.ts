@@ -211,6 +211,27 @@ test("@focus it-wallet sort restores focus on trigger", async ({ page }) => {
   await expect(sortTrigger).toBeFocused();
 });
 
+test("@keyboard it-wallet sort menu Escape restores focus from menu item", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  const sortMenu = page.locator("#wallet-sort-menu");
+  const firstSortItem = page.locator("#wallet-sort-item-default");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
+    test.skip(true, "Sort controls not visible on this viewport");
+  }
+
+  await sortTrigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(sortMenu).toBeVisible();
+  await firstSortItem.focus();
+  await expect(firstSortItem).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(sortMenu).toBeHidden();
+  await expect(sortTrigger).toBeFocused();
+});
+
 test("@status it-wallet mobile search panel announces on open", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
