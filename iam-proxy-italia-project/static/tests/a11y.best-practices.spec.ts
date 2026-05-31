@@ -178,6 +178,21 @@ test("@focus it-wallet initial focus is on page heading", async ({ page }) => {
   await expect(page.locator("#wallet-search")).not.toBeFocused();
 });
 
+test("@status it-wallet search announces result count", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const searchInput = page.locator("#wallet-search");
+  if (!(await searchInput.count()) || !(await searchInput.isVisible())) {
+    test.skip(true, "Search controls not visible on this viewport");
+  }
+
+  await searchInput.fill("io");
+  await page.locator("#search-btn").click();
+  await expect(page.locator("#wallet-results-status")).not.toHaveText("");
+  await expect(page.locator("#wallet-results-status")).toHaveText(/\d|nessun|no results/i);
+});
+
 test("@best-practice best-practice checks on it-wallet interactive controls", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
 

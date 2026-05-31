@@ -10,7 +10,11 @@
   "search": {
     "placeholder": "Cerca per nome",
     "button": "Cerca",
-    "no_results": "Nessun risultato"
+    "no_results": "Nessun risultato",
+    "results_one": "{{count}} risultato trovato",
+    "results_many": "{{count}} risultati trovati",
+    "results_none": "Nessun risultato trovato",
+    "results_reset": "Ricerca azzerata, {{count}} wallet disponibili"
   },
   "sort": {
     "default": "Ordine predefinito",
