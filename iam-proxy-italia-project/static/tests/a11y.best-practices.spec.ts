@@ -25,8 +25,17 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
 
   const learnMoreToggle = page.locator(".eid-learn-more-toggle").first();
   if (await learnMoreToggle.count()) {
+    await expect(learnMoreToggle).toHaveAttribute("aria-controls", /.+/);
+    await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(learnMoreToggle).toHaveAttribute("aria-label", /.+/);
+    const controlsId = await learnMoreToggle.getAttribute("aria-controls");
+    const panel = page.locator(`#${controlsId}`);
+    await expect(panel).toHaveAttribute("role", "region");
+    await expect(panel).toHaveAttribute("hidden", "");
     await learnMoreToggle.focus();
     await page.keyboard.press("Enter");
+    await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "true");
+    await expect(panel).not.toHaveAttribute("hidden", "");
   }
 
   const results = await new AxeBuilder({ page })

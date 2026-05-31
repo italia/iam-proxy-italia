@@ -503,6 +503,27 @@ function createLogoButton(eid, _hasLearnMore = false) {
 }
 
 // ----------------------- Learn More -----------------------
+function learnMoreToggleAriaLabel(resource, eid, toggleLabelText, isExpanded) {
+  const cardName = eid.name || '';
+  const templates = resource.titles?.learn_more_a11y ?? {};
+  const template = isExpanded
+    ? (templates.expanded ?? '{{label}}, {{name}}, additional information shown')
+    : (templates.collapsed ?? '{{label}}, {{name}}, additional information hidden');
+  return template.replace('{{label}}', toggleLabelText).replace('{{name}}', cardName);
+}
+
+function syncLearnMoreToggleA11y(toggle, content, resource, eid, toggleLabelText, isExpanded) {
+  toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+  toggle.setAttribute('aria-label', learnMoreToggleAriaLabel(resource, eid, toggleLabelText, isExpanded));
+  toggle.classList.toggle('expanded', isExpanded);
+  content.classList.toggle('is-open', isExpanded);
+  if (isExpanded) {
+    content.removeAttribute('hidden');
+  } else {
+    content.setAttribute('hidden', '');
+  }
+}
+
 function createLearnMore(resource, eid) {
   const toggleLabelText = eid.learn_more_toggle_label ?? resource.titles.learn_more;
   const ctaLabelText = eid.learn_more_label ?? resource.titles.find_how_to_get_digital_id ?? resource.titles.learn_more;
@@ -524,13 +545,20 @@ function createLearnMore(resource, eid) {
     const container = document.createElement('div');
     container.className = 'mt-2';
 
+    const contentId = `eid-learn-more-${(eid.name || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    const toggleId = `${contentId}-toggle`;
+
     const toggle = document.createElement('button');
     toggle.type = 'button';
+    toggle.id = toggleId;
     toggle.className = 'eid-learn-more-toggle';
-    toggle.textContent = toggleLabelText;
-    const contentId = `eid-learn-more-${(eid.name || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     toggle.setAttribute('aria-controls', contentId);
-    toggle.setAttribute('aria-expanded', 'false');
+
+    const toggleLabel = document.createElement('span');
+    toggleLabel.className = 'eid-learn-more-toggle-label';
+    toggleLabel.setAttribute('aria-hidden', 'true');
+    toggleLabel.textContent = toggleLabelText;
+    toggle.appendChild(toggleLabel);
 
     const svgNs = 'http://www.w3.org/2000/svg';
     const arrow = document.createElementNS(svgNs, 'svg');
@@ -549,8 +577,10 @@ function createLearnMore(resource, eid) {
     arrow.appendChild(arrowPath);
     toggle.appendChild(arrow);
 
-    const text = document.createElement('p');
+    const text = document.createElement('div');
     text.id = contentId;
+    text.setAttribute('role', 'region');
+    text.setAttribute('aria-labelledby', toggleId);
     text.innerHTML = eid.learn_more_descr;
     if (eid.learn_more_link) {
       text.appendChild(document.createTextNode(' '));
@@ -565,20 +595,14 @@ function createLearnMore(resource, eid) {
     }
     text.className = 'mt-2 eid-learn-more-content';
 
+    syncLearnMoreToggleA11y(toggle, text, resource, eid, toggleLabelText, false);
+
     toggle.addEventListener('click', () => {
       const box = toggle.closest('.it-card');
-      const isExpanded = toggle.classList.contains('expanded');
-      if (!isExpanded) {
-        toggle.classList.add('expanded');
-        text.classList.add('is-open');
-        toggle.setAttribute('aria-expanded', 'true');
-        if (box) box.style.height = 'auto';
-      } else {
-        toggle.classList.remove('expanded');
-        text.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        if (box) box.style.height = '';
-      }
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      const nextExpanded = !isExpanded;
+      syncLearnMoreToggleA11y(toggle, text, resource, eid, toggleLabelText, nextExpanded);
+      if (box) box.style.height = nextExpanded ? 'auto' : '';
     });
 
     container.appendChild(toggle);

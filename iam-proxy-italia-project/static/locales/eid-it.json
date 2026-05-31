@@ -10,7 +10,11 @@
     "havent_digital_identy": "Non hai un'identità digitale?",
     "find_how_to_get_digital_id": "Scopri come ottenerla",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
-    "learn_more": "Scopri di più"
+    "learn_more": "Scopri di più",
+    "learn_more_a11y": {
+      "collapsed": "{{label}}, {{name}}, informazioni aggiuntive nascoste",
+      "expanded": "{{label}}, {{name}}, informazioni aggiuntive visibili"
+    }
   },
   "digital_id": {
     "it_wallet": {
