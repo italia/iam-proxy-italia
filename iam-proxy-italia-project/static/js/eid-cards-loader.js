@@ -82,8 +82,9 @@ function loadEidCards(resource) {
   document.getElementById('eid-alternative-section')?.remove();
 
   if (checkId(resource.digital_id)) {
-    const digitalSection = document.createElement('div');
+    const digitalSection = document.createElement('section');
     digitalSection.className = 'mb-4';
+    digitalSection.setAttribute('aria-labelledby', 'eid-selection-title');
     const title = document.createElement('h1');
     title.id = 'eid-selection-title';
     title.textContent = resource.titles.login_digital_identity;
@@ -93,11 +94,13 @@ function loadEidCards(resource) {
     createEidCardsRow(resource, "digital_id", digitalSection);
     container.appendChild(digitalSection);
 
-    const infoDiv = document.createElement('div');
-    infoDiv.className = 'd-flex flex-column align-items-center mb-4';
     const havenDigitalId = resource.titles.havent_digital_identy;
     if (havenDigitalId) {
+      const infoSection = document.createElement('section');
+      infoSection.className = 'd-flex flex-column align-items-center mb-4';
+      infoSection.setAttribute('aria-labelledby', 'eid-havent-digital-id-title');
       const infoTitle = document.createElement('h2');
+      infoTitle.id = 'eid-havent-digital-id-title';
       infoTitle.className = 'eid-havent-digital-id-heading';
       infoTitle.textContent = havenDigitalId;
 
@@ -124,9 +127,9 @@ function loadEidCards(resource) {
       path.setAttribute('d', 'M21 3v6h-1V4.7l-7.6 7.7-.8-.8L19.3 4H15V3h6zm-4 16.5c0 .3-.2.5-.5.5h-12c-.3 0-.5-.2-.5-.5v-12c0-.3.2-.5.5-.5H12V6H4.5C3.7 6 3 6.7 3 7.5v12c0 .8.7 1.5 1.5 1.5h12c.8 0 1.5-.7 1.5-1.5V12h-1v7.5z');
       linkIcon.appendChild(path);
       infoLink.appendChild(linkIcon);
-      infoDiv.appendChild(infoTitle);
-      infoDiv.appendChild(infoLink);
-      container.appendChild(infoDiv);
+      infoSection.appendChild(infoTitle);
+      infoSection.appendChild(infoLink);
+      container.appendChild(infoSection);
     }
   }
 
@@ -210,7 +213,7 @@ function createEidCardBox(resource, eid) {
   const card = document.createElement('article');
   card.className = 'it-card shadow h-100';
 
-  const title = document.createElement('h3');
+  const title = document.createElement('p');
   title.className = 'it-card-title mb-3 h4';
   title.textContent = eid.name;
 
