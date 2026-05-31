@@ -17,6 +17,10 @@
     },
     "cards_load_status": "Authentication methods list updated"
   },
+  "loading": {
+    "in_progress": "Loading...",
+    "error": "Unable to load authentication methods. Reload the page."
+  },
   "digital_id": {
     "it_wallet": {
       "name": "IT-Wallet",

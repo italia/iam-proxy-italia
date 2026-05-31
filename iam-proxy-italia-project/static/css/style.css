@@ -1612,6 +1612,23 @@ html.it-wallet-html body.it-wallet-body {
   font-weight: 600;
 }
 
+.eid-list-state,
+.it-wallet-list-state {
+  width: 100%;
+  margin: 0;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #2F475E;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.eid-list-state--error,
+.it-wallet-list-state--error {
+  color: hsl(350deg, 60%, 50%);
+  font-weight: 600;
+}
+
 .it-wallet-card-title {
   margin: 0 !important;
   padding: 0 !important;
