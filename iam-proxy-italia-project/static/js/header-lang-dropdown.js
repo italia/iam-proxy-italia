@@ -5,6 +5,28 @@
   /** Spazio tra trigger e menu: il margin sul .dropdown-menu è ignorato da Popper (usa transform). */
   var MENU_OFFSET_PX = 24;
 
+  var LANG_DISPLAY = { it: 'Italiano', en: 'English' };
+
+  function normalizeLang(lng) {
+    return (lng || 'it').split('-')[0] === 'en' ? 'en' : 'it';
+  }
+
+  function setDocumentLanguage(lng) {
+    var code = normalizeLang(lng);
+    if (global.document && global.document.documentElement) {
+      global.document.documentElement.lang = code;
+    }
+    return code;
+  }
+
+  function triggerAriaLabel(uiCode, selectedCode) {
+    var name = LANG_DISPLAY[selectedCode] || LANG_DISPLAY.it;
+    if (uiCode === 'en') {
+      return 'Language selection, ' + name + ' selected';
+    }
+    return 'Selezione lingua, ' + name + ' selezionata';
+  }
+
   function bindLangMenuPopper(toggle) {
     if (!global.bootstrap || !global.bootstrap.Dropdown || !toggle) return;
     var existing = bootstrap.Dropdown.getInstance(toggle);
@@ -33,11 +55,38 @@
   }
 
   function syncRoot(root, lng) {
-    var code = (lng || 'it').split('-')[0] === 'en' ? 'en' : 'it';
+    var code = normalizeLang(lng);
     var label = root.querySelector('.it-header-lang-label');
     if (label) label.textContent = code === 'en' ? 'EN' : 'ITA';
+
+    var toggle = root.querySelector('[data-bs-toggle="dropdown"]');
+    if (toggle) {
+      toggle.setAttribute('aria-label', triggerAriaLabel(code, code));
+    }
+
+    var menu = root.querySelector('.link-list');
+    if (menu && !menu.getAttribute('role')) {
+      menu.setAttribute('role', 'menu');
+    }
+
     root.querySelectorAll('.it-lang-option').forEach(function (a) {
-      a.classList.toggle('active', a.getAttribute('data-lang') === code);
+      var optionLang = a.getAttribute('data-lang');
+      var isActive = optionLang === code;
+      a.classList.toggle('active', isActive);
+      a.setAttribute('role', 'menuitemradio');
+      a.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      if (isActive) {
+        a.setAttribute('aria-current', 'true');
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function syncAllLangDropdowns(lng) {
+    setDocumentLanguage(lng);
+    document.querySelectorAll('.it-header-lang-dropdown').forEach(function (root) {
+      syncRoot(root, lng);
     });
   }
 
@@ -45,6 +94,15 @@
     if (!i18next || typeof i18next.changeLanguage !== 'function') return;
     options = options || {};
     var afterChange = options.afterLanguageChange;
+
+    if (!global.__headerLangDropdownLanguageListener) {
+      global.__headerLangDropdownLanguageListener = true;
+      i18next.on('languageChanged', function (lng) {
+        syncAllLangDropdowns(lng);
+      });
+    }
+
+    syncAllLangDropdowns(i18next.language);
 
     document.querySelectorAll('.it-header-lang-dropdown').forEach(function (root) {
       if (root.dataset.langDropdownBound === '1') return;
@@ -65,15 +123,11 @@
             if (dd) dd.hide();
           }
           i18next.changeLanguage(lng).then(function () {
+            setDocumentLanguage(lng);
             if (typeof afterChange === 'function') afterChange(lng);
           });
         });
       });
-
-      i18next.on('languageChanged', function (lng) {
-        syncRoot(root, lng);
-      });
-      syncRoot(root, i18next.language);
     });
   };
 })(typeof window !== 'undefined' ? window : this);

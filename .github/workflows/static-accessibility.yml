@@ -1,0 +1,127 @@
+name: Static Accessibility
+
+on:
+  push:
+    paths:
+      - "iam-proxy-italia-project/static/**"
+  pull_request:
+    paths:
+      - "iam-proxy-italia-project/static/**"
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5.3.1
+        with:
+          skip_after_successful_duplicate: "true"
+          concurrent_skipping: "same_content_newer"
+
+  a11y_required:
+    name: A11y required checks (W3C + WCAG + keyboard)
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: iam-proxy-italia-project/static
+        run: npx playwright install --with-deps chromium
+
+      - name: Run W3C HTML validator (Nu checker)
+        working-directory: iam-proxy-italia-project/static
+        run: npm run lint:w3c:html
+
+      - name: Run axe accessibility suite (WCAG A/AA)
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:ci
+
+      - name: Run keyboard interaction contracts
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:keyboard
+
+      - name: Run zoom/reflow checks (400%)
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:reflow
+
+  a11y_warning:
+    name: A11y warning checks (best-practice)
+    needs: [pre_job, a11y_required]
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: iam-proxy-italia-project/static/package-lock.json
+
+      - name: Install dependencies
+        working-directory: iam-proxy-italia-project/static
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: iam-proxy-italia-project/static
+        run: npx playwright install --with-deps chromium
+
+      - name: Run non-blocking best-practice suite
+        working-directory: iam-proxy-italia-project/static
+        run: npm run test:a11y:best-practices
+
+      - name: Post warning summary
+        if: always()
+        run: |
+          {
+            echo "## A11y warning checks"
+            echo ""
+            echo "- Best-practice checks are non-blocking by design."
+            echo "- Failures here should open follow-up issues."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  a11y_manual_evidence:
+    name: A11y manual evidence checklist
+    needs: [pre_job, a11y_required]
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add manual checklist to run summary
+        run: |
+          {
+            echo "## Manual accessibility evidence (per release)"
+            echo ""
+            echo "Track the following activities outside CI automation:"
+            echo "- Screen reader pass (NVDA/JAWS/VoiceOver) on key flows."
+            echo "- Expert review for naming/semantics and dynamic announcements."
+            echo "- Zoom/reflow checks up to 400% with no loss of content/function."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload manual checklist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-manual-checklist
+          path: iam-proxy-italia-project/static/docs/a11y-manual-checklist.md

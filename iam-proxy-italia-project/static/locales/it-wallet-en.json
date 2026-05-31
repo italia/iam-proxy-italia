@@ -8,14 +8,33 @@
     "logo_title": "Your logo"
   },
   "search": {
+    "label": "Search wallet by name",
+    "form_label": "Wallet search",
     "placeholder": "Search by name",
     "button": "Search",
-    "no_results": "No results"
+    "empty_error": "Enter a search term",
+    "no_results": "No results",
+    "results_one": "{{count}} result found",
+    "results_many": "{{count}} results found",
+    "results_none": "No results found",
+    "results_reset": "Search cleared, {{count}} wallets available",
+    "toggle_open": "Open wallet search and sort tools",
+    "toggle_close": "Close wallet search and sort tools",
+    "panel_open": "Search and sort tools displayed",
+    "panel_closed": "Search and sort tools hidden"
   },
   "sort": {
     "default": "Default sorting",
     "az": "Alphabetical A-Z",
-    "za": "Alphabetical Z-A"
+    "za": "Alphabetical Z-A",
+    "trigger_label": "Sort wallets"
+  },
+  "controls": {
+    "label": "Wallet list tools"
+  },
+  "loading": {
+    "in_progress": "Loading...",
+    "error": "Unable to load the wallet list. Reload the page."
   },
   "wallets": {
     "load_more": "Load more"
@@ -26,7 +45,13 @@
   "footer": {
     "legal_notice": "Legal notes",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Accessibility statement"
+    "accessibility_statement": "Accessibility statement",
+    "new_window_hint": "opens in a new window"
+  },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
   },
   "learn_more": {
     "question": "Don't know what IT-Wallet is?",

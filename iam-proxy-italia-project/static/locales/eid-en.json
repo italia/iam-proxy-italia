@@ -10,7 +10,16 @@
     "havent_digital_identy": "Don't have a digital identity yet?",
     "find_how_to_get_digital_id": "Find out how to get it",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
-    "learn_more": "Learn more"
+    "learn_more": "Learn more",
+    "learn_more_a11y": {
+      "collapsed": "additional information hidden",
+      "expanded": "additional information shown"
+    },
+    "cards_load_status": "Authentication methods list updated"
+  },
+  "loading": {
+    "in_progress": "Loading...",
+    "error": "Unable to load authentication methods. Reload the page."
   },
   "digital_id": {
     "it_wallet": {
@@ -39,7 +48,7 @@
     "spid": {
       "name": "SPID",
       "logo_text": "Login with SPID",
-      "logo": "https://raw.githubusercontent.com/italia/spid-idp-login-layout/master/img/spid-ico-circle-bb.svg",
+      "logo": "spid/spid-ico-circle-bb.svg",
       "login_url": "#spid-idp-button-xlarge-post",
       "learn_more_descr": "SPID (Sistema Pubblico di Identità Digitale) is the Italian public digital identity system. Choose your identity provider to log in with your SPID credentials.",
       "learn_more_link": "https://www.spid.gov.it/",
@@ -79,6 +88,12 @@
   "footer": {
     "legal_notice": "Legal notes",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Accessibility statement"
+    "accessibility_statement": "Accessibility statement",
+    "new_window_hint": "opens in a new window"
+  },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
   }
 }
