@@ -159,7 +159,7 @@ function loadEidCards(resource) {
         infoLink.rel = 'noopener noreferrer';
         setExternalLinkA11y(infoLink, resource.titles.find_how_to_get_digital_id, resource);
       } else {
-        infoLink.href = 'javascript:void(0)';
+        infoLink.href = '#';
         infoLink.addEventListener('click', (e) => e.preventDefault());
       }
       const svgNs = 'http://www.w3.org/2000/svg';
