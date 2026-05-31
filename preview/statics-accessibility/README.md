@@ -40,17 +40,31 @@ npm run update-wallet-it-assets
 
 Or run `bash scripts/update-wallet-it-assets.sh` from this directory.
 
-## SPID IdP logos
+## SPID discovery (`disco.html`)
 
-SPID discovery uses IdP logos from [italia/spid-graphics](https://github.com/italia/spid-graphics) (`idp-logos/`). The list of IdPs and entityIDs is in `spid/spid-idps.js`, aligned with [registry.spid.gov.it/entities-idp](https://registry.spid.gov.it/entities-idp).
+The discovery page does **not** use the legacy AgID markup (`#spid-idp-list-*`). SPID is wired as follows:
 
-To refresh logos from the official repo:
+| Component | Role |
+|-----------|------|
+| `js/eid-cards-loader.js` | Renders the SPID card: trigger `[spid-idp-button="#spid-idp-button-xlarge-post"]` and panel `#spid-idp-button-xlarge-post.ita-menu[data-spid-remote]` |
+| `js/ita.min.js` (`Ita`) | Vanilla JS: loads IdPs from `js/spid-idps-default.json`, shuffles order, injects links into `[data-spid-remote]` menus |
+| `spid/spid-sp-access-button.js` | jQuery plugin (AgID): opens/closes the IdP panel on `[spid-idp-button]` |
+| `js/jquery-3.7.0.min.js` | Local jQuery bundle; required only by `spid-sp-access-button.js` |
+| `js/spid-idps-default.json` | IdP list (`organization_name`, `entity_id`, `logo_uri`); align with [registry.spid.gov.it/entities-idp](https://registry.spid.gov.it/entities-idp) |
+
+Removed legacy files (unused on `disco.html`): `spid/spid_button.js` (shuffle for `#spid-idp-list-*`) and `spid/spid-idps.js` (populate `ul#spid-idp-list-medium-root-get`).
+
+### SPID IdP logos
+
+Logos are served locally from `img/spid-idp-*.svg` and `spid/spid-ico-circle-bb.svg` (card icon). Sources: [italia/spid-graphics](https://github.com/italia/spid-graphics) (`idp-logos/`).
+
+To refresh IdP logos from the official repo:
 
 ```bash
 bash scripts/update-spid-idp-assets.sh
 ```
 
-Run from the `static` directory. Note: InfoCamere logo is not yet in the official repo; add `spid-idp-infocamereid.svg` manually when available.
+Run from the `static` directory. Note: InfoCamere logo is not yet in the official repo; add `img/spid-idp-infocamereid.svg` manually when available.
 
 ## i18n
 
@@ -58,8 +72,12 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 
 ### Discovery page (`disco.html`)
 
-- `locales/wallets-en.json`, `locales/wallets-it.json`
-- Keys: `header.region_name`, `titles.*`, `footer.*`, `digital_id.*`, `alternative_id.*`
+- `locales/eid-it.json`, `locales/eid-en.json`
+- Keys: `header.*`, `titles.*`, `loading.*`, `digital_id.*`, `alternative_id.*`, `footer.*`, `skip_links.*`
+
+### IT-Wallet page (`it-wallet.html`)
+
+- `locales/it-wallet-it.json`, `locales/it-wallet-en.json`
 
 ### Error page (`error_page.html`)
 
