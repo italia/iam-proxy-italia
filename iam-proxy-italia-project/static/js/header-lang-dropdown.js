@@ -11,6 +11,14 @@
     return (lng || 'it').split('-')[0] === 'en' ? 'en' : 'it';
   }
 
+  function setDocumentLanguage(lng) {
+    var code = normalizeLang(lng);
+    if (global.document && global.document.documentElement) {
+      global.document.documentElement.lang = code;
+    }
+    return code;
+  }
+
   function triggerAriaLabel(uiCode, selectedCode) {
     var name = LANG_DISPLAY[selectedCode] || LANG_DISPLAY.it;
     if (uiCode === 'en') {
@@ -73,16 +81,28 @@
         a.removeAttribute('aria-current');
       }
     });
+  }
 
-    if (global.document && global.document.documentElement) {
-      global.document.documentElement.lang = code;
-    }
+  function syncAllLangDropdowns(lng) {
+    setDocumentLanguage(lng);
+    document.querySelectorAll('.it-header-lang-dropdown').forEach(function (root) {
+      syncRoot(root, lng);
+    });
   }
 
   global.initHeaderLangDropdown = function (i18next, options) {
     if (!i18next || typeof i18next.changeLanguage !== 'function') return;
     options = options || {};
     var afterChange = options.afterLanguageChange;
+
+    if (!global.__headerLangDropdownLanguageListener) {
+      global.__headerLangDropdownLanguageListener = true;
+      i18next.on('languageChanged', function (lng) {
+        syncAllLangDropdowns(lng);
+      });
+    }
+
+    syncAllLangDropdowns(i18next.language);
 
     document.querySelectorAll('.it-header-lang-dropdown').forEach(function (root) {
       if (root.dataset.langDropdownBound === '1') return;
@@ -103,15 +123,11 @@
             if (dd) dd.hide();
           }
           i18next.changeLanguage(lng).then(function () {
+            setDocumentLanguage(lng);
             if (typeof afterChange === 'function') afterChange(lng);
           });
         });
       });
-
-      i18next.on('languageChanged', function (lng) {
-        syncRoot(root, lng);
-      });
-      syncRoot(root, i18next.language);
     });
   };
 })(typeof window !== 'undefined' ? window : this);
