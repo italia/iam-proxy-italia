@@ -32,6 +32,12 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
   await expect(page.locator("#eid-cards-container")).not.toHaveAttribute("aria-live", /.+/);
   await expect(page.locator("#eid-selection-title")).toHaveCount(1);
   await expect(page.locator("main #eid-selection-title")).toHaveCount(1);
+  await expect(page.locator("#spid-idp-button-xlarge-post")).not.toHaveAttribute("role", "menu");
+  const cieMenu = page.locator(".cie-dropdown-menu").first();
+  if (await cieMenu.count()) {
+    await expect(cieMenu).toHaveAttribute("role", "list");
+    await expect(cieMenu).not.toHaveAttribute("role", "menu");
+  }
 
   const learnMoreToggle = page.locator(".eid-learn-more-toggle").first();
   if (await learnMoreToggle.count()) {
