@@ -3,10 +3,16 @@
     "title": "Errore di Autenticazione",
     "description": "Errore di Autenticazione"
   },
+  "skip_links": {
+    "nav_label": "Collegamenti di salto",
+    "main_content": "Vai al contenuto principale",
+    "footer": "Vai al piè di pagina"
+  },
   "header": {
     "organization_name": "Nome dell'Organizzazione",
     "region_name": "Nome dell'Organizzazione",
-    "logo_title": "Il tuo logo"
+    "logo_title": "Il tuo logo",
+    "lang_active_hint": "lingua attiva:"
   },
   "nav": {
     "main_page": "Pagina principale",
@@ -55,8 +61,10 @@
     "useful_links_section": "Sezione Link Utili",
     "legal_notes": "Note legali",
     "legal_notes_title": "Note Legali",
-    "privacy": "Protezione dei dati",
-    "privacy_title": "Protezione dei dati",
-    "accessibility": "Dichiarazione di accessibilità"
+    "privacy": "Privacy Policy",
+    "privacy_title": "Privacy Policy",
+    "accessibility": "Dichiarazione Accessibilità",
+    "nav_label": "Link legali",
+    "new_window_hint": "si apre in una nuova finestra"
   }
 }

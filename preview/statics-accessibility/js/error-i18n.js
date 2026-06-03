@@ -26,6 +26,22 @@ function applyErrorTranslations() {
     if (key) el.setAttribute('title', i18next.t(key));
   });
 
+  // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
+    var key = el.getAttribute('data-i18n-aria-label');
+    if (key) el.setAttribute('aria-label', i18next.t(key));
+  });
+
+  // data-i18n-newwindow: build an accessible name that announces the link opens
+  // in a new window/tab ("<visible text> (<hint>)"), mirroring disco/it-wallet.
+  var newWindowHint = i18next.t('footer.new_window_hint');
+  document.querySelectorAll('[data-i18n-newwindow]').forEach(function (el) {
+    var textEl = el.matches('[data-i18n]') ? el : el.querySelector('[data-i18n]');
+    var text = (textEl ? textEl.textContent : el.textContent) || '';
+    text = text.trim();
+    el.setAttribute('aria-label', newWindowHint ? text + ' (' + newWindowHint + ')' : text);
+  });
+
   // Update html lang
   document.documentElement.lang = i18next.language === 'it' ? 'it' : 'en';
 }
