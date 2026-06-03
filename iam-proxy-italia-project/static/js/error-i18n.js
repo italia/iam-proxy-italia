@@ -4,8 +4,10 @@
  */
 
 function applyErrorTranslations() {
-  // Meta
-  document.title = i18next.t('meta.title');
+  var pageTitle = i18next.t('meta.title');
+  document.title = pageTitle;
+  var titleEl = document.getElementById('error-page-title');
+  if (titleEl) titleEl.textContent = pageTitle;
   var metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', i18next.t('meta.description'));
 
@@ -18,12 +20,6 @@ function applyErrorTranslations() {
       val = i18next.t('header.organization_name');
     }
     el.textContent = val;
-  });
-
-  // data-i18n-title: set title attribute (for links)
-  document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
-    var key = el.getAttribute('data-i18n-title');
-    if (key) el.setAttribute('title', i18next.t(key));
   });
 
   // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)

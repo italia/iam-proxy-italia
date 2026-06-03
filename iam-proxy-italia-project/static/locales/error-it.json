@@ -8,11 +8,15 @@
     "main_content": "Vai al contenuto principale",
     "footer": "Vai al piè di pagina"
   },
+  "noscript": {
+    "message": "Per visualizzare correttamente questa pagina è necessario abilitare JavaScript."
+  },
   "header": {
     "organization_name": "Nome dell'Organizzazione",
     "region_name": "Nome dell'Organizzazione",
     "logo_title": "Il tuo logo",
-    "lang_active_hint": "lingua attiva:"
+    "lang_active_hint": "lingua attiva:",
+    "lang_trigger": "Selezione lingua, {{name}} selezionata"
   },
   "nav": {
     "main_page": "Pagina principale",

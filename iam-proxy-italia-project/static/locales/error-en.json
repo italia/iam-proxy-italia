@@ -8,11 +8,15 @@
     "main_content": "Skip to main content",
     "footer": "Skip to footer"
   },
+  "noscript": {
+    "message": "JavaScript must be enabled to display this page correctly."
+  },
   "header": {
     "organization_name": "Organization Name",
     "region_name": "Organization Name",
     "logo_title": "Your Logo",
-    "lang_active_hint": "active language:"
+    "lang_active_hint": "active language:",
+    "lang_trigger": "Language selection, {{name}} selected"
   },
   "nav": {
     "main_page": "Main page",
