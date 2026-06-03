@@ -19,22 +19,26 @@ cache-busting version, and the fonts public path.
 
 ### Header logo (image vs text)
 
-`logo` controls the header logo of `disco.html` and `it-wallet.html`:
+`logo` controls the header logo of `disco.html`, `it-wallet.html` **and**
+`error_page.html`:
 
 ```jsonc
 "logo": {
-  "image": "",                       // path to an SVG/PNG logo; empty = text placeholder
+  "image": "",                       // path to an SVG/PNG logo; empty = text/icon placeholder
   "alt": { "it": "Il tuo logo", "en": "Your Logo" }
 }
 ```
 
-- When `logo.image` is **empty**, the pages show the text placeholder
-  ("Il tuo logo" / "Your Logo"), taken from the locale files.
-- When `logo.image` is a **path** (e.g. `img/my-org-logo.svg`), the build replaces
-  the SVG placeholder with `<img id="header-logo" src="…" alt="…">`; the alt text
-  is the localized `logo.alt`. Drop your asset under `img/` (or any path you
-  reference) and run the build. Clearing `logo.image` restores the text
-  placeholder.
+- When `logo.image` is **empty**, the pages keep their placeholder: the text
+  wordmark on disco/it-wallet, the generic icon next to the title on the error
+  page. The localized text comes from the locale files (`logo.alt`).
+- When `logo.image` is a **path** (e.g. `img/my-org-logo.svg`), the build swaps
+  the placeholder for an `<img>`:
+  - disco/it-wallet → `<img id="header-logo" src="…" alt="…">` (alt = `logo.alt`).
+  - error page → decorative `<img>` replacing the icon (`alt=""`, `aria-hidden`),
+    while the visible title heading keeps the `logo.alt` text.
+  Drop your asset under `img/` (or any path you reference) and run the build.
+  Clearing `logo.image` restores the placeholder.
 
 ### How i18n relates to the config
 
@@ -57,18 +61,49 @@ The build is **manual** and rewrites only the configured values into the target
 files (locale JSON + HTML). It is idempotent: re-running with the same config
 produces no further changes.
 
-To verify in CI that the files are in sync with the config (non-zero exit if not):
+To verify in CI that the **source** files are in sync with the config (non-zero
+exit if not; checks the source root only, not the nginx mirror):
 
 ```bash
 npm run build:config:check
 ```
 
+The npm scripts are just shortcuts: `apply-config.js` is a plain Node ESM CLI
+with no runtime dependencies, so it can be run directly with `node` (handy for
+CI, hooks or containers without `node_modules`). It resolves its own roots, so
+the working directory does not matter:
+
+```bash
+node scripts/apply-config.js            # = build:config (source + nginx mirror)
+node scripts/apply-config.js --check    # = build:config:check (source only, no writes)
+node scripts/apply-config.js --dry-run  # preview every root without writing
+```
+
+#### Build targets (multiple roots)
+
+The build applies to two roots:
+
+1. `iam-proxy-italia-project/static/` — the source/canonical files.
+2. `Docker-compose/nginx/html/static/` — the nginx deployment mirror
+   (git-ignored). Included so config changes reach the deployed copy too.
+
+Behavior across roots:
+- Only files that **exist** in a root are touched; missing ones are skipped.
+- Transforms are defensive: where a page's markup differs from the source
+  (the nginx mirror may be an older generation), only the anchors that match are
+  updated (e.g. footer hrefs, locale values), the rest is left as is.
+- The nginx mirror is typically **root-owned**: if the build cannot write a file
+  it does **not** abort — it finishes the writable root(s) and lists the skipped
+  files (exit code `3`). To sync the live mirror, re-run with adequate
+  permissions (e.g. `sudo npm run build:config`) or let the container build
+  regenerate it.
+
 Notes:
 - Run the build on a clean checkout (it edits files in place).
 - The first build harmonizes the organization name across all pages and
   normalizes locale JSON formatting (2-space indent, trailing newline).
-- The nginx copy in `Docker-compose/nginx/html/static/error_page.html` is **not**
-  managed by this build and must be synced manually if used.
+- Exit codes: `0` ok · `1` `--check`/`--dry-run` found drift · `2` invalid
+  config · `3` some target files could not be written.
 
 ### Tests
 
@@ -144,7 +179,7 @@ To refresh IdP logos from the official repo:
 bash scripts/update-spid-idp-assets.sh
 ```
 
-Run from the `static` directory. Note: InfoCamere logo is not yet in the official repo; add `img/spid-idp-infocamereid.svg` manually when available.
+Run from the `static` directory. Note: the InfoCamere logo is not published in [italia/spid-graphics], so `img/spid-idp-infocamereid.svg` is bundled and maintained manually in this repo (the script does not download it).
 
 ## i18n
 

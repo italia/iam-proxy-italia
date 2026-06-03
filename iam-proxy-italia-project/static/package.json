@@ -11,7 +11,7 @@
     "build:config:check": "node scripts/apply-config.js --check",
     "test:config": "node --test tests/apply-config.test.js",
     "lint:html": "htmlhint '**/*.html'",
-    "lint:w3c:html": "node node_modules/vnu-jar/vnu-jar.js --errors-only --skip-non-html disco.html it-wallet.html",
+    "lint:w3c:html": "node node_modules/vnu-jar/vnu-jar.js --errors-only --skip-non-html disco.html it-wallet.html error_page.html",
     "lint:css": "stylelint 'css/style.css' --allow-empty-input",
     "lint:js": "eslint 'js/eid-cards-loader.js' 'js/error-i18n.js'",
     "lint": "npm run lint:html && npm run lint:w3c:html && npm run lint:css && npm run lint:js",

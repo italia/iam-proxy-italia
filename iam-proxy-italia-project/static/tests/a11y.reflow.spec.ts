@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const PAGES = ["/disco.html", "/it-wallet.html"] as const;
+const PAGES = ["/disco.html", "/it-wallet.html", "/error_page.html"] as const;
 
 type Scenario = {
   name: string;

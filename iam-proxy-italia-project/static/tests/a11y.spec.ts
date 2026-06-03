@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 
-const PAGES_TO_SCAN = ["/disco.html", "/it-wallet.html"];
+const PAGES_TO_SCAN = ["/disco.html", "/it-wallet.html", "/error_page.html"];
 
 for (const pagePath of PAGES_TO_SCAN) {
   test(`axe scan ${pagePath}`, async ({ page }) => {
