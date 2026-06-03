@@ -1065,22 +1065,23 @@ html.it-wallet-html body.it-wallet-body {
   overflow-x: clip;
 }
 
-/* Header logos: both must shrink on narrow viewports (IT-Wallet mark is very wide). */
+/* Header logos: gruppo compatto allineato a sinistra; si restringe solo se serve su viewport stretti. */
 .it-wallet-body .header-title-section .container.py-3 > .d-flex {
   align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: fit-content;
   max-width: 100%;
-  width: 100%;
+  min-width: 0;
 }
 
 .it-wallet-body .header-title-section .it-header-logo-placeholder,
 .it-wallet-body .header-title-section .it-wallet-navbar-logo {
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-width: 0;
-  max-width: calc((100% - 1.5rem) / 2);
   height: 32px;
   width: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -1089,8 +1090,8 @@ html.it-wallet-html body.it-wallet-body {
 }
 
 .it-wallet-body .header-title-section .navbar-separator {
-  flex-shrink: 0;
-  margin: 0 0.5rem;
+  flex: 0 0 auto;
+  margin: 0 1rem;
 }
 
 @media (max-width: 575.98px) {
@@ -1107,7 +1108,7 @@ html.it-wallet-html body.it-wallet-body {
 
   .it-wallet-body .header-title-section .navbar-separator {
     height: 28px;
-    margin: 0 0.35rem;
+    margin: 0 0.5rem;
   }
 }
 
