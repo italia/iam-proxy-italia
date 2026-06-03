@@ -1061,6 +1061,54 @@ html.it-wallet-html body.it-wallet-body {
 
 .it-wallet-body > .it-header-wrapper {
   flex-shrink: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Header logos: both must shrink on narrow viewports (IT-Wallet mark is very wide). */
+.it-wallet-body .header-title-section .container.py-3 > .d-flex {
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.it-wallet-body .header-title-section .it-header-logo-placeholder,
+.it-wallet-body .header-title-section .it-wallet-navbar-logo {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: calc((100% - 1.5rem) / 2);
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.it-wallet-body .header-title-section .it-wallet-navbar-logo {
+  display: block;
+}
+
+.it-wallet-body .header-title-section .navbar-separator {
+  flex-shrink: 0;
+  margin: 0 0.5rem;
+}
+
+@media (max-width: 575.98px) {
+  .it-wallet-body .header-title-section .container.py-3 {
+    padding-left: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
+    padding-right: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
+  }
+
+  .it-wallet-body .header-title-section .it-header-logo-placeholder,
+  .it-wallet-body .header-title-section .it-wallet-navbar-logo {
+    max-height: 28px;
+    height: 28px;
+  }
+
+  .it-wallet-body .header-title-section .navbar-separator {
+    height: 28px;
+    margin: 0 0.35rem;
+  }
 }
 
 .it-wallet-body > main.it-wallet-page {
@@ -1355,43 +1403,51 @@ html.it-wallet-html body.it-wallet-body {
     display: flex !important;
     flex-flow: row nowrap;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     width: 100%;
   }
 
-  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-fieldset {
-    display: flex;
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 0;
-  }
-
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-form {
-    display: flex;
+    display: block;
     flex: 1 1 auto;
     min-width: 0;
+    grid-column: auto;
   }
 
-  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-error {
-    flex: 1 1 100%;
-    margin: 0;
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-fieldset {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0;
+    min-width: 0;
   }
 
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-group {
-    flex: 1 1 auto;
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
   }
 
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open #search-btn {
+    grid-column: 2;
+    grid-row: 1;
     width: auto;
     flex-shrink: 0;
     white-space: nowrap;
+    align-self: center;
+  }
+
+  .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-search-error:not([hidden]) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0.35rem 0 0;
   }
 
   .it-wallet-controls.it-wallet-controls-panel.is-mobile-panel-open .it-wallet-sort-wrap {
     flex-shrink: 0;
+    align-self: center;
   }
 }
 
