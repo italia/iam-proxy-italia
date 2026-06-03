@@ -252,7 +252,9 @@ function loadEidCards(resource) {
     altWrapper.setAttribute('aria-labelledby', hasDigitalSection ? altTitleId : 'eid-selection-title');
     altSection.appendChild(title);
 
-    createEidCardsRow(resource, "alternative_id", altSection);
+    createEidCardsRow(resource, 'alternative_id', altSection, {
+      cardHeadingLevel: hasDigitalSection ? 3 : 2,
+    });
     altWrapper.appendChild(altSection);
     const authMethods = document.getElementById('auth-methods');
     (authMethods || container.closest('main'))?.appendChild(altWrapper);
@@ -265,7 +267,8 @@ function loadEidCards(resource) {
 }
 
 // ----------------------- Create Eid Cards Row -----------------------
-function createEidCardsRow(resource, id_key, container) {
+function createEidCardsRow(resource, id_key, container, options = {}) {
+  const cardHeadingLevel = options.cardHeadingLevel ?? 2;
   const listLabel = id_key === 'alternative_id'
     ? (resource?.titles?.login_alternative_method ?? '')
     : (resource?.titles?.login_digital_identity ?? '');
@@ -277,7 +280,7 @@ function createEidCardsRow(resource, id_key, container) {
   entries.forEach((eid) => {
     const col = document.createElement('li');
     col.className = 'col-12 col-md-3 mb-3 mb-md-4 eid-card-col';
-    col.appendChild(createEidCardBox(resource, eid));
+    col.appendChild(createEidCardBox(resource, eid, cardHeadingLevel));
     row.appendChild(col);
   });
   container.appendChild(row);
@@ -319,12 +322,13 @@ function getEidEntriesForRow(entriesObj) {
 }
 
 // ----------------------- Eid Card Box (Bootstrap Italia it-card) -----------------------
-function createEidCardBox(resource, eid) {
+function createEidCardBox(resource, eid, headingLevel = 2) {
   // Bootstrap Italia card: https://italia.github.io/bootstrap-italia/docs/componenti/card/
   const card = document.createElement('article');
   card.className = 'it-card shadow';
 
-  const title = document.createElement('h2');
+  const safeLevel = Math.min(6, Math.max(2, headingLevel));
+  const title = document.createElement(`h${safeLevel}`);
   title.className = 'it-card-title mb-3 h4';
   title.id = `eid-card-title-${eidCardSlug(eid)}`;
   title.textContent = eid.name;

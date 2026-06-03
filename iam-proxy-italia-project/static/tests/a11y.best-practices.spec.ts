@@ -91,6 +91,23 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
   expect(summary, JSON.stringify(summary, null, 2)).toEqual([]);
 });
 
+test("@structure disco alternative cards use h3 under section h2", async ({ page }) => {
+  await page.goto("/disco.html", { waitUntil: "networkidle" });
+
+  const altSection = page.locator("#eid-alternative-section");
+  if (!(await altSection.count())) {
+    test.skip(true, "No alternative methods section in locale config");
+  }
+
+  await expect(altSection.locator("#eid-alternative-title")).toHaveRole("heading", { level: 2 });
+  const altCardTitles = altSection.locator("article.it-card .it-card-title");
+  await expect(altCardTitles.first()).toHaveRole("heading", { level: 3 });
+  const digitalCards = page.locator("#eid-cards-container .it-card .it-card-title");
+  if (await digitalCards.count()) {
+    await expect(digitalCards.first()).toHaveRole("heading", { level: 2 });
+  }
+});
+
 test("@keyboard spid menu stays closed during Tab-only navigation", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
