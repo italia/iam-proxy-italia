@@ -4,6 +4,8 @@ declare const process: { env: Record<string, string | undefined> };
 
 export default defineConfig({
   testDir: "./tests",
+  // Only Playwright specs; *.test.js belongs to the Node test runner (npm run test:config).
+  testMatch: "**/*.spec.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

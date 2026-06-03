@@ -14,7 +14,7 @@
     "page_title": "Pagina di selezione del metodo di Autenticazione",
     "login_logo": "Il tuo logo",
     "login_digital_identity": "Accedi con un'identità digitale",
-    "login_alternative_method" : "Accedi con un metodo alternativo",
+    "login_alternative_method": "Accedi con un metodo alternativo",
     "havent_digital_identy": "Non hai un'identità digitale?",
     "find_how_to_get_digital_id": "Scopri come ottenerla",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
@@ -81,7 +81,7 @@
       "learn_more_descr": "La CNS (Carta Nazionale dei Servizi) è lo strumento di identificazione che consente ai cittadini di accedere ai servizi della pubblica amministrazione online. Puoi usarla per accedere ai servizi che supportano l'autenticazione CNS."
     },
     "idem": {
-      "name":"IDEM",
+      "name": "IDEM",
       "logo_text": "Entra con IDEM",
       "logo": "img/idem.svg",
       "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_",

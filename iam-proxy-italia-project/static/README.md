@@ -1,5 +1,85 @@
 # Static assets (discovery page, error page, Bootstrap Italia)
 
+## Deploy configuration (branding / constants)
+
+The deploy-impacting constants of the static pages (`disco.html`, `it-wallet.html`,
+`error_page.html`) and their locale/data files are centralized in a single
+configuration file:
+
+- `config/branding.config.json` — editable, **ships with the default values**
+  (the same values already present in the files).
+- `config/branding.config.schema.json` — JSON schema (documentation + editor
+  autocomplete via `$schema`).
+
+Managed constants: static base path (`/static`), organization name (it/en),
+header logo (`logo.image` + localized `logo.alt`), IT-Wallet brand logo, footer
+link URLs, footer link text (it/en), IdP login URLs (CIE SAML2/OIDC, eIDAS, IDEM)
+and "find digital identity" URL, error-page URLs (login / assistance / privacy),
+cache-busting version, and the fonts public path.
+
+### Header logo (image vs text)
+
+`logo` controls the header logo of `disco.html` and `it-wallet.html`:
+
+```jsonc
+"logo": {
+  "image": "",                       // path to an SVG/PNG logo; empty = text placeholder
+  "alt": { "it": "Il tuo logo", "en": "Your Logo" }
+}
+```
+
+- When `logo.image` is **empty**, the pages show the text placeholder
+  ("Il tuo logo" / "Your Logo"), taken from the locale files.
+- When `logo.image` is a **path** (e.g. `img/my-org-logo.svg`), the build replaces
+  the SVG placeholder with `<img id="header-logo" src="…" alt="…">`; the alt text
+  is the localized `logo.alt`. Drop your asset under `img/` (or any path you
+  reference) and run the build. Clearing `logo.image` restores the text
+  placeholder.
+
+### How i18n relates to the config
+
+The locale files in `locales/` **are** the i18next translation files
+(`loadPath: locales/<page>-{{lng}}.json`). The localized config values
+(`*.it` / `*.en`) are written by the build into those JSON files, so editing the
+config is the single source of truth for the translated header/footer text; at
+runtime i18next loads `it` or `en` based on the header language selector.
+
+### Workflow
+
+1. Edit the values in `config/branding.config.json`.
+2. Run the build from this directory:
+
+```bash
+npm run build:config
+```
+
+The build is **manual** and rewrites only the configured values into the target
+files (locale JSON + HTML). It is idempotent: re-running with the same config
+produces no further changes.
+
+To verify in CI that the files are in sync with the config (non-zero exit if not):
+
+```bash
+npm run build:config:check
+```
+
+Notes:
+- Run the build on a clean checkout (it edits files in place).
+- The first build harmonizes the organization name across all pages and
+  normalizes locale JSON formatting (2-space indent, trailing newline).
+- The nginx copy in `Docker-compose/nginx/html/static/error_page.html` is **not**
+  managed by this build and must be synced manually if used.
+
+### Tests
+
+```bash
+npm run test:config        # node --test tests/apply-config.test.js
+```
+
+Covers the pure transforms (HTML attribute/text/base-path/version rewrites, JSON
+path edits), config validation, idempotency on the real files, and override
+behavior.
+
 ## Bootstrap Italia
 
 This project uses [Bootstrap Italia](https://italia.github.io/bootstrap-italia/docs/come-iniziare/introduzione/) for the discovery page and error page.
