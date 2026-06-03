@@ -67,6 +67,21 @@ config:
     entityid: '<base_url>/<name>/metadata'
     accepted_time_diff: 10
 
+    # --- AssertionConsumerService index (metadata) -----------------------
+    # Override degli index (e dell'attributo isDefault) degli
+    # AssertionConsumerService pubblicati nei metadata del SP.
+    # La lista è allineata PER POSIZIONE agli endpoint definiti in
+    # service.sp.endpoints.assertion_consumer_service (vedi sotto): la 1a voce
+    # mappa il 1° ACS, la 2a il 2°, ecc.
+    # Caso d'uso: quando il backend è aggregato da un soggetto aggregatore, i
+    # singoli ACS devono puntare agli URL dell'aggregato mappati su index
+    # specifici; impostando qui gli index (e gli URL negli endpoint) si ottiene
+    # la mappatura richiesta.
+    # Se omesso vale il default storico: index '0' con isDefault=true.
+    # assertion_consumer_service_indexes:
+    #   - index: 0
+    #     is_default: true
+
     service:
       sp:
         ui_info:

@@ -69,15 +69,52 @@ config:
       # using pyFF or other MDX server
       # mdq:
           # cert: mdq.pem
+    # --- FICEP / eIDAS ---------------------------------------------------
+    # Quando True, in fase di generazione dei metadata (backends/spidsaml2.py
+    # __create_metadata) vengono aggiunti i blocchi AttributeConsumingService /
+    # AssertionConsumerService con index 99 e 100 (set di attributi FICEP/eIDAS),
+    # oltre al blocco SPID standard con index 0.
     ficep_enable: True
+    # entityID dell'IdP FICEP/eIDAS. Viene usato per riconoscere le richieste
+    # dirette a questo IdP e applicare 'ficep_default_acs_index' (vedi sotto).
     ficep_entity_id: https://sp-proxy.eid.gov.it/spproxy/idpit
+    # AttributeConsumingServiceIndex da inserire nella AuthnRequest SOLO quando
+    # l'IdP di destinazione coincide con 'ficep_entity_id'. Indica all'IdP quale
+    # set di attributi richiede l'SP, referenziando il blocco
+    # <AttributeConsumingService index="99"> pubblicato nei metadata.
+    # NB: non modifica l'AssertionConsumerServiceURL della richiesta, che resta
+    # sempre il primo endpoint della lista 'assertion_consumer_service'.
     ficep_default_acs_index: 99
 
     entityid: '<base_url>/<name>/metadata'
     accepted_time_diff: 10
 
-    # Specify the AttributeConsumingServiceIndex attribute in the request (default 0).
+    # AttributeConsumingServiceIndex da inserire nella AuthnRequest.
+    # Ordine di precedenza nella scelta del valore (vedi spidsaml2.authn_request):
+    #   1. 'acs_index' (qui sotto), se valorizzato -> usato per TUTTE le richieste;
+    #   2. altrimenti, se IdP == 'ficep_entity_id' -> 'ficep_default_acs_index' (99);
+    #   3. altrimenti -> 'spid_default_acs_index' se presente, altrimenti "0".
+    # Questo parametro seleziona il SET DI ATTRIBUTI richiesto (index del blocco
+    # AttributeConsumingService nei metadata), NON l'AssertionConsumerService URL.
     # acs_index: 0
+
+    # --- AssertionConsumerService index (metadata) -----------------------
+    # Override degli index (e dell'attributo isDefault) degli
+    # AssertionConsumerService pubblicati nei metadata del SP.
+    # La lista è allineata PER POSIZIONE agli endpoint definiti in
+    # service.sp.endpoints.assertion_consumer_service (vedi sotto): la 1a voce
+    # mappa il 1° ACS, la 2a il 2°, ecc.
+    # Caso d'uso: quando il backend è aggregato da un soggetto aggregatore, i
+    # singoli ACS devono puntare agli URL dell'aggregato mappati su index
+    # specifici; impostando qui gli index (e gli URL negli endpoint) si ottiene
+    # la mappatura richiesta.
+    # Se omesso valgono i default storici: index '0' (isDefault) per il primo
+    # ACS e, con ficep_enable=True, '99' e '100' per il secondo e terzo.
+    # assertion_consumer_service_indexes:
+    #   - index: 0
+    #     is_default: true
+    #   - index: 99
+    #   - index: 100
 
     service:
       sp:
@@ -151,6 +188,17 @@ config:
         #                      'expirationDate']
 
         endpoints:
+          # Ogni tupla e' [URL, binding]: definisce solo location e binding
+          # dell'AssertionConsumerService; l'attributo SAML "index" NON si
+          # configura qui. Gli index pubblicati nei metadata (0, 99, 100) sono
+          # impostati da backends/spidsaml2.py (__create_metadata):
+          #   - index 0   -> set attributi SPID standard (is_default="true")
+          #   - index 99  -> set attributi FICEP/eIDAS   (solo se ficep_enable)
+          #   - index 100 -> set attributi FICEP/eIDAS   (solo se ficep_enable)
+          # I segmenti di path "99"/"100" sono solo una convenzione di naming e
+          # NON corrispondono automaticamente all'attributo index SAML.
+          # La AuthnRequest usa SEMPRE il PRIMO endpoint (acs/post) come
+          # AssertionConsumerServiceURL, a prescindere dall'index richiesto.
           assertion_consumer_service:
           - [<base_url>/<name>/acs/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
           - [<base_url>/<name>/acs/99/post, 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']
