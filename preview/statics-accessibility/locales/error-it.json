@@ -4,8 +4,8 @@
     "description": "Errore di Autenticazione"
   },
   "header": {
-    "organization_name": "Nome Organizzazione",
-    "region_name": "Nome Organizzazione",
+    "organization_name": "Nome dell'Organizzazione",
+    "region_name": "Nome dell'Organizzazione",
     "logo_title": "Il tuo logo"
   },
   "nav": {
@@ -27,7 +27,7 @@
     "assistance_link_title": "Vai alla pagina di assistenza"
   },
   "footer": {
-    "organization_name": "Nome Organizzazione",
+    "organization_name": "Nome dell'Organizzazione",
     "tagline": "Lorem ipsum",
     "contacts": "Contatti",
     "contacts_title": "Vai alla pagina: Contatti",

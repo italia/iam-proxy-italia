@@ -141,10 +141,8 @@ function loadDocument(resource) {
   if (footerNav) footerNav.setAttribute('aria-label', resource?.footer?.nav_label ?? '');
   const noscriptMsg = document.getElementById('noscript-message');
   if (noscriptMsg) noscriptMsg.textContent = resource?.noscript?.message ?? '';
-  const tabTitle = document.getElementById('tab-title');
-  const pageTitle = resource?.titles?.page_title ?? '';
-  if (tabTitle) tabTitle.textContent = pageTitle;
-  if (pageTitle) document.title = pageTitle;
+  const pageTitleText = resource?.titles?.page_title ?? '';
+  if (pageTitleText) document.title = pageTitleText;
   const metaDescription = resource?.meta?.description ?? '';
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc && metaDescription) metaDesc.setAttribute('content', metaDescription);

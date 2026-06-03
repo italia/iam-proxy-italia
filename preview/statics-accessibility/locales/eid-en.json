@@ -14,7 +14,7 @@
     "page_title": "Autentication Method Selection Page",
     "login_logo": "Your Logo",
     "login_digital_identity": "Log in with a digital identity",
-    "login_alternative_method" : "Log in using an alternative method",
+    "login_alternative_method": "Log in using an alternative method",
     "havent_digital_identy": "Don't have a digital identity yet?",
     "find_how_to_get_digital_id": "Find out how to get it",
     "find_how_to_get_digital_id_url": "https://identitadigitale.gov.it/",
@@ -79,7 +79,7 @@
       "learn_more_descr": "CNS (Carta Nazionale dei Servizi) is the identification tool that enables citizens to access public administration services online. Use it to access services that support CNS authentication."
     },
     "idem": {
-      "name":"IDEM",
+      "name": "IDEM",
       "logo_text": "Login with IDEM",
       "logo": "img/idem.svg",
       "login_url": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_",
