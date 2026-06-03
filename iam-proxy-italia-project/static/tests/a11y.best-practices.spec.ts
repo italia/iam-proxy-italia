@@ -75,6 +75,12 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
     await page.keyboard.press("Enter");
     await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "true");
     await expect(panel).not.toHaveAttribute("hidden", "");
+    const panelLink = panel.locator("a[href]").first();
+    if (await panelLink.count()) {
+      await expect(panelLink).toBeFocused();
+    } else {
+      await expect(panel).toBeFocused();
+    }
   }
 
   const results = await new AxeBuilder({ page })

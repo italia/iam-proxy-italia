@@ -625,6 +625,20 @@ function syncLearnMoreToggleA11y(toggle, content, cardTitleId, actionId, isExpan
   }
 }
 
+/** Move focus into expanded panel so screen readers can read new content (WCAG 2.4.3). */
+function focusLearnMorePanel(content) {
+  if (!(content instanceof HTMLElement)) return;
+  const focusable = content.querySelector('a[href], button:not([disabled])');
+  if (focusable instanceof HTMLElement) {
+    focusable.focus({ preventScroll: true });
+    return;
+  }
+  if (!content.hasAttribute('tabindex')) {
+    content.setAttribute('tabindex', '-1');
+  }
+  content.focus({ preventScroll: true });
+}
+
 function createLearnMore(resource, eid, cardTitleId) {
   const toggleLabelText = eid.learn_more_toggle_label ?? resource.titles.learn_more;
   const ctaLabelText = eid.learn_more_label ?? resource.titles.find_how_to_get_digital_id ?? resource.titles.learn_more;
@@ -704,7 +718,11 @@ function createLearnMore(resource, eid, cardTitleId) {
 
     toggle.addEventListener('click', () => {
       const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-      syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, !isExpanded);
+      const nextExpanded = !isExpanded;
+      syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, nextExpanded);
+      if (nextExpanded) {
+        requestAnimationFrame(() => focusLearnMorePanel(text));
+      }
     });
 
     container.appendChild(toggle);
