@@ -404,6 +404,10 @@ class SpidSAMLBackend(SAMLBackend):
             # Imposta il consuming_service_index in base al default di ficep per le richieste ficep,
             # oppure a '0' per le richieste spid
 
+            # acs_index, ficep_default_acs_index e spid_default_acs_index
+            # scrivono lo stesso attributo; differiscono solo per scope.
+            # acs_index ha priorità ed è un override globale (vale anche per
+            # FICEP), quindi se valorizzato rende inerti gli altri due.
             acs_index = self.config["sp_config"].get("acs_index")
 
             if acs_index is not None:

@@ -96,9 +96,26 @@ config:
     #   3. altrimenti -> 'spid_default_acs_index' se presente, altrimenti "0".
     # Questo parametro seleziona il SET DI ATTRIBUTI richiesto (index del blocco
     # AttributeConsumingService nei metadata), NON l'AssertionConsumerService URL.
+    #
+    # NB (ridondanza voluta): le tre chiavi scrivono lo STESSO attributo
+    # (attribute_consuming_service_index); differiscono solo per scope.
+    # 'acs_index' è un override globale: se valorizzato rende inerti sia
+    # 'ficep_default_acs_index' sia 'spid_default_acs_index'. Per le richieste
+    # non-FICEP 'acs_index' e 'spid_default_acs_index' sono di fatto equivalenti.
+    # 'spid_default_acs_index' non è dichiarato di default (fallback nel codice "0").
     # acs_index: 0
+    # spid_default_acs_index: 0
 
     # --- AssertionConsumerService index (metadata) -----------------------
+    # ATTENZIONE: NON confondere con 'acs_index'/'ficep_default_acs_index'/
+    # 'spid_default_acs_index' qui sopra. Quelli, nonostante l'abbreviazione
+    # "acs", riguardano l'ATTRIBUTEConsumingServiceIndex inviato nella
+    # AuthnRequest (quale SET DI ATTRIBUTI chiedere all'IdP). Questa chiave
+    # riguarda invece l'ASSERTIONConsumerService, cioè gli endpoint su cui l'IdP
+    # rispedisce l'asserzione, e i relativi index pubblicati nei metadata.
+    # Sono elementi SAML distinti, agiscono su artefatti distinti
+    # (richiesta vs metadata) e non si sovrascrivono a vicenda.
+    #
     # Override degli index (e dell'attributo isDefault) degli
     # AssertionConsumerService pubblicati nei metadata del SP.
     # La lista è allineata PER POSIZIONE agli endpoint definiti in
