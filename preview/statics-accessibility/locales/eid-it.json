@@ -1,6 +1,14 @@
 {
   "header": {
-    "region_name": "Nome dell'Organizzazione"
+    "region_name": "Nome dell'Organizzazione",
+    "lang_active_hint": "lingua attiva:",
+    "lang_trigger": "Selezione lingua, {{name}} selezionata"
+  },
+  "meta": {
+    "description": "Selezione del provider di identità digitale per l'accesso ai servizi."
+  },
+  "noscript": {
+    "message": "Per usare la selezione dell'identità digitale è necessario abilitare JavaScript."
   },
   "titles": {
     "page_title": "Pagina di selezione del metodo di Autenticazione",
@@ -88,6 +96,7 @@
     }
   },
   "footer": {
+    "nav_label": "Link legali",
     "legal_notice": "Note legali",
     "privacy_policy": "Privacy Policy",
     "accessibility_statement": "Dichiarazione Accessibilità",

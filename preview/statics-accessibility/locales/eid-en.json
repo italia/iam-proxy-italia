@@ -1,6 +1,14 @@
 {
   "header": {
-    "region_name": "Organization Name"
+    "region_name": "Organization Name",
+    "lang_active_hint": "active language:",
+    "lang_trigger": "Language selection, {{name}} selected"
+  },
+  "meta": {
+    "description": "Select a digital identity provider to access services."
+  },
+  "noscript": {
+    "message": "JavaScript must be enabled to use digital identity selection."
   },
   "titles": {
     "page_title": "Autentication Method Selection Page",
@@ -86,6 +94,7 @@
     }
   },
   "footer": {
+    "nav_label": "Legal links",
     "legal_notice": "Legal notes",
     "privacy_policy": "Privacy Policy",
     "accessibility_statement": "Accessibility statement",

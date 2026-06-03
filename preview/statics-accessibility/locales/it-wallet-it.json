@@ -1,15 +1,25 @@
 {
   "header": {
-    "region_name": "Nome dell'Organizzazione"
+    "region_name": "Nome dell'Organizzazione",
+    "lang_active_hint": "lingua attiva:",
+    "lang_trigger": "Selezione lingua, {{name}} selezionata"
+  },
+  "meta": {
+    "description": "Scelta del wallet digitale per proseguire con l'autenticazione."
+  },
+  "noscript": {
+    "message": "Per usare la selezione dei wallet è necessario abilitare JavaScript."
   },
   "titles": {
     "page_title": "Scegli l'app",
     "page_subtitle": "Seleziona il portafoglio digitale con cui proseguire",
-    "logo_title": "Il tuo logo"
+    "logo_title": "Il tuo logo",
+    "wallet_brand_alt": "IT-Wallet"
   },
   "search": {
     "label": "Cerca wallet per nome",
     "placeholder": "Nome",
+    "clear_label": "Reset ricerca",
     "button": "Cerca",
     "empty_error": "Inserisci un termine di ricerca",
     "no_results": "Nessun risultato",
@@ -39,6 +49,7 @@
     "back": "Torna indietro"
   },
   "footer": {
+    "nav_label": "Link legali",
     "legal_notice": "Note legali",
     "privacy_policy": "Privacy Policy",
     "accessibility_statement": "Dichiarazione Accessibilità",

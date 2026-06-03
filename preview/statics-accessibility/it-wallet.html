@@ -32,10 +32,9 @@
           <div class="it-header-slim-right-zone">
             <div class="nav-item dropdown it-header-lang-dropdown">
               <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
-                aria-label="Selezione lingua, Italiano selezionata"
                 aria-controls="language-menu"
                 data-bs-toggle="dropdown" aria-haspopup="menu" aria-expanded="false">
-                <span class="visually-hidden">lingua attiva:</span>
+                <span id="header-lang-active-hint" class="visually-hidden">lingua attiva:</span>
                 <span class="it-header-lang-label" aria-hidden="true">ITA</span>
                 <svg class="icon icon-sm ms-1" aria-hidden="true">
                   <use href="./svg/sprites.svg#it-expand"></use>
@@ -164,20 +163,17 @@
       </div>
     </section>
     <noscript>
-      <p>Per usare la selezione dei wallet è necessario abilitare JavaScript.</p>
+      <p id="noscript-message">Per usare la selezione dei wallet è necessario abilitare JavaScript.</p>
     </noscript>
   </main>
 
   <!-- FOOTER (same structure as disco.html) -->
   <footer id="page-footer" role="contentinfo" tabindex="-1">
     <div class="container h-100 d-flex align-items-center">
-      <nav class="d-flex flex-wrap justify-content-start" aria-label="Link legali">
-        <a id="footer-legal" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener"
-          aria-label="Note legali (si apre in una nuova finestra)">Note legali</a>
-        <a id="footer-privacy" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener"
-          aria-label="Privacy (si apre in una nuova finestra)">Privacy</a>
-        <a id="footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener"
-          aria-label="Dichiarazione di accessibilità (si apre in una nuova finestra)">Dichiarazione di accessibilità</a>
+      <nav id="footer-legal-nav" class="d-flex flex-wrap justify-content-start" aria-label="Link legali">
+        <a id="footer-legal" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener">Note legali</a>
+        <a id="footer-privacy" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener">Privacy</a>
+        <a id="footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener">Dichiarazione di accessibilità</a>
       </nav>
     </div>
   </footer>

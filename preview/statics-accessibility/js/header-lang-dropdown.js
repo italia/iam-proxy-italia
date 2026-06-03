@@ -6,6 +6,7 @@
   var MENU_OFFSET_PX = 24;
 
   var LANG_DISPLAY = { it: 'Italiano', en: 'English' };
+  var boundI18next = null;
 
   function normalizeLang(lng) {
     return (lng || 'it').split('-')[0] === 'en' ? 'en' : 'it';
@@ -19,9 +20,19 @@
     return code;
   }
 
-  function triggerAriaLabel(uiCode, selectedCode) {
+  function langActiveHint(lng) {
+    if (boundI18next && typeof boundI18next.t === 'function') {
+      return boundI18next.t('header.lang_active_hint');
+    }
+    return normalizeLang(lng) === 'en' ? 'active language:' : 'lingua attiva:';
+  }
+
+  function triggerAriaLabel(selectedCode) {
     var name = LANG_DISPLAY[selectedCode] || LANG_DISPLAY.it;
-    if (uiCode === 'en') {
+    if (boundI18next && typeof boundI18next.t === 'function') {
+      return boundI18next.t('header.lang_trigger', { name: name });
+    }
+    if (selectedCode === 'en') {
       return 'Language selection, ' + name + ' selected';
     }
     return 'Selezione lingua, ' + name + ' selezionata';
@@ -59,9 +70,12 @@
     var label = root.querySelector('.it-header-lang-label');
     if (label) label.textContent = code === 'en' ? 'EN' : 'ITA';
 
+    var activeHint = root.querySelector('#header-lang-active-hint');
+    if (activeHint) activeHint.textContent = langActiveHint(code);
+
     var toggle = root.querySelector('[data-bs-toggle="dropdown"]');
     if (toggle) {
-      toggle.setAttribute('aria-label', triggerAriaLabel(code, code));
+      toggle.setAttribute('aria-label', triggerAriaLabel(code));
     }
 
     var menu = root.querySelector('.link-list');
@@ -92,6 +106,7 @@
 
   global.initHeaderLangDropdown = function (i18next, options) {
     if (!i18next || typeof i18next.changeLanguage !== 'function') return;
+    boundI18next = i18next;
     options = options || {};
     var afterChange = options.afterLanguageChange;
 
