@@ -86,6 +86,39 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 - Keys: `meta.*`, `header.organization_name`, `nav.*`, `body.*`, `footer.*`
 - Language selector in the header (EN / ITA). Script: `js/error-i18n.js` (applies to elements with `data-i18n` and `data-i18n-title`).
 
+## Accessibility (WCAG) — test locali e CI
+
+Target: **WCAG 2.2 livello AA** su `disco.html` e `it-wallet.html`.
+
+### In locale (da questa directory)
+
+```bash
+npm ci
+npx playwright install chromium
+npm run test:a11y:ci          # suite completa Playwright (axe + best-practice + reflow)
+npm run test:a11y:keyboard    # solo contratti tastiera (@keyboard)
+npm run test:a11y:reflow      # zoom/reflow 400%
+npm run test:a11y:best-practices  # best-practice axe (anche in CI come warning)
+```
+
+- **axe** (`tests/a11y.spec.ts`): tag `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa` su entrambe le pagine.
+- **best-practice / focus / status** (`tests/a11y.best-practices.spec.ts`): ARIA, focus, live region, form ricerca, menu SPID/ordinamento.
+- **reflow** (`tests/a11y.reflow.spec.ts`): assenza overflow orizzontale a 400% (viewport 320px / 256px).
+
+Documentazione: `docs/a11y-review-report.md`, checklist manuale `docs/a11y-manual-checklist.md`.
+
+### GitHub Actions
+
+Workflow [`.github/workflows/static-accessibility.yml`](../../.github/workflows/static-accessibility.yml) (si attiva su modifiche a `iam-proxy-italia-project/static/**`):
+
+| Job | Bloccante | Contenuto |
+|-----|-----------|-----------|
+| **A11y required checks** | Sì | W3C HTML (`lint:w3c:html`), axe WCAG (`test:a11y:ci`), tastiera, reflow 400% |
+| **A11y warning checks** | No | `test:a11y:best-practices` (regole axe best-practice) |
+| **A11y manual evidence** | No | Checklist artefatto per verifiche manuali (SR, esperti) |
+
+Lint HTML/CSS/JS separato: workflow **Static Lint** (`static-lint.yml`).
+
 ## Templates
 
 - **disco.html** – Identity provider discovery (wallet/SPID/CIE choice). Uses Bootstrap Italia header, `it-card` components for each wallet, and i18n for all user-facing text.
