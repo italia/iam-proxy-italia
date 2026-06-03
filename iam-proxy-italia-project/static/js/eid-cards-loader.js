@@ -354,6 +354,129 @@ function createEidCardBox(resource, eid) {
 
 const EID_SPID_DISCOVERY_MENU_ID = 'spid-idp-button-xlarge-post';
 
+function isSpidDiscoveryMenuOpen(menu, trigger) {
+  if (!(menu instanceof HTMLElement) || !(trigger instanceof HTMLElement)) return false;
+  if (!trigger.classList.contains('spid-idp-button-open')) return false;
+  return getComputedStyle(menu).display !== 'none';
+}
+
+function getSpidMenuFocusableLinks(menu) {
+  if (!(menu instanceof HTMLElement)) return [];
+  return Array.from(menu.querySelectorAll('a[href]')).filter((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return false;
+    return link.offsetParent !== null || getComputedStyle(link).display !== 'none';
+  });
+}
+
+function applySpidMenuRovingTabindex(links, activeIndex) {
+  links.forEach((link, index) => {
+    if (index === activeIndex) {
+      link.tabIndex = 0;
+    } else {
+      link.tabIndex = -1;
+    }
+  });
+}
+
+function resetSpidMenuRovingTabindex(menu) {
+  getSpidMenuFocusableLinks(menu).forEach((link) => link.removeAttribute('tabindex'));
+}
+
+function focusSpidMenuLinkByIndex(links, index) {
+  if (links.length === 0) return;
+  const safeIndex = ((index % links.length) + links.length) % links.length;
+  applySpidMenuRovingTabindex(links, safeIndex);
+  links[safeIndex].focus({ preventScroll: true });
+}
+
+function onSpidMenuOpened(menu, trigger, options = {}) {
+  const { focusLast = false } = options;
+  const links = getSpidMenuFocusableLinks(menu);
+  if (links.length === 0) return;
+  const index = focusLast ? links.length - 1 : 0;
+  focusSpidMenuLinkByIndex(links, index);
+  trigger.setAttribute('aria-expanded', 'true');
+}
+
+function handleSpidMenuArrowNavigation(event, menu, trigger) {
+  const links = getSpidMenuFocusableLinks(menu);
+  if (links.length === 0) return false;
+
+  const { key } = event;
+  const isNext = key === 'ArrowDown' || key === 'ArrowRight';
+  const isPrev = key === 'ArrowUp' || key === 'ArrowLeft';
+  if (!isNext && !isPrev && key !== 'Home' && key !== 'End') return false;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  let currentIndex = links.indexOf(document.activeElement);
+  if (currentIndex < 0 && document.activeElement === trigger) {
+    currentIndex = isPrev || key === 'End' ? 0 : -1;
+  }
+
+  if (isNext) {
+    focusSpidMenuLinkByIndex(links, currentIndex + 1);
+  } else if (isPrev) {
+    focusSpidMenuLinkByIndex(links, currentIndex <= 0 ? links.length - 1 : currentIndex - 1);
+  } else if (key === 'Home') {
+    focusSpidMenuLinkByIndex(links, 0);
+  } else if (key === 'End') {
+    focusSpidMenuLinkByIndex(links, links.length - 1);
+  }
+  return true;
+}
+
+function openSpidDiscoveryMenu(trigger, menu, options = {}) {
+  if (!(trigger instanceof HTMLElement) || !(menu instanceof HTMLElement)) return;
+  menu.style.removeProperty('display');
+  if (!trigger.classList.contains('spid-idp-button-open') && typeof window.jQuery === 'function') {
+    window.jQuery(trigger).trigger('click');
+  }
+  requestAnimationFrame(() => onSpidMenuOpened(menu, trigger, options));
+}
+
+function bindSpidMenuKeyboard(menu, trigger) {
+  if (!(menu instanceof HTMLElement) || !(trigger instanceof HTMLElement)) return;
+  if (menu.dataset.eidSpidKbBound === 'true') return;
+  menu.dataset.eidSpidKbBound = 'true';
+
+  menu.addEventListener(
+    'keydown',
+    (event) => {
+      if (!isSpidDiscoveryMenuOpen(menu, trigger)) return;
+      handleSpidMenuArrowNavigation(event, menu, trigger);
+    },
+    true
+  );
+
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') return;
+    if (isSpidDiscoveryMenuOpen(menu, trigger)) {
+      if (handleSpidMenuArrowNavigation(event, menu, trigger)) return;
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      openSpidDiscoveryMenu(trigger, menu, { focusLast: false });
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      openSpidDiscoveryMenu(trigger, menu, { focusLast: true });
+    }
+  });
+
+  if (typeof window.jQuery === 'function') {
+    window.jQuery(menu).on('show.eidSpidKb', () => {
+      if (!isSpidDiscoveryMenuOpen(menu, trigger)) return;
+      const links = getSpidMenuFocusableLinks(menu);
+      if (links.length === 0) return;
+      if (!links.includes(document.activeElement)) {
+        onSpidMenuOpened(menu, trigger);
+      }
+    });
+  }
+}
+
 function ensureEidSpidGlobalListeners() {
   if (window.__eidSpidGlobalListenersBound) return;
   window.__eidSpidGlobalListenersBound = true;
@@ -409,6 +532,7 @@ function closeEidSpidDiscoveryMenu(trigger, menuEl) {
   t.classList.remove('spid-idp-button-open');
   t.setAttribute('aria-expanded', 'false');
   m.style.setProperty('display', 'none', 'important');
+  resetSpidMenuRovingTabindex(m);
   return true;
 }
 
@@ -567,6 +691,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
       }
     });
 
+    bindSpidMenuKeyboard(menu, btn);
     ensureEidSpidGlobalListeners();
 
     return wrapper;
