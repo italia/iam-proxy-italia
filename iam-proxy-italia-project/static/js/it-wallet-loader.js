@@ -535,13 +535,17 @@ async function loadItWalletPage() {
     }
   }
 
+  function setSearchAppliedVisual(active) {
+    searchBtn?.classList.toggle('is-search-applied', !!active);
+  }
+
   function syncSearchButtonState() {
     if (searchBtn) searchBtn.disabled = false;
     const hasQuery = !!(searchInput?.value || '').trim();
     if (hasQuery) {
       clearSearchError();
-    } else if (searchBtn) {
-      searchBtn.setAttribute('aria-pressed', 'false');
+    } else {
+      setSearchAppliedVisual(false);
     }
   }
 
@@ -596,7 +600,7 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
-      searchBtn?.setAttribute('aria-pressed', 'false');
+      setSearchAppliedVisual(false);
       syncSearchButtonState();
     };
   }
@@ -610,7 +614,7 @@ async function loadItWalletPage() {
       }
       clearSearchError();
       appliedQuery = query;
-      searchBtn?.setAttribute('aria-pressed', 'true');
+      setSearchAppliedVisual(true);
       applyFiltersAndSort({ announce: true, announceContext: 'search' });
     });
   }

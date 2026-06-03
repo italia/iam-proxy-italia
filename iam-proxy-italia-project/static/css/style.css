@@ -1473,7 +1473,7 @@ html.it-wallet-html body.it-wallet-body {
   border-color: #0066cc !important;
 }
 
-#search-btn[aria-pressed='true'] {
+#search-btn.is-search-applied {
   background-color: #003366 !important;
   border-color: #003366 !important;
 }
