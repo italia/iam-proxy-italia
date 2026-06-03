@@ -280,10 +280,9 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
-  await expect(page.locator("#wallet-controls")).toHaveAttribute("role", "region");
-  await expect(page.locator("#wallet-controls")).toHaveAttribute("aria-label", /Strumenti elenco wallet/i);
-  await expect(page.locator("#wallet-search-form")).toHaveAttribute("aria-labelledby", "wallet-search-legend");
-  await expect(page.locator("#wallet-search-legend")).toHaveCount(1);
+  await expect(page.locator("#wallet-controls")).not.toHaveAttribute("role", "region");
+  await expect(page.locator("#wallet-search-legend")).toHaveCount(0);
+  await expect(page.locator("#wallet-search-form")).not.toHaveAttribute("aria-labelledby", /.+/);
   await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);
   await expect(page.locator("#wallet-search")).not.toHaveAttribute("aria-label", /.+/);
   await expect(page.locator("#search-btn")).toHaveAttribute("type", "submit");
@@ -318,35 +317,59 @@ test("@keyboard it-wallet empty search shows inline error", async ({ page }) => 
   await expect(page.locator("#wallet-search")).toHaveAttribute("aria-describedby", "wallet-search-error");
 });
 
-test("@focus it-wallet sort uses native select with visible label", async ({ page }) => {
+test("@focus it-wallet sort restores focus on trigger", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
-  const sortSelect = page.locator("#wallet-sort");
-  if (!(await sortSelect.count()) || !(await sortSelect.isVisible())) {
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
     test.skip(true, "Sort controls not visible on this viewport");
   }
 
-  await expect(page.locator("#wallet-sort-label")).toHaveAttribute("for", "wallet-sort");
-  await expect(sortSelect).not.toHaveAttribute("aria-label", /.+/);
-  await expect(page.locator("#wallet-sort-trigger")).toHaveCount(0);
-  await expect(page.locator("#wallet-sort-menu")).toHaveCount(0);
+  await sortTrigger.click();
+  await page.locator("#wallet-sort-item-az").click();
+  await expect(sortTrigger).toBeFocused();
 });
 
-test("@keyboard it-wallet sort native select changes order", async ({ page }) => {
+test("@keyboard it-wallet sort menu Escape restores focus from menu item", async ({ page }) => {
   await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
-  const sortSelect = page.locator("#wallet-sort");
-  if (!(await sortSelect.count()) || !(await sortSelect.isVisible())) {
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  const sortMenu = page.locator("#wallet-sort-menu");
+  const firstSortItem = page.locator("#wallet-sort-item-default");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
     test.skip(true, "Sort controls not visible on this viewport");
   }
 
-  const titlesBefore = await page.locator("#wallet-grid .it-wallet-card-title").allTextContents();
-  await sortSelect.selectOption("az");
-  const titlesAfter = await page.locator("#wallet-grid .it-wallet-card-title").allTextContents();
-  expect([...titlesAfter].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))).toEqual(titlesAfter);
-  expect(titlesAfter).not.toEqual(titlesBefore);
+  await sortTrigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(sortMenu).toBeVisible();
+  await firstSortItem.focus();
+  await expect(firstSortItem).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(sortMenu).toBeHidden();
+  await expect(sortTrigger).toBeFocused();
+});
+
+test("@keyboard it-wallet sort menu arrow key navigation", async ({ page }) => {
+  await page.goto("/it-wallet.html", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
+
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  const defaultItem = page.locator("#wallet-sort-item-default");
+  const azItem = page.locator("#wallet-sort-item-az");
+  if (!(await sortTrigger.count()) || !(await sortTrigger.isVisible())) {
+    test.skip(true, "Sort controls not visible on this viewport");
+  }
+
+  await sortTrigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(defaultItem).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(azItem).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await expect(defaultItem).toBeFocused();
 });
 
 test("@status it-wallet mobile search panel announces on open", async ({ page }) => {
@@ -376,11 +399,13 @@ test("@best-practice best-practice checks on it-wallet interactive controls", as
     await page.keyboard.press("Enter");
   }
 
-  const sortSelect = page.locator("#wallet-sort");
-  if ((await sortSelect.count()) && (await sortSelect.isVisible())) {
-    await sortSelect.focus();
-    await sortSelect.selectOption("az");
-    await sortSelect.selectOption("default");
+  const sortTrigger = page.locator("#wallet-sort-trigger");
+  if ((await sortTrigger.count()) && (await sortTrigger.isVisible())) {
+    await sortTrigger.focus();
+    await page.keyboard.press("Enter");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Escape");
+    await expect(sortTrigger).toBeFocused();
   }
 
   const searchInput = page.locator("#wallet-search");

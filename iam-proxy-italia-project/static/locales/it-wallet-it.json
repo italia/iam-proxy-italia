@@ -9,8 +9,7 @@
   },
   "search": {
     "label": "Cerca wallet per nome",
-    "form_label": "Ricerca wallet",
-    "placeholder": "Cerca per nome",
+    "placeholder": "Nome",
     "button": "Cerca",
     "empty_error": "Inserisci un termine di ricerca",
     "no_results": "Nessun risultato",
@@ -28,9 +27,6 @@
     "az": "Alfabetico A-Z",
     "za": "Alfabetico Z-A",
     "trigger_label": "Ordina wallet"
-  },
-  "controls": {
-    "label": "Strumenti elenco wallet"
   },
   "loading": {
     "in_progress": "Caricamento in corso...",

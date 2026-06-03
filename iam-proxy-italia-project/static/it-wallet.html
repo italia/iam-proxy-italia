@@ -114,12 +114,9 @@
     <p class="text-center mb-4 it-wallet-subtitle" id="page-subtitle">Seleziona il portafoglio digitale con cui proseguire</p>
 
     <section class="it-wallet-layout-surface" aria-labelledby="page-title">
-      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4" role="region"
-        aria-label="Strumenti elenco wallet">
-        <form id="wallet-search-form" class="it-wallet-search-form" role="search"
-          aria-labelledby="wallet-search-legend">
-          <fieldset class="it-wallet-search-fieldset">
-            <legend id="wallet-search-legend" class="visually-hidden">Ricerca wallet</legend>
+      <div id="wallet-controls" class="it-wallet-controls it-wallet-controls-panel mb-4">
+        <form id="wallet-search-form" class="it-wallet-search-form" role="search">
+          <div class="it-wallet-search-fieldset">
             <div class="it-wallet-search-group">
               <label for="wallet-search" class="visually-hidden" id="wallet-search-label">Cerca wallet per nome</label>
               <span class="it-wallet-search-icon" aria-hidden="true">
@@ -128,7 +125,7 @@
                 </svg>
               </span>
               <input type="search" id="wallet-search" name="q" class="form-control"
-                placeholder="Cerca per Nome" autocomplete="off" enterkeyhint="search">
+                placeholder="Nome" autocomplete="off" enterkeyhint="search">
               <button class="it-wallet-search-clear d-none" type="button" id="search-clear-btn"
                 aria-label="Reset ricerca">
                 <img src="/static/img/it-wallet-clear-x.svg" class="it-wallet-search-clear-icon" alt=""
@@ -138,17 +135,26 @@
             <button class="btn btn-primary btn-sm" type="submit" id="search-btn"
               data-i18n="search.button">Cerca</button>
             <p id="wallet-search-error" class="it-wallet-search-error" role="alert" hidden></p>
-          </fieldset>
+          </div>
         </form>
         <div class="it-wallet-sort-wrap">
-          <div class="select-wrapper">
-            <label for="wallet-sort" id="wallet-sort-label">Ordina wallet</label>
-            <select id="wallet-sort">
-              <option value="default">Ordine predefinito</option>
-              <option value="az">Alfabetico A-Z</option>
-              <option value="za">Alfabetico Z-A</option>
-            </select>
+          <button type="button" id="wallet-sort-trigger" class="it-wallet-sort-trigger" aria-haspopup="menu"
+            aria-expanded="false" aria-controls="wallet-sort-menu" aria-label="Ordina wallet">
+            <img src="/static/img/it-wallet-sort-icon.svg" class="it-wallet-sort-icon" alt="" aria-hidden="true">
+          </button>
+          <div id="wallet-sort-menu" class="it-wallet-sort-menu" role="menu" aria-labelledby="wallet-sort-trigger" hidden>
+            <button type="button" class="it-wallet-sort-menu-item is-active" role="menuitemradio" aria-checked="true"
+              data-value="default" id="wallet-sort-item-default">Ordine predefinito</button>
+            <button type="button" class="it-wallet-sort-menu-item" role="menuitemradio" aria-checked="false"
+              data-value="az" id="wallet-sort-item-az">Alfabetico A-Z</button>
+            <button type="button" class="it-wallet-sort-menu-item" role="menuitemradio" aria-checked="false"
+              data-value="za" id="wallet-sort-item-za">Alfabetico Z-A</button>
           </div>
+          <select id="wallet-sort" class="it-wallet-sort-native" tabindex="-1" aria-hidden="true">
+            <option value="default">Ordine predefinito</option>
+            <option value="az">Alfabetico A-Z</option>
+            <option value="za">Alfabetico Z-A</option>
+          </select>
         </div>
       </div>
 
