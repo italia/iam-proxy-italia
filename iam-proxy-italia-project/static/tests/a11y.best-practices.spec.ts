@@ -25,9 +25,12 @@ test("@i18n disco html lang updates on language change", async ({ page }) => {
   await page.locator("#languagesDropButton").click();
   await page.locator(".it-lang-option[data-lang='en']").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator("#skip-main")).toHaveText(/Skip to main content/i);
+  await expect(page.locator("#footer-legal-nav")).toHaveAttribute("aria-label", /Legal links/i);
   await page.locator("#languagesDropButton").click();
   await page.locator(".it-lang-option[data-lang='it']").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "it");
+  await expect(page.locator("#skip-main")).toHaveText(/Vai al contenuto principale/i);
 });
 
 test("@best-practice best-practice checks on disco dynamic sections", async ({ page }) => {
@@ -261,6 +264,8 @@ test("@i18n it-wallet html lang updates on language change", async ({ page }) =>
   await page.locator("#languagesDropButton").click();
   await page.locator(".it-lang-option[data-lang='en']").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator("#skip-main")).toHaveText(/Skip to main content/i);
+  await expect(page.locator("#search-clear-btn")).toHaveAttribute("aria-label", /Clear search/i);
 });
 
 test("@focus it-wallet initial load does not move focus to heading or search", async ({ page }) => {

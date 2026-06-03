@@ -1,15 +1,25 @@
 {
   "header": {
-    "region_name": "Organization Name"
+    "region_name": "Organization Name",
+    "lang_active_hint": "active language:",
+    "lang_trigger": "Language selection, {{name}} selected"
+  },
+  "meta": {
+    "description": "Choose a digital wallet to continue with authentication."
+  },
+  "noscript": {
+    "message": "JavaScript must be enabled to use wallet selection."
   },
   "titles": {
     "page_title": "Choose the app",
     "page_subtitle": "Select the digital wallet to continue",
-    "logo_title": "Your logo"
+    "logo_title": "Your logo",
+    "wallet_brand_alt": "IT-Wallet"
   },
   "search": {
     "label": "Search wallet by name",
     "placeholder": "Name",
+    "clear_label": "Clear search",
     "button": "Search",
     "empty_error": "Enter a search term",
     "no_results": "No results",
@@ -39,6 +49,7 @@
     "back": "Back"
   },
   "footer": {
+    "nav_label": "Legal links",
     "legal_notice": "Legal notes",
     "privacy_policy": "Privacy Policy",
     "accessibility_statement": "Accessibility statement",

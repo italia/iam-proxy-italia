@@ -158,6 +158,10 @@ function loadDocument(resource) {
   setFooterLink(footerLegal, resource?.footer?.legal_notice ?? '');
   setFooterLink(footerPrivacy, resource?.footer?.privacy_policy ?? '');
   setFooterLink(footerAccess, resource?.footer?.accessibility_statement ?? '');
+  const footerNav = document.getElementById('footer-legal-nav');
+  if (footerNav) footerNav.setAttribute('aria-label', resource?.footer?.nav_label ?? '');
+  const noscriptMsg = document.getElementById('noscript-message');
+  if (noscriptMsg) noscriptMsg.textContent = resource?.noscript?.message ?? '';
   const tabTitle = document.getElementById("tab-title");
   const pageTitle = resource?.titles?.page_title ?? '';
   if (tabTitle && tabTitle.textContent !== pageTitle) {
@@ -166,9 +170,10 @@ function loadDocument(resource) {
   if (pageTitle && document.title !== pageTitle) {
     document.title = pageTitle;
   }
+  const metaDescription = resource?.meta?.description ?? '';
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc && pageTitle && metaDesc.getAttribute('content') !== pageTitle) {
-    metaDesc.setAttribute('content', pageTitle);
+  if (metaDesc && metaDescription && metaDesc.getAttribute('content') !== metaDescription) {
+    metaDesc.setAttribute('content', metaDescription);
   }
 }
 

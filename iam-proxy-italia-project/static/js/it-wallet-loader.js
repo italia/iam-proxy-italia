@@ -89,10 +89,18 @@ function loadDocument(resource) {
   if (searchToggle) {
     searchToggle.setAttribute('aria-label', resource?.search?.toggle_open ?? 'Apri ricerca e ordinamento wallet');
   }
+  const searchClearBtn = document.getElementById('search-clear-btn');
+  if (searchClearBtn) {
+    searchClearBtn.setAttribute('aria-label', resource?.search?.clear_label ?? 'Reset ricerca');
+  }
   const searchBtn = document.getElementById('search-btn');
   const searchError = document.getElementById('wallet-search-error');
   if (searchBtn) searchBtn.textContent = resource?.search?.button ?? 'Cerca';
   if (searchError) searchError.textContent = resource?.search?.empty_error ?? 'Inserisci un termine di ricerca';
+  const walletNavbarLogo = document.querySelector('.it-wallet-navbar-logo');
+  if (walletNavbarLogo) {
+    walletNavbarLogo.setAttribute('alt', resource?.titles?.wallet_brand_alt ?? 'IT-Wallet');
+  }
   const sortSelect = document.getElementById('wallet-sort');
   if (sortSelect) {
     const options = sortSelect.options;
@@ -129,6 +137,17 @@ function loadDocument(resource) {
   setFooterLink(footerLegal, resource?.footer?.legal_notice ?? '');
   setFooterLink(footerPrivacy, resource?.footer?.privacy_policy ?? '');
   setFooterLink(footerAccess, resource?.footer?.accessibility_statement ?? '');
+  const footerNav = document.getElementById('footer-legal-nav');
+  if (footerNav) footerNav.setAttribute('aria-label', resource?.footer?.nav_label ?? '');
+  const noscriptMsg = document.getElementById('noscript-message');
+  if (noscriptMsg) noscriptMsg.textContent = resource?.noscript?.message ?? '';
+  const tabTitle = document.getElementById('tab-title');
+  const pageTitle = resource?.titles?.page_title ?? '';
+  if (tabTitle) tabTitle.textContent = pageTitle;
+  if (pageTitle) document.title = pageTitle;
+  const metaDescription = resource?.meta?.description ?? '';
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc && metaDescription) metaDesc.setAttribute('content', metaDescription);
 }
 
 function shuffleWallets(wallets) {

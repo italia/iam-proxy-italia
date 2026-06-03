@@ -73,12 +73,12 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 ### Discovery page (`disco.html`)
 
 - `locales/eid-it.json`, `locales/eid-en.json`
-- Keys: `header.*`, `titles.*`, `loading.*`, `digital_id.*`, `alternative_id.*`, `footer.*`, `skip_links.*`
+- Keys: `header.*` (incl. `lang_active_hint`, `lang_trigger`), `titles.*`, `meta.*`, `noscript.*`, `loading.*`, `digital_id.*`, `alternative_id.*`, `footer.*` (incl. `nav_label`), `skip_links.*`
 - Loader: `js/eid-cards-loader.js` (`loadPath: locales/eid-{{lng}}.json`)
 
 ### IT-Wallet page (`it-wallet.html`)
 
-- `locales/it-wallet-it.json`, `locales/it-wallet-en.json`
+- `locales/it-wallet-it.json`, `locales/it-wallet-en.json` — stesse convenzioni (`header`, `meta`, `noscript`, `footer`, `skip_links`, `search.clear_label`, …)
 
 ### Error page (`error_page.html`)
 
