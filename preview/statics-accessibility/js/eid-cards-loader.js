@@ -252,7 +252,9 @@ function loadEidCards(resource) {
     altWrapper.setAttribute('aria-labelledby', hasDigitalSection ? altTitleId : 'eid-selection-title');
     altSection.appendChild(title);
 
-    createEidCardsRow(resource, "alternative_id", altSection);
+    createEidCardsRow(resource, 'alternative_id', altSection, {
+      cardHeadingLevel: hasDigitalSection ? 3 : 2,
+    });
     altWrapper.appendChild(altSection);
     const authMethods = document.getElementById('auth-methods');
     (authMethods || container.closest('main'))?.appendChild(altWrapper);
@@ -265,7 +267,8 @@ function loadEidCards(resource) {
 }
 
 // ----------------------- Create Eid Cards Row -----------------------
-function createEidCardsRow(resource, id_key, container) {
+function createEidCardsRow(resource, id_key, container, options = {}) {
+  const cardHeadingLevel = options.cardHeadingLevel ?? 2;
   const listLabel = id_key === 'alternative_id'
     ? (resource?.titles?.login_alternative_method ?? '')
     : (resource?.titles?.login_digital_identity ?? '');
@@ -277,7 +280,7 @@ function createEidCardsRow(resource, id_key, container) {
   entries.forEach((eid) => {
     const col = document.createElement('li');
     col.className = 'col-12 col-md-3 mb-3 mb-md-4 eid-card-col';
-    col.appendChild(createEidCardBox(resource, eid));
+    col.appendChild(createEidCardBox(resource, eid, cardHeadingLevel));
     row.appendChild(col);
   });
   container.appendChild(row);
@@ -319,12 +322,13 @@ function getEidEntriesForRow(entriesObj) {
 }
 
 // ----------------------- Eid Card Box (Bootstrap Italia it-card) -----------------------
-function createEidCardBox(resource, eid) {
+function createEidCardBox(resource, eid, headingLevel = 2) {
   // Bootstrap Italia card: https://italia.github.io/bootstrap-italia/docs/componenti/card/
   const card = document.createElement('article');
   card.className = 'it-card shadow';
 
-  const title = document.createElement('h2');
+  const safeLevel = Math.min(6, Math.max(2, headingLevel));
+  const title = document.createElement(`h${safeLevel}`);
   title.className = 'it-card-title mb-3 h4';
   title.id = `eid-card-title-${eidCardSlug(eid)}`;
   title.textContent = eid.name;
@@ -353,6 +357,129 @@ function createEidCardBox(resource, eid) {
 }
 
 const EID_SPID_DISCOVERY_MENU_ID = 'spid-idp-button-xlarge-post';
+
+function isSpidDiscoveryMenuOpen(menu, trigger) {
+  if (!(menu instanceof HTMLElement) || !(trigger instanceof HTMLElement)) return false;
+  if (!trigger.classList.contains('spid-idp-button-open')) return false;
+  return getComputedStyle(menu).display !== 'none';
+}
+
+function getSpidMenuFocusableLinks(menu) {
+  if (!(menu instanceof HTMLElement)) return [];
+  return Array.from(menu.querySelectorAll('a[href]')).filter((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return false;
+    return link.offsetParent !== null || getComputedStyle(link).display !== 'none';
+  });
+}
+
+function applySpidMenuRovingTabindex(links, activeIndex) {
+  links.forEach((link, index) => {
+    if (index === activeIndex) {
+      link.tabIndex = 0;
+    } else {
+      link.tabIndex = -1;
+    }
+  });
+}
+
+function resetSpidMenuRovingTabindex(menu) {
+  getSpidMenuFocusableLinks(menu).forEach((link) => link.removeAttribute('tabindex'));
+}
+
+function focusSpidMenuLinkByIndex(links, index) {
+  if (links.length === 0) return;
+  const safeIndex = ((index % links.length) + links.length) % links.length;
+  applySpidMenuRovingTabindex(links, safeIndex);
+  links[safeIndex].focus({ preventScroll: true });
+}
+
+function onSpidMenuOpened(menu, trigger, options = {}) {
+  const { focusLast = false } = options;
+  const links = getSpidMenuFocusableLinks(menu);
+  if (links.length === 0) return;
+  const index = focusLast ? links.length - 1 : 0;
+  focusSpidMenuLinkByIndex(links, index);
+  trigger.setAttribute('aria-expanded', 'true');
+}
+
+function handleSpidMenuArrowNavigation(event, menu, trigger) {
+  const links = getSpidMenuFocusableLinks(menu);
+  if (links.length === 0) return false;
+
+  const { key } = event;
+  const isNext = key === 'ArrowDown' || key === 'ArrowRight';
+  const isPrev = key === 'ArrowUp' || key === 'ArrowLeft';
+  if (!isNext && !isPrev && key !== 'Home' && key !== 'End') return false;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  let currentIndex = links.indexOf(document.activeElement);
+  if (currentIndex < 0 && document.activeElement === trigger) {
+    currentIndex = isPrev || key === 'End' ? 0 : -1;
+  }
+
+  if (isNext) {
+    focusSpidMenuLinkByIndex(links, currentIndex + 1);
+  } else if (isPrev) {
+    focusSpidMenuLinkByIndex(links, currentIndex <= 0 ? links.length - 1 : currentIndex - 1);
+  } else if (key === 'Home') {
+    focusSpidMenuLinkByIndex(links, 0);
+  } else if (key === 'End') {
+    focusSpidMenuLinkByIndex(links, links.length - 1);
+  }
+  return true;
+}
+
+function openSpidDiscoveryMenu(trigger, menu, options = {}) {
+  if (!(trigger instanceof HTMLElement) || !(menu instanceof HTMLElement)) return;
+  menu.style.removeProperty('display');
+  if (!trigger.classList.contains('spid-idp-button-open') && typeof window.jQuery === 'function') {
+    window.jQuery(trigger).trigger('click');
+  }
+  requestAnimationFrame(() => onSpidMenuOpened(menu, trigger, options));
+}
+
+function bindSpidMenuKeyboard(menu, trigger) {
+  if (!(menu instanceof HTMLElement) || !(trigger instanceof HTMLElement)) return;
+  if (menu.dataset.eidSpidKbBound === 'true') return;
+  menu.dataset.eidSpidKbBound = 'true';
+
+  menu.addEventListener(
+    'keydown',
+    (event) => {
+      if (!isSpidDiscoveryMenuOpen(menu, trigger)) return;
+      handleSpidMenuArrowNavigation(event, menu, trigger);
+    },
+    true
+  );
+
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') return;
+    if (isSpidDiscoveryMenuOpen(menu, trigger)) {
+      if (handleSpidMenuArrowNavigation(event, menu, trigger)) return;
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      openSpidDiscoveryMenu(trigger, menu, { focusLast: false });
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      openSpidDiscoveryMenu(trigger, menu, { focusLast: true });
+    }
+  });
+
+  if (typeof window.jQuery === 'function') {
+    window.jQuery(menu).on('show.eidSpidKb', () => {
+      if (!isSpidDiscoveryMenuOpen(menu, trigger)) return;
+      const links = getSpidMenuFocusableLinks(menu);
+      if (links.length === 0) return;
+      if (!links.includes(document.activeElement)) {
+        onSpidMenuOpened(menu, trigger);
+      }
+    });
+  }
+}
 
 function ensureEidSpidGlobalListeners() {
   if (window.__eidSpidGlobalListenersBound) return;
@@ -409,6 +536,7 @@ function closeEidSpidDiscoveryMenu(trigger, menuEl) {
   t.classList.remove('spid-idp-button-open');
   t.setAttribute('aria-expanded', 'false');
   m.style.setProperty('display', 'none', 'important');
+  resetSpidMenuRovingTabindex(m);
   return true;
 }
 
@@ -567,6 +695,7 @@ function createLogoButton(eid, _hasLearnMore = false) {
       }
     });
 
+    bindSpidMenuKeyboard(menu, btn);
     ensureEidSpidGlobalListeners();
 
     return wrapper;
@@ -623,6 +752,20 @@ function syncLearnMoreToggleA11y(toggle, content, cardTitleId, actionId, isExpan
   } else {
     content.setAttribute('hidden', '');
   }
+}
+
+/** Move focus into expanded panel so screen readers can read new content (WCAG 2.4.3). */
+function focusLearnMorePanel(content) {
+  if (!(content instanceof HTMLElement)) return;
+  const focusable = content.querySelector('a[href], button:not([disabled])');
+  if (focusable instanceof HTMLElement) {
+    focusable.focus({ preventScroll: true });
+    return;
+  }
+  if (!content.hasAttribute('tabindex')) {
+    content.setAttribute('tabindex', '-1');
+  }
+  content.focus({ preventScroll: true });
 }
 
 function createLearnMore(resource, eid, cardTitleId) {
@@ -704,7 +847,11 @@ function createLearnMore(resource, eid, cardTitleId) {
 
     toggle.addEventListener('click', () => {
       const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-      syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, !isExpanded);
+      const nextExpanded = !isExpanded;
+      syncLearnMoreToggleA11y(toggle, text, resolvedCardTitleId, actionId, nextExpanded);
+      if (nextExpanded) {
+        requestAnimationFrame(() => focusLearnMorePanel(text));
+      }
     });
 
     container.appendChild(toggle);

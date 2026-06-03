@@ -80,11 +80,7 @@ function loadDocument(resource) {
 
   const searchInput = document.getElementById('wallet-search');
   const searchLabel = document.getElementById('wallet-search-label');
-  const searchLegend = document.getElementById('wallet-search-legend');
-  const searchForm = document.getElementById('wallet-search-form');
-  if (searchLegend) searchLegend.textContent = resource?.search?.form_label ?? 'Ricerca wallet';
   if (searchLabel) searchLabel.textContent = resource?.search?.label ?? 'Cerca wallet per nome';
-  if (searchForm) searchForm.setAttribute('aria-labelledby', 'wallet-search-legend');
   if (searchInput) {
     searchInput.removeAttribute('aria-label');
     searchInput.placeholder = resource?.search?.placeholder ?? 'Cerca per nome';
@@ -113,11 +109,6 @@ function loadDocument(resource) {
   const sortTrigger = document.getElementById('wallet-sort-trigger');
   const sortLabel = resource?.sort?.trigger_label ?? 'Ordina wallet';
   if (sortTrigger) sortTrigger.setAttribute('aria-label', sortLabel);
-  if (sortSelect) sortSelect.setAttribute('aria-label', sortLabel);
-  const walletControls = document.getElementById('wallet-controls');
-  if (walletControls) {
-    walletControls.setAttribute('aria-label', resource?.controls?.label ?? 'Strumenti elenco wallet');
-  }
   const backLink = document.getElementById('back-link');
   const backText = resource?.nav?.back ?? 'Torna indietro';
   if (backLink) backLink.setAttribute('aria-label', backText);
@@ -535,13 +526,17 @@ async function loadItWalletPage() {
     }
   }
 
+  function setSearchAppliedVisual(active) {
+    searchBtn?.classList.toggle('is-search-applied', !!active);
+  }
+
   function syncSearchButtonState() {
     if (searchBtn) searchBtn.disabled = false;
     const hasQuery = !!(searchInput?.value || '').trim();
     if (hasQuery) {
       clearSearchError();
-    } else if (searchBtn) {
-      searchBtn.setAttribute('aria-pressed', 'false');
+    } else {
+      setSearchAppliedVisual(false);
     }
   }
 
@@ -596,7 +591,7 @@ async function loadItWalletPage() {
   if (searchInput) {
     searchInput.oninput = () => {
       searchClearBtn?.classList.toggle('d-none', !(searchInput.value || '').trim());
-      searchBtn?.setAttribute('aria-pressed', 'false');
+      setSearchAppliedVisual(false);
       syncSearchButtonState();
     };
   }
@@ -610,7 +605,7 @@ async function loadItWalletPage() {
       }
       clearSearchError();
       appliedQuery = query;
-      searchBtn?.setAttribute('aria-pressed', 'true');
+      setSearchAppliedVisual(true);
       applyFiltersAndSort({ announce: true, announceContext: 'search' });
     });
   }
@@ -755,7 +750,6 @@ async function loadItWalletPage() {
       }
     });
   }
-
   if (isWalletDesktopLayout()) resetMobilePanelForDesktop();
   else {
     syncMobilePanelUi(false);

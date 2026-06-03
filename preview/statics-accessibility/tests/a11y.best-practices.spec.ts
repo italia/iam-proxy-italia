@@ -75,6 +75,12 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
     await page.keyboard.press("Enter");
     await expect(learnMoreToggle).toHaveAttribute("aria-expanded", "true");
     await expect(panel).not.toHaveAttribute("hidden", "");
+    const panelLink = panel.locator("a[href]").first();
+    if (await panelLink.count()) {
+      await expect(panelLink).toBeFocused();
+    } else {
+      await expect(panel).toBeFocused();
+    }
   }
 
   const results = await new AxeBuilder({ page })
@@ -83,6 +89,23 @@ test("@best-practice best-practice checks on disco dynamic sections", async ({ p
 
   const summary = summarizeViolations(results);
   expect(summary, JSON.stringify(summary, null, 2)).toEqual([]);
+});
+
+test("@structure disco alternative cards use h3 under section h2", async ({ page }) => {
+  await page.goto("/disco.html", { waitUntil: "networkidle" });
+
+  const altSection = page.locator("#eid-alternative-section");
+  if (!(await altSection.count())) {
+    test.skip(true, "No alternative methods section in locale config");
+  }
+
+  await expect(altSection.locator("#eid-alternative-title")).toHaveRole("heading", { level: 2 });
+  const altCardTitles = altSection.locator("article.it-card .it-card-title");
+  await expect(altCardTitles.first()).toHaveRole("heading", { level: 3 });
+  const digitalCards = page.locator("#eid-cards-container .it-card .it-card-title");
+  if (await digitalCards.count()) {
+    await expect(digitalCards.first()).toHaveRole("heading", { level: 2 });
+  }
 });
 
 test("@keyboard spid menu stays closed during Tab-only navigation", async ({ page }) => {
@@ -142,6 +165,45 @@ test("@keyboard spid menu opens only with Enter or Space", async ({ page }) => {
   await expect(spidMenu).toBeHidden();
 });
 
+test("@keyboard spid menu arrow keys move focus between IdP links", async ({ page }) => {
+  await page.goto("/disco.html", { waitUntil: "networkidle" });
+
+  const spidTrigger = page.locator("[spid-idp-button]").first();
+  const spidMenu = page.locator("#spid-idp-button-xlarge-post");
+  const idpLinks = spidMenu.locator("a[href]");
+  await expect(spidTrigger).toBeVisible();
+  await expect(idpLinks.first()).toBeAttached();
+
+  for (let i = 0; i < 40; i += 1) {
+    await page.keyboard.press("Tab");
+    if (await spidTrigger.evaluate((el) => document.activeElement === el)) break;
+  }
+  await expect(spidTrigger).toBeFocused();
+
+  await page.keyboard.press("Enter");
+  await expect(spidMenu).toBeVisible();
+  await expect(idpLinks.first()).toBeFocused();
+
+  await page.keyboard.press("ArrowDown");
+  await expect(idpLinks.nth(1)).toBeFocused();
+
+  await page.keyboard.press("ArrowRight");
+  await expect(idpLinks.nth(2)).toBeFocused();
+
+  await page.keyboard.press("ArrowLeft");
+  await expect(idpLinks.nth(1)).toBeFocused();
+
+  await page.keyboard.press("ArrowUp");
+  await expect(idpLinks.first()).toBeFocused();
+
+  await page.keyboard.press("End");
+  const lastIndex = (await idpLinks.count()) - 1;
+  await expect(idpLinks.nth(lastIndex)).toBeFocused();
+
+  await page.keyboard.press("Home");
+  await expect(idpLinks.first()).toBeFocused();
+});
+
 test("@keyboard spid menu closes with Escape when focus is inside IdP entries", async ({ page }) => {
   await page.goto("/disco.html", { waitUntil: "networkidle" });
 
@@ -159,13 +221,12 @@ test("@keyboard spid menu closes with Escape when focus is inside IdP entries", 
   await page.keyboard.press("Enter");
   await expect(spidTrigger).toHaveClass(/spid-idp-button-open/);
   await expect(spidMenu).toBeVisible();
-
-  await page.keyboard.press("Tab");
   await expect(firstIdpLink).toBeFocused();
 
   await page.keyboard.press("Escape");
   await expect(spidTrigger).not.toHaveClass(/spid-idp-button-open/);
   await expect(spidMenu).toBeHidden();
+  await expect(spidTrigger).toBeFocused();
 });
 
 test("@keyboard cie menu opens with Enter/Space and closes with Escape", async ({ page }) => {
@@ -219,10 +280,9 @@ test("@status it-wallet search announces result count", async ({ page }) => {
   await page.waitForFunction(() => document.getElementById("wallet-grid")?.children.length > 0);
 
   await expect(page.locator("#wallet-search-form")).toHaveAttribute("role", "search");
-  await expect(page.locator("#wallet-controls")).toHaveAttribute("role", "region");
-  await expect(page.locator("#wallet-controls")).toHaveAttribute("aria-label", /Strumenti elenco wallet/i);
-  await expect(page.locator("#wallet-search-form")).toHaveAttribute("aria-labelledby", "wallet-search-legend");
-  await expect(page.locator("#wallet-search-legend")).toHaveCount(1);
+  await expect(page.locator("#wallet-controls")).not.toHaveAttribute("role", "region");
+  await expect(page.locator("#wallet-search-legend")).toHaveCount(0);
+  await expect(page.locator("#wallet-search-form")).not.toHaveAttribute("aria-labelledby", /.+/);
   await expect(page.locator("label[for='wallet-search']")).toHaveCount(1);
   await expect(page.locator("#wallet-search")).not.toHaveAttribute("aria-label", /.+/);
   await expect(page.locator("#search-btn")).toHaveAttribute("type", "submit");
