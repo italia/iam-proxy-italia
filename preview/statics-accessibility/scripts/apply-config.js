@@ -172,7 +172,7 @@ function errorHeaderLogoSvg() {
   return (
     '<svg class="icon icon-lg me-2" aria-hidden="true">\n' +
     '              <!-- YOUR LOGO HERE (same as disco) -->\n' +
-    '              <use xlink:href="svg/sprites.svg#it-code-circle"></use>\n' +
+    '              <use href="svg/sprites.svg#it-code-circle"></use>\n' +
     '            </svg>'
   );
 }

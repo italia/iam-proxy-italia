@@ -198,12 +198,13 @@ Both the discovery page and the error page use [i18next](https://www.i18next.com
 ### Error page (`error_page.html`)
 
 - `locales/error-en.json`, `locales/error-it.json`
-- Keys: `meta.*`, `header.organization_name`, `nav.*`, `body.*`, `footer.*`
-- Language selector in the header (EN / ITA). Script: `js/error-i18n.js` (applies to elements with `data-i18n` and `data-i18n-title`).
+- Keys: `meta.*`, `skip_links.*`, `noscript.*`, `header.*` (incl. `lang_trigger`), `body.*`, `footer.*` (incl. `nav_label`, `new_window_hint`)
+- Script: `js/error-i18n.js` + `js/header-lang-dropdown.js` (elementi con `data-i18n`, `data-i18n-aria-label`, `data-i18n-newwindow`)
+- Stesse pratiche a11y di disco/it-wallet: skip link, landmark (`main` / `footer`), menu lingua accessibile, link esterni con hint nuova finestra, icona errore decorativa, `noscript` i18n
 
 ## Accessibility (WCAG) — test locali e CI
 
-Target: **WCAG 2.2 livello AA** su `disco.html` e `it-wallet.html`.
+Target: **WCAG 2.2 livello AA** su `disco.html`, `it-wallet.html` e `error_page.html`.
 
 ### In locale (da questa directory)
 
