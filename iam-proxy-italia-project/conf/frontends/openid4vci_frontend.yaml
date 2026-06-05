@@ -667,7 +667,7 @@ config:
       ttl: 43200
     credential_specification:
       dc_sd_jwt_pid:
-        trust_framework: it_cie
+        trust_framework: it_wallet
         assurance_level: high
         expiry_days: 365
         template: |
@@ -735,6 +735,7 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
+        include_issued_jwt_header_param: true #include trust_chain header in the issued jwt
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
@@ -772,6 +773,7 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
+        include_issued_jwt_header_param: true #include x5c header in the issued jwt
         issuer_id: "x509_san_dns:iam-proxy-italia.example.org"
         certificate_authorities:
           ca.example.com: |
