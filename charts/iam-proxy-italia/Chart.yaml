@@ -9,6 +9,6 @@ appVersion: "v3.3"
 
 dependencies:
   - name: mongodb
-    version: 18.6.0
+    version: 19.1.6
     repository: "https://charts.bitnami.com/bitnami"
     condition: mongodb.enabled
