@@ -194,6 +194,7 @@ class CieOidcBackend(BackendModule):
         httpc_params = self.config["trust_chain"]["config"]["httpc_params"]
         providers = self.config["providers"]
         trust_chains = dict()
+        trust_anchor_ec = None
 
         for provider_url in providers:
             # try load from DB

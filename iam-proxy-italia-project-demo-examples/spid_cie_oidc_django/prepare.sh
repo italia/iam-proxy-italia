@@ -1,15 +1,16 @@
 #!/bin/bash
+set -e
 
 MODULE_NAME=$1 #folder name for spid_cie_oidc_django module (provider or federation_authority)
 
-# Configure the rewrite rules:
-SUB_AT="s,http://127.0.0.1:8000,${TRUST_ANCHOR_URL},g"
-SUB_RP="s,http://127.0.0.1:8001,${RP_URL},g"
-SUB_OP="s,http://127.0.0.1:8002,${PROVIDER_URL},g"
+DUMP_FILE="./dumps/example.json"
+if [ ! -f "$DUMP_FILE" ]; then
+  echo "ERROR: dump not found at $DUMP_FILE (cwd=$(pwd))"
+  exit 1
+fi
 
 # remove dev db
-rm -f "./${MODULE_NAME}/db.sqlite3"
+rm -f "./${MODULE_NAME}/db.sqlite3" ./db.sqlite3 2>/dev/null || true
 
-# Apply the rewrite rules:
-sed -e $SUB_AT -e $SUB_RP -e $SUB_OP "./examples/dump.json" > ./dumps/example.json
-sed -e $SUB_AT -e $SUB_RP -e $SUB_OP "./examples/settingslocal.py" > "./${MODULE_NAME}/settingslocal.py"
+# Replace placeholders using Python (reliable across environments)
+python3 /prepare_dump.py "$DUMP_FILE"

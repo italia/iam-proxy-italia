@@ -2,21 +2,28 @@
 set -e
 
 URL=$1 #url for .well-known req
+URL="${URL%/}"  # strip trailing slash to avoid double slash in path
 
-WGET_OPTS="--timeout=5 --tries=1 --no-check-certificate --spider --server-response"
-
+# Use Python (available in Django base image) instead of wget
 function check_url {
   local url=$1
-  local output http_status
-  # wget exits non-zero on non-2xx; capture output anyway so we can enforce status == 200
-  output=$(wget $WGET_OPTS "$url" 2>&1) || true
-  http_status=$(echo "$output" | awk '/HTTP\// {code=$2} END {print code}')
-  http_status=$(echo "$http_status" | tr -d '\r[:space:]')
-  if [[ "$http_status" != "200" ]]; then
-    echo "Error: expected HTTP 200 from $url, got '${http_status:-empty}'"
+  if ! python3 -c "
+import urllib.request
+import sys
+try:
+    r = urllib.request.urlopen(sys.argv[1], timeout=5)
+    status = r.getcode()
+    sys.exit(0 if 200 <= status < 400 else 1)
+except Exception:
+    sys.exit(1)
+" "$url" 2>/dev/null; then
+    echo "Error: health check failed for $url"
     exit 1
   fi
 }
 
-check_url "${URL}/.well-known/openid-federation"
+# Build URL and collapse any double slashes in path (preserve :// scheme delimiter)
+CHECK_URL="${URL}/.well-known/openid-federation"
+CHECK_URL=$(echo "$CHECK_URL" | sed 's|://|%%SCHEME%%|g; s|//|/|g; s|%%SCHEME%%|://|g; s|:///|://|g')
+check_url "$CHECK_URL"
 echo "Health check completed successfully."
