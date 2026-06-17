@@ -1,0 +1,24 @@
+{
+  "page_title": "Accedi",
+  "login_logo": "Accedi con il tuo wallet digitale",
+  "contentTitle": "Inquadra il codice QR",
+  "qrCodeValidInfo": "Il codice QR è valido per <b>{{seconds}}</b> secondi",
+  "supportText": "Usa la funzionalità dell'app <b>IT-Wallet</b> o la fotocamera del tuo smartphone",
+  "backLabel": "Indietro",
+  "qrCodeExpiredInfo": "Il codice QR è scaduto, ricarica la pagina per generarne uno nuovo.",
+  "qrCodeReloadLabel": "Ricarica",
+  "appTitle": "Continua sull'app IT-Wallet",
+  "appText": "Per proseguire, segui le istruzioni sull'app e autorizza l'accesso",
+  "connectedTitle": "Autenticazione completata!",
+  "connectedText": "Continua sul sito",
+  "clickAccessLabel": "Accedi al servizio",
+  "failureTitle": "Non siamo riusciti a recuperare i dati della tua identità digitale",
+  "failureText": "Ricorda che per effettuare l'accesso con IT-Wallet devi acconsentire alla lettura dei tuoi dati. Se il problema si ripete, contatta l'assistenza.",
+  "retryLabel": "Riprova",
+  "contactSupportLabel": "Contatta l'assistenza",
+  "footer": {
+    "legal_notice": "Note legali",
+    "privacy_policy": "Privacy Policy",
+    "accessibility_statement": "Dichiarazione Accessibilità"
+  }
+}
