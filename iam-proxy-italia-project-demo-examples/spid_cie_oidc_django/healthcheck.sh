@@ -7,9 +7,13 @@ WGET_OPTS="--timeout=5 --tries=1 --no-check-certificate --spider --server-respon
 
 function check_url {
   local url=$1
-  http_status=$(wget $WGET_OPTS "$url" 2>&1 | awk '/HTTP\// {print $2}' | tail -1)
-  if [[ ! $http_status =~ ^[23] ]]; then
-    echo "Error: wget failed for $url with status $http_status"
+  local output http_status
+  # wget exits non-zero on non-2xx; capture output anyway so we can enforce status == 200
+  output=$(wget $WGET_OPTS "$url" 2>&1) || true
+  http_status=$(echo "$output" | awk '/HTTP\// {code=$2} END {print code}')
+  http_status=$(echo "$http_status" | tr -d '\r[:space:]')
+  if [[ "$http_status" != "200" ]]; then
+    echo "Error: expected HTTP 200 from $url, got '${http_status:-empty}'"
     exit 1
   fi
 }
