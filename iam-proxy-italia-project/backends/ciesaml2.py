@@ -19,6 +19,7 @@ from satosa.response import Response
 from satosa.saml_util import make_saml_response
 from six import text_type
 
+from .spidsaml2 import apply_assertion_consumer_service_indexes
 from .spidsaml2_validator import Saml2ResponseValidator
 
 logger = logging.getLogger(__name__)
@@ -557,8 +558,16 @@ class CieSAMLBackend(SAMLBackend):
             reqattr.name_format = None
             reqattr.friendly_name = None
 
-        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
-        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
+        # AssertionConsumerService: gli index (e l'attributo isDefault) pubblicati
+        # nei metadata sono configurabili tramite
+        # sp_config.assertion_consumer_service_indexes. Necessario quando il
+        # backend è aggregato da un soggetto aggregatore e i singoli ACS devono
+        # essere mappati su index specifici verso gli URL dell'aggregato.
+        # Default storico: '0' con isDefault=true.
+        apply_assertion_consumer_service_indexes(
+            metadata,
+            self.config["sp_config"].get("assertion_consumer_service_indexes"),
+        )
 
         # load ContactPerson Extensions
         self._metadata_contact_person(metadata, conf)

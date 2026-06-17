@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "design-system-italia": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@fupete/design-system-italia-mcp"
+      ],
+      "env": {
+        "TRANSPORT": "stdio",
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}

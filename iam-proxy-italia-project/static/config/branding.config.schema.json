@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "branding.config.schema.json",
+  "title": "IAM Proxy Italia static branding configuration",
+  "description": "Deploy-impacting constants for the static pages (disco, it-wallet, error) and their locale/data files. Edit the values, then run `npm run build:config` to write them into the static files.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "staticBasePath",
+    "organizationName",
+    "logo",
+    "walletBrandLogo",
+    "footerLinks",
+    "footerText",
+    "identityProviders",
+    "errorPage",
+    "assets"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "staticBasePath": {
+      "type": "string",
+      "description": "Absolute web path under which static assets are served. Rewrites href/src='/static/...' in disco.html and it-wallet.html."
+    },
+    "organizationName": { "$ref": "#/$defs/localizedString" },
+    "logo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "alt"],
+      "description": "Header logo for disco.html, it-wallet.html and error_page.html. When `image` is a non-empty path (SVG or PNG) it replaces the placeholder (text wordmark on disco/it-wallet, generic icon on the error page) with an <img>; otherwise the localized `alt` text is shown. On disco/it-wallet `alt` is the image alt text; on the error page the image is decorative and the title heading carries `alt`.",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "Path/URL to the logo image (SVG or PNG). Empty string = use the text placeholder."
+        },
+        "alt": { "$ref": "#/$defs/localizedString" }
+      }
+    },
+    "walletBrandLogo": {
+      "type": "string",
+      "description": "src of the IT-Wallet brand logo in the it-wallet.html header."
+    },
+    "footerLinks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["legalUrl", "privacyUrl", "accessibilityUrl"],
+      "properties": {
+        "legalUrl": { "type": "string" },
+        "privacyUrl": { "type": "string" },
+        "accessibilityUrl": { "type": "string" }
+      }
+    },
+    "footerText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["legal", "privacy", "accessibility"],
+      "properties": {
+        "legal": { "$ref": "#/$defs/localizedString" },
+        "privacy": { "$ref": "#/$defs/localizedString" },
+        "accessibility": { "$ref": "#/$defs/localizedString" }
+      }
+    },
+    "identityProviders": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findDigitalIdUrl",
+        "cieSaml2LoginUrl",
+        "cieOidcLoginUrl",
+        "eidasLoginUrl",
+        "idemLoginUrl"
+      ],
+      "properties": {
+        "findDigitalIdUrl": { "type": "string" },
+        "cieSaml2LoginUrl": { "type": "string" },
+        "cieOidcLoginUrl": { "type": "string" },
+        "eidasLoginUrl": { "type": "string" },
+        "idemLoginUrl": { "type": "string" }
+      }
+    },
+    "errorPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["loginUrl", "assistanceUrl", "privacyUrl"],
+      "properties": {
+        "loginUrl": { "type": "string" },
+        "assistanceUrl": { "type": "string" },
+        "privacyUrl": { "type": "string" }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cacheBustVersion", "fontsPublicPath"],
+      "properties": {
+        "cacheBustVersion": { "type": "string" },
+        "fontsPublicPath": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "localizedString": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["it", "en"],
+      "properties": {
+        "it": { "type": "string" },
+        "en": { "type": "string" }
+      }
+    }
+  }
+}

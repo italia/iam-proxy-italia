@@ -4,8 +4,10 @@
  */
 
 function applyErrorTranslations() {
-  // Meta
-  document.title = i18next.t('meta.title');
+  var pageTitle = i18next.t('meta.title');
+  document.title = pageTitle;
+  var titleEl = document.getElementById('error-page-title');
+  if (titleEl) titleEl.textContent = pageTitle;
   var metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', i18next.t('meta.description'));
 
@@ -20,10 +22,20 @@ function applyErrorTranslations() {
     el.textContent = val;
   });
 
-  // data-i18n-title: set title attribute (for links)
-  document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
-    var key = el.getAttribute('data-i18n-title');
-    if (key) el.setAttribute('title', i18next.t(key));
+  // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
+    var key = el.getAttribute('data-i18n-aria-label');
+    if (key) el.setAttribute('aria-label', i18next.t(key));
+  });
+
+  // data-i18n-newwindow: build an accessible name that announces the link opens
+  // in a new window/tab ("<visible text> (<hint>)"), mirroring disco/it-wallet.
+  var newWindowHint = i18next.t('footer.new_window_hint');
+  document.querySelectorAll('[data-i18n-newwindow]').forEach(function (el) {
+    var textEl = el.matches('[data-i18n]') ? el : el.querySelector('[data-i18n]');
+    var text = (textEl ? textEl.textContent : el.textContent) || '';
+    text = text.trim();
+    el.setAttribute('aria-label', newWindowHint ? text + ' (' + newWindowHint + ')' : text);
   });
 
   // Update html lang
