@@ -71,6 +71,59 @@ _TROUBLESHOOT_MSG = (
 )
 
 
+def apply_assertion_consumer_service_indexes(
+    metadata, acs_index_cfg, default_extra_indexes=None
+):
+    """
+    Assegna gli index (e l'attributo isDefault) degli AssertionConsumerService
+    pubblicati nei metadata del SP.
+
+    Gli index sono configurabili tramite la chiave
+    ``sp_config.assertion_consumer_service_indexes``: una lista allineata per
+    posizione agli endpoint definiti in
+    ``service.sp.endpoints.assertion_consumer_service``. Questo è necessario
+    quando il backend è aggregato da un soggetto aggregatore e i singoli ACS
+    devono essere mappati su index specifici verso gli URL dell'aggregato.
+
+    Formato atteso (``index`` obbligatorio, ``is_default`` opzionale)::
+
+        assertion_consumer_service_indexes:
+          - index: 0
+            is_default: true
+          - index: 99
+          - index: 100
+
+    Se la configurazione è assente vengono usati i default storici: index ``0``
+    con ``isDefault=true`` per il primo ACS e ``default_extra_indexes`` (es.
+    ``99``/``100`` quando ficep_enable è abilitato) per i successivi.
+
+    :param metadata: EntityDescriptor del SP (già generato da pysaml2).
+    :param acs_index_cfg: valore della chiave di config (lista o None).
+    :param default_extra_indexes: index di default per gli ACS oltre il primo.
+    """
+    acs_endpoints = metadata.spsso_descriptor.assertion_consumer_service
+
+    if not acs_index_cfg:
+        default_extra_indexes = default_extra_indexes or []
+        acs_index_cfg = [{"index": "0", "is_default": True}]
+        acs_index_cfg += [
+            {"index": idx, "is_default": False} for idx in default_extra_indexes
+        ]
+
+    for position, entry in enumerate(acs_index_cfg):
+        if position >= len(acs_endpoints):
+            logger.warning(
+                "assertion_consumer_service_indexes contiene più voci "
+                f"({len(acs_index_cfg)}) degli endpoint ACS definiti "
+                f"({len(acs_endpoints)}): voce in posizione {position} ignorata."
+            )
+            break
+        acs_endpoints[position].index = str(entry["index"])
+        acs_endpoints[position].is_default = (
+            "true" if entry.get("is_default") else None
+        )
+
+
 class SpidSAMLBackend(SAMLBackend):
     """
     A saml2 backend module (acting as a SPID SP).
@@ -351,6 +404,10 @@ class SpidSAMLBackend(SAMLBackend):
             # Imposta il consuming_service_index in base al default di ficep per le richieste ficep,
             # oppure a '0' per le richieste spid
 
+            # acs_index, ficep_default_acs_index e spid_default_acs_index
+            # scrivono lo stesso attributo; differiscono solo per scope.
+            # acs_index ha priorità ed è un override globale (vale anche per
+            # FICEP), quindi se valorizzato rende inerti gli altri due.
             acs_index = self.config["sp_config"].get("acs_index")
 
             if acs_index is not None:
@@ -644,6 +701,8 @@ class SpidSAMLBackend(SAMLBackend):
         )
         metadata = entity_descriptor(conf)
 
+        ficep_enable = self.config["sp_config"].get("ficep_enable", False) is True
+
         # creare gli attribute_consuming_service
         metadata.spsso_descriptor.attribute_consuming_service[0].index = '0'
         metadata.spsso_descriptor.attribute_consuming_service[0].service_name[0].lang = "it"
@@ -653,10 +712,7 @@ class SpidSAMLBackend(SAMLBackend):
             reqattr.name_format = None
             reqattr.friendly_name = None
 
-        metadata.spsso_descriptor.assertion_consumer_service[0].index = '0'
-        metadata.spsso_descriptor.assertion_consumer_service[0].is_default = 'true'
-
-        if self.config["sp_config"]["ficep_enable"] is True:
+        if ficep_enable:
             # Aggiungere CIE 99
             metadata.spsso_descriptor.attribute_consuming_service.append(
                 saml2.md.AttributeConsumingService())
@@ -672,9 +728,6 @@ class SpidSAMLBackend(SAMLBackend):
                 saml2.md.RequestedAttribute('true', None, 'familyName'),
                 saml2.md.RequestedAttribute('true', None, 'dateOfBirth'),
             ]
-
-            metadata.spsso_descriptor.assertion_consumer_service[1].index = '99'
-            metadata.spsso_descriptor.assertion_consumer_service[1].is_default = None
 
             # Aggiungere CIE 100
             metadata.spsso_descriptor.attribute_consuming_service.append(
@@ -695,8 +748,17 @@ class SpidSAMLBackend(SAMLBackend):
                 saml2.md.RequestedAttribute('true', None, 'gender'),
             ]
 
-            metadata.spsso_descriptor.assertion_consumer_service[2].index = '100'
-            metadata.spsso_descriptor.assertion_consumer_service[2].is_default = None
+        # AssertionConsumerService: gli index (e l'attributo isDefault) pubblicati
+        # nei metadata sono configurabili tramite
+        # sp_config.assertion_consumer_service_indexes. Necessario quando il
+        # backend è aggregato da un soggetto aggregatore e i singoli ACS devono
+        # essere mappati su index specifici verso gli URL dell'aggregato.
+        # Default storici: '0' (isDefault) e, se ficep_enable, '99' e '100'.
+        apply_assertion_consumer_service_indexes(
+            metadata,
+            self.config["sp_config"].get("assertion_consumer_service_indexes"),
+            default_extra_indexes=['99', '100'] if ficep_enable else [],
+        )
 
         # load ContactPerson Extensions
         self._metadata_contact_person(metadata, conf)
