@@ -1,0 +1,51 @@
+{
+  "$schema": "./branding.config.schema.json",
+  "staticBasePath": "/static",
+  "organizationName": {
+    "it": "Nome dell'Organizzazione",
+    "en": "Organization Name"
+  },
+  "logo": {
+    "image": "",
+    "alt": {
+      "it": "Il tuo logo",
+      "en": "Your Logo"
+    }
+  },
+  "walletBrandLogo": "img/IT-Wallet-Logo-Primary-BlueItalia.svg",
+  "footerLinks": {
+    "legalUrl": "#",
+    "privacyUrl": "#",
+    "accessibilityUrl": "#"
+  },
+  "footerText": {
+    "legal": {
+      "it": "Note legali",
+      "en": "Legal notes"
+    },
+    "privacy": {
+      "it": "Privacy Policy",
+      "en": "Privacy Policy"
+    },
+    "accessibility": {
+      "it": "Dichiarazione Accessibilità",
+      "en": "Accessibility statement"
+    }
+  },
+  "identityProviders": {
+    "findDigitalIdUrl": "https://identitadigitale.gov.it/",
+    "cieSaml2LoginUrl": "/Saml2/disco?entityID=https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO&return=https://sso.exampleservice.it/Saml2/disco",
+    "cieOidcLoginUrl": "/Saml2/disco?entityID=http://cie-provider.example.org:8002/oidc/op",
+    "eidasLoginUrl": "Saml2/disco?entityID=https://sp-proxy.eid.gov.it/spproxy/idpit&return=https://localhost/Saml2/disco",
+    "idemLoginUrl": "https://wayf.idem.garr.it/WAYF?entityID=_YourEntityID_&return=_YourReturnURL_"
+  },
+  "errorPage": {
+    "loginUrl": "/",
+    "assistanceUrl": "#",
+    "privacyUrl": "https://www.example.org/privacy/"
+  },
+  "assets": {
+    "cacheBustVersion": "wallet-ui-20260422",
+    "fontsPublicPath": "spid/fonts"
+  }
+}
