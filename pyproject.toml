@@ -15,7 +15,7 @@ dependencies = [
     "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
     "satosa-oidcop==4.1.0",
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.2.0",
-    "aiohttp (>=3.13.4,<4.0.0)",  # CVE-2026-34513 et al.; fixed in 3.13.4
+    "aiohttp (>=3.14.0,<4.0.0)",  # CVE-2026-34513 et al.; fixed in 3.13.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
     "cryptography (>=46.0.7)",  # CVE-2026-34073, CVE-2026-39892
     "ecdsa (>=0.19.2)",  # CVE-2024-23342, CVE-2026-33936
