@@ -17,6 +17,7 @@ def main():
     )
     openid4vp_sub = f"https://{satosa_hostname}/OpenID4VP"
     openid4vci_sub = f"https://{satosa_hostname}/OpenID4VCI"
+    cieoidc_rp = f"https://{satosa_hostname}/CieOidcRp"
 
     dump_path = "dumps/example.json"
     if len(sys.argv) > 1:
@@ -33,6 +34,7 @@ def main():
     )
     content = content.replace("https://satosa.example.org/OpenID4VP", openid4vp_sub)
     content = content.replace("https://satosa.example.org/OpenID4VCI", openid4vci_sub)
+    content = content.replace("https://satosa.example.org/CieOidcRp", cieoidc_rp)
 
     if content == orig:
         print("WARN: No replacements made - check placeholder URLs in dump")

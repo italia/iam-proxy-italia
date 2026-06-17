@@ -1,47 +1,90 @@
 #!/bin/bash
+
+# Ensure we are in the script's directory
+cd "$(dirname "$0")"
+
+# ==========================================================
+# 0. LOAD ENVIRONMENT FILE (.env)
+# ==========================================================
 # Run from script directory so paths and .env resolve correctly
 if [ -f .env ]; then
+  echo "Loading variables from .env file..."
   set -o allexport
   source .env
   set +o allexport
+else
+  echo "Warning: .env file not found, using defaults only."
 fi
 
-cd "$(dirname "$0")"
+# ==========================================================
+# 1. DEFAULT SERVICES ENV VALUES (Fallback)
+# ==========================================================
 
-
-
-# Default when SATOSA_HOSTNAME is unset or empty (single place for the value)
+# --- SATOSA (iam-proxy-italia) --- [Defaults] ---
 DEFAULT_SATOSA_HOSTNAME="iam-proxy-italia.example.org"
+
+# --- Federation Authority (trust-anchor) --- [Defaults] ---
+DEFAULT_TRUST_ANCHOR_PROTO="http"
 DEFAULT_TRUST_ANCHOR_HOSTNAME="trust-anchor.example.org"
-DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME="cie-provider.example.org"
+DEFAULT_TRUST_ANCHOR_PORT=5002
+
+# --- Cie Provider (cie-provider) --- [Defaults] ---
+DEFAULT_OPENID_CIE_PROVIDER_PROTO="http"
+DEFAULT_OPENID_CIE_PROVIDER_HOST="cie-provider.example.org"
 DEFAULT_OPENID_CIE_PROVIDER_PORT=8002
-# END USER OIDC CONFIG
-END_USER_OIDC_USERNAME=user
-END_USER_OIDC_PASSWORD=oidcuser
-export END_USER_OIDC_USERNAME="${END_USER_OIDC_USERNAME}"
-export END_USER_OIDC_PASSWORD="${END_USER_OIDC_PASSWORD}"
-# ADMIN DJANGO CONFIG
-DJANGO_ADMIN_USERNAME=admin
-DJANGO_ADMIN_PASSWORD=oidcadmin
-export DJANGO_ADMIN_USERNAME="${DJANGO_ADMIN_USERNAME}"
-export DJANGO_ADMIN_PASSWORD="${DJANGO_ADMIN_PASSWORD}"
-export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
-export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
-export OPENID_CIE_PROVIDER_HOSTNAME="${OPENID_CIE_PROVIDER_HOSTNAME:-$DEFAULT_OPENID_CIE_PROVIDER_HOSTNAME}"
-export DEFAULT_OPENID_CIE_PROVIDER_PORT="${DEFAULT_OPENID_CIE_PROVIDER_PORT}"
+DEFAULT_OPENID_CIE_PROVIDER_USR="user"
+DEFAULT_OPENID_CIE_PROVIDER_PWD="oidcuser"
+DEFAULT_OPENID_CIE_PROVIDER_ADMIN_USR="admin"
+DEFAULT_OPENID_CIE_PROVIDER_ADMIN_PWD="oidcadmin"
+
+# --- Wallet Instance Demo (wallet-instance-demo) ---
+DEFAULT_DEMO_WALLET_INSTANCE_PROTO="http"
+DEFAULT_DEMO_WALLET_INSTANCE_PORT=8080
 DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+
+# ==========================================================
+# 2. EXPORT SERVICES ENV VALUES (Overrides)
+# This logic applies the User-defined value OR the Default
+# ==========================================================
+# --- Cie Provider (cie-provider) ---
+export OPENID_CIE_PROVIDER_PROTO="${OPENID_CIE_PROVIDER_PROTO:-$DEFAULT_OPENID_CIE_PROVIDER_PROTO}"
+export OPENID_CIE_PROVIDER_HOST="${OPENID_CIE_PROVIDER_HOST:-$DEFAULT_OPENID_CIE_PROVIDER_HOST}"
+export OPENID_CIE_PROVIDER_PORT="${OPENID_CIE_PROVIDER_PORT:-$DEFAULT_OPENID_CIE_PROVIDER_PORT}"
+export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-${OPENID_CIE_PROVIDER_PROTO}://${OPENID_CIE_PROVIDER_HOST}:${OPENID_CIE_PROVIDER_PORT}/oidc/op/}"
+export OPENID_CIE_PROVIDER_USR="${OPENID_CIE_PROVIDER_USR:-$DEFAULT_OPENID_CIE_PROVIDER_USR}"
+export OPENID_CIE_PROVIDER_PWD="${OPENID_CIE_PROVIDER_PWD:-$DEFAULT_OPENID_CIE_PROVIDER_PWD}"
+export OPENID_CIE_PROVIDER_ADMIN_USR="${OPENID_CIE_PROVIDER_ADMIN_USR:-$DEFAULT_OPENID_CIE_PROVIDER_ADMIN_USR}"
+export OPENID_CIE_PROVIDER_ADMIN_PWD="${OPENID_CIE_PROVIDER_ADMIN_PWD:-$DEFAULT_OPENID_CIE_PROVIDER_ADMIN_PWD}"
+
+# --- Federation Authority (trust-anchor) ---
+export TRUST_ANCHOR_PROTO="${TRUST_ANCHOR_PROTO:-$DEFAULT_TRUST_ANCHOR_PROTO}"
+export TRUST_ANCHOR_HOSTNAME="${TRUST_ANCHOR_HOSTNAME:-$DEFAULT_TRUST_ANCHOR_HOSTNAME}"
+export TRUST_ANCHOR_PORT="${TRUST_ANCHOR_PORT:-$DEFAULT_TRUST_ANCHOR_PORT}"
+export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-${TRUST_ANCHOR_PROTO}://${TRUST_ANCHOR_HOSTNAME}:${TRUST_ANCHOR_PORT}}"
+
+# --- SATOSA (iam-proxy-italia) ---
+export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
+
+# --- Wallet Instance Demo (wallet-instance-demo) ---
+export DEMO_WALLET_INSTANCE_PROTO="${DEMO_WALLET_INSTANCE_PROTO:-$DEFAULT_DEMO_WALLET_INSTANCE_PROTO}"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
-# URLs used by prepare_dump.py and containers (must match env.example)
-export TRUST_ANCHOR_URL="${TRUST_ANCHOR_URL:-http://${TRUST_ANCHOR_HOSTNAME}:5002}"
-export OPENID_CIE_PROVIDER_URL="${OPENID_CIE_PROVIDER_URL:-http://${OPENID_CIE_PROVIDER_HOSTNAME}:8002/oidc/op/}"
-export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
+export DEMO_WALLET_INSTANCE_PORT="${DEMO_WALLET_INSTANCE_PORT:-$DEFAULT_DEMO_WALLET_INSTANCE_PORT}"
+export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
+
+# --- pagopa wallet-conformance-test (pagopa-wallet-cli) ---
 export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
+
+# --- Script/Docker-Compose Execution Variables (Internal) ---
 export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
 export RUN_SPID_TEST="${RUN_SPID_TEST:-}"
-
 #export SATOSA_FORCE_ENV="true"
+
+
+# ==========================================================
+# 3. FUNCTIONS
+# ==========================================================
 
 function clean_data {
   if [ "${SATOSA_CLEAN_DATA}" = "true" ]; then
@@ -109,7 +152,7 @@ function ensure_host_resolvable {
 
 function ensure_satosa_hostname_resolvable {
   ensure_host_resolvable "${SATOSA_HOSTNAME}"
-  ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOSTNAME}"
+  ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOST}"
   ensure_host_resolvable "${TRUST_ANCHOR_HOSTNAME}"
   ensure_host_resolvable "${DEMO_WALLET_INSTANCE_HOSTNAME}"
 }
@@ -134,12 +177,6 @@ function initialize_satosa {
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
   # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
 
-  # Apply placeholder replacement in dumps so entity IDs match runtime hostnames/URLs
-  PREPARE_SCRIPT="../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/prepare_dump.py"
-  if [ -f "$PREPARE_SCRIPT" ] && [ -f "./spid_cie_oidc_django/federation_authority/dumps/example.json" ]; then
-    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/federation_authority/dumps/example.json
-    python3 "$PREPARE_SCRIPT" ./spid_cie_oidc_django/provider/dumps/example.json
-  fi
   rm -Rf ./iam-proxy-italia-project/static
 
   chmod -R 777 ./iam-proxy-italia-project
@@ -217,10 +254,10 @@ function start {
   # cie-provider (spid-cie-oidc-django sample dump): same profiles as in docker-compose.yml for that service
   case "${COMPOSE_PROFILES}" in
     demo|*demo*|storage_mongo|oidc|*oidc*)
-      echo -e "=== ${OPENID_CIE_PROVIDER_HOSTNAME} (CIE OIDC) — credentials from sample dump (see spid-cie-oidc-django README) ==="
-      echo -e "  Django admin:        username: ${DJANGO_ADMIN_USERNAME}    password: ${DJANGO_ADMIN_PASSWORD}"
-      echo -e "  End-user OIDC login: username: ${END_USER_OIDC_USERNAME}     password: ${END_USER_OIDC_PASSWORD}"
-      echo -e "  Base URL:            http://${OPENID_CIE_PROVIDER_HOSTNAME}:${DEFAULT_OPENID_CIE_PROVIDER_PORT}/"
+      echo -e "=== (OIDC CIE Provider) — credentials from sample dump (see spid-cie-oidc-django README) ==="
+      echo -e "  Base  URL:           ${OPENID_CIE_PROVIDER_PROTO}://${OPENID_CIE_PROVIDER_HOST}:${OPENID_CIE_PROVIDER_PORT}"
+      echo -e "  Admin OIDC login:    username: ${OPENID_CIE_PROVIDER_ADMIN_USR} password: ${OPENID_CIE_PROVIDER_ADMIN_PWD}"
+      echo -e "  User  OIDC login:    username: ${OPENID_CIE_PROVIDER_USR}       password: ${OPENID_CIE_PROVIDER_PWD}"
       echo -e ""
       ;;
   esac
@@ -273,6 +310,10 @@ function help {
   echo ""
 }
 
+
+# ==========================================================
+# 4. ARGUMENT PARSING (While loop)
+# ==========================================================
 while getopts ":fepbimMdsh" opt; do
   case ${opt} in
    f)
@@ -314,6 +355,11 @@ while getopts ":fepbimMdsh" opt; do
      ;;
   esac
 done
+
+
+# ==========================================================
+# 5. EXECUTION
+# ==========================================================
 clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true"
 ensure_satosa_hostname_resolvable
 initialize_satosa  # check and initialize docker compose directories
