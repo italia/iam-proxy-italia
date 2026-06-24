@@ -1,3 +1,4 @@
+{# Keep in sync with eudi-wallet-it-python/integration_test/templates/qr_code.html #}
 {% extends "base_shell.html" %}
 
 {% block content %}
@@ -38,18 +39,15 @@
 
   <div class="container py-5 text-center">
 
-    <!-- Main title -->
-    <h2 id="content-title" class="mb-4">
+    <h1 id="content-title" class="h2 mb-4">
       <!-- i18next -->
-    </h2>
+    </h1>
 
-    <!-- How to, support-text -->
     <p id="content-text" class="text-secondary small mb-4">
       <!-- i18next -->
     </p>
 
-    <!-- QR Code box -->
-    <script src="{{ static }}/js/qrcode/qr-code.js"></script>
+    <script src="{{ static }}js/qrcode/qr-code.js"></script>
     <div id="content-qrcode" class="d-flex justify-content-center mb-4">
       <div id="content-qrcode-payload">
         <qr-code
@@ -58,33 +56,128 @@
             position-ring-color="{{ qrcode_color }}"
             position-center-color="{{ qrcode_color }}"
             class="qr-code"
+            aria-label="Codice QR per l'autenticazione con IT-Wallet"
         >
-          <img class="icon-qr-code" src="{{ static+qrcode_logo_path }}" slot="icon"/>
+          <img class="icon-qr-code" src="{{ static }}{{ qrcode_logo_path }}" slot="icon" alt="" />
         </qr-code>
       </div>
     </div>
 
-    <!-- Timer -->
-    <p id="content-qrcode-info-text" class="text-muted mb-3">
+    <p id="content-qrcode-info-text" class="text-muted mb-3" aria-live="polite" aria-atomic="true">
       <!-- i18next -->
     </p>
 
-    <!-- Azioni -->
     <div id="content-function" class="mt-3">
       <button id="btn-back"
+              type="button"
               class="btn btn-outline-primary"
               onclick="window.history.go(-1); return false;">
         <!-- i18next -->
       </button>
     </div>
 
+    <noscript>
+      <p id="noscript-message">Per usare la pagina del codice QR è necessario abilitare JavaScript.</p>
+    </noscript>
+
     <script>
-      let crossImg = "{{ static }}" + "img/new_cross.svg";
-      let connectedImg = "{{ static }}" + "img/new_check.svg";
-      let appImg = "{{ static }}" + "img/app.svg";
-      let expirationTime = "{{ qrcode_expiration_time }}";
+      let crossImg = "{{ static }}img/new_cross.svg";
+      let connectedImg = "{{ static }}img/new_check.svg";
+      let appImg = "{{ static }}img/app.svg";
+      let expirationTime = parseInt("{{ qrcode_expiration_time }}", 10);
       let pollingInterval;
-      let countdown;
+      let countdown = null;
+      let countdownStarted = false;
+
+      function newWindowHintText(t) {
+        return t('footer.new_window_hint');
+      }
+
+      function setFooterLink($el, text, href, hint) {
+        if (!$el.length) return;
+        $el.text(text);
+        if (href) $el.attr('href', href);
+        $el.attr('aria-label', text + ' (' + hint + ')');
+      }
+
+      function updateTimerDisplay() {
+        const timer = document.getElementById('timer');
+        if (timer) {
+          timer.textContent = String(Math.max(expirationTime, 0));
+        }
+      }
+
+      function updateShellTexts(t) {
+        $('#header-region-name').text(t('header.region_name'));
+        $('.it-skip-links').attr('aria-label', t('skip_links.nav_label'));
+        $('#skip-main').text(t('skip_links.main_content'));
+        $('#skip-footer').text(t('skip_links.footer'));
+        $('#eid-title').text(t('header.logo_alt'));
+        $('#header-logo-text').text(t('header.logo_alt'));
+        $('.qr-header-logo-wallet').attr('alt', t('header.wallet_brand_alt'));
+
+        const hint = newWindowHintText(t);
+        setFooterLink($('#footer-legal'), t('footer.legal_notice'), t('footer.legal_url'), hint);
+        setFooterLink($('#footer-privacy'), t('footer.privacy_policy'), t('footer.privacy_url'), hint);
+        setFooterLink($('#footer-accessibility'), t('footer.accessibility_statement'), t('footer.accessibility_url'), hint);
+        $('#footer-legal-nav').attr('aria-label', t('footer.nav_label'));
+        $('#noscript-message').text(t('noscript.message'));
+
+        const pageTitle = t('page_title');
+        $('#tab-title').text(pageTitle);
+        document.title = pageTitle;
+        $('#meta-description').attr('content', t('meta.description'));
+      }
+
+      function updateTexts(t) {
+        updateShellTexts(t);
+        $('#content-title').html('<b>' + t('contentTitle') + '</b>');
+        $('#content-qrcode-info-text').html(
+          t('qrCodeValidInfo', { seconds: String(Math.max(expirationTime, 0)) })
+        );
+        $('#content-text').html(t('supportText'));
+        $('#btn-back').text(t('backLabel'));
+      }
+
+      function startCountdown(t) {
+        if (countdownStarted) return;
+        countdownStarted = true;
+        countdown = setInterval(function () {
+          expirationTime--;
+          updateTimerDisplay();
+          if (expirationTime < 0) {
+            clearInterval(countdown);
+            countdown = null;
+            clearTimeout(pollingInterval);
+            QRcodeExpired(t);
+          }
+        }, 1000);
+      }
+
+      function schedulePoll(t) {
+        clearTimeout(pollingInterval);
+        pollingInterval = setTimeout(function () {
+          QRcodeScanCheck(t);
+        }, 1000);
+      }
+
+      function stopTimers() {
+        if (countdown) {
+          clearInterval(countdown);
+          countdown = null;
+        }
+        clearTimeout(pollingInterval);
+      }
+
+      function StartQRcodeScanCheck(t) {
+        updateTexts(t);
+        startCountdown(t);
+        schedulePoll(t);
+      }
+
+      function onPollPending(t) {
+        schedulePoll(t);
+      }
 
       function initI18n() {
         const initialLang = localStorage.getItem('lang') || 'it';
@@ -95,7 +188,7 @@
           lng: initialLang,
           fallbackLng: 'it',
           backend: {
-            loadPath: '{% raw %}/static/locales/qr-{{lng}}.json{% endraw %}'
+            loadPath: '{{ static }}locales/qr-{% raw %}{{lng}}{% endraw %}.json'
           }
         }, function (err, t) {
           if (err) {
@@ -111,42 +204,11 @@
             });
           }
           StartQRcodeScanCheck(t);
-          updateTexts(t);
         });
       }
 
-      function updateTexts(t) {
-        // meta
-        $('#tab-title').html(t('page_title'));
-        // content
-        $('#content-title').html('<b>' + t('contentTitle') + '</b>');
-        $('#content-qrcode-info-text').html(
-            t('qrCodeValidInfo', {seconds: `${expirationTime}`})
-        );
-        $('#content-text').html(t('supportText'));
-        $('#btn-back').text(t('backLabel'));
-        // footer
-        $('#footer-legal').html(t('footer.legal_notice'));
-        $('#footer-privacy').html(t('footer.privacy_policy'));
-        $('#footer-accessibility').html(t('footer.accessibility_statement'));
-      }
-
-      function StartQRcodeScanCheck(t) {
-        updateTexts(t); // Ensure initial value is set
-        countdown = setInterval(function () {
-          expirationTime--;
-          $('#timer').text(expirationTime); // Update only the timer value
-          if (expirationTime < 0) {
-            clearInterval(countdown);
-            clearTimeout(pollingInterval);
-            QRcodeExpired(t);
-          }
-        }, 1000);
-        pollingInterval = setTimeout(QRcodeScanCheck, 1000, t);
-      }
-
       function connectionCompleted(data) {
-        clearInterval(countdown);
+        stopTimers();
         changeTitle(i18next.t('connectedTitle'));
         changeQrCodeImg(connectedImg);
         changeQrCodeInfo(i18next.t('connectedText'));
@@ -159,7 +221,7 @@
       }
 
       function redirectToApp() {
-        clearInterval(countdown);
+        stopTimers();
         changeTitle(i18next.t('appTitle'));
         changeQrCodeImg(appImg);
         changeQrCodeInfo(i18next.t('appText'));
@@ -169,10 +231,10 @@
 
       function QRcodeExpired(t) {
         blankQRcode();
-        clearInterval(countdown);
+        stopTimers();
         changeQrCodeInfo(t('qrCodeExpiredInfo'));
         $('#content-function').html(`
-          <button id="qr-reload-btn" class="btn btn-primary">
+          <button id="qr-reload-btn" type="button" class="btn btn-primary">
             ${t('qrCodeReloadLabel')}
           </button>
         `);
@@ -182,13 +244,13 @@
       }
 
       function errorPage(t) {
-        clearInterval(countdown);
+        stopTimers();
         changeTitle(i18next.t('failureTitle'));
         changeQrCodeImg(crossImg);
         changeQrCodeInfo(i18next.t('failureText'));
         changeText('');
         $('#content-function').html(`
-          <button class="btn btn-outline-primary btn-custom" onclick="window.location.reload(true)">
+          <button type="button" class="btn btn-outline-primary btn-custom" onclick="window.location.reload(true)">
             ${t('retryLabel')}
           </button>
           <br><br>
@@ -211,7 +273,7 @@
       }
 
       function changeQrCodeImg(str) {
-        $('#content-qrcode-payload').html(`<img src="${str}" alt="qr-code" class="qr-code-img">`);
+        $('#content-qrcode-payload').html(`<img src="${str}" alt="" class="qr-code-img" role="img">`);
       }
 
       function blankQRcode() {
@@ -233,10 +295,10 @@
           data: {"id": sessionIdentifier()},
           statusCode: {
             201: function () {
-              StartQRcodeScanCheck(t);
+              onPollPending(t);
             },
             202: function () {
-              StartQRcodeScanCheck(t);
+              onPollPending(t);
             },
             200: connectionCompleted,
             400: function () {

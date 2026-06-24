@@ -1,8 +1,26 @@
 {
+  "header": {
+    "region_name": "Nome dell'Organizzazione",
+    "logo_alt": "Il tuo logo",
+    "wallet_brand_alt": "IT-Wallet",
+    "lang_active_hint": "lingua attiva:",
+    "lang_trigger": "Selezione lingua, {{name}} selezionata"
+  },
+  "meta": {
+    "description": "Autenticazione con IT-Wallet tramite codice QR."
+  },
+  "noscript": {
+    "message": "Per usare la pagina del codice QR è necessario abilitare JavaScript."
+  },
+  "skip_links": {
+    "nav_label": "Collegamenti di salto",
+    "main_content": "Vai al contenuto principale",
+    "footer": "Vai al piè di pagina"
+  },
   "page_title": "Accedi",
   "login_logo": "Accedi con il tuo wallet digitale",
   "contentTitle": "Inquadra il codice QR",
-  "qrCodeValidInfo": "Il codice QR è valido per <b>{{seconds}}</b> secondi",
+  "qrCodeValidInfo": "Il codice QR è valido per <b id=\"timer\">{{seconds}}</b> secondi",
   "supportText": "Usa la funzionalità dell'app <b>IT-Wallet</b> o la fotocamera del tuo smartphone",
   "backLabel": "Indietro",
   "qrCodeExpiredInfo": "Il codice QR è scaduto, ricarica la pagina per generarne uno nuovo.",
@@ -17,8 +35,13 @@
   "retryLabel": "Riprova",
   "contactSupportLabel": "Contatta l'assistenza",
   "footer": {
+    "nav_label": "Link legali",
     "legal_notice": "Note legali",
+    "legal_url": "#",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Dichiarazione Accessibilità"
+    "privacy_url": "#",
+    "accessibility_statement": "Dichiarazione Accessibilità",
+    "accessibility_url": "#",
+    "new_window_hint": "si apre in una nuova finestra"
   }
 }

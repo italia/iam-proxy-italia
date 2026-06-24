@@ -1,13 +1,31 @@
 {
+  "header": {
+    "region_name": "Organization Name",
+    "logo_alt": "Your logo",
+    "wallet_brand_alt": "IT-Wallet",
+    "lang_active_hint": "active language:",
+    "lang_trigger": "Language selection, {{name}} selected"
+  },
+  "meta": {
+    "description": "Sign in with IT-Wallet using a QR code."
+  },
+  "noscript": {
+    "message": "JavaScript must be enabled to use the QR code page."
+  },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
+  },
   "page_title": "Login",
   "login_logo": "Log in with your digital wallet",
   "contentTitle": "Scan the QR code",
-  "qrCodeValidInfo": "The QR code is valid for <b>{{seconds}}</b> seconds",
+  "qrCodeValidInfo": "The QR code is valid for <b id=\"timer\">{{seconds}}</b> seconds",
   "supportText": "Use the <b>IT-Wallet</b> app feature or your smartphone camera",
-  "backLabel": "Cancel",
+  "backLabel": "Back",
   "qrCodeExpiredInfo": "The QR code has expired, reload the page to generate a new one.",
   "qrCodeReloadLabel": "Reload",
-  "appTitle": "Continua on the IT-Wallet app",
+  "appTitle": "Continue on the IT-Wallet app",
   "appText": "To continue, follow the instructions on the app and authorize access",
   "connectedTitle": "Authentication completed!",
   "connectedText": "Continue on the website",
@@ -17,8 +35,13 @@
   "retryLabel": "Try again",
   "contactSupportLabel": "Contact support",
   "footer": {
+    "nav_label": "Legal links",
     "legal_notice": "Legal notes",
+    "legal_url": "#",
     "privacy_policy": "Privacy Policy",
-    "accessibility_statement": "Accessibility statement"
+    "privacy_url": "#",
+    "accessibility_statement": "Accessibility statement",
+    "accessibility_url": "#",
+    "new_window_hint": "opens in a new window"
   }
 }
