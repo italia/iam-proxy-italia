@@ -81,7 +81,7 @@ config:
     default_acr_value: https://www.spid.gov.it/SpidL2
     expiration_time: 5 # minutes
     aud: https://self-issued.me/v2
-    response_mode: direct_post
+    response_mode: direct_post.jwt
     presentation_definition:
       id: global-presentation-definition-id
       input_descriptors:
@@ -113,10 +113,8 @@ config:
               - "$.given_name"
 
   duckle:
-    dcql_query: &dcql_query >
+    dcql_query: &dcql_query >-
       {"credentials":[{"id":"personal id data","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
-
-
   user_attributes:
     unique_identifiers:
     - tax_id_code
@@ -127,7 +125,7 @@ config:
   network:
     httpc_params: &httpc_params
       connection:
-        ssl: true
+        ssl: False #CHANGE ME! We need SSL disable for testing with self-signed certificates, but in production environment this value MUST be set to true
       session:
         timeout: 6
 
