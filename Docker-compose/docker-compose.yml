@@ -86,10 +86,13 @@ services:
     container_name: db-init-iam-proxy-italia
     extends: iam-proxy-italia
     restart: "no"
-    entrypoint: ["/init_mongo.py"]
-    volumes:
+    working_dir: /tmp/satosa_proxy
+    entrypoint: ["sh", "-c", "cp -rp /satosa_proxy_src/. /tmp/satosa_proxy/ && python /init_mongo.py"]
+    volumes: !override
       - ../iam-proxy-italia-project-demo-examples/issuer_oidc4vci/init_mongo.py:/init_mongo.py:rwx
-      - ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/provider/dumps/example.json:/example.json:ro #spid_cie_oidc_django (provider) dump (simulate AS)
+      - ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/provider/dumps/example.json:/example.json:ro
+      - ./iam-proxy-italia-project:/satosa_proxy_src:ro  # source read-only: copied to /tmp at startup, no write-back to host
+#      - /home/vm/progetti/DTD/eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:ro
     environment:
       MONGO_URL: "${MONGO_URL:-satosa-mongo}"
       MONGO_PORT: "${MONGO_PORT:-27017}"
