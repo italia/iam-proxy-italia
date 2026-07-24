@@ -28,7 +28,7 @@ sudo apt-get install -y docker-ce
 sudo docker run --rm hello-world
 ```
 
-For docker-compose you can also [see here](https://docs.docker.com/compose/install/other/).
+For docker-compose you can also [see here](https://docs.docker.com/compose/install/).
 
 ## Run the Composition for Demo Purposes
 

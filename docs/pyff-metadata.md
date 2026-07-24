@@ -1,10 +1,10 @@
 pyFF
 ----
-[python Federation Feeder](http://pyff.io/)
+[python Federation Feeder](https://pyff.io/)
 [github](https://github.com/IdentityPython/pyFF)
 
 pyFF is a omnicomprensive advanced Metadata appliance.
-It download, validate, aggregate, export one or many entities in xml format, in json format, as a querable [MDX service](https://datatracker.ietf.org/doc/draft-young-md-query-saml/), it will also give us a [DiscoveryService](http://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-idp-discovery.pdf) and a user friendly web catalog with statistics and all the usefull informations as well, with an agile search engine... The first time I used it I wondered what I had done until then.
+It download, validate, aggregate, export one or many entities in xml format, in json format, as a querable [MDX service](https://datatracker.ietf.org/doc/draft-young-md-query-saml/), it will also give us a [DiscoveryService](https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-idp-discovery.pdf) and a user friendly web catalog with statistics and all the usefull informations as well, with an agile search engine... The first time I used it I wondered what I had done until then.
 
 Please also rememeber that "MDX" is an acronym for MetaData eXchange and refers to a more general concept of which the "MDQ", acronym for Metadata Query Protocol, is just one component.
 
