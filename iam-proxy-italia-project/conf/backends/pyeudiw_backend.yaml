@@ -81,7 +81,7 @@ config:
     default_acr_value: https://www.spid.gov.it/SpidL2
     expiration_time: 5 # minutes
     aud: https://self-issued.me/v2
-    response_mode: direct_post
+    response_mode: direct_post.jwt
     presentation_definition:
       id: global-presentation-definition-id
       input_descriptors:
