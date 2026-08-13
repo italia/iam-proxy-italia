@@ -133,6 +133,8 @@
 
       function StartQRcodeScanCheck(t) {
         updateTexts(t); // Ensure initial value is set
+        clearInterval(countdown);
+        $('#timer').text(expirationTime);
         countdown = setInterval(function () {
           expirationTime--;
           $('#timer').text(expirationTime); // Update only the timer value
