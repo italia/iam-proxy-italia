@@ -9,7 +9,7 @@ attributes:
   edupersontargetedid:
     openid: [sub]
     saml: [eduPersonTargetedID, eduPersonTargetedId, spidCode, sub, id, fiscalNumber]
-#    openid4vp: [sub] @TODO Talking with Giuseppe for this Properties
+    openid4vp: [sub]
   edupersonprincipalname:
     saml: [eduPersonPrincipalName]
   edupersonscopedaffiliation:
