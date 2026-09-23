@@ -127,7 +127,7 @@ config:
   network:
     httpc_params: &httpc_params
       connection:
-        ssl: false #CHANGEME
+        ssl: False #CHANGE ME! We need SSL disable for testing with self-signed certificates, but in production environment this value MUST be set to true
       session:
         timeout: 6
 
@@ -257,8 +257,7 @@ config:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
       config:
-        client_id: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
-        #client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
+        client_id: !ENV PYEUDIW_FEDERATION_CLIENT_ID # this MUST be configured with the RP's HTTPS URI where the backend is made available for discovery. Example: 'openid_federation:https://iam-proxy-italia.example.org/OpenID4VP'
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
@@ -301,9 +300,7 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        #include_issued_jwt_header_param: true #include x5c header in the issued jwt
-        #client_id: !ENV PYEUDIW_X509_CLIENT_ID # e.g. "x509_san_dns:iam-proxy-italia.example.org"; must match leaf cert SAN DNS
-        client_id: "x509_san_dns:iam-proxy-italia.example.org"
+        client_id: !ENV PYEUDIW_X509_CLIENT_ID # e.g. "x509_san_dns:iam-proxy-italia.example.org"; must match leaf cert SAN DNS
         certificate_authorities:
           ca.example.com: |
             -----BEGIN CERTIFICATE-----
