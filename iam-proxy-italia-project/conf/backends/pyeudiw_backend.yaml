@@ -114,8 +114,7 @@ config:
 
   duckle:
     dcql_query: &dcql_query >
-      {"credentials":[{"id":"pid","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]}]}
-
+      { "credentials": [ { "id": "eid", "format": "dc+sd-jwt", "meta": { "vct_values": [ "urn:it-wallet:eid:1" ] }, "claims": [ { "path": [ "given_name" ] }, { "path": [ "family_name" ] }, { "path": [ "birthdate" ] } ] } ] }
 
   user_attributes:
     unique_identifiers:
