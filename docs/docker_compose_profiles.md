@@ -1,7 +1,7 @@
 ## Docker Compose profiles in iam-proxy-italia
 
 Profiles are a good way to optimize and extend a single Docker Compose file.
-The [official docker manual](https://docs.docker.com/compose/profiles/) says about profiles:
+The [official docker manual](https://docs.docker.com/compose/how-tos/profiles/) says about profiles:
 > Profiles help you adjust your Compose application for different environments or use cases by selectively activating services. Services can be assigned to one or more profiles; unassigned services start by default, while assigned ones only start when their profile is active. This setup means specific services, like those for debugging or development, to be included in a single compose.yml file and activated only as needed.
 
 In this [Docker Compose project](https://github.com/italia/iam-proxy-italia/blob/master/Docker-compose/docker-compose.yml), profiles are used to limit startup to strictly necessary services.

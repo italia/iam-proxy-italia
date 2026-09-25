@@ -77,6 +77,31 @@ services:
     networks:
       - iam-proxy-italia
 
+# Fills demo data iam-proxy-italia at startup.
+  db-init-iam-proxy-italia:
+    depends_on:
+      - satosa-mongo
+    profiles:
+      - demo
+    container_name: db-init-iam-proxy-italia
+    extends: iam-proxy-italia
+    restart: "no"
+    working_dir: /tmp/satosa_proxy
+    entrypoint: ["sh", "-c", "cp -rp /satosa_proxy_src/. /tmp/satosa_proxy/ && python /init_mongo.py"]
+    volumes: !override
+      - ../iam-proxy-italia-project-demo-examples/issuer_oidc4vci/init_mongo.py:/init_mongo.py:rwx
+      - ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/provider/dumps/example.json:/example.json:ro
+      - ./iam-proxy-italia-project:/satosa_proxy_src:ro  # source read-only: copied to /tmp at startup, no write-back to host
+#      - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:ro
+    environment:
+      MONGO_URL: "${MONGO_URL:-satosa-mongo}"
+      MONGO_PORT: "${MONGO_PORT:-27017}"
+      MONGO_DBUSER: "${MONGO_DBUSER:-satosa}"
+      MONGO_DBPASSWORD: "${MONGO_DBPASSWORD:-thatpassword}"
+      PATH_DUMP: "/example.json" #absolute path related to spid_cie_oidc_django (provider) dump
+    expose: !reset []
+    ports: !reset []
+
   iam-proxy-italia:
     image: ghcr.io/italia/iam-proxy-italia:v3.3
     build:
@@ -420,17 +445,19 @@ services:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
     ports:
-      - "${WALLET_INSTANCE_PORT:-8080}:8080"
+      - "${DEMO_WALLET_INSTANCE_PORT:-8080}:${FLASK_RUN_PORT:-8080}"
     volumes:
-      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+#      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
     environment:
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
-      FLASK_RUN_PORT: 8080
+      FLASK_RUN_PORT: ${FLASK_RUN_PORT:-8080}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-}
       DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
-      WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
+      DEMO_WALLET_INSTANCE_PORT: ${DEMO_WALLET_INSTANCE_PORT:-8080}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
+      WALLET_INITIALIZE_REDIRECT_URI: ${WALLET_INITIALIZE_REDIRECT_URI:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/wallet/cb}
+      WALLET_CREDENTIAL_REDIRECT_URI: ${WALLET_CREDENTIAL_REDIRECT_URI:-http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/wallet/cb}
     networks:
       iam-proxy-italia:
         aliases:

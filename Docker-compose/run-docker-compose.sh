@@ -166,7 +166,6 @@ function initialize_satosa {
   mkdir -p ./nginx/html/static
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
-  mkdir -p ./wallet-instance-demo/config
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -175,7 +174,6 @@ function initialize_satosa {
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
-  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
 
   rm -Rf ./iam-proxy-italia-project/static
 

@@ -113,8 +113,9 @@ config:
               - "$.given_name"
 
   duckle:
-    dcql_query: &dcql_query >-
-      {"credentials":[{"id":"pid","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
+    dcql_query: &dcql_query >
+      { "credentials": [ { "id": "eid", "format": "dc+sd-jwt", "meta": { "vct_values": [ "urn:it-wallet:eid:1" ] }, "claims": [ { "path": [ "given_name" ] }, { "path": [ "family_name" ] }, { "path": [ "birthdate" ] } ] } ] }
+
   user_attributes:
     unique_identifiers:
     - tax_id_code
@@ -239,6 +240,7 @@ config:
       module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
       class: DirectTrustSdJwtVc
       config:
+        jwks: *metadata_jwks
         cache_ttl: 0
         httpc_params: *httpc_params
         jwk_endpoint: /.well-known/jwt-vc-issuer
@@ -258,13 +260,13 @@ config:
         httpc_params: *httpc_params
         cache_ttl: 0
         entity_configuration_exp: 600
-        # include_issued_jwt_header_param: true # default false; if true, it will include trust_chain header parameters in the signed presentation request issued by this trust handler
+        include_issued_jwt_header_param: true # default false; if true, it will include trust_chain header parameters in the signed presentation request issued by this trust handler
         metadata_type: "openid_credential_verifier"
         metadata: *metadata
         authority_hints:
             - http://trust-anchor.example.org:5002
         trust_anchors:
-            - hhttp://trust-anchor.example.org:5002:
+            - http://trust-anchor.example.org:5002:
               -
             - https://trust-anchor.edu:
               -

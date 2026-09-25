@@ -1,12 +1,10 @@
 # Authors and Contributors
 
 ## Authors
-
 - Giuseppe De Marco
 - Andrea Ranaldi and his Team @ ISPRA Ambiente
 
 ## Contributors
-
 - Nicola Squartini @ Dipartimento per la trasformazione
 - Salvatore Laiso @ E&Y
 - Fulvio Scorza and his Team @ Università del Piemonte Orientale
@@ -18,5 +16,4 @@
 - GARR IDEM Community
 - Pasquale De Rose @ E&Y
 - Sara Longobardi @ Accenture
-- Manuel Pacella @ IPZS
 - Manuel Ciofo @ IPZS
