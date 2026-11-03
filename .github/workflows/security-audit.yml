@@ -64,9 +64,8 @@ jobs:
 
       - name: Audit dependencies for vulnerabilities
         run: |
-          # satosa is from git (peppelinux/SATOSA in pyproject.toml), not PyPI.
-          # pip-audit will report "Dependency not found on PyPI ... satosa" — that means
-          # "could not look up on PyPI", not "satosa is missing". Expected for git deps.
+          # pysaml2 is from git (peppelinux/pysaml2 in pyproject.toml), not the PyPI release.
+          # pip-audit may report "Dependency not found on PyPI ... pysaml2" for that git install.
           #
           # --ignore-vuln CVE-2024-23342 (ecdsa): Minerva timing side-channel. python-ecdsa
           #   considers side-channel attacks out of scope; no upstream fix exists.
@@ -75,7 +74,7 @@ jobs:
           poetry run pip-audit --cache-dir /tmp/pip-audit-cache --desc \
             --ignore-vuln CVE-2024-23342
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Note:** \`satosa\` is installed from git (peppelinux/SATOSA). The \"not found on PyPI\" line for it is expected; pip-audit cannot look up git-installed packages on PyPI." >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** \`pysaml2\` is installed from git (peppelinux/pysaml2). A \"not found on PyPI\" line for it means pip-audit could not look up that git install." >> $GITHUB_STEP_SUMMARY
 
   audit-djangosaml2-sp:
     needs: pre_job
