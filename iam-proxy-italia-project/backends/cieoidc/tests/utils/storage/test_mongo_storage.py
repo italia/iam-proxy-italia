@@ -148,6 +148,48 @@ def test_us17(storage):
     assert storage.get_sessions("state") == ["s1"]
 
 
+def test_consume_session_is_atomic_single_use(storage):
+    storage._db_name = "testdb"
+    storage._auth_collection = "auth"
+    storage._MongoStorage__client = MagicMock()
+    uid = uuid.uuid4()
+    doc = {
+        "_id": Binary.from_uuid(uid),
+        "state": "state-1",
+        "client_id": "client",
+        "endpoint": "https://op.example/authorization",
+        "data": "{}",
+        "provider_configuration": {},
+        "completed": True,
+    }
+    collection = storage._MongoStorage__client["testdb"]["auth"]
+    collection.find_one_and_update.return_value = doc
+
+    consumed = storage.consume_session("state-1")
+
+    assert consumed is not None
+    assert consumed.completed is True
+    query, update = collection.find_one_and_update.call_args.args[:2]
+    assert query == {
+        "state": "state-1",
+        "completed": {"$ne": True},
+        "access_token": None,
+        "code": None,
+        "user": None,
+    }
+    assert update == {"$set": {"completed": True}}
+
+
+def test_consume_session_returns_none_when_already_used(storage):
+    storage._db_name = "testdb"
+    storage._auth_collection = "auth"
+    storage._MongoStorage__client = MagicMock()
+    collection = storage._MongoStorage__client["testdb"]["auth"]
+    collection.find_one_and_update.return_value = None
+
+    assert storage.consume_session("state-1") is None
+
+
 def test_us18(storage):
     uid = str(uuid.uuid4())
     assert storage._to_uuid(uid) is not None
