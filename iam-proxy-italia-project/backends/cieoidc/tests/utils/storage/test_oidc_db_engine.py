@@ -80,6 +80,12 @@ def test_get_sessions(engine):
     assert res == ["session"]
 
 
+def test_consume_session(engine, fake_storage):
+    fake_storage.consume_session.return_value = "consumed"
+    assert engine.consume_session("state") == "consumed"
+    fake_storage.consume_session.assert_called_once_with("state")
+
+
 def test_prepare_for_insert_sets_dates(engine):
     entity = MagicMock()
     entity.created = None

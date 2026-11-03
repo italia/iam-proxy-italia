@@ -87,6 +87,10 @@ class OidcDbEngine(OidcStorage):
     def get_sessions(self, state: str) -> list[OidcAuthentication]:
         return self.__find(self.get_sessions.__name__, state)
 
+    def consume_session(self, state: str) -> Optional[OidcAuthentication]:
+        """Atomically consume the authorization session bound to ``state``."""
+        return self.__find(self.consume_session.__name__, state)
+
     def get_trust_chain_by_provider(self, provider_url: str) -> Optional[TrustChainCache]:
         return self.__find(self.get_trust_chain_by_provider.__name__, provider_url)
 
