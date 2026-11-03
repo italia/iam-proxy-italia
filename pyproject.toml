@@ -7,22 +7,22 @@ authors = [
 ]
 license = {text = "Apache 2.0"}
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 dependencies = [
-    "pip>=26.1",  # CVE-2026-1703, CVE-2026-3219
-    "setuptools>=78.1.1",  # PYSEC-2022-43012, PYSEC-2025-49, CVE-2024-6345
+    "pip>=26.2",  # CVE-2026-13346
+    "setuptools>=84.1.0",  # GHSA-xmj3-9gf7-h52w
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.5",
     "satosa>=8.5.1",
     "satosa-oidcop==4.1.0",
     "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.2.0",
-    "aiohttp (>=3.14.1,<4.0.0)",  # CVE-2026-34513 et al.; fixed in 3.13.4
+    "aiohttp (>=3.14.4,<4.0.0)",  # CVE-2026-111064 et al.; fixed in 3.14.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
-    "cryptography (>=46.0.7)",  # CVE-2026-34073, CVE-2026-39892
-    "ecdsa (>=0.19.2)",  # CVE-2024-23342, CVE-2026-33936
-    "pillow (>=12.2.0)",  # CVE-2026-40192
+    "cryptography (>=46.0.7,<47.0.0)",  # pyeudiw 2.2.0 caps cryptography at <47; 48+ fixes are not installable
+    "ecdsa (>=0.19.2)",  # CVE-2024-23342 has no upstream fix; CVE-2026-33936 fixed in 0.19.2
+    "pillow (>=13.0.0)",  # CVE-2026-112394 et al.; fixed in 13.0.0
     "requests (>=2.33.0)",  # CVE-2026-25645
     "uwsgi (>=2.0.28,<3.0.0)",
-    "werkzeug>=3.1.6"  # CVE-2026-27199: safe_join Windows device names; fixed in 3.1.6
+    "werkzeug>=3.1.9"  # CVE-2026-102598; fixed in 3.1.9
 ]
 
 [project.optional-dependencies]
