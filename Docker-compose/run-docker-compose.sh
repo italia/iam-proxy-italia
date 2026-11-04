@@ -181,7 +181,7 @@ function initialize_satosa {
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
-  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
+  # Wallet YAML is seeded at container startup when this directory is empty (see wallet-instance-demo entrypoint)
 
   rm -Rf ./iam-proxy-italia-project/static
 
