@@ -3760,4 +3760,4 @@ test = ["flake8", "lxml", "msgpack", "pip-audit", "pyOpenSSL", "pygments", "pyte
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "607796fda8ccc9ef69452c263c6a169cf0c1c61f0380f8d64f2a78190bac443d"
+content-hash = "86e2ee51eeb88e5c47c9d0df306237d0320be89c683d94b62a7ec2102f4c127c"
