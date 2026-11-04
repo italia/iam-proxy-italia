@@ -194,6 +194,9 @@ function initialize_satosa {
 
 function update {
   if [[ -z "${SKIP_UPDATE}" ]]; then
+    echo -e "Rimuovo le immagini della composizione, così vengono riscaricate o ricostruite. \n"
+    ./remove-docker-images.sh
+    echo -e "\n"
     echo -e "Provo a scaricare le nuove versioni. \n"
     docker compose -f docker-compose.yml pull
     echo -e "\n"
@@ -302,7 +305,7 @@ function help {
   echo "-m Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)"
   echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
   echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
-  echo "-s Skip docker image update"
+  echo "-s Skip docker image removal and update"
   echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2)"
   echo "-t Run spid_sp_test tests after startup"
   echo ""
