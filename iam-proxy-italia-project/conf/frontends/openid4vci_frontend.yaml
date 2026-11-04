@@ -136,6 +136,7 @@ config:
         - https://trust-registry.eid-wallet.example.it/loa/high
       scopes_supported:
         - pid
+        - eid
         - EuropeanDisabilityCard
         - mDL
       response_modes_supported:
@@ -190,7 +191,7 @@ config:
         - name: EAA Provider
           locale: en-US
       credential_configurations_supported:
-        dc_sd_jwt_pid:
+        dc_sd_jwt_pid: &dc_sd_jwt_pid_config
           format: dc+sd-jwt
           scope: pid
           cryptographic_binding_methods_supported:
@@ -301,6 +302,11 @@ config:
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
             dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
+        dc_sd_jwt_eid:
+          <<: *dc_sd_jwt_pid_config
+          scope: eid
+          vct: urn:it-wallet:eid:1
+          schema_id: eid+dc+sd-jwt+urn:it-wallet:eid:1
         dc_sd_jwt_EuropeanDisabilityCard:
           format: dc+sd-jwt
           scope: EuropeanDisabilityCard
@@ -666,7 +672,7 @@ config:
       exp: 90 # minutes
       ttl: 43200
     credential_specification:
-      dc_sd_jwt_pid:
+      dc_sd_jwt_pid: &dc_sd_jwt_pid_spec
         trust_framework: it_wallet
         assurance_level: high
         expiry_days: 365
@@ -688,6 +694,8 @@ config:
               trust_framework: "{{trust_framework}}"
               assurance_level: "{{assurance_level}}"
           add_decoy_claims: false
+      dc_sd_jwt_eid:
+        <<: *dc_sd_jwt_pid_spec
       mso_mdoc_mDL:
         expiry_days: 365
         template: |

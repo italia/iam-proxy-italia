@@ -22,6 +22,8 @@ get_data https://registry.spid.gov.it/entities-idp ./metadata/idp/spid-entities-
 get_data https://sp-proxy.eid.gov.it/metadata ./metadata/idp/ficep.xml $SATOSA_GET_FICEP_IDP_METADATA
 get_data https://idserver.servizicie.interno.gov.it/idp/shibboleth?Metadata ./metadata/idp/cie-production.xml $SATOSA_GET_CIE_IDP_METADATA
 
+python /satosa_proxy/conf/frontends/openid4vci/seed_users.py || echo "openid4vci demo user seed failed"
+
 wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
 wsgi_cmd=""
 if [[ $SATOSA_DEBUG == "true" ]]; then

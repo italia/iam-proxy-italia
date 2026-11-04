@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Mario",
+    "surname": "Rossi",
+    "dateOfBirth": "1985-08-01",
+    "fiscal_code": "RSSMRA85M01H501U",
+    "countyOfBirth": "IT",
+    "placeOfBirth": "Roma",
+    "mail": "user@example.it",
+    "nationalities": ["IT"]
+  }
+]
