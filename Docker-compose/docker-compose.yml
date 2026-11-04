@@ -436,23 +436,18 @@ services:
         aliases:
           - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
-  # PagoPA IT-Wallet conformance tool (image 1.2.x). Not part of the demo
-  # profile: it runs a test suite and exits, which makes `compose up --wait` fail.
-  #   docker compose --profile wct run --rm pagopa-wallet-cli
-  #   docker compose --profile wct run --rm pagopa-wallet-cli test:presentation --tests happy
+  # PagoPA IT-Wallet conformance tool (image 1.2.x).
+  # Starts on the demo profiles after iam-proxy-italia is healthy.
+  # That healthcheck probes OpenID4VP (backend) and OpenID4VCI (frontend)
+  # through nginx. The entrypoint then runs test:issuance and test:presentation.
   pagopa-wallet-cli:
     profiles:
+      - demo
       - wct
     container_name: pagopa-wallet-cli
     build:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
-    command:
-      - test:issuance
-      - --tests
-      - ${WCT_TESTS:-happy}
-      - --file-ini
-      - /wct-config/config.ini
     depends_on:
       iam-proxy-italia:
         condition: service_healthy

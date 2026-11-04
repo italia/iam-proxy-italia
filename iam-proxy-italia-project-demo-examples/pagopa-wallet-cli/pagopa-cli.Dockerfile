@@ -6,5 +6,11 @@ FROM ghcr.io/pagopa/wallet-conformance-test:latest
 # The upstream entrypoint (docker-entrypoint.sh) is left in place: it
 # prepares /wallet-conformance-test/data and execs `./bin/wct`.
 USER root
+COPY iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/wct-entrypoint.sh /usr/local/bin/wct-entrypoint.sh
 RUN pnpm build \
+ && chmod +x /usr/local/bin/wct-entrypoint.sh \
  && chown -R node:node /wallet-conformance-test
+
+# Upstream docker-entrypoint.sh still prepares the data dir and execs wct.
+# This wrapper runs issuance and then presentation unless a command is given.
+ENTRYPOINT ["wct-entrypoint.sh"]
