@@ -36,6 +36,7 @@ Docker-compose/eudi-wallet-it-python
 Docker-compose/wwwallet
 Docker-compose/wallet-instance-demo
 Docker-compose/spid_cie_oidc_django
+Docker-compose/pagopa-wallet-cli/
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
