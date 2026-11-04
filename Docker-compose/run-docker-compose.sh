@@ -155,6 +155,10 @@ function ensure_satosa_hostname_resolvable {
   ensure_host_resolvable "${OPENID_CIE_PROVIDER_HOST}"
   ensure_host_resolvable "${TRUST_ANCHOR_HOSTNAME}"
   ensure_host_resolvable "${DEMO_WALLET_INSTANCE_HOSTNAME}"
+  # Hostnames published by the PagoPA conformance tool (profile wct).
+  ensure_host_resolvable "trust-anchor.wct.example.org"
+  ensure_host_resolvable "wallet-provider.wct.example.org"
+  ensure_host_resolvable "credential-issuer.wct.example.org"
 }
 
 function initialize_satosa {
@@ -167,6 +171,8 @@ function initialize_satosa {
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
   mkdir -p ./wallet-instance-demo/config
+  mkdir -p ./pagopa-wallet-cli/data
+  chmod 777 ./pagopa-wallet-cli/data || true
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"
@@ -301,7 +307,7 @@ function help {
   echo "-t Run spid_sp_test tests after startup"
   echo ""
   echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
-  echo "demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo"
+  echo "demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo, pagopa-wallet-cli"
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"

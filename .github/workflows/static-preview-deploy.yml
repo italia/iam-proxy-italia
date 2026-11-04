@@ -99,10 +99,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages 2>/dev/null || true
+          # npm ci runs the Bootstrap Italia postinstall, which rewrites vendored
+          # css/js. The preview artifact is already in deploy/, so discard that
+          # dirty worktree before switching branches.
           if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
-            git checkout -B gh-pages origin/gh-pages
+            git checkout -f -B gh-pages origin/gh-pages
           else
-            git checkout --orphan gh-pages
+            git checkout -f --orphan gh-pages
             git rm -rf --cached . 2>/dev/null || true
           fi
           rm -rf preview/"${{ steps.prepare.outputs.safe_branch }}"

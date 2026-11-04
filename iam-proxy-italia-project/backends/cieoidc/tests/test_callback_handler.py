@@ -1,10 +1,25 @@
 import pytest
+from contextlib import contextmanager
 from unittest.mock import MagicMock, patch
 from satosa.context import Context
 from satosa.response import Response
 from backends.cieoidc.endpoints.authorization_callback_endpoint import AuthorizationCallBackHandler
 from ..utils.clients.oidc import OidcUserInfo
 from satosa.exception import SATOSAAuthenticationError, SATOSABadRequestError
+
+PROVIDER_ID = "http://cie-provider.example.org:8002/oidc/op"
+RP_CLIENT_ID = "client123"
+
+
+def _user_attrs(sub: str) -> dict:
+    return {
+        "username": sub.lower(),
+        "given_name": "Given",
+        "family_name": "Family",
+        "email": f"{sub.lower()}@example.it",
+        "sub": sub,
+        "fiscal_number": f"TINIT-{sub}",
+    }
 
 
 @pytest.fixture(autouse=True)
@@ -15,19 +30,38 @@ def mock_db_engine():
         instance = mock_engine.return_value
         instance.connect.return_value = None
         instance.is_connected.return_value = True
-        instance.get_sessions.return_value = [MagicMock(model_dump=lambda mode: {
+        session_state = {
+            "id": "11111111-1111-1111-1111-111111111111",
             "state": "dummy_state",
-            "provider_id": "http://cie-provider.example.org:8002/oidc/op",
-            "client_id": "client123",
-            "data": '{"redirect_uri":"http://iam-proxy-italia.example.org/cb"}',
+            "provider_id": PROVIDER_ID,
+            "client_id": RP_CLIENT_ID,
+            "endpoint": f"{PROVIDER_ID}/authorization",
+            "data": '{"redirect_uri":"http://iam-proxy-italia.example.org/cb","code_verifier":"verifier"}',
             "provider_configuration": {
                 "openid_provider": {
-                    "token_endpoint": "http:/cie-provider.example.org/op/token"
+                    "token_endpoint": "http://cie-provider.example.org/op/token"
                 }
-            }
-        })]
+            },
+            "completed": False,
+        }
+
+        def get_sessions(state):
+            if state != session_state["state"]:
+                return []
+            return [MagicMock(model_dump=lambda mode="json": dict(session_state))]
+
+        def consume_session(state):
+            if state != session_state["state"] or session_state.get("completed"):
+                return None
+            if session_state.get("access_token") or session_state.get("code") or session_state.get("user"):
+                return None
+            session_state["completed"] = True
+            return MagicMock(model_dump=lambda mode="json": dict(session_state))
+
+        instance.get_sessions.side_effect = get_sessions
+        instance.consume_session.side_effect = consume_session
         instance.update_session.return_value = True
-        yield
+        yield session_state
 
 
 @pytest.fixture
@@ -261,10 +295,14 @@ def test_authorization_empty(handler):
     }
     with patch.object(
         handler,
+        "_AuthorizationCallBackHandler__consume_authorization",
+        return_value={}
+    ), patch.object(
+        handler,
         "_AuthorizationCallBackHandler__get_authorization",
         return_value={}
     ):
-        with pytest.raises(SATOSAAuthenticationError):
+        with pytest.raises(SATOSAAuthenticationError, match="Authorization empty"):
             handler.endpoint(context)
 
 
@@ -285,7 +323,7 @@ def test_invalid_client_id(handler):
     }
     with patch.object(
         handler,
-        "_AuthorizationCallBackHandler__get_authorization",
+        "_AuthorizationCallBackHandler__consume_authorization",
         return_value=authorization
     ):
         with pytest.raises(SATOSABadRequestError):
@@ -450,3 +488,99 @@ def test_update_authorization_db_failure(handler):
         "provider_configuration": {}
     }
     handler._AuthorizationCallBackHandler__update_authorization(auth)
+
+
+def _callback_context(state, code="code-1"):
+    context = Context()
+    context.state = MagicMock()
+    context.qs_params = {"state": state, "code": code, "iss": PROVIDER_ID}
+    return context
+
+
+@contextmanager
+def _successful_op(user_attrs):
+    holder = {"attrs": user_attrs}
+
+    def process_attrs(*_args, **_kwargs):
+        return dict(holder["attrs"])
+
+    with patch(
+        "backends.cieoidc.utils.clients.oauth2.OAuth2AuthorizationCodeGrant.access_token_request",
+        return_value={
+            "access_token": "access-token",
+            "id_token": "id-token",
+            "token_type": "Bearer",
+            "expires_in": 3600,
+            "scope": "openid",
+        },
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.get_jwks",
+        return_value={"keys": []},
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.get_jwk_from_jwt",
+        return_value={"kid": "key1"},
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.verify_jws",
+        return_value=True,
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.unpad_jwt_payload",
+        return_value={"sub": user_attrs["sub"], "at_hash": "dummy"},
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.verify_at_hash",
+    ), patch(
+        "backends.cieoidc.endpoints.authorization_callback_endpoint.process_user_attributes",
+        side_effect=process_attrs,
+    ), patch(
+        "backends.cieoidc.utils.clients.oidc.OidcUserInfo.get_userinfo",
+        return_value={"sub": user_attrs["sub"]},
+    ):
+        yield holder
+
+
+def _issued_subject(handler) -> str:
+    return handler._auth_callback.call_args[0][1].subject_id
+
+
+def test_subject_id_is_user_sub_and_state_is_single_use(handler, mock_db_engine):
+    alice = _user_attrs("ALICE-SUB")
+    bob = _user_attrs("BOB-SUB")
+
+    with _successful_op(alice) as holder:
+        assert handler.endpoint(_callback_context("dummy_state", "code-alice"))
+        assert _issued_subject(handler) == "ALICE-SUB"
+        assert _issued_subject(handler) != RP_CLIENT_ID
+        assert handler._db_engine.update_session.call_args_list
+        for call in handler._db_engine.update_session.call_args_list:
+            assert call.args[0].completed is True
+
+        with pytest.raises(SATOSAAuthenticationError, match="Authorization already used"):
+            handler.endpoint(_callback_context("dummy_state", "code-alice"))
+        assert handler._auth_callback.call_count == 1
+
+        mock_db_engine["state"] = "bob-state"
+        mock_db_engine["completed"] = False
+        holder["attrs"] = bob
+        assert handler.endpoint(_callback_context("bob-state", "code-bob"))
+        assert _issued_subject(handler) == "BOB-SUB"
+        assert handler._auth_callback.call_count == 2
+        assert handler._auth_callback.call_args_list[0][0][1].subject_id == "ALICE-SUB"
+        assert handler._auth_callback.call_args_list[1][0][1].subject_id == "BOB-SUB"
+
+
+def test_blank_subject_is_not_replaced_with_client_id(handler):
+    with _successful_op(_user_attrs("   ")):
+        with pytest.raises(SATOSAAuthenticationError, match="Authenticated user subject is missing"):
+            handler.endpoint(_callback_context("dummy_state"))
+    handler._auth_callback.assert_not_called()
+
+
+def test_session_that_already_holds_an_access_token_is_rejected(handler, mock_db_engine):
+    mock_db_engine["access_token"] = "already-issued"
+    with pytest.raises(SATOSAAuthenticationError, match="Authorization already used"):
+        handler.endpoint(_callback_context("dummy_state"))
+    handler._auth_callback.assert_not_called()
+
+
+def test_unknown_authorization_state_is_rejected(handler):
+    with pytest.raises(SATOSAAuthenticationError, match="Authorization empty"):
+        handler.endpoint(_callback_context("missing-state"))

@@ -7,6 +7,7 @@
 
 ## Contributors
 
+- Nikhil Agrawal <nikhil.agrawal@mettlelabs.ai>
 - Nicola Squartini @ Dipartimento per la trasformazione
 - Salvatore Laiso @ E&Y
 - Fulvio Scorza and his Team @ Università del Piemonte Orientale

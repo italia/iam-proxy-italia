@@ -436,12 +436,14 @@ services:
         aliases:
           - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
+  # PagoPA IT-Wallet conformance tool (image 1.2.x).
+  # Starts on the demo profiles after iam-proxy-italia is healthy.
+  # That healthcheck probes OpenID4VP (backend) and OpenID4VCI (frontend)
+  # through nginx. The entrypoint then runs test:issuance and test:presentation.
   pagopa-wallet-cli:
     profiles:
       - demo
-      - storage_mongo
-      - oidc
-      - wallet_instance_demo
+      - wct
     container_name: pagopa-wallet-cli
     build:
       context: ../
@@ -449,22 +451,30 @@ services:
     depends_on:
       iam-proxy-italia:
         condition: service_healthy
+      satosa-nginx:
+        condition: service_started
     environment:
-      CUSTOM_CONFIG_PATH: ${CUSTOM_CONFIG_PATH:-example.config.ini}
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      CONFIG_WALLET_VERSION: ${WCT_WALLET_VERSION:-V1_4}
+      CONFIG_CREDENTIAL_ISSUER_URI: ${WCT_CREDENTIAL_ISSUER_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      CONFIG_CREDENTIAL_TYPES: ${WCT_CREDENTIAL_TYPES:-dc_sd_jwt_pid}
+      CONFIG_UNSAFE_TLS: ${WCT_UNSAFE_TLS:-true}
+      CONFIG_SAVE_CREDENTIAL: ${WCT_SAVE_CREDENTIAL:-true}
+      OIDF_SERVERS_BIND_ADDRESS: ${WCT_BIND_ADDRESS:-0.0.0.0}
+      CONFIG_LOG_LEVEL: ${WCT_LOG_LEVEL:-INFO}
+    volumes:
+      - ./pagopa-wallet-cli/data:/wallet-conformance-test/data
+      - ../iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/config/example.pagopa_cli.config.ini:/wct-config/config.ini:ro
     ports:
+      - "3001:3001"
       - "3002:3002"
+      - "3003:3003"
     networks:
       iam-proxy-italia:
         aliases:
           - wallet-provider.wct.example.org
           - trust-anchor.wct.example.org
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf  $$ID4VCI_WELL_KNOWN_OPENID_CONFIGURATION || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
-      start_period: 45s
+          - credential-issuer.wct.example.org
+    restart: "no"
 
 networks:
   iam-proxy-italia:

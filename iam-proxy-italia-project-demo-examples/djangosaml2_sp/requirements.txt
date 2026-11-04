@@ -3,7 +3,7 @@
 #   valid 4.2 fix version in the advisory payload; 5.2.13+ is the supported patched LTS line on PyPI.
 Django>=5.2.13,<6.0
 cffi>=1.17.0
-cryptography>=46.0.7
+cryptography>=50.0.0
 pyOpenSSL>=26.0.0
 
 # django saml2 SP (pysaml2: keep <7.5.1 so pip does not resolve 7.5.1+ which caps pyOpenSSL<24.3.0)

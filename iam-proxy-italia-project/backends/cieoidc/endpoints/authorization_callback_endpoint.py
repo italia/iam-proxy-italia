@@ -13,7 +13,7 @@ from ..utils.helpers.configuration_utils import ConfigurationPlugin
 from ..utils.clients.oauth2 import OAuth2AuthorizationCodeGrant
 from ..utils.clients.oidc import OidcUserInfo
 from ..storage.db_engine import OidcDbEngine
-from ..models.oidc_auth import OidcAuthentication
+from ..models.oidc_auth import OidcAuthentication, authorization_already_used
 from ..models.user import OidcUser
 from ..utils.exceptions import StorageUnreachable
 from ..utils.helpers.misc import get_jwks, get_jwk_from_jwt, process_user_attributes
@@ -69,13 +69,13 @@ class AuthorizationCallBackHandler(BaseEndpoint):
             raise SATOSAAuthenticationError(context.state, context.qs_params.get('error_description'))
 
         state: str = context.qs_params.get("state")
-        authorization = self.__get_authorization(state)
+        # Consume the authorization before redeeming the code. The session bound
+        # to ``state`` is single-use, so a replayed callback cannot open another
+        # RP session.
+        authorization = self.__consume_authorization(state)
 
         if not authorization:
-            logger.debug("Authorization empty")
-            raise SATOSAAuthenticationError(context.state, "Authorization empty")
-
-        # todo validate authorization ->raise exc
+            self.__reject_unconsumed_authorization(context, state)
 
         code: str = context.qs_params.get("code")
         iss: str = context.qs_params.get("iss")
@@ -188,8 +188,42 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         self.__update_authorization(authorization)
 
-        internal_data = self._translate_response(user.model_dump(mode="json"), iss, authorization.get("client_id"))
+        subject = user.sub
+        if not isinstance(subject, str) or not subject.strip():
+            logger.error("Authenticated user subject is missing")
+            raise SATOSAAuthenticationError(
+                context.state, "Authenticated user subject is missing"
+            )
+
+        internal_data = self._translate_response(
+            user.model_dump(mode="json"), iss, subject
+        )
         return self._auth_callback(context, internal_data)
+
+    def __consume_authorization(self, state: str) -> dict:
+        """Consume the single-use authorization session bound to ``state``."""
+        logger.debug(
+            f"Entering method: {inspect.getframeinfo(inspect.currentframe()).function}. Params [state {state}]")
+        if not state:
+            return {}
+        try:
+            output = self._db_engine.consume_session(state)
+            if output:
+                consumed = output.model_dump(mode="json")
+                # Keep the flag on every later write so an update cannot reopen the session.
+                consumed["completed"] = True
+                return consumed
+        except ValidationError as e:
+            logger.debug(e)
+        return {}
+
+    def __reject_unconsumed_authorization(self, context, state: str) -> None:
+        existing = self.__get_authorization(state) or {}
+        if existing and authorization_already_used(existing):
+            logger.debug("Authorization already used")
+            raise SATOSAAuthenticationError(context.state, "Authorization already used")
+        logger.debug("Authorization empty")
+        raise SATOSAAuthenticationError(context.state, "Authorization empty")
 
     def __get_authorization(self, state: str) -> dict:
         """
@@ -311,6 +345,7 @@ class AuthorizationCallBackHandler(BaseEndpoint):
 
         :param attributes: Dictionary with attribute name as key.
         :param issuer: The oidc op that gave the response.
+        :param sub: The authenticated user's own OpenID subject.
         :returns: A SATOSA internal response
         """
         auth_info = AuthenticationInformation("https://www.spid.gov.it/SpidL2", str(round(time.time())), issuer)

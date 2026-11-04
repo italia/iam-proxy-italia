@@ -7,22 +7,23 @@ authors = [
 ]
 license = {text = "Apache 2.0"}
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 dependencies = [
-    "pip>=26.1",  # CVE-2026-1703, CVE-2026-3219
-    "setuptools>=78.1.1",  # PYSEC-2022-43012, PYSEC-2025-49, CVE-2024-6345
-    "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.4-1",
-    "satosa @ git+https://github.com/peppelinux/SATOSA@pplnx-v8.5.2",
+    "pip>=26.2",  # CVE-2026-13346
+    "setuptools>=84.1.0",  # GHSA-xmj3-9gf7-h52w
+    "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.5",
+    "satosa>=8.5.1",
     "satosa-oidcop==4.1.0",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.2.0",
-    "aiohttp (>=3.14.1,<4.0.0)",  # CVE-2026-34513 et al.; fixed in 3.13.4
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2779fd2056aecc8d4e437d1b228a0bfbe33c6996",  # unreleased 2.3.0; tag 2.2.0 caps cryptography at <47
+    "aiohttp (>=3.14.4,<4.0.0)",  # CVE-2026-111064 et al.; fixed in 3.14.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
-    "cryptography (>=46.0.7)",  # CVE-2026-34073, CVE-2026-39892
-    "ecdsa (>=0.19.2)",  # CVE-2024-23342, CVE-2026-33936
-    "pillow (>=12.2.0)",  # CVE-2026-40192
+    "cryptography (>=50.0.0,<=50.0.1)",  # CVE-2026-69247 fixed in 50.0.0; pyeudiw main caps at <=50.0.1
+    "cryptojwt (>=1.11.0,<1.12)",  # 1.9.x imports SECT* curves removed in cryptography 46+
+    "ecdsa (>=0.19.2)",  # CVE-2024-23342 has no upstream fix; CVE-2026-33936 fixed in 0.19.2
+    "pillow (>=13.0.0)",  # CVE-2026-112394 et al.; fixed in 13.0.0
     "requests (>=2.33.0)",  # CVE-2026-25645
     "uwsgi (>=2.0.28,<3.0.0)",
-    "werkzeug>=3.1.6"  # CVE-2026-27199: safe_join Windows device names; fixed in 3.1.6
+    "werkzeug>=3.1.9"  # CVE-2026-102598; fixed in 3.1.9
 ]
 
 [project.optional-dependencies]
@@ -34,6 +35,7 @@ test = [
     "pytest-asyncio",
     "pygments (>=2.20.0)",  # CVE-2026-4539
     "pyOpenSSL>=26.0.0",
+    "msgpack (>=1.2.3)",  # CVE-2026-114613
     "pip-audit (>=2.10.0,<3.0.0)",
     "lxml (>=6.1.0)",  # CVE-2026-41066: safe resolve_entities default for all parsers
 ]
