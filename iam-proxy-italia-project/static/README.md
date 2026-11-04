@@ -145,7 +145,7 @@ npm run update-bootstrap-italia
 Discovery page (IT-Wallet card) and QR code page use official IT-Wallet logos from [eid-wallet-it-docs official_resources](https://github.com/italia/eid-wallet-it-docs/tree/versione-corrente/official_resources):
 
 - **Discovery page** (`disco.html`): `it-wallet/wallet_icon.svg` — white symbol on primary button (from IT-Wallet-Symbol-Negative-White).
-- **QR code page** and backend config: `it-wallet/wallet-icon-blue.svg` — blue logo in QR center (from IT-Wallet-Logo-Primary-BlueItalia).
+- **QR code page** and backend config: `img/IT-Wallet-Mark.svg` — mark in the QR center (from the official IT-Wallet mark).
 
 To refresh assets from the official repo:
 
