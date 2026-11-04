@@ -3,10 +3,20 @@
     "title": "Authentication Error",
     "description": "Authentication Error"
   },
+  "skip_links": {
+    "nav_label": "Skip links",
+    "main_content": "Skip to main content",
+    "footer": "Skip to footer"
+  },
+  "noscript": {
+    "message": "JavaScript must be enabled to display this page correctly."
+  },
   "header": {
     "organization_name": "Organization Name",
     "region_name": "Organization Name",
-    "logo_title": "Your Logo"
+    "logo_title": "Your Logo",
+    "lang_active_hint": "active language:",
+    "lang_trigger": "Language selection, {{name}} selected"
   },
   "nav": {
     "main_page": "Main page",
@@ -55,8 +65,10 @@
     "useful_links_section": "Useful links section",
     "legal_notes": "Legal notes",
     "legal_notes_title": "Legal notes",
-    "privacy": "Privacy policy",
-    "privacy_title": "Privacy policy",
-    "accessibility": "Accessibility statement"
+    "privacy": "Privacy Policy",
+    "privacy_title": "Privacy Policy",
+    "accessibility": "Accessibility statement",
+    "nav_label": "Legal links",
+    "new_window_hint": "opens in a new window"
   }
 }
