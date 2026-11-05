@@ -179,7 +179,6 @@ config:
       nonce_endpoint:  <base_url>/<name>/nonce-endpoint
       deferred_credential_endpoint:  <base_url>/<name>/deferred-credential
       revocation_endpoint:  <base_url>/<name>/revoke
-      status_assertion_endpoint:  <base_url>/<name>/status
       notification_endpoint:  <base_url>/<name>/notification
       credential_hash_alg_supported: sha-256
 #      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
