@@ -171,8 +171,9 @@ config:
     authorization_signed_response_alg: *sig_alg_supported
 
     #Various informations of the client
-    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    client_id: !ENV PYEUDIW_VERIFIER_CLIENT_ID
     client_name: Name of an example organization
+    logo_uri: https://developers.italia.it/assets/icons/logo-it.svg
     contacts:
       - ops@verifier.example.org
     default_acr_values:
@@ -188,16 +189,19 @@ config:
     jwks: *metadata_jwks
 
     redirect_uris:
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
+      - !ENV PYEUDIW_VERIFIER_REDIRECT_URI
     request_uris:
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
+      - !ENV PYEUDIW_VERIFIER_REQUEST_URI
+    response_uris:
+      - !ENV PYEUDIW_VERIFIER_RESPONSE_URI
+    encrypted_response_enc_values_supported: *enc_enc_supported
 
     # not necessary according to openid4vp
     # default_max_age: 1111
     # require_auth_time: true
     # subject_type: pairwise
 
-    vp_formats:
+    vp_formats: &vp_formats
       dc+sd-jwt:
         sd-jwt_alg_values:
           - ES256
@@ -205,6 +209,15 @@ config:
         kb-jwt_alg_values:
           - ES256
           - ES384
+    vp_formats_supported:
+      <<: *vp_formats
+      mso_mdoc:
+        issuerauth_alg_values:
+          - -7
+          - -35
+        deviceauth_alg_values:
+          - -7
+          - -35
     token_endpoint_auth_methods_supported:
       - attest_jwt_client_auth
     client_attestation_signing_alg_values_supported:

@@ -78,7 +78,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.4.1
+    image: ghcr.io/italia/iam-proxy-italia:v3.5.0
     build:
         context: ../
         args:
@@ -178,6 +178,10 @@ services:
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
+      - PYEUDIW_VERIFIER_CLIENT_ID=${PYEUDIW_VERIFIER_CLIENT_ID:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+      - PYEUDIW_VERIFIER_REQUEST_URI=${PYEUDIW_VERIFIER_REQUEST_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri}
+      - PYEUDIW_VERIFIER_RESPONSE_URI=${PYEUDIW_VERIFIER_RESPONSE_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/response-uri}
+      - PYEUDIW_VERIFIER_REDIRECT_URI=${PYEUDIW_VERIFIER_REDIRECT_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/redirect-uri}
 
       # CIE OIDC backend: trust anchor and provider URLs (reachable from this container)
       - TRUST_ANCHOR_URL=${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
