@@ -137,7 +137,6 @@ config:
       scopes_supported:
         - pid
         - eid
-        - EuropeanDisabilityCard
         - mDL
       response_modes_supported:
         - form_post.jwt
@@ -215,7 +214,7 @@ config:
               - name: Person Identification Data
                 description: Person identification data
                 locale: en-US
-            claims:
+            claims: &pid_sd_jwt_claims
               - path:
                   - given_name
                 mandatory: true
@@ -307,103 +306,15 @@ config:
           scope: eid
           vct: urn:it-wallet:eid:1
           schema_id: eid+dc+sd-jwt+urn:it-wallet:eid:1
-        dc_sd_jwt_EuropeanDisabilityCard:
-          format: dc+sd-jwt
-          scope: EuropeanDisabilityCard
-          cryptographic_binding_methods_supported:
-            - jwk
-          credential_signing_alg_values_supported:
-            - ES256
-            - ES384
-            - ES512
-          proof_types_supported:
-            jwt:
-              proof_signing_alg_values_supported:
-                - ES256
-                - ES384
-                - ES512
-          display:
-            - name: Carta della disabilità europea
-              locale: it-IT
-            - name: European Disability Card
-              locale: en-US
-          vct: https://trust-registry.eid-wallet.example.it/v1.0/EuropeanDisabilityCard
           credential_metadata:
             display:
-              - name: Carta della disabilità europea
-                description: Versione digitale della carta della disabilità europea
+              - name: IT-Wallet ID
+                description: IT-Wallet ID
                 locale: it-IT
-              - name: European Disability Card
-                description: Digital version of the European Disability Card
+              - name: IT-Wallet ID
+                description: IT-Wallet ID
                 locale: en-US
-            claims:
-              - path:
-                  - document_number
-                display:
-                  - name: Numero Documento
-                    locale: it-IT
-                  - name: Document Number
-                    locale: en-US
-              - path:
-                  - given_name
-                display:
-                  - name: Nome
-                    locale: it-IT
-                  - name: Name
-                    locale: en-US
-              - path:
-                  - family_name
-                display:
-                  - name: Cognome
-                    locale: it-IT
-                  - name: Family Name
-                    locale: en-US
-              - path:
-                  - birth_date
-                display:
-                  - name: Data di Nascita (YYYY-MM-GG)
-                    locale: it-IT
-                  - name: Date of Birth (YYYY-MM-GG)
-                    locale: en-US
-              - path:
-                  - personal_administrative_number
-                display:
-                  - name: Codice Fiscale
-                    locale: it-IT
-                  - name: Tax Identification Number
-                    locale: en-US
-              - path:
-                  - expiry_date
-                display:
-                  - name: Data di Scadenza (YYYY-MM-GG)
-                    locale: it-IT
-                  - name: Expiration Date (YYYY-MM-GG)
-                    locale: en-US
-              - path:
-                  - constant_attendance_allowance
-                display:
-                  - name: Diritto accompagnatore
-                    locale: it-IT
-                  - name: Constant attendance allowance
-                    locale: en-US
-              - path:
-                  - portrait
-                display:
-                  - name: Foto codificata in base64
-                    locale: it-IT
-                  - name: Portrait base64 encoded
-                    locale: en-US
-              - path:
-                  - link_qr_code
-                display:
-                  - name: Link QR Code
-                    locale: it-IT
-                  - name: Link QR Code
-                    locale: en-US
-          schema_id: EuropeanDisabilityCard+dc+sd-jwt+urn:it-wallet:EuropeanDisabilityCard:v1.0.0
-          authentic_sources:
-            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
-            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
+            claims: *pid_sd_jwt_claims
         dc_sd_jwt_mDL:
           format: dc+sd-jwt
           scope: mDL
@@ -795,6 +706,14 @@ config:
                     locale: it-IT
                   - name: Distinguishing sign of the issuing country
                     locale: en-US
+              - path:
+                  - org.iso.18013.5.1.IT
+                  - verification
+                display:
+                  - name: Verifica
+                    locale: it-IT
+                  - name: Verification
+                    locale: en-US
           schema_id: mDL+mso_mdoc+org.iso.18013.5.1.mDL
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
@@ -874,6 +793,8 @@ config:
               trust_framework: "{{trust_framework}}"
               assurance_level: "{{assurance_level}}"
       mso_mdoc_mDL:
+        trust_framework: it_wallet
+        assurance_level: high
         expiry_days: 365
         template: |
           org.iso.18013.5.1:
@@ -888,13 +809,10 @@ config:
             un_distinguishing_sign: "I"
             portrait: !!binary "{{portrait_b64}}"
             driving_privileges: "{{driving_privileges}}"
-          org.iso.18013.5.1.it:
-            verification.evidence:
-              organization_name: "{{verification.organization_name}}"
-              organization_id: "{{verification.organization_id}}"
-              country_code: "{{verification.country_code}}"
-            verification.trust_framework: "{{trust_framework}}"
-            verification.assurance_level: "{{assurance_level}}"
+          org.iso.18013.5.1.IT:
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
       dc_sd_jwt_mDL:
         template: |
           holder_disclosed_claims:
