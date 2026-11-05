@@ -97,6 +97,9 @@ services:
     environment:
       - TZ=${TZ:-Europe/Rome}
       - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
+      # Compose profile list from the host (run-docker-compose.sh defaults to demo).
+      # The OpenID4VCI demo user seed runs only when this list contains the demo profile.
+      - COMPOSE_PROFILES=${COMPOSE_PROFILES:-}
       - SATOSA_BY_DOCKER=1
       - SATOSA_GET_IDEM_MDQ_KEY=${SATOSA_GET_IDEM_MDQ_KEY:-true}
       - SATOSA_GET_SPID_IDP_METADATA=${SATOSA_GET_SPID_IDP_METADATA:-true}
