@@ -10,7 +10,7 @@ import sys
 def main():
     trust_anchor = os.environ.get("TRUST_ANCHOR_URL", "http://trust-anchor.example.org:5002")
     wallet_provider_url = os.environ.get(
-        "WALLET_PROVIDER_URL", "http://demo-wi.example.org:8080/provider"
+        "WALLET_PROVIDER_URL", "https://demo-wi.example.org:8080/provider"
     )
 
     config_path = "config/config.json"

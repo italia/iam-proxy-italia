@@ -30,7 +30,7 @@ def main():
     # Resolve wallet base URL (where the wallet app is reachable)
     wallet_hostname = _getenv("DEMO_WALLET_INSTANCE_HOSTNAME", "demo-wi.example.org")
     wallet_port = _getenv("WALLET_INSTANCE_PORT", "8080")
-    wallet_scheme = _getenv("WALLET_SCHEME", "http")
+    wallet_scheme = _getenv("WALLET_SCHEME", "https")
     wallet_base = f"{wallet_scheme}://{wallet_hostname}:{wallet_port}"
 
     # Override from ENV

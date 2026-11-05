@@ -38,9 +38,10 @@ DEFAULT_OPENID_CIE_PROVIDER_ADMIN_USR="admin"
 DEFAULT_OPENID_CIE_PROVIDER_ADMIN_PWD="oidcadmin"
 
 # --- Wallet Instance Demo (wallet-instance-demo) ---
-DEFAULT_DEMO_WALLET_INSTANCE_PROTO="http"
+DEFAULT_DEMO_WALLET_INSTANCE_PROTO="https"
 DEFAULT_DEMO_WALLET_INSTANCE_PORT=8080
 DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+DEFAULT_WALLET_INSTANCE_PASSWORD="wallet"
 
 # ==========================================================
 # 2. EXPORT SERVICES ENV VALUES (Overrides)
@@ -69,6 +70,7 @@ export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PROTO="${DEMO_WALLET_INSTANCE_PROTO:-$DEFAULT_DEMO_WALLET_INSTANCE_PROTO}"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PORT="${DEMO_WALLET_INSTANCE_PORT:-$DEFAULT_DEMO_WALLET_INSTANCE_PORT}"
+export WALLET_INSTANCE_PASSWORD="${WALLET_INSTANCE_PASSWORD:-$DEFAULT_WALLET_INSTANCE_PASSWORD}"
 export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
 
 # --- pagopa wallet-conformance-test (pagopa-wallet-cli) ---
@@ -106,6 +108,14 @@ function clean_data {
 
 function init_files () {
   if [ -f "$1" ]; then echo "$2 file is already initialized" ; else $3 ; fi
+}
+
+function add_wallet_cert () {
+  mkdir -p ./wallet-instance-demo/certs
+  openssl req -x509 -out ./wallet-instance-demo/certs/demo-wi.crt -keyout ./wallet-instance-demo/certs/demo-wi.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj "/CN=${DEMO_WALLET_INSTANCE_HOSTNAME}" -extensions EXT -config <( \
+   printf "[dn]\nCN=%s\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:%s\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth" "${DEMO_WALLET_INSTANCE_HOSTNAME}" "${DEMO_WALLET_INSTANCE_HOSTNAME}")
 }
 
 function add_satosa_cert () {
@@ -171,6 +181,7 @@ function initialize_satosa {
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
   mkdir -p ./wallet-instance-demo/config
+  mkdir -p ./wallet-instance-demo/certs
   mkdir -p ./pagopa-wallet-cli/data
   chmod 777 ./pagopa-wallet-cli/data || true
 
@@ -179,6 +190,7 @@ function initialize_satosa {
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
+  init_files ./wallet-instance-demo/certs/demo-wi.crt "Wallet demo cert" "add_wallet_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
   # Wallet YAML is seeded at container startup when this directory is empty (see wallet-instance-demo entrypoint)
@@ -246,14 +258,16 @@ function start {
     demo|*demo*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
       ;;
     dev|*saml2*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       ;;
     storage_mongo|*oidc*)
       echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
       ;;
     *)
       echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"

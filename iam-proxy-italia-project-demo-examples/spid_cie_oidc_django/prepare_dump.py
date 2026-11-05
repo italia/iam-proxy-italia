@@ -13,7 +13,7 @@ def main():
     satosa_hostname = os.environ.get("SATOSA_HOSTNAME", "iam-proxy-italia.example.org")
     rp_sub = os.environ.get("RP_URL") or f"https://{satosa_hostname}/CieOidcRp"
     wallet_provider_url = os.environ.get(
-        "WALLET_PROVIDER_URL", "http://demo-wi.example.org:8080/provider"
+        "WALLET_PROVIDER_URL", "https://demo-wi.example.org:8080/provider"
     )
     openid4vp_sub = f"https://{satosa_hostname}/OpenID4VP"
     openid4vci_sub = f"https://{satosa_hostname}/OpenID4VCI"

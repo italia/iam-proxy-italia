@@ -425,17 +425,25 @@ services:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
       - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+      # Host app (templates, static, routes) overrides the image copy. No image rebuild.
+      - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/wallet-instance-demo/app:ro"
+      - "${WALLET_INSTANCE_RUN_PY:-../../iam-proxy-italia-wallet-instance-demo/run.py}:/wallet-instance-demo/run.py:ro"
+      - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
     environment:
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
       FLASK_RUN_PORT: 8080
       SECRET_KEY: ${WALLET_INSTANCE_SECRET_KEY:-demo-wallet-secret}
+      WALLET_INSTANCE_PASSWORD: ${WALLET_INSTANCE_PASSWORD:-wallet}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-http://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/provider}
-      WALLET_INITIALIZE_REDIRECT_URI: ${WALLET_INITIALIZE_REDIRECT_URI:-http://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
-      WALLET_CREDENTIAL_REDIRECT_URI: ${WALLET_CREDENTIAL_REDIRECT_URI:-http://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/provider}
+      WALLET_INITIALIZE_REDIRECT_URI: ${WALLET_INITIALIZE_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
+      WALLET_CREDENTIAL_REDIRECT_URI: ${WALLET_CREDENTIAL_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
+      WALLET_TLS_CERT: /certs/demo-wi.crt
+      WALLET_TLS_KEY: /certs/demo-wi.key
       DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
+      CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
     networks:
       iam-proxy-italia:
         aliases:

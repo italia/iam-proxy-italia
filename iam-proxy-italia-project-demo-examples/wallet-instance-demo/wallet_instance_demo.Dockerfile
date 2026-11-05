@@ -12,6 +12,7 @@ WORKDIR /wallet-instance-demo
 ENV PATH="/.venv/bin:$PATH"
 RUN pip install --no-cache-dir "pyeudiw @ git+https://github.com/italia/eudi-wallet-it-python@dev"
 RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir "flask-babel==4.0.0"
 
 # Entrypoint from iam-proxy demo (not in upstream wallet repo).
 # It seeds CONFIG_DIR from config.default when the compose mount is empty.
