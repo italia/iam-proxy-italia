@@ -2688,8 +2688,8 @@ test = ["pytest", "pytest-mock"]
 [package.source]
 type = "git"
 url = "https://github.com/italia/eudi-wallet-it-python"
-reference = "66fb145ff5b46ac82b85b8f43284db892edef423"
-resolved_reference = "66fb145ff5b46ac82b85b8f43284db892edef423"
+reference = "380b82c66fd01eaabdb94792506ddf6f884f8deb"
+resolved_reference = "380b82c66fd01eaabdb94792506ddf6f884f8deb"
 
 [[package]]
 name = "pyflakes"
@@ -3760,4 +3760,4 @@ test = ["flake8", "lxml", "msgpack", "pip-audit", "pyOpenSSL", "pygments", "pyte
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "af448b4837bf5e8b4e63cecac4e60f1a30a903518cc34b4fe49fb70c75164377"
+content-hash = "918b26da7013791bc6225ab5c0ad733b9e34dd8800aed7b3ae923102bb58b35d"

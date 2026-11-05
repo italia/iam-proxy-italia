@@ -14,7 +14,7 @@ dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.5",
     "satosa>=8.5.1",
     "satosa-oidcop==4.1.0",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@66fb145ff5b46ac82b85b8f43284db892edef423",  # 2.3.0 plus COSE signing algs in OpenID4VCI metadata
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@380b82c66fd01eaabdb94792506ddf6f884f8deb",  # dev tip: COSE algs, status list response, PAR state hyphen
     "aiohttp (>=3.14.4,<4.0.0)",  # CVE-2026-111064 et al.; fixed in 3.14.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
     "cryptography (>=50.0.0,<=50.0.1)",  # CVE-2026-69247 fixed in 50.0.0; pyeudiw 2.3.0 caps at <=50.0.1
