@@ -522,6 +522,160 @@ config:
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
             dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential
+        mso_mdoc_pid:
+          format: mso_mdoc
+          scope: pid
+          doctype: eu.europa.ec.eudi.pid.1
+          cryptographic_binding_methods_supported:
+            - cose_key
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          credential_metadata:
+            display:
+              - name: Dati di Identificazione Personale
+                description: Dati di identificazione personale
+                locale: it-IT
+              - name: Person Identification Data
+                description: Person identification data
+                locale: en-US
+            claims:
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - given_name
+                mandatory: true
+                display:
+                  - description: Nome attuale
+                    label: Nome
+                    locale: it-IT
+                    name: Nome
+                  - description: Current First Name
+                    label: First Name
+                    locale: en-US
+                    name: First Name
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - family_name
+                mandatory: true
+                display:
+                  - description: Cognome attuale
+                    label: Cognome
+                    locale: it-IT
+                    name: Cognome
+                  - description: Current Family Name
+                    label: Family Name
+                    locale: en-US
+                    name: Family Name
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - birth_date
+                mandatory: true
+                display:
+                  - description: Data di nascita. DEVE essere impostato secondo ISO8601-1 (formato AAAA-MM-GG).
+                    label: Data di nascita
+                    locale: it-IT
+                    name: Data di nascita
+                  - description: Date of Birth. It MUST be set according to ISO8601-1 (YYYY-MM-DD format).
+                    label: Date of birth
+                    locale: en-US
+                    name: Date of Birth
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - place_of_birth
+                mandatory: true
+                display:
+                  - description: Luogo di nascita. DEVE essere presente almeno uno tra paese, regione, località.
+                    locale: it-IT
+                    label: Luogo di nascita
+                    name: Luogo di nascita
+                  - description: Place of Birth. At least one of country, region, locality MUST be present.
+                    label: Place of birth
+                    locale: en-US
+                    name: Place of Birth
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - nationality
+                mandatory: true
+                display:
+                  - description: Uno o più codici paese alfa-2 come specificato nella norma ISO 3166-1.
+                    label: Nazionalità
+                    locale: it-IT
+                    name: Nazionalità
+                  - description: One or more alpha-2 country codes as specified in ISO 3166-1.
+                    label: Nationalities
+                    locale: en-US
+                    name: Nationalities
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - portrait
+                mandatory: true
+                display:
+                  - description: Immagine del volto in formato JPEG. Può essere vuota fino al termine del periodo transitorio.
+                    label: Foto
+                    locale: it-IT
+                    name: Foto
+                  - description: Facial image in JPEG format. It may be empty until the end of the transitional period.
+                    label: Portrait
+                    locale: en-US
+                    name: Portrait
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - expiry_date
+                mandatory: true
+                display:
+                  - description: Data di scadenza (AAAA-MM-GG).
+                    label: Data di scadenza
+                    locale: it-IT
+                    name: Data di scadenza
+                  - description: Expiry date (YYYY-MM-DD).
+                    label: Expiry date
+                    locale: en-US
+                    name: Expiry date
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - issuing_country
+                display:
+                  - name: Paese di rilascio
+                    locale: it-IT
+                  - name: Issuing Country
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - issuing_authority
+                display:
+                  - name: Autorità di rilascio
+                    locale: it-IT
+                  - name: Issuing Authority
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.it.1
+                  - sub
+                mandatory: true
+                display:
+                  - name: Identificativo del soggetto
+                    locale: it-IT
+                  - name: Subject identifier
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.it.1
+                  - verification
+                mandatory: true
+                display:
+                  - name: Verifica
+                    locale: it-IT
+                  - name: Verification
+                    locale: en-US
+          schema_id: pid+mso_mdoc+eu.europa.ec.eudi.pid.1
+          authentic_sources:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
         mso_mdoc_mDL:
           format: mso_mdoc
           scope: mDL
@@ -696,6 +850,29 @@ config:
           add_decoy_claims: false
       dc_sd_jwt_eid:
         <<: *dc_sd_jwt_pid_spec
+      mso_mdoc_pid:
+        trust_framework: it_wallet
+        assurance_level: high
+        expiry_days: 365
+        optional_mso_attrs:
+          status: true
+        template: |
+          eu.europa.ec.eudi.pid.1:
+            given_name: "{{name}}"
+            family_name: "{{surname}}"
+            birth_date: "{{dateOfBirth}}"
+            place_of_birth:
+              locality: "{{placeOfBirth}}"
+            nationality: [{% for code in nationalities %}"{{code}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+            portrait: !!binary "{{portrait_b64}}"
+            expiry_date: "{{expiry_date[:10]}}"
+            issuing_country: "{{issuing_country}}"
+            issuing_authority: "{{issuing_authority}}"
+          eu.europa.ec.eudi.pid.it.1:
+            sub: "{{sub}}"
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
       mso_mdoc_mDL:
         expiry_days: 365
         template: |
