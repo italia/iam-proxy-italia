@@ -79,6 +79,8 @@ services:
 
   iam-proxy-italia:
     image: ghcr.io/italia/iam-proxy-italia:v3.5.0
+    # Build the local Dockerfile when this tag is not on the registry.
+    pull_policy: build
     build:
         context: ../
         args:
@@ -425,6 +427,8 @@ services:
     build:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
+      additional_contexts:
+        iam-proxy-base: service:iam-proxy-italia
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:

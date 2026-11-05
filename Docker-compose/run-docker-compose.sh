@@ -209,8 +209,8 @@ function update {
     echo -e "Rimuovo le immagini della composizione, così vengono riscaricate o ricostruite. \n"
     ./remove-docker-images.sh
     echo -e "\n"
-    echo -e "Provo a scaricare le nuove versioni. \n"
-    docker compose -f docker-compose.yml pull
+    echo -e "Provo a scaricare le nuove versioni. Le immagini che hanno un Dockerfile si costruiscono in locale se il tag non è nel registry. \n"
+    docker compose -f docker-compose.yml pull --ignore-buildable
     echo -e "\n"
     echo -e "Provo a fare il down della composizione. \n"
     docker compose -f docker-compose.yml down -v

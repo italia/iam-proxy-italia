@@ -1,5 +1,7 @@
-# Use iam-proxy-italia as base — opencv, pyeudiw, satosa already installed
-FROM ghcr.io/italia/iam-proxy-italia:v3.5.0
+# Use iam-proxy-italia as base — opencv, pyeudiw, satosa already installed.
+# Compose supplies this name from the iam-proxy-italia service, and builds that
+# image when ghcr.io/italia/iam-proxy-italia:v3.5.0 is not published yet.
+FROM iam-proxy-base
 
 RUN apk add --no-cache git ca-certificates && update-ca-certificates
 
