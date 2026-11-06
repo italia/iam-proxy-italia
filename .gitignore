@@ -1,5 +1,6 @@
 SATOSA/
-*/__pyc__/*
+__pycache__/
+*.py[cod]
 example/logs/*.log
 example/metadata/*.md
 example/data/*

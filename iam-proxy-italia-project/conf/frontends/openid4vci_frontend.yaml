@@ -963,7 +963,7 @@ config:
           conf:
             db_name: pyeudiw_openid4vci
             db_users_collection: users
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
@@ -980,7 +980,7 @@ config:
           conf:
             db_name: pyeudiw_openid4vci
             db_credentials_collection: credentials
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
@@ -1010,7 +1010,7 @@ config:
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
             db_trust_sources_collection: trust_sources
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
