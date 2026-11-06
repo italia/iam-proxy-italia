@@ -1,5 +1,7 @@
 #!/bin/sh
-# Default start runs issuance, then presentation.
+# Default start runs issuance.
+# Presentation runs only when CONFIG_PRESENTATION_AUTHORIZE_URI is set:
+# the ini authorize_request_url is a placeholder and has no client_id.
 # Any arguments are forwarded to the upstream entrypoint (one wct command).
 set -eu
 
@@ -11,8 +13,6 @@ fi
 
 tests="${WCT_TESTS:-happy}"
 ini="${WCT_FILE_INI:-/wct-config/config.ini}"
-issuance_status=0
-presentation_status=0
 
 echo "*************************************************"
 echo "          TEST:ISSUANCE"
@@ -21,6 +21,14 @@ set +e
 ./docker-entrypoint.sh test:issuance --tests "$tests" --file-ini "$ini"
 issuance_status=$?
 set -e
+
+if [ -z "${CONFIG_PRESENTATION_AUTHORIZE_URI:-}" ]; then
+  echo "*************************************************"
+  echo "          TEST:PRESENTATION skipped"
+  echo "          Set CONFIG_PRESENTATION_AUTHORIZE_URI to run it"
+  echo "*************************************************"
+  exit "$issuance_status"
+fi
 
 echo "*************************************************"
 echo "          TEST:PRESENTATION"

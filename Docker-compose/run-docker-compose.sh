@@ -38,9 +38,10 @@ DEFAULT_OPENID_CIE_PROVIDER_ADMIN_USR="admin"
 DEFAULT_OPENID_CIE_PROVIDER_ADMIN_PWD="oidcadmin"
 
 # --- Wallet Instance Demo (wallet-instance-demo) ---
-DEFAULT_DEMO_WALLET_INSTANCE_PROTO="http"
+DEFAULT_DEMO_WALLET_INSTANCE_PROTO="https"
 DEFAULT_DEMO_WALLET_INSTANCE_PORT=8080
 DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+DEFAULT_WALLET_INSTANCE_PASSWORD="wallet"
 
 # ==========================================================
 # 2. EXPORT SERVICES ENV VALUES (Overrides)
@@ -69,6 +70,7 @@ export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PROTO="${DEMO_WALLET_INSTANCE_PROTO:-$DEFAULT_DEMO_WALLET_INSTANCE_PROTO}"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PORT="${DEMO_WALLET_INSTANCE_PORT:-$DEFAULT_DEMO_WALLET_INSTANCE_PORT}"
+export WALLET_INSTANCE_PASSWORD="${WALLET_INSTANCE_PASSWORD:-$DEFAULT_WALLET_INSTANCE_PASSWORD}"
 export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
 
 # --- pagopa wallet-conformance-test (pagopa-wallet-cli) ---
@@ -106,6 +108,14 @@ function clean_data {
 
 function init_files () {
   if [ -f "$1" ]; then echo "$2 file is already initialized" ; else $3 ; fi
+}
+
+function add_wallet_cert () {
+  mkdir -p ./wallet-instance-demo/certs
+  openssl req -x509 -out ./wallet-instance-demo/certs/demo-wi.crt -keyout ./wallet-instance-demo/certs/demo-wi.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj "/CN=${DEMO_WALLET_INSTANCE_HOSTNAME}" -extensions EXT -config <( \
+   printf "[dn]\nCN=%s\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:%s\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth" "${DEMO_WALLET_INSTANCE_HOSTNAME}" "${DEMO_WALLET_INSTANCE_HOSTNAME}")
 }
 
 function add_satosa_cert () {
@@ -171,6 +181,7 @@ function initialize_satosa {
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
   mkdir -p ./wallet-instance-demo/config
+  mkdir -p ./wallet-instance-demo/certs
   mkdir -p ./pagopa-wallet-cli/data
   chmod 777 ./pagopa-wallet-cli/data || true
 
@@ -179,9 +190,10 @@ function initialize_satosa {
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
+  init_files ./wallet-instance-demo/certs/demo-wi.crt "Wallet demo cert" "add_wallet_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
-  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
+  # Wallet YAML is seeded at container startup when this directory is empty (see wallet-instance-demo entrypoint)
 
   rm -Rf ./iam-proxy-italia-project/static
 
@@ -197,8 +209,8 @@ function update {
     echo -e "Rimuovo le immagini della composizione, così vengono riscaricate o ricostruite. \n"
     ./remove-docker-images.sh
     echo -e "\n"
-    echo -e "Provo a scaricare le nuove versioni. \n"
-    docker compose -f docker-compose.yml pull
+    echo -e "Provo a scaricare le nuove versioni. Le immagini che hanno un Dockerfile si costruiscono in locale se il tag non è nel registry. \n"
+    docker compose -f docker-compose.yml pull --ignore-buildable
     echo -e "\n"
     echo -e "Provo a fare il down della composizione. \n"
     docker compose -f docker-compose.yml down -v
@@ -246,14 +258,16 @@ function start {
     demo|*demo*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
       ;;
     dev|*saml2*)
       echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
       ;;
     storage_mongo|*oidc*)
       echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
       ;;
     *)
       echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
@@ -287,6 +301,57 @@ function start {
   fi
 
   exit 0
+}
+
+function announce {
+  echo ""
+  echo "=== run-docker-compose.sh ==="
+  echo ""
+  echo "Flag:"
+  echo "  -f  cancella e reinizializza i dati locali (Mongo, configurazione Satosa, djangosaml2_sp, static, certificati)"
+  echo "  -e  ricrea .env da env.example; ha effetto solo insieme a -f"
+  echo "  -b  accettato, ma nessuno passo lo usa: non forza la build"
+  echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
+  echo "  -p  nessun profilo: solo satosa e nginx"
+  echo "  -m  profilo storage_mongo"
+  echo "  -M  profilo mongoexpress"
+  echo "  -d  profilo dev (SAML2)"
+  echo "  -t  dopo l'avvio esegue spid-sp-test"
+  echo "  senza -p, -m, -M o -d il profilo è demo"
+  echo ""
+  if [ -z "${COMPOSE_PROFILES+x}" ]; then
+    echo "Profilo di questa esecuzione: nessuno (satosa e nginx)."
+  else
+    echo "Profilo di questa esecuzione: ${COMPOSE_PROFILES}."
+  fi
+  echo ""
+  echo "Sta per succedere:"
+  if [ "${SATOSA_CLEAN_DATA}" = "true" ]; then
+    echo "- I dati locali vengono cancellati e reinizializzati."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- .env viene ricreato da env.example."
+    fi
+  else
+    echo "- I dati locali restano. -f li cancellerebbe."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- -e è ignorato: serve anche -f."
+    fi
+  fi
+  if [ -z "${SKIP_UPDATE}" ]; then
+    echo "- I container vengono fermati e le immagini della composizione rimosse."
+    echo "- I tag pubblici vengono riscaricati. Le immagini con un Dockerfile si ricostruiscono all'avvio."
+    echo "- down -v elimina anche i volumi nominati. -s salta questi tre passi."
+  else
+    echo "- -s: niente rimozione delle immagini, niente pull e niente down -v."
+  fi
+  echo "- Poi docker compose up --wait."
+  if [ -n "${RUN_SPID_TEST}" ]; then
+    echo "- A composizione avviata partono i test spid-sp-test."
+  fi
+  if [ -n "${SATOSA_BUILD}" ]; then
+    echo "- -b non cambia questa sequenza."
+  fi
+  echo ""
 }
 
 function help {
@@ -369,6 +434,7 @@ done
 # ==========================================================
 # 5. EXECUTION
 # ==========================================================
+announce
 clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true"
 ensure_satosa_hostname_resolvable
 initialize_satosa  # check and initialize docker compose directories

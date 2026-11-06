@@ -1,6 +1,6 @@
 [project]
 name = "iam-proxy-italia"
-version = "3.4.0"
+version = "3.5.0"
 description = "IAM Proxy Italia"
 authors = [
     {name = "Giuseppe De Marco",email = "demarcog83@gmail.com"}
@@ -14,7 +14,7 @@ dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.5",
     "satosa>=8.5.1",
     "satosa-oidcop==4.1.0",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.3.0",  # latest tag; same commit as main HEAD 2779fd20
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@dev",
     "aiohttp (>=3.14.4,<4.0.0)",  # CVE-2026-111064 et al.; fixed in 3.14.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
     "cryptography (>=50.0.0,<=50.0.1)",  # CVE-2026-69247 fixed in 50.0.0; pyeudiw 2.3.0 caps at <=50.0.1
