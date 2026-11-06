@@ -452,6 +452,7 @@ services:
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      EUDIW_LOTL_URL: ${EUDIW_LOTL_URL:-https://trustedlist.serviceproviders.eudiw.dev/LOTL/01.xml}
     networks:
       iam-proxy-italia:
         aliases:
