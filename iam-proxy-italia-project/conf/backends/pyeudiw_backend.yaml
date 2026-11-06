@@ -47,22 +47,16 @@ config:
 
   jwt:
     default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
-    default_enc_alg: RSA-OAEP
-    default_enc_enc: A256CBC-HS512
+    default_enc_alg: ECDH-ES
+    default_enc_enc: A256GCM
+    response_encryption_kty: EC
+    response_encryption_crv: P-256
+    response_encryption_use: enc
     default_exp: 6         # minutes
     enc_alg_supported: &enc_alg_supported
-        - RSA-OAEP
-        - RSA-OAEP-256
         - ECDH-ES
-        - ECDH-ES+A128KW
-        - ECDH-ES+A192KW
-        - ECDH-ES+A256KW
     enc_enc_supported: &enc_enc_supported
-        - A128CBC-HS256
-        - A192CBC-HS384
-        - A256CBC-HS512
         - A128GCM
-        - A192GCM
         - A256GCM
     sig_alg_supported: &sig_alg_supported
         - RS256
@@ -75,42 +69,13 @@ config:
   authorization:
     client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
     auth_iss_id: # this field if not set will be set to client_id in the authz request
-    url_scheme: haip
+    url_scheme: haip-vp
     scopes:
     - pid-sd-jwt:unique_id+given_name+family_name
     default_acr_value: https://www.spid.gov.it/SpidL2
     expiration_time: 5 # minutes
     aud: https://self-issued.me/v2
     response_mode: direct_post.jwt
-    presentation_definition:
-      id: global-presentation-definition-id
-      input_descriptors:
-      - id: input-specific-id
-        purpose: Request presentation holding Power of Representation attestation
-        format:
-          dc+sd-jwt: {}
-        constraints:
-          fields:
-          - path:
-            - "$.vct"
-            filter:
-              const: urn:eu.europa.ec.eudi:por:1
-      - id: another-input-specific-id
-        purpose: Request first name and last name claims from PID attestation
-        format:
-          dc+sd-jwt: {}
-        constraints:
-          limit_disclosure: required
-          fields:
-            - path:
-              - "$.vct"
-              filter:
-                type: string
-                pattern: urn:eu.europa.ec.eudi:por:1
-            - path:
-              - "$.family_name"
-            - path:
-              - "$.given_name"
 
   duckle:
     dcql_query: &dcql_query >-
