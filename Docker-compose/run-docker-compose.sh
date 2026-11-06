@@ -303,6 +303,57 @@ function start {
   exit 0
 }
 
+function announce {
+  echo ""
+  echo "=== run-docker-compose.sh ==="
+  echo ""
+  echo "Flag:"
+  echo "  -f  cancella e reinizializza i dati locali (Mongo, configurazione Satosa, djangosaml2_sp, static, certificati)"
+  echo "  -e  ricrea .env da env.example; ha effetto solo insieme a -f"
+  echo "  -b  accettato, ma nessuno passo lo usa: non forza la build"
+  echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
+  echo "  -p  nessun profilo: solo satosa e nginx"
+  echo "  -m  profilo storage_mongo"
+  echo "  -M  profilo mongoexpress"
+  echo "  -d  profilo dev (SAML2)"
+  echo "  -t  dopo l'avvio esegue spid-sp-test"
+  echo "  senza -p, -m, -M o -d il profilo è demo"
+  echo ""
+  if [ -z "${COMPOSE_PROFILES+x}" ]; then
+    echo "Profilo di questa esecuzione: nessuno (satosa e nginx)."
+  else
+    echo "Profilo di questa esecuzione: ${COMPOSE_PROFILES}."
+  fi
+  echo ""
+  echo "Sta per succedere:"
+  if [ "${SATOSA_CLEAN_DATA}" = "true" ]; then
+    echo "- I dati locali vengono cancellati e reinizializzati."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- .env viene ricreato da env.example."
+    fi
+  else
+    echo "- I dati locali restano. -f li cancellerebbe."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- -e è ignorato: serve anche -f."
+    fi
+  fi
+  if [ -z "${SKIP_UPDATE}" ]; then
+    echo "- I container vengono fermati e le immagini della composizione rimosse."
+    echo "- I tag pubblici vengono riscaricati. Le immagini con un Dockerfile si ricostruiscono all'avvio."
+    echo "- down -v elimina anche i volumi nominati. -s salta questi tre passi."
+  else
+    echo "- -s: niente rimozione delle immagini, niente pull e niente down -v."
+  fi
+  echo "- Poi docker compose up --wait."
+  if [ -n "${RUN_SPID_TEST}" ]; then
+    echo "- A composizione avviata partono i test spid-sp-test."
+  fi
+  if [ -n "${SATOSA_BUILD}" ]; then
+    echo "- -b non cambia questa sequenza."
+  fi
+  echo ""
+}
+
 function help {
   echo ""
   echo "### run-docker-compose.sh"
@@ -383,6 +434,7 @@ done
 # ==========================================================
 # 5. EXECUTION
 # ==========================================================
+announce
 clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true"
 ensure_satosa_hostname_resolvable
 initialize_satosa  # check and initialize docker compose directories
