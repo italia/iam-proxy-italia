@@ -268,7 +268,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.0
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.1
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -306,7 +306,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.0
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.1
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -341,6 +341,7 @@ services:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
+      OIDCFED_FETCH_PRIVATE_NETS: "true"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).
   # Always runs at startup when stack is brought up (run-docker-compose.sh forces re-run).
