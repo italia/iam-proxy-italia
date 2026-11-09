@@ -813,6 +813,7 @@ config:
               trust_framework: "{{trust_framework}}"
               assurance_level: "{{assurance_level}}"
       dc_sd_jwt_mDL:
+        expiry_days: 365
         template: |
           holder_disclosed_claims:
             !sd given_name: "{{name}}"
