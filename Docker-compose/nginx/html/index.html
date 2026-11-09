@@ -1,4 +1,263 @@
-<html lang="it">
-  <head></head>
-  <body>iam-proxy-italia empty index, check docs to edit</body>
+<!DOCTYPE html>
+<html lang="it" class="disco-html">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title id="tab-title">IAM Proxy Italia</title>
+  <meta name="description" content="Pagina iniziale di IAM Proxy Italia, con i link al progetto e alla documentazione per la customizzazione.">
+  <link rel="icon" href="/static/spid/favicon-32x32.png">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="/static/css/bootstrap-italia.min.css" rel="stylesheet">
+  <link href="/static/css/ita.min.css" rel="stylesheet">
+  <script src="/static/js/bootstrap-italia.bundle.min.js"></script>
+  <script src="/static/js/header-lang-dropdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
+</head>
+
+<body>
+  <nav class="it-skip-links" aria-label="Collegamenti di salto">
+    <a id="skip-main" class="visually-hidden-focusable" href="#main-content">Vai al contenuto principale</a>
+    <a id="skip-footer" class="visually-hidden-focusable" href="#page-footer">Vai al piè di pagina</a>
+  </nav>
+
+  <header class="it-header-wrapper" role="banner">
+    <div class="it-header-slim-wrapper bg-primary">
+      <div class="container">
+        <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
+          <span class="navbar-brand text-white"><strong id="header-region-name">Developers Italia</strong></span>
+          <div class="it-header-slim-right-zone">
+            <div class="nav-item dropdown it-header-lang-dropdown">
+              <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
+                aria-controls="language-menu"
+                data-bs-toggle="dropdown" aria-haspopup="menu" aria-expanded="false">
+                <span id="header-lang-active-hint" class="visually-hidden">lingua attiva:</span>
+                <span class="it-header-lang-label" aria-hidden="true">ITA</span>
+                <svg class="icon icon-sm ms-1" aria-hidden="true">
+                  <use href="/static/svg/sprites.svg#it-expand"></use>
+                </svg>
+              </button>
+              <div id="language-menu" class="dropdown-menu dropdown-menu-end">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="link-list-wrapper">
+                      <ul class="link-list" role="menu" aria-labelledby="languagesDropButton">
+                        <li>
+                          <button type="button" class="dropdown-item list-item it-lang-option active" data-lang="it"
+                            role="menuitemradio" aria-checked="true" aria-current="true">
+                            <span lang="it">Italiano</span>
+                          </button>
+                        </li>
+                        <li>
+                          <button type="button" class="dropdown-item list-item it-lang-option" data-lang="en"
+                            role="menuitemradio" aria-checked="false">
+                            <span lang="en">English</span>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-title-section">
+      <div class="container py-3">
+        <div class="d-flex align-items-center">
+          <svg class="icon icon-lg text-primary" aria-hidden="true" focusable="false">
+            <use href="/static/svg/sprites.svg#it-designers-italia"></use>
+          </svg>
+          <span class="ms-2 mb-0 h4 text-primary">Developers Italia</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container my-4" aria-labelledby="page-title">
+    <h1 id="page-title" class="eid-page-title text-center mb-3" data-i18n="title">IAM Proxy Italia</h1>
+    <p class="text-center mb-4" data-i18n="lead">Proxy di identità per SPID, CIE e IT-Wallet. Da qui si raggiungono il progetto e le guide per personalizzare questa istanza.</p>
+
+    <section class="mb-4" aria-labelledby="project-title">
+      <h2 id="project-title" class="h3 text-center mb-4" data-i18n="projectTitle">Progetto</h2>
+      <ul class="row it-card-list justify-content-center align-items-stretch list-unstyled">
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia" target="_blank" rel="noopener noreferrer" data-i18n="repoTitle">Repository</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="repoText">Codice, issue e release di IAM Proxy Italia.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="/static/disco.html" data-i18n="discoTitle">Pagina di discovery</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="discoText">Selezione dell'identità digitale servita da questa istanza.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/README.md" target="_blank" rel="noopener noreferrer" data-i18n="readmeTitle">README</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="readmeText">Architettura, casi d'uso e componenti della demo.</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-4" aria-labelledby="docs-title">
+      <h2 id="docs-title" class="h3 text-center mb-4" data-i18n="docsTitle">Documentazione per la customizzazione</h2>
+      <ul class="row it-card-list justify-content-center align-items-stretch list-unstyled">
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/docs/setup.md" target="_blank" rel="noopener noreferrer" data-i18n="setupTitle">Setup</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="setupText">Installazione, certificati, metadata e variabili d'ambiente.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/docs/backends-frontends-configuration.md" target="_blank" rel="noopener noreferrer" data-i18n="modulesTitle">Backend e frontend</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="modulesText">Moduli attivi in proxy_conf.yaml e file sotto conf/.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/docs/project-configuration.md" target="_blank" rel="noopener noreferrer" data-i18n="projectConfTitle">Configurazione del progetto</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="projectConfText">Struttura di iam-proxy-italia-project e esempi di configurazione.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/iam-proxy-italia-project/static/README.md" target="_blank" rel="noopener noreferrer" data-i18n="staticTitle">Pagine statiche</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="staticText">Logo, testi e URL della discovery e delle pagine di errore.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/docs/docker-compose.md" target="_blank" rel="noopener noreferrer" data-i18n="composeTitle">Docker Compose</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="composeText">Avvio della demo e scelta dei profili.</p>
+            </div>
+          </article>
+        </li>
+        <li class="col-12 col-md-4 mb-3">
+          <article class="it-card shadow h-100">
+            <h3 class="it-card-title h5"><a class="stretched-link" href="https://github.com/italia/iam-proxy-italia/blob/master/docs/README.md" target="_blank" rel="noopener noreferrer" data-i18n="docsIndexTitle">Indice della documentazione</a></h3>
+            <div class="it-card-body">
+              <p class="it-card-text mb-0" data-i18n="docsIndexText">Elenco completo delle guide del repository.</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer id="page-footer" role="contentinfo" tabindex="-1">
+    <div class="container h-100 d-flex align-items-center">
+      <nav id="footer-nav" class="d-flex flex-wrap justify-content-start" aria-label="Collegamenti">
+        <a class="text-white me-4 mb-2" href="https://github.com/italia/iam-proxy-italia" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="text-white mb-2" href="https://developers.italia.it/" target="_blank" rel="noopener noreferrer">Developers Italia</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var copy = {
+        it: {
+          title: "IAM Proxy Italia",
+          lead: "Proxy di identità per SPID, CIE e IT-Wallet. Da qui si raggiungono il progetto e le guide per personalizzare questa istanza.",
+          projectTitle: "Progetto",
+          repoTitle: "Repository",
+          repoText: "Codice, issue e release di IAM Proxy Italia.",
+          discoTitle: "Pagina di discovery",
+          discoText: "Selezione dell'identità digitale servita da questa istanza.",
+          readmeTitle: "README",
+          readmeText: "Architettura, casi d'uso e componenti della demo.",
+          docsTitle: "Documentazione per la customizzazione",
+          setupTitle: "Setup",
+          setupText: "Installazione, certificati, metadata e variabili d'ambiente.",
+          modulesTitle: "Backend e frontend",
+          modulesText: "Moduli attivi in proxy_conf.yaml e file sotto conf/.",
+          projectConfTitle: "Configurazione del progetto",
+          projectConfText: "Struttura di iam-proxy-italia-project e esempi di configurazione.",
+          staticTitle: "Pagine statiche",
+          staticText: "Logo, testi e URL della discovery e delle pagine di errore.",
+          composeTitle: "Docker Compose",
+          composeText: "Avvio della demo e scelta dei profili.",
+          docsIndexTitle: "Indice della documentazione",
+          docsIndexText: "Elenco completo delle guide del repository.",
+          skipMain: "Vai al contenuto principale",
+          skipFooter: "Vai al piè di pagina",
+          footerNav: "Collegamenti",
+          description: "Pagina iniziale di IAM Proxy Italia, con i link al progetto e alla documentazione per la customizzazione."
+        },
+        en: {
+          title: "IAM Proxy Italia",
+          lead: "Identity proxy for SPID, CIE and IT-Wallet. This page links to the project and to the guides for customizing this instance.",
+          projectTitle: "Project",
+          repoTitle: "Repository",
+          repoText: "Source code, issues and releases of IAM Proxy Italia.",
+          discoTitle: "Discovery page",
+          discoText: "Digital identity selection served by this instance.",
+          readmeTitle: "README",
+          readmeText: "Architecture, use cases and demo components.",
+          docsTitle: "Customization documentation",
+          setupTitle: "Setup",
+          setupText: "Installation, certificates, metadata and environment variables.",
+          modulesTitle: "Backends and frontends",
+          modulesText: "Modules enabled in proxy_conf.yaml and files under conf/.",
+          projectConfTitle: "Project configuration",
+          projectConfText: "Layout of iam-proxy-italia-project and configuration examples.",
+          staticTitle: "Static pages",
+          staticText: "Logo, copy and URLs of the discovery and error pages.",
+          composeTitle: "Docker Compose",
+          composeText: "How to start the demo and choose profiles.",
+          docsIndexTitle: "Documentation index",
+          docsIndexText: "Full list of the guides in the repository.",
+          skipMain: "Skip to main content",
+          skipFooter: "Skip to footer",
+          footerNav: "Links",
+          description: "IAM Proxy Italia home page, with links to the project and to the customization documentation."
+        }
+      };
+
+      function applyCopy(lng) {
+        var strings = copy[lng] || copy.it;
+        document.documentElement.lang = lng === "en" ? "en" : "it";
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          if (strings[key]) node.textContent = strings[key];
+        });
+        document.title = strings.title;
+        var meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute("content", strings.description);
+        document.getElementById("skip-main").textContent = strings.skipMain;
+        document.getElementById("skip-footer").textContent = strings.skipFooter;
+        document.getElementById("footer-nav").setAttribute("aria-label", strings.footerNav);
+        document.querySelector(".it-skip-links").setAttribute("aria-label", lng === "en" ? "Skip links" : "Collegamenti di salto");
+      }
+
+      applyCopy("it");
+      if (!window.i18next || typeof window.initHeaderLangDropdown !== "function") return;
+      i18next.init({ lng: "it", resources: { it: { translation: {} }, en: { translation: {} } } }).then(function () {
+        initHeaderLangDropdown(i18next, { afterLanguageChange: applyCopy });
+      });
+    })();
+  </script>
+</body>
+
 </html>
