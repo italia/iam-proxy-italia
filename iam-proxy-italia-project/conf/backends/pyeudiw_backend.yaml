@@ -31,7 +31,7 @@ config:
     get_response:
       module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
       class: GetResponseHandler
-      path: /get_response
+      path: /redirect-uri
 
   qrcode:
     size: 250 # px
@@ -78,8 +78,24 @@ config:
     response_mode: direct_post.jwt
 
   duckle:
-    dcql_query: &dcql_query >-
-      {"credentials":[{"id":"pid","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
+    dcql_query: &dcql_query |
+      {
+        "credentials": [
+          {
+            "id": "IT-Wallet ID",
+            "format": "dc+sd-jwt",
+            "meta": {
+              "vct_values": [
+                "urn:it-wallet:eid:1"
+              ]
+            },
+            "claims": [
+              {"path": ["given_name"]},
+              {"path": ["family_name"]}
+            ]
+          }
+        ]
+      }
   user_attributes:
     unique_identifiers:
     - tax_id_code

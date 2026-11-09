@@ -14,10 +14,10 @@ dependencies = [
     "pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.5",
     "satosa>=8.5.1",
     "satosa-oidcop==4.1.0",
-    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@dev",
+    "pyeudiw[satosa] @ git+https://github.com/italia/eudi-wallet-it-python@2.4.0",
     "aiohttp (>=3.14.4,<4.0.0)",  # CVE-2026-111064 et al.; fixed in 3.14.4
     "cbor2 (>=5.9.0)",  # CVE-2026-26209
-    "cryptography (>=50.0.0,<=50.0.1)",  # CVE-2026-69247 fixed in 50.0.0; pyeudiw 2.3.0 caps at <=50.0.1
+    "cryptography (>=50.0.0,<=50.0.1)",  # CVE-2026-69247 fixed in 50.0.0; pyeudiw 2.4.0 caps at <=50.0.1
     "cryptojwt (>=1.11.0,<1.12)",  # 1.9.x imports SECT* curves removed in cryptography 46+
     "ecdsa (>=0.19.2)",  # CVE-2024-23342 has no upstream fix; CVE-2026-33936 fixed in 0.19.2
     "pillow (>=13.0.0)",  # CVE-2026-112394 et al.; fixed in 13.0.0

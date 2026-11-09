@@ -32,7 +32,7 @@ Using the environment variable:
 COMPOSE_PROFILES=dev,storage_mongo docker compose up
 ```
 
-The [run-docker-compose.sh](./run-docker-compose.md) script can start selected profiles via its options.
+[run-docker-compose.sh](./run-docker-compose.md) reads `COMPOSE_PROFILES`. When the variable is unset, the script uses `demo`.
 
 ### Summary tables
 
@@ -72,16 +72,6 @@ The [run-docker-compose.sh](./run-docker-compose.md) script can start selected p
 | **OIDC**  | oidc, demo               | trust-anchor, cie-provider, relying-party-demo-mongo (init), relying-party-demo, satosa-mongo (OIDC storage) |
 | **Wallet**| wallet, demo             | satosa-mongo (OpenID4VP/OpenID4VCI storage); proxy runs in iam-proxy-italia |
 | **Storage** | storage_mongo, mongoexpress | satosa-mongo, satosa-mongo-express |
-
-#### Profile by option in [run-docker-compose.sh](../Docker-compose/run-docker-compose.sh)
-
-| Option | Profile |
-| ------ | ------- |
-| `-p`   | no profiles |
-| `-m`   | storage_mongo |
-| `-M`   | mongoexpress |
-| `-d`   | dev |
-| (none) | demo |
 
 ### Insights
 

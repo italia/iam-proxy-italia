@@ -77,7 +77,10 @@ export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}
 export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
 
 # --- Script/Docker-Compose Execution Variables (Internal) ---
-export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
+if [ -z "${COMPOSE_PROFILES+x}" ]; then
+  COMPOSE_PROFILES=demo
+fi
+export COMPOSE_PROFILES
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
 export RUN_SPID_TEST="${RUN_SPID_TEST:-}"
@@ -225,8 +228,9 @@ function build_selected_images {
     return 0
   fi
   local services=(iam-proxy-italia)
-  case "${COMPOSE_PROFILES:-}" in
-    demo|dev|saml2)
+  local profiles=",${COMPOSE_PROFILES},"
+  case "${profiles}" in
+    *,demo,*|*,dev,*|*,saml2,*)
       services+=(django_sp)
       ;;
   esac
@@ -275,29 +279,22 @@ function start {
   echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
   echo -e "\n"
   echo -e "=== Demo RP/SP — start the flow at ==="
-  case "${COMPOSE_PROFILES}" in
-    demo|*demo*)
-      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
-      echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
-      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
-      ;;
-    dev|*saml2*)
-      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
-      ;;
-    storage_mongo|*oidc*)
-      echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
-      echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
-      ;;
-    *)
-      echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
-      ;;
-  esac
+  local profiles=",${COMPOSE_PROFILES},"
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",dev,"* || "${profiles}" == *",saml2,"* ]]; then
+    echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
+  fi
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",storage_mongo,"* || "${profiles}" == *",oidc,"* || "${profiles}" == *",wallet,"* || "${profiles}" == *",wallet_instance_demo,"* ]]; then
+    echo -e "  OIDC RP demo:              http://localhost:8090"
+    echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+    echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
+  fi
+  if [[ "${profiles}" != *",demo,"* && "${profiles}" != *",dev,"* && "${profiles}" != *",saml2,"* && "${profiles}" != *",storage_mongo,"* && "${profiles}" != *",oidc,"* && "${profiles}" != *",wallet,"* && "${profiles}" != *",wallet_instance_demo,"* ]]; then
+    echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
+  fi
 
   # cie-provider (spid-cie-oidc-django sample dump): same profiles as in docker-compose.yml for that service
-  case "${COMPOSE_PROFILES}" in
-    demo|*demo*|storage_mongo|oidc|*oidc*)
+  case "${profiles}" in
+    *,demo,*|*,storage_mongo,*|*,oidc,*)
       echo -e "=== (OIDC CIE Provider) — credentials from sample dump (see spid-cie-oidc-django README) ==="
       echo -e "  Base  URL:           ${OPENID_CIE_PROVIDER_PROTO}://${OPENID_CIE_PROVIDER_HOST}:${OPENID_CIE_PROVIDER_PORT}"
       echo -e "  Admin OIDC login:    username: ${OPENID_CIE_PROVIDER_ADMIN_USR} password: ${OPENID_CIE_PROVIDER_ADMIN_PWD}"
@@ -333,14 +330,11 @@ function announce {
   echo "  -e  ricrea .env da env.example; ha effetto solo insieme a -f"
   echo "  -b  ricostruisce senza cache iam-proxy-italia e, se il profilo lo avvia, django-sp"
   echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
-  echo "  -p  nessun profilo: solo satosa e nginx"
-  echo "  -m  profilo storage_mongo"
-  echo "  -M  profilo mongoexpress"
-  echo "  -d  profilo dev (SAML2)"
   echo "  -t  dopo l'avvio esegue spid-sp-test"
-  echo "  senza -p, -m, -M o -d il profilo è demo"
+  echo "  COMPOSE_PROFILES seleziona i profili del compose. Se la variabile non è impostata, il profilo è demo."
+  echo "  COMPOSE_PROFILES vuota avvia solo satosa e nginx."
   echo ""
-  if [ -z "${COMPOSE_PROFILES+x}" ]; then
+  if [ -z "${COMPOSE_PROFILES}" ]; then
     echo "Profilo di questa esecuzione: nessuno (satosa e nginx)."
   else
     echo "Profilo di questa esecuzione: ${COMPOSE_PROFILES}."
@@ -389,16 +383,13 @@ function help {
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
   echo "-h Print this help"
   echo ""
-  echo "#### profile options"
-  echo "-m Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)"
-  echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
-  echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
   echo "-s Skip docker image removal and update"
-  echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2)"
   echo "-t Run spid_sp_test tests after startup"
   echo ""
-  echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
-  echo "demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo, pagopa-wallet-cli"
+  echo "Profiles come from COMPOSE_PROFILES, as in docker compose."
+  echo "When COMPOSE_PROFILES is unset, the script uses demo."
+  echo "When COMPOSE_PROFILES is empty, only satosa and nginx start."
+  echo "demo starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, the OIDC demo and pagopa-wallet-cli."
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"
@@ -411,7 +402,7 @@ function help {
 # ==========================================================
 # 4. ARGUMENT PARSING (While loop)
 # ==========================================================
-while getopts ":fepbimMdsh" opt; do
+while getopts ":febish" opt; do
   case ${opt} in
    f)
      SATOSA_CLEAN_DATA="true"
@@ -421,18 +412,6 @@ while getopts ":fepbimMdsh" opt; do
      ;;
    b)
      SATOSA_BUILD="true"
-     ;;
-   p)
-     unset COMPOSE_PROFILES
-     ;;
-   m)
-     COMPOSE_PROFILES="storage_mongo"
-     ;;
-   M)
-     COMPOSE_PROFILES="mongoexpress"
-     ;;
-   d)
-     COMPOSE_PROFILES="dev"
      ;;
    s)
      SKIP_UPDATE=true

@@ -184,9 +184,9 @@ config:
 #      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
 #        - www.authorization-server.example.com
       display:
-        - name: EAA Provider
+        - name: IAM Proxy Italia Example EAA Provider
           locale: it-IT
-        - name: EAA Provider
+        - name: IAM Proxy Italia Example EAA Provider
           locale: en-US
       credential_configurations_supported:
         dc_sd_jwt_pid: &dc_sd_jwt_pid_config
@@ -207,14 +207,15 @@ config:
           vct: urn:it-wallet:pid:1
           credential_metadata:
             display:
-              - name: Dati di Identificazione Personale
-                description: Dati di identificazione personale
+              - name: EUDIW PID (Dati di identificazione personale)
+                description: EUDIW PID (Dati di identificazione personale)
                 locale: it-IT
               - name: Person Identification Data
                 description: Person identification data
                 locale: en-US
             claims: &pid_sd_jwt_claims
-              - path:
+              - &pid_claim_given_name
+                path:
                   - given_name
                 mandatory: true
                 sd: always
@@ -228,7 +229,8 @@ config:
                     locale: en-US
                     name: First Name
 
-              - path:
+              - &pid_claim_family_name
+                path:
                   - family_name
                 mandatory: true
                 sd: always
@@ -242,7 +244,8 @@ config:
                     locale: en-US
                     name: Family Name
 
-              - path:
+              - &pid_claim_birthdate
+                path:
                   - birthdate
                 mandatory: true
                 sd: always
@@ -255,7 +258,8 @@ config:
                     label: Date of birth
                     locale: en-US
                     name: Date of Birth
-              - path:
+              - &pid_claim_place_of_birth
+                path:
                   - place_of_birth
                 mandatory: true
                 sd: always
@@ -269,21 +273,8 @@ config:
                     locale: en-US
                     name: Place of Birth
 
-              - path:
-                - tax_id_code
-
-                sd: always
-                display:
-                  - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
-                    label: Codice Fiscale
-                    locale: it-IT
-                    name: Codice fiscale
-                  - description: National tax identification code of natural person as a String format.
-                    label: Tax id code
-                    locale: en-US
-                    name: Tax id code
-
-              - path:
+              - &pid_claim_nationalities
+                path:
                   - nationalities
                 mandatory: true
                 sd: always
@@ -313,7 +304,24 @@ config:
               - name: IT-Wallet ID
                 description: IT-Wallet ID
                 locale: en-US
-            claims: *pid_sd_jwt_claims
+            claims:
+              - *pid_claim_given_name
+              - *pid_claim_family_name
+              - *pid_claim_birthdate
+              - *pid_claim_place_of_birth
+              - path:
+                  - tax_id_code
+                sd: always
+                display:
+                  - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
+                    label: Codice Fiscale
+                    locale: it-IT
+                    name: Codice fiscale
+                  - description: National tax identification code of natural person as a String format.
+                    label: Tax id code
+                    locale: en-US
+                    name: Tax id code
+              - *pid_claim_nationalities
         dc_sd_jwt_mDL:
           format: dc+sd-jwt
           scope: mDL
@@ -450,8 +458,8 @@ config:
                 - ES512
           credential_metadata:
             display:
-              - name: Dati di Identificazione Personale
-                description: Dati di identificazione personale
+              - name: EUDIW PID (Dati di identificazione personale)
+                description: EUDIW PID (Dati di identificazione personale)
                 locale: it-IT
               - name: Person Identification Data
                 description: Person identification data
@@ -756,8 +764,7 @@ config:
             !sd place_of_birth:
                locality: "{{placeOfBirth}}"
             !sd nationalities: {{nationalities}}
-            !sd tax_id_code: "TINIT-{{fiscal_code}}"
-          
+
             sub: "{{sub}}"
             iat: {{iat}}
             status: {{status}}
@@ -768,6 +775,24 @@ config:
           add_decoy_claims: false
       dc_sd_jwt_eid:
         <<: *dc_sd_jwt_pid_spec
+        template: |
+          user_claims:
+            !sd given_name: "{{name}}"
+            !sd family_name: "{{surname}}"
+            !sd birthdate: "{{dateOfBirth}}"
+            !sd place_of_birth:
+               locality: "{{placeOfBirth}}"
+            !sd nationalities: {{nationalities}}
+            !sd tax_id_code: "TINIT-{{fiscal_code}}"
+
+            sub: "{{sub}}"
+            iat: {{iat}}
+            status: {{status}}
+            date_of_expiry: "{{date_of_expiry}}"
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
+          add_decoy_claims: false
       mso_mdoc_pid:
         trust_framework: it_wallet
         assurance_level: high
