@@ -742,7 +742,7 @@ config:
     status_list:
       path: *status_list_endpoint_path
       exp: 90 # minutes
-      ttl: 43200
+      ttl: 90
     credential_specification:
       dc_sd_jwt_pid: &dc_sd_jwt_pid_spec
         trust_framework: it_wallet
@@ -795,6 +795,8 @@ config:
         trust_framework: it_wallet
         assurance_level: high
         expiry_days: 365
+        optional_mso_attrs:
+          status: true
         template: |
           org.iso.18013.5.1:
             family_name: "{{surname}}"
@@ -831,6 +833,7 @@ config:
               locality: "{{placeOfBirth}}"
             !sd tax_id_code: "TINIT-{{fiscal_code}}"
             !sd unique_id: "{{unique_id}}"
+            status: {{status}}
 
 
   trust:
