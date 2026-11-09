@@ -1,14 +1,13 @@
 # Security-pinned versions. Run: pip-audit -r requirements.txt
-# Django 5.2.x: pip-audit/OSV currently flags all 4.2.x including 4.2.30 for several CVEs with no
-#   valid 4.2 fix version in the advisory payload; 5.2.13+ is the supported patched LTS line on PyPI.
-Django>=5.2.13,<6.0
+# Django 5.2.x LTS. djangosaml2 1.13.0 requires Django>=5.2.17.
+Django>=5.2.17,<6.0
 cffi>=1.17.0
 cryptography>=50.0.0
-pyOpenSSL>=26.0.0
+pyOpenSSL>=26.4.0
 
-# django saml2 SP (pysaml2: keep <7.5.1 so pip does not resolve 7.5.1+ which caps pyOpenSSL<24.3.0)
-djangosaml2>=1.12.0
-pysaml2>=6.5.1,<7.5.1
+# djangosaml2 1.13.0 requires pysaml2>=7.5.5 and pyOpenSSL>=26.4.0.
+djangosaml2>=1.13.0
+pysaml2>=7.5.5
 importlib-resources>=5.12.0,<6.0.0
 lxml>=6.1.0
 requests>=2.33.0
