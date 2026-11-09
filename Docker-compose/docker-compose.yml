@@ -268,7 +268,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.0
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -306,7 +306,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.0
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
