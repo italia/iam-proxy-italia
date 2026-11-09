@@ -1,0 +1,70 @@
+
+provider_config: !INCLUDE wallet_provider.yaml
+credentials_config: !INCLUDE credentials_config.yaml
+
+app:
+  host: !ENV FLASK_RUN_HOST
+  port: !ENV FLASK_RUN_PORT
+  debug_mode: false
+  favicon_subpath: img/IT-Wallet-Symbol-Primary-BlueItalia.svg
+  static_folder: static
+  secret_key: !ENV SECRET_KEY
+  password: !ENV WALLET_INSTANCE_PASSWORD
+  http_params:
+    proxy:
+      use_proxy: false
+      http_proxy: proxy.example.com:8080
+      https_proxy: proxy.example.com:8080
+      no_proxy: localhost,127.0.0.1
+
+  logging:
+    filepath: #optional
+    filename: #optional
+    level: DEBUG
+    libs_enabled: true
+    libs_level: INFO #optional [default=INFO]
+
+wallet_instance:
+  key_storage:
+    - iso_18045_basic
+  user_authentication:
+    - iso_18045_basic
+  certification: https://registry.example.org
+  oauth_authorization_server: !ENV OAUTH_AUTHORIZATION_SERVER
+
+credential_issuers: !ENV CREDENTIAL_ISSUER_URLS
+eudiw_lotl: !ENV EUDIW_LOTL_URL
+
+ms_trust_configuration:
+  IT:
+    trust_root: !ENV TRUST_ANCHOR_URL
+    trust_framework: oid-fed
+
+metadata:
+  initialize_flow:
+    idphints:
+      CIE3: ""
+      CIE2: !ENV OPENID_CIE_PROVIDER_URL
+      SPID2: https://demo.spid.gov.it
+    credential_configuration_id: dc_sd_jwt_eid
+#    credential_configuration_id: mso_mdoc_pid
+    response_mode: query
+    response_type: code
+    redirect_uri: !ENV WALLET_INITIALIZE_REDIRECT_URI
+  credential_flow:
+    _response_mode: query
+    response_mode: form_post.jwt
+    response_type: code
+    redirect_uri: !ENV WALLET_CREDENTIAL_REDIRECT_URI
+    credential_configurations_supported:
+      - dc_sd_jwt_EuropeanDisabilityCard
+      - dc_sd_jwt_EuropeanHealthInsuranceCard
+      - dc_sd_jwt_mDL
+      - mso_mdoc_mDL
+      - dc_sd_jwt_education_degree
+      - dc_sd_jwt_education_enrollment
+      - dc_sd_jwt_residency
+  presentation_flow:
+    response_mode: direct_post.jwt
+    response_type: vp_token
+    status_assertion_supported: false

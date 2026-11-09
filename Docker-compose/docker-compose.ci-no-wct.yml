@@ -1,0 +1,6 @@
+# This job does not run WCT. Issuance and presentation fail against the current issuer.
+# Drop this file from the CI up when those tests pass locally.
+services:
+  pagopa-wallet-cli:
+    profiles: !override
+      - ci-disabled

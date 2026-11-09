@@ -424,28 +424,24 @@ services:
       - demo
       - storage_mongo
       - oidc
+      - wallet
       - wallet_instance_demo
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.0-1
     container_name: wallet-instance-demo
-    build:
-      context: ../
-      dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
-      additional_contexts:
-        iam-proxy-base: service:iam-proxy-italia
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
-      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
-      # Host app (templates, static, routes) overrides the image copy. No image rebuild.
-      - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/wallet-instance-demo/app:ro"
-      - "${WALLET_INSTANCE_RUN_PY:-../../iam-proxy-italia-wallet-instance-demo/run.py}:/wallet-instance-demo/run.py:ro"
+      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/application/config:rw"
       - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
     environment:
+      CONFIG_DIR: /application/config
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
       FLASK_RUN_PORT: 8080
       SECRET_KEY: ${WALLET_INSTANCE_SECRET_KEY:-demo-wallet-secret}
       WALLET_INSTANCE_PASSWORD: ${WALLET_INSTANCE_PASSWORD:-wallet}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/provider}
+      WALLET_LINK: ${WALLET_LINK:-https://wallet-solution.example.org}
       WALLET_INITIALIZE_REDIRECT_URI: ${WALLET_INITIALIZE_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
       WALLET_CREDENTIAL_REDIRECT_URI: ${WALLET_CREDENTIAL_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
       WALLET_TLS_CERT: /certs/demo-wi.crt
@@ -454,6 +450,7 @@ services:
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      OAUTH_AUTHORIZATION_SERVER: ${OAUTH_AUTHORIZATION_SERVER:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       EUDIW_LOTL_URL: ${EUDIW_LOTL_URL:-https://trustedlist.serviceproviders.eudiw.dev/LOTL/01.xml}
     networks:
       iam-proxy-italia:
@@ -461,13 +458,14 @@ services:
           - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
   # PagoPA IT-Wallet conformance tool (image 1.2.x).
-  # Starts on the demo profiles after iam-proxy-italia is healthy.
+  # Starts on the demo and wallet profiles after iam-proxy-italia is healthy.
   # That healthcheck probes OpenID4VP (backend) and OpenID4VCI (frontend)
   # through nginx. The entrypoint runs test:issuance.
   # test:presentation runs only when CONFIG_PRESENTATION_AUTHORIZE_URI is set.
   pagopa-wallet-cli:
     profiles:
       - demo
+      - wallet
       - wct
     container_name: pagopa-wallet-cli
     build:

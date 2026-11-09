@@ -196,7 +196,8 @@ function initialize_satosa {
   init_files ./wallet-instance-demo/certs/demo-wi.crt "Wallet demo cert" "add_wallet_cert"
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
-  # Wallet YAML is seeded at container startup when this directory is empty (see wallet-instance-demo entrypoint)
+  init_files ./wallet-instance-demo/config/app_config.yaml "wallet instance demo config" "cp -a ../iam-proxy-italia-project-demo-examples/iam-proxy-italia-wallet-instance-demo/. ./wallet-instance-demo/config/"
+  chmod 777 ./wallet-instance-demo/config || true
 
   rm -Rf ./iam-proxy-italia-project/static
 
@@ -248,8 +249,12 @@ function start {
 
   # NEW BUSINESS
 
-  DOCKER_UP_ARGS=(
-  -f docker-compose.yml up
+  DOCKER_UP_ARGS=(-f docker-compose.yml)
+  if [ -n "${COMPOSE_EXTRA_FILE:-}" ]; then
+    DOCKER_UP_ARGS+=(-f "${COMPOSE_EXTRA_FILE}")
+  fi
+  DOCKER_UP_ARGS+=(
+  up
   --wait
   --wait-timeout 60
   --remove-orphans
@@ -261,17 +266,9 @@ function start {
   docker compose "${DOCKER_UP_ARGS[@]}"
   EXIT_CODE=$?
   echo -e "\n Compose finished with exit code: $EXIT_CODE\n"
-  # @TODO handle exit code and perform cleanup if needed (e.g. to avoid stale containers on next run if compose up fails)
-# if [[ "${EXIT_CODE}" -ne 0 ]]; then
-#   echo "Errore rilevato: processo di pulizia"
-#
-#   if [[ -n "${PAGOPA_CLI_SERVICE_NAME}" ]]; then
-#     echo "PAGOPA_CLI_SERVICE_NAME presente: eseguo cleanup specifico"
-#     docker compose -f docker-compose.yml down -v
-#   fi
-#
-#   exit $EXIT_CODE
-# fi
+  if [[ "${EXIT_CODE}" -ne 0 ]]; then
+    exit "${EXIT_CODE}"
+  fi
 
   # END NEW BUSINESS
 

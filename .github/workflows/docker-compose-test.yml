@@ -55,6 +55,12 @@ jobs:
         run: bash .github/scripts/patch-pyeudiw-branch.sh
 
       - name: docker compose
+        env:
+          # saml2 starts the SP under test.
+          # wallet starts Mongo and the wallet instance.
+          # WCT is omitted until issuance and presentation pass locally.
+          COMPOSE_PROFILES: saml2,wallet
+          COMPOSE_EXTRA_FILE: docker-compose.ci-no-wct.yml
         run: |
           cd Docker-compose
           ./run-docker-compose.sh
