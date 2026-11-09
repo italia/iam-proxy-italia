@@ -220,9 +220,27 @@ function update {
   fi
 }
 
+function build_selected_images {
+  if [ -z "${SATOSA_BUILD}" ]; then
+    return 0
+  fi
+  local services=(iam-proxy-italia)
+  case "${COMPOSE_PROFILES:-}" in
+    demo|dev|saml2)
+      services+=(django_sp)
+      ;;
+  esac
+  echo -e "Ricostruisco: ${services[*]} \n"
+  docker compose -f docker-compose.yml build --no-cache "${services[@]}"
+}
+
 function start {
   # Ensure external network exists (avoids host interface teardown on compose down)
   docker network create iam-proxy-italia 2>/dev/null || true
+
+  if ! build_selected_images; then
+    exit 1
+  fi
 
   # NEW BUSINESS
 
@@ -232,6 +250,9 @@ function start {
   --wait-timeout 60
   --remove-orphans
   )
+  if [ -n "${SATOSA_BUILD}" ]; then
+    DOCKER_UP_ARGS+=(--no-build)
+  fi
   echo -e "Starting compose with args: ${DOCKER_UP_ARGS[*]} \n"
   docker compose "${DOCKER_UP_ARGS[@]}"
   EXIT_CODE=$?
@@ -310,7 +331,7 @@ function announce {
   echo "Flag:"
   echo "  -f  cancella e reinizializza i dati locali (Mongo, configurazione Satosa, djangosaml2_sp, static, certificati)"
   echo "  -e  ricrea .env da env.example; ha effetto solo insieme a -f"
-  echo "  -b  accettato, ma nessuno passo lo usa: non forza la build"
+  echo "  -b  ricostruisce senza cache iam-proxy-italia e, se il profilo lo avvia, django-sp"
   echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
   echo "  -p  nessun profilo: solo satosa e nginx"
   echo "  -m  profilo storage_mongo"
@@ -349,7 +370,9 @@ function announce {
     echo "- A composizione avviata partono i test spid-sp-test."
   fi
   if [ -n "${SATOSA_BUILD}" ]; then
-    echo "- -b non cambia questa sequenza."
+    echo "- -b ricostruisce iam-proxy-italia con --no-cache prima di up."
+    echo "- Se il profilo avvia django-sp, la ricostruisce nello stesso build --no-cache."
+    echo "- up usa --no-build, così iam-proxy-italia non viene costruita una seconda volta."
   fi
   echo ""
 }
@@ -361,7 +384,7 @@ function help {
   echo "initialize check update and start iam-proxy-italia compose structure"
   echo ""
   echo "#### common Options"
-  echo "-b Build for iam-proxy-italia image and build django-sp image if required"
+  echo "-b Rebuild iam-proxy-italia without cache. Also rebuild django-sp when the selected profile starts it"
   echo "-e Force update for .env file. A new .env file is generated from env.example file. Require '-f' option otherwise is skipped"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
   echo "-h Print this help"
