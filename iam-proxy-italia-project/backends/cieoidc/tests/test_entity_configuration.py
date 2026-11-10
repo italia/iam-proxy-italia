@@ -112,12 +112,6 @@ def test_get_entity_configuration_dict(mock_fed_conf, handler):
     assert res_jws
 
 
-@patch("backends.cieoidc.utils.helpers.jwtse.create_jws")
-@patch("backends.cieoidc.utils.helpers.jwks.public_jwk_from_private_jwk")
-def test_get_openid_jwks(mock_pub, mock_create_jws, handler):
-    mock_pub.s_
-
-
 def test_endpoint_well_known_json(handler):
     context = Context()
     context.target_backend = "/auth"

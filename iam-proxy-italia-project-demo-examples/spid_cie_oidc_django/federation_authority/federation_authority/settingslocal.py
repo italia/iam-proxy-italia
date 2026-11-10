@@ -265,5 +265,6 @@ ENTITY_TYPE_LEAFS = [
     "openid_credential_issuer",
     "oauth_resource",
     "wallet_solution",
+    "openid_wallet_provider",
     "openid_credential_verifier"
 ]

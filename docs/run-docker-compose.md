@@ -5,13 +5,9 @@
 ### Script Options
 * `-f` Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP
 * `-h` Print this help
-* `-s`Skip docker image update
-* `-p` unset compose profile. Run: satosa and nginx. Usefull for production
-* `-m` Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)
-* `-M` Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express
-* `-d` Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2).
-   If isn't set any of -p, -m, -M, -d, is used 'demo' compose profile.
-   Demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo
+* `-s` Skip docker image update
+
+Profiles are selected with `COMPOSE_PROFILES`, the same variable Docker Compose reads. When it is unset, the script uses `demo`. When it is empty, only satosa and nginx start. `demo` starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check and the OIDC demo.
 
 `run-docker-compose.sh` must be executed from `docker-compose` directory. To run the script the user must have access to the docker system.
 

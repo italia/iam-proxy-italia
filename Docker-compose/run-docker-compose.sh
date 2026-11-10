@@ -38,9 +38,10 @@ DEFAULT_OPENID_CIE_PROVIDER_ADMIN_USR="admin"
 DEFAULT_OPENID_CIE_PROVIDER_ADMIN_PWD="oidcadmin"
 
 # --- Wallet Instance Demo (wallet-instance-demo) ---
-DEFAULT_DEMO_WALLET_INSTANCE_PROTO="http"
+DEFAULT_DEMO_WALLET_INSTANCE_PROTO="https"
 DEFAULT_DEMO_WALLET_INSTANCE_PORT=8080
 DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME="demo-wi.example.org"
+DEFAULT_WALLET_INSTANCE_PASSWORD="wallet"
 
 # ==========================================================
 # 2. EXPORT SERVICES ENV VALUES (Overrides)
@@ -69,13 +70,17 @@ export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PROTO="${DEMO_WALLET_INSTANCE_PROTO:-$DEFAULT_DEMO_WALLET_INSTANCE_PROTO}"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PORT="${DEMO_WALLET_INSTANCE_PORT:-$DEFAULT_DEMO_WALLET_INSTANCE_PORT}"
+export WALLET_INSTANCE_PASSWORD="${WALLET_INSTANCE_PASSWORD:-$DEFAULT_WALLET_INSTANCE_PASSWORD}"
 export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
 
 # --- pagopa wallet-conformance-test (pagopa-wallet-cli) ---
 export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
 
 # --- Script/Docker-Compose Execution Variables (Internal) ---
-export COMPOSE_PROFILES="${COMPOSE_PROFILES:-demo}"
+if [ -z "${COMPOSE_PROFILES+x}" ]; then
+  COMPOSE_PROFILES=demo
+fi
+export COMPOSE_PROFILES
 export SATOSA_CLEAN_DATA="${SATOSA_CLEAN_DATA:-false}"
 export SKIP_UPDATE="${SKIP_UPDATE:-}"
 export RUN_SPID_TEST="${RUN_SPID_TEST:-}"
@@ -106,6 +111,14 @@ function clean_data {
 
 function init_files () {
   if [ -f "$1" ]; then echo "$2 file is already initialized" ; else $3 ; fi
+}
+
+function add_wallet_cert () {
+  mkdir -p ./wallet-instance-demo/certs
+  openssl req -x509 -out ./wallet-instance-demo/certs/demo-wi.crt -keyout ./wallet-instance-demo/certs/demo-wi.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj "/CN=${DEMO_WALLET_INSTANCE_HOSTNAME}" -extensions EXT -config <( \
+   printf "[dn]\nCN=%s\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:%s\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth" "${DEMO_WALLET_INSTANCE_HOSTNAME}" "${DEMO_WALLET_INSTANCE_HOSTNAME}")
 }
 
 function add_satosa_cert () {
@@ -171,6 +184,7 @@ function initialize_satosa {
   mkdir -p ./certbot/live/${SATOSA_HOSTNAME}
   mkdir -p ./spid_cie_oidc_django
   mkdir -p ./wallet-instance-demo/config
+  mkdir -p ./wallet-instance-demo/certs
   mkdir -p ./pagopa-wallet-cli/data
   chmod 777 ./pagopa-wallet-cli/data || true
 
@@ -179,9 +193,13 @@ function initialize_satosa {
   init_files ./djangosaml2_sp/run.sh "djangosaml2_sp" "cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp ./"
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
+  init_files ./wallet-instance-demo/certs/demo-wi.crt "Wallet demo cert" "add_wallet_cert"
+  # OpenSSL writes the key as 0600. The wallet image runs as wiwuser and must read it.
+  chmod a+r ./wallet-instance-demo/certs/demo-wi.key
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
-  # Wallet config is generated at container startup from ENV (see wallet-instance-demo entrypoint)
+  init_files ./wallet-instance-demo/config/app_config.yaml "wallet instance demo config" "cp -a ../iam-proxy-italia-project-demo-examples/iam-proxy-italia-wallet-instance-demo/. ./wallet-instance-demo/config/"
+  chmod 777 ./wallet-instance-demo/config || true
 
   rm -Rf ./iam-proxy-italia-project/static
 
@@ -197,8 +215,8 @@ function update {
     echo -e "Rimuovo le immagini della composizione, così vengono riscaricate o ricostruite. \n"
     ./remove-docker-images.sh
     echo -e "\n"
-    echo -e "Provo a scaricare le nuove versioni. \n"
-    docker compose -f docker-compose.yml pull
+    echo -e "Provo a scaricare le nuove versioni. Le immagini che hanno un Dockerfile si costruiscono in locale se il tag non è nel registry. \n"
+    docker compose -f docker-compose.yml pull --ignore-buildable
     echo -e "\n"
     echo -e "Provo a fare il down della composizione. \n"
     docker compose -f docker-compose.yml down -v
@@ -208,33 +226,51 @@ function update {
   fi
 }
 
+function build_selected_images {
+  if [ -z "${SATOSA_BUILD}" ]; then
+    return 0
+  fi
+  local services=(iam-proxy-italia)
+  local profiles=",${COMPOSE_PROFILES},"
+  case "${profiles}" in
+    *,demo,*|*,dev,*|*,saml2,*)
+      services+=(django_sp)
+      ;;
+  esac
+  echo -e "Ricostruisco: ${services[*]} \n"
+  docker compose -f docker-compose.yml build --no-cache "${services[@]}"
+}
+
 function start {
   # Ensure external network exists (avoids host interface teardown on compose down)
   docker network create iam-proxy-italia 2>/dev/null || true
 
+  if ! build_selected_images; then
+    exit 1
+  fi
+
   # NEW BUSINESS
 
-  DOCKER_UP_ARGS=(
-  -f docker-compose.yml up
+  DOCKER_UP_ARGS=(-f docker-compose.yml)
+  if [ -n "${COMPOSE_EXTRA_FILE:-}" ]; then
+    DOCKER_UP_ARGS+=(-f "${COMPOSE_EXTRA_FILE}")
+  fi
+  DOCKER_UP_ARGS+=(
+  up
   --wait
   --wait-timeout 60
   --remove-orphans
   )
+  if [ -n "${SATOSA_BUILD}" ]; then
+    DOCKER_UP_ARGS+=(--no-build)
+  fi
   echo -e "Starting compose with args: ${DOCKER_UP_ARGS[*]} \n"
   docker compose "${DOCKER_UP_ARGS[@]}"
   EXIT_CODE=$?
   echo -e "\n Compose finished with exit code: $EXIT_CODE\n"
-  # @TODO handle exit code and perform cleanup if needed (e.g. to avoid stale containers on next run if compose up fails)
-# if [[ "${EXIT_CODE}" -ne 0 ]]; then
-#   echo "Errore rilevato: processo di pulizia"
-#
-#   if [[ -n "${PAGOPA_CLI_SERVICE_NAME}" ]]; then
-#     echo "PAGOPA_CLI_SERVICE_NAME presente: eseguo cleanup specifico"
-#     docker compose -f docker-compose.yml down -v
-#   fi
-#
-#   exit $EXIT_CODE
-# fi
+  if [[ "${EXIT_CODE}" -ne 0 ]]; then
+    exit "${EXIT_CODE}"
+  fi
 
   # END NEW BUSINESS
 
@@ -242,27 +278,22 @@ function start {
   echo -e "Completato. Per visionare i logs: 'docker compose -f docker-compose.yml logs -f'"
   echo -e "\n"
   echo -e "=== Demo RP/SP — start the flow at ==="
-  case "${COMPOSE_PROFILES}" in
-    demo|*demo*)
-      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
-      echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
-      ;;
-    dev|*saml2*)
-      echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
-      ;;
-    storage_mongo|*oidc*)
-      echo -e "  OIDC RP demo:              http://localhost:8090"
-      echo -e "  Wallet instance demo:      http://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
-      ;;
-    *)
-      echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
-      ;;
-  esac
+  local profiles=",${COMPOSE_PROFILES},"
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",dev,"* || "${profiles}" == *",saml2,"* ]]; then
+    echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
+  fi
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",storage_mongo,"* || "${profiles}" == *",oidc,"* || "${profiles}" == *",wallet,"* || "${profiles}" == *",wallet_instance_demo,"* ]]; then
+    echo -e "  OIDC RP demo:              http://localhost:8090"
+    echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
+    echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
+  fi
+  if [[ "${profiles}" != *",demo,"* && "${profiles}" != *",dev,"* && "${profiles}" != *",saml2,"* && "${profiles}" != *",storage_mongo,"* && "${profiles}" != *",oidc,"* && "${profiles}" != *",wallet,"* && "${profiles}" != *",wallet_instance_demo,"* ]]; then
+    echo -e "  (No demo RP/SP in current profile; use default profile for SAML SP and OIDC RP)"
+  fi
 
   # cie-provider (spid-cie-oidc-django sample dump): same profiles as in docker-compose.yml for that service
-  case "${COMPOSE_PROFILES}" in
-    demo|*demo*|storage_mongo|oidc|*oidc*)
+  case "${profiles}" in
+    *,demo,*|*,storage_mongo,*|*,oidc,*)
       echo -e "=== (OIDC CIE Provider) — credentials from sample dump (see spid-cie-oidc-django README) ==="
       echo -e "  Base  URL:           ${OPENID_CIE_PROVIDER_PROTO}://${OPENID_CIE_PROVIDER_HOST}:${OPENID_CIE_PROVIDER_PORT}"
       echo -e "  Admin OIDC login:    username: ${OPENID_CIE_PROVIDER_ADMIN_USR} password: ${OPENID_CIE_PROVIDER_ADMIN_PWD}"
@@ -289,6 +320,56 @@ function start {
   exit 0
 }
 
+function announce {
+  echo ""
+  echo "=== run-docker-compose.sh ==="
+  echo ""
+  echo "Flag:"
+  echo "  -f  cancella e reinizializza i dati locali (Mongo, configurazione Satosa, djangosaml2_sp, static, certificati)"
+  echo "  -e  ricrea .env da env.example; ha effetto solo insieme a -f"
+  echo "  -b  ricostruisce senza cache iam-proxy-italia e, se il profilo lo avvia, django-sp"
+  echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
+  echo "  -t  dopo l'avvio esegue spid-sp-test"
+  echo "  COMPOSE_PROFILES seleziona i profili del compose. Se la variabile non è impostata, il profilo è demo."
+  echo "  COMPOSE_PROFILES vuota avvia solo satosa e nginx."
+  echo ""
+  if [ -z "${COMPOSE_PROFILES}" ]; then
+    echo "Profilo di questa esecuzione: nessuno (satosa e nginx)."
+  else
+    echo "Profilo di questa esecuzione: ${COMPOSE_PROFILES}."
+  fi
+  echo ""
+  echo "Sta per succedere:"
+  if [ "${SATOSA_CLEAN_DATA}" = "true" ]; then
+    echo "- I dati locali vengono cancellati e reinizializzati."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- .env viene ricreato da env.example."
+    fi
+  else
+    echo "- I dati locali restano. -f li cancellerebbe."
+    if [ "${SATOSA_FORCE_ENV}" = "true" ]; then
+      echo "- -e è ignorato: serve anche -f."
+    fi
+  fi
+  if [ -z "${SKIP_UPDATE}" ]; then
+    echo "- I container vengono fermati e le immagini della composizione rimosse."
+    echo "- I tag pubblici vengono riscaricati. Le immagini con un Dockerfile si ricostruiscono all'avvio."
+    echo "- down -v elimina anche i volumi nominati. -s salta questi tre passi."
+  else
+    echo "- -s: niente rimozione delle immagini, niente pull e niente down -v."
+  fi
+  echo "- Poi docker compose up --wait."
+  if [ -n "${RUN_SPID_TEST}" ]; then
+    echo "- A composizione avviata partono i test spid-sp-test."
+  fi
+  if [ -n "${SATOSA_BUILD}" ]; then
+    echo "- -b ricostruisce iam-proxy-italia con --no-cache prima di up."
+    echo "- Se il profilo avvia django-sp, la ricostruisce nello stesso build --no-cache."
+    echo "- up usa --no-build, così iam-proxy-italia non viene costruita una seconda volta."
+  fi
+  echo ""
+}
+
 function help {
   echo ""
   echo "### run-docker-compose.sh"
@@ -296,21 +377,18 @@ function help {
   echo "initialize check update and start iam-proxy-italia compose structure"
   echo ""
   echo "#### common Options"
-  echo "-b Build for iam-proxy-italia image and build django-sp image if required"
+  echo "-b Rebuild iam-proxy-italia without cache. Also rebuild django-sp when the selected profile starts it"
   echo "-e Force update for .env file. A new .env file is generated from env.example file. Require '-f' option otherwise is skipped"
   echo "-f Force clean and reinitialize data for Satosa, MongoDB and Djangosaml2_SP"
   echo "-h Print this help"
   echo ""
-  echo "#### profile options"
-  echo "-m Set 'storage_mongo' compose profile. Run: satosa, nginx, mongo (storage for OIDC/Wallet)"
-  echo "-M Set 'mongoexpress' compose profile. Run: satosa, nginx, mongo, mongo-express"
-  echo "-p unset compose profile. Run: satosa and nginx. Usefull for production"
   echo "-s Skip docker image removal and update"
-  echo "-d Set 'dev' compose profile. Run: satosa, nginx, django-sp, spid-saml-check (SAML2)"
   echo "-t Run spid_sp_test tests after startup"
   echo ""
-  echo "if isn't set any options of -p, -m, -M, -d, is used 'demo' compose profile"
-  echo "demo compose profile start: satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, OIDC demo, pagopa-wallet-cli"
+  echo "Profiles come from COMPOSE_PROFILES, as in docker compose."
+  echo "When COMPOSE_PROFILES is unset, the script uses demo."
+  echo "When COMPOSE_PROFILES is empty, only satosa and nginx start."
+  echo "demo starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check and the OIDC demo."
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"
@@ -323,7 +401,7 @@ function help {
 # ==========================================================
 # 4. ARGUMENT PARSING (While loop)
 # ==========================================================
-while getopts ":fepbimMdsh" opt; do
+while getopts ":febish" opt; do
   case ${opt} in
    f)
      SATOSA_CLEAN_DATA="true"
@@ -333,18 +411,6 @@ while getopts ":fepbimMdsh" opt; do
      ;;
    b)
      SATOSA_BUILD="true"
-     ;;
-   p)
-     unset COMPOSE_PROFILES
-     ;;
-   m)
-     COMPOSE_PROFILES="storage_mongo"
-     ;;
-   M)
-     COMPOSE_PROFILES="mongoexpress"
-     ;;
-   d)
-     COMPOSE_PROFILES="dev"
      ;;
    s)
      SKIP_UPDATE=true
@@ -369,6 +435,7 @@ done
 # ==========================================================
 # 5. EXECUTION
 # ==========================================================
+announce
 clean_data         # clean docker compose directories if $SATOSA_CLEAN_DATA == "true"
 ensure_satosa_hostname_resolvable
 initialize_satosa  # check and initialize docker compose directories

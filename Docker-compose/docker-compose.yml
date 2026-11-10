@@ -54,7 +54,7 @@ services:
       - demo
       - dev
       - saml2
-    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:v3.2.0
+    image: ghcr.io/italia/iam-proxy-italia-djangosaml2_sp:v3.5.0
     build:
       context: ../
       args:
@@ -78,7 +78,9 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.4
+    image: ghcr.io/italia/iam-proxy-italia:v3.5.0
+    # Build the local Dockerfile when this tag is not on the registry.
+    pull_policy: build
     build:
         context: ../
         args:
@@ -97,6 +99,9 @@ services:
     environment:
       - TZ=${TZ:-Europe/Rome}
       - SATOSA_DEBUG=${SATOSA_DEBUG:-false}
+      # Compose profile list from the host (run-docker-compose.sh defaults to demo).
+      # The OpenID4VCI demo user seed runs only when this list contains the demo profile.
+      - COMPOSE_PROFILES=${COMPOSE_PROFILES:-}
       - SATOSA_BY_DOCKER=1
       - SATOSA_GET_IDEM_MDQ_KEY=${SATOSA_GET_IDEM_MDQ_KEY:-true}
       - SATOSA_GET_SPID_IDP_METADATA=${SATOSA_GET_SPID_IDP_METADATA:-true}
@@ -175,6 +180,10 @@ services:
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
+      - PYEUDIW_VERIFIER_CLIENT_ID=${PYEUDIW_VERIFIER_CLIENT_ID:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+      - PYEUDIW_VERIFIER_REQUEST_URI=${PYEUDIW_VERIFIER_REQUEST_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri}
+      - PYEUDIW_VERIFIER_RESPONSE_URI=${PYEUDIW_VERIFIER_RESPONSE_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/response-uri}
+      - PYEUDIW_VERIFIER_REDIRECT_URI=${PYEUDIW_VERIFIER_REDIRECT_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/redirect-uri}
 
       # CIE OIDC backend: trust anchor and provider URLs (reachable from this container)
       - TRUST_ANCHOR_URL=${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
@@ -186,7 +195,7 @@ services:
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
       - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
-      # - ./eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:rwx
+      # - ../../eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:ro
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
@@ -260,7 +269,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.2
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -298,7 +307,7 @@ services:
       - demo
       - storage_mongo
       - oidc
-    image: ghcr.io/italia/spid-cie-oidc-django:v1.6.3
+    image: ghcr.io/italia/spid-cie-oidc-django:v1.7.2
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
@@ -333,6 +342,7 @@ services:
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
       RP_URL: "https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp"
+      OIDCFED_FETCH_PRIVATE_NETS: "true"
 
   # Fills demo data (oidcop DB, user, indexes, test client jbxedfmfyc).
   # Always runs at startup when stack is brought up (run-docker-compose.sh forces re-run).
@@ -394,6 +404,8 @@ services:
     depends_on:
       iam-proxy-italia:
         condition: service_healthy
+      relying-party-demo-mongo:
+        condition: service_completed_successfully
     environment:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
@@ -414,35 +426,46 @@ services:
       - demo
       - storage_mongo
       - oidc
+      - wallet
       - wallet_instance_demo
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.1
     container_name: wallet-instance-demo
-    build:
-      context: ../
-      dockerfile: iam-proxy-italia-project-demo-examples/wallet-instance-demo/wallet_instance_demo.Dockerfile
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
-      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/wallet-instance-demo/config:rw"
+      - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/application/config:rw"
+      - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
     environment:
+      CONFIG_DIR: /application/config
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
       FLASK_RUN_PORT: 8080
+      SECRET_KEY: ${WALLET_INSTANCE_SECRET_KEY:-demo-wallet-secret}
+      WALLET_INSTANCE_PASSWORD: ${WALLET_INSTANCE_PASSWORD:-wallet}
       TRUST_ANCHOR_URL: ${TRUST_ANCHOR_URL:-http://trust-anchor.example.org:5002}
-      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-}
+      WALLET_PROVIDER_URL: ${WALLET_PROVIDER_URL:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/provider}
+      WALLET_LINK: ${WALLET_LINK:-https://wallet-solution.example.org}
+      WALLET_INITIALIZE_REDIRECT_URI: ${WALLET_INITIALIZE_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
+      WALLET_CREDENTIAL_REDIRECT_URI: ${WALLET_CREDENTIAL_REDIRECT_URI:-https://${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}:${WALLET_INSTANCE_PORT:-8080}/wallet/cb}
+      WALLET_TLS_CERT: /certs/demo-wi.crt
+      WALLET_TLS_KEY: /certs/demo-wi.key
       DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
+      CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      OAUTH_AUTHORIZATION_SERVER: ${OAUTH_AUTHORIZATION_SERVER:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+      EUDIW_LOTL_URL: ${EUDIW_LOTL_URL:-https://trustedlist.serviceproviders.eudiw.dev/LOTL/01.xml}
     networks:
       iam-proxy-italia:
         aliases:
           - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
   # PagoPA IT-Wallet conformance tool (image 1.2.x).
-  # Starts on the demo profiles after iam-proxy-italia is healthy.
-  # That healthcheck probes OpenID4VP (backend) and OpenID4VCI (frontend)
-  # through nginx. The entrypoint then runs test:issuance and test:presentation.
+  # This release does not start it. Issuance and presentation fail against the current issuer.
+  # Add the demo and wallet profiles again when those tests pass locally.
+  # The entrypoint runs test:issuance.
+  # test:presentation runs only when CONFIG_PRESENTATION_AUTHORIZE_URI is set.
   pagopa-wallet-cli:
     profiles:
-      - demo
       - wct
     container_name: pagopa-wallet-cli
     build:
@@ -459,6 +482,10 @@ services:
       CONFIG_CREDENTIAL_TYPES: ${WCT_CREDENTIAL_TYPES:-dc_sd_jwt_pid}
       CONFIG_UNSAFE_TLS: ${WCT_UNSAFE_TLS:-true}
       CONFIG_SAVE_CREDENTIAL: ${WCT_SAVE_CREDENTIAL:-true}
+      # Authorization request produced by OpenID4VP pre-request:
+      # {backend}/request-uri?client_id={backend}&request_uri={backend}/request-uri&request_uri_method=GET
+      # `state` is added per session by /OpenID4VP/pre-request and is not part of this static URI.
+      CONFIG_PRESENTATION_AUTHORIZE_URI: "${WCT_PRESENTATION_AUTHORIZE_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri?client_id=https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP&request_uri=https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri&request_uri_method=GET}"
       OIDF_SERVERS_BIND_ADDRESS: ${WCT_BIND_ADDRESS:-0.0.0.0}
       CONFIG_LOG_LEVEL: ${WCT_LOG_LEVEL:-INFO}
     volumes:

@@ -37,12 +37,13 @@ attributes:
     openid: [name]
     saml: [name, Name]
     openid4vp: [given_name]
-    openid4vci: [given_name]
+    # Session attributes are already internal names (givenname), plus the original claim names.
+    openid4vci: [givenname, given_name]
   surname:
     openid: [family_name]
     saml: [sn, surname, familyName, FamilyName]
     openid4vp: [family_name]
-    openid4vci: [family_name]
+    openid4vci: [surname, family_name]
   # spid related
   spidcode:
     openid: [sub]
@@ -90,7 +91,7 @@ attributes:
   expirationDate:
     saml: [expirationDate]
   fiscal_code:
-    openid4vci: [fiscal_code, fiscal_number]
+    openid4vci: [fiscalnumber, fiscal_code, fiscal_number]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

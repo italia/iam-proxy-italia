@@ -31,7 +31,7 @@ config:
     get_response:
       module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
       class: GetResponseHandler
-      path: /get_response
+      path: /redirect-uri
 
   qrcode:
     size: 250 # px
@@ -47,22 +47,16 @@ config:
 
   jwt:
     default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
-    default_enc_alg: RSA-OAEP
-    default_enc_enc: A256CBC-HS512
+    default_enc_alg: ECDH-ES
+    default_enc_enc: A256GCM
+    response_encryption_kty: EC
+    response_encryption_crv: P-256
+    response_encryption_use: enc
     default_exp: 6         # minutes
     enc_alg_supported: &enc_alg_supported
-        - RSA-OAEP
-        - RSA-OAEP-256
         - ECDH-ES
-        - ECDH-ES+A128KW
-        - ECDH-ES+A192KW
-        - ECDH-ES+A256KW
     enc_enc_supported: &enc_enc_supported
-        - A128CBC-HS256
-        - A192CBC-HS384
-        - A256CBC-HS512
         - A128GCM
-        - A192GCM
         - A256GCM
     sig_alg_supported: &sig_alg_supported
         - RS256
@@ -75,46 +69,33 @@ config:
   authorization:
     client_id: # this field if not set will be autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
     auth_iss_id: # this field if not set will be set to client_id in the authz request
-    url_scheme: haip
+    url_scheme: haip-vp
     scopes:
     - pid-sd-jwt:unique_id+given_name+family_name
     default_acr_value: https://www.spid.gov.it/SpidL2
-    expiration_time: 5 # minutes
+    expiration_time: 2 # minutes
     aud: https://self-issued.me/v2
     response_mode: direct_post.jwt
-    presentation_definition:
-      id: global-presentation-definition-id
-      input_descriptors:
-      - id: input-specific-id
-        purpose: Request presentation holding Power of Representation attestation
-        format:
-          dc+sd-jwt: {}
-        constraints:
-          fields:
-          - path:
-            - "$.vct"
-            filter:
-              const: urn:eu.europa.ec.eudi:por:1
-      - id: another-input-specific-id
-        purpose: Request first name and last name claims from PID attestation
-        format:
-          dc+sd-jwt: {}
-        constraints:
-          limit_disclosure: required
-          fields:
-            - path:
-              - "$.vct"
-              filter:
-                type: string
-                pattern: urn:eu.europa.ec.eudi:por:1
-            - path:
-              - "$.family_name"
-            - path:
-              - "$.given_name"
 
   duckle:
-    dcql_query: &dcql_query >-
-      {"credentials":[{"id":"pid","format":"dc+sd-jwt","meta":{"vct_values":["https://trust-registry.eid-wallet.example.it/credentials/v1.0/personidentificationdata"]},"claims":[{"path":["given_name"]},{"path":["family_name"]}]},{"id":"wallet attestation","format":"mso_mdoc","meta":{"vct_values":["https://itwallet.registry.example.it/WalletAttestation"]},"claims":[{"path":["wallet_link"]},{"path":["wallet_name"]}]}]}
+    dcql_query: &dcql_query |
+      {
+        "credentials": [
+          {
+            "id": "IT-Wallet ID",
+            "format": "dc+sd-jwt",
+            "meta": {
+              "vct_values": [
+                "urn:it-wallet:eid:1"
+              ]
+            },
+            "claims": [
+              {"path": ["given_name"]},
+              {"path": ["family_name"]}
+            ]
+          }
+        ]
+      }
   user_attributes:
     unique_identifiers:
     - tax_id_code
@@ -171,8 +152,9 @@ config:
     authorization_signed_response_alg: *sig_alg_supported
 
     #Various informations of the client
-    client_id: # this field is autopopulated using internal variables base_url and name using the following format: "<base_url>/<name>"
+    client_id: !ENV PYEUDIW_VERIFIER_CLIENT_ID
     client_name: Name of an example organization
+    logo_uri: https://developers.italia.it/assets/icons/logo-it.svg
     contacts:
       - ops@verifier.example.org
     default_acr_values:
@@ -188,16 +170,19 @@ config:
     jwks: *metadata_jwks
 
     redirect_uris:
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/redirect-uri"
+      - !ENV PYEUDIW_VERIFIER_REDIRECT_URI
     request_uris:
-      # This field is autopopulated using internal variables base_url and name using the following format: <base_url>/<name>/request-uri"
+      - !ENV PYEUDIW_VERIFIER_REQUEST_URI
+    response_uris:
+      - !ENV PYEUDIW_VERIFIER_RESPONSE_URI
+    encrypted_response_enc_values_supported: *enc_enc_supported
 
     # not necessary according to openid4vp
     # default_max_age: 1111
     # require_auth_time: true
     # subject_type: pairwise
 
-    vp_formats:
+    vp_formats: &vp_formats
       dc+sd-jwt:
         sd-jwt_alg_values:
           - ES256
@@ -205,6 +190,15 @@ config:
         kb-jwt_alg_values:
           - ES256
           - ES384
+    vp_formats_supported:
+      <<: *vp_formats
+      mso_mdoc:
+        issuerauth_alg_values:
+          - -7
+          - -35
+        deviceauth_alg_values:
+          - -7
+          - -35
     token_endpoint_auth_methods_supported:
       - attest_jwt_client_auth
     client_attestation_signing_alg_values_supported:
@@ -264,7 +258,7 @@ config:
         authority_hints:
             - http://trust-anchor.example.org:5002
         trust_anchors:
-            - hhttp://trust-anchor.example.org:5002:
+            - http://trust-anchor.example.org:5002:
               -
             - https://trust-anchor.edu:
               -
@@ -394,7 +388,7 @@ config:
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
             db_trust_sources_collection: trust_sources
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VP_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VP_PASSWORD

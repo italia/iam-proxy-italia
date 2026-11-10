@@ -108,12 +108,6 @@ def test_us11(storage):
     assert storage._update("auth", entity) is True
 
 
-def test_us12(storage):
-    storage._MongoStorage__client = MagicMock()
-    storage._MongoStorage__client["testdb"]["auth"].delete_one.return_value.deleted_count = 1
-    assert True
-
-
 def test_us13(storage):
     storage._MongoStorage__client = MagicMock()
     storage._MongoStorage__client["testdb"]["auth"].find_one.return_value = None

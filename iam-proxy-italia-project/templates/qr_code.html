@@ -390,10 +390,6 @@
         return "{{ status_endpoint }}";
       }
 
-      function sessionIdentifier() {
-        return "{{ state }}";
-      }
-
       function schedulePoll() {
         pollingTimer = setTimeout(QRcodeScanCheck, 1000);
       }
@@ -403,7 +399,6 @@
         $.ajax({
           type: "GET",
           url: statusEndpoint(),
-          data: { "id": sessionIdentifier() },
           statusCode: {
             201: function () { schedulePoll(); },
             202: function () { schedulePoll(); },

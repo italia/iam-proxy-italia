@@ -19,7 +19,7 @@ config:
           db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
           db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
           db_trust_chain_collection: !ENV MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION
-          data_ttl: 63072000 # 2 years
+          data_ttl: 15768000 # 6 months
         connection_params:
           username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
           password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
