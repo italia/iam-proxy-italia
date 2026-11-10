@@ -194,6 +194,8 @@ function initialize_satosa {
   init_files ./nginx/html/static/disco.html "static pages" "cp -R ../iam-proxy-italia-project/static ./nginx/html"
   init_files ./certbot/live/${SATOSA_HOSTNAME}/privkey.pem "SATOSA host cert" "add_satosa_cert"
   init_files ./wallet-instance-demo/certs/demo-wi.crt "Wallet demo cert" "add_wallet_cert"
+  # OpenSSL writes the key as 0600. The wallet image runs as wiwuser and must read it.
+  chmod a+r ./wallet-instance-demo/certs/demo-wi.key
   init_files ./iam-proxy-italia-project/pki/privkey.pem "IAM Proxy cert" "add_iam_cert"
   init_files ./spid_cie_oidc_django/healthcheck.sh "Federation authorities" "cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django/"
   init_files ./wallet-instance-demo/config/app_config.yaml "wallet instance demo config" "cp -a ../iam-proxy-italia-project-demo-examples/iam-proxy-italia-wallet-instance-demo/. ./wallet-instance-demo/config/"
