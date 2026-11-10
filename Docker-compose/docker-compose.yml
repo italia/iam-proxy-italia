@@ -428,7 +428,7 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.2
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.2-1
     container_name: wallet-instance-demo
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
