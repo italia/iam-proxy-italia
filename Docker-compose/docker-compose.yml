@@ -433,6 +433,7 @@ services:
     volumes:
       - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/application/config:rw"
       - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
+      - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/application/app:rw"
     environment:
       CONFIG_DIR: /application/config
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
