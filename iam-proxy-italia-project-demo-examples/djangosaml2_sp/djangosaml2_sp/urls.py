@@ -1,7 +1,6 @@
 from djangosaml2 import views
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 
 from saml2_sp.views import amministrazione, index, echo_attributes
@@ -27,7 +26,7 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
         path(f'{SAML2_URL_PREFIX}/ls/post/', views.LogoutView.as_view(), name='saml2_ls_post'),
         path(f'{SAML2_URL_PREFIX}/metadata/', views.MetadataView.as_view(), name='saml2_metadata'),
         path(f'{SAML2_URL_PREFIX}/echo_attributes', views.EchoAttributesView.as_view(), name='saml2_echo_attributes'),
-        path('logout/', LogoutView.as_view(), {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout')
+        path('logout/', views.LogoutInitView.as_view(), name='logout')
     ])
 
 
