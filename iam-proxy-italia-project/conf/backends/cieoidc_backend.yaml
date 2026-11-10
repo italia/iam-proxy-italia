@@ -94,10 +94,10 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
+      federation_resolve_endpoint: "<base_url>/<name>/resolve"
       organization_name: Example RP
       homepage_uri: <base_url>/<name>
-      policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
+      policy_uri: "<base_url>/<name>/en/website/legal-information"
       logo_uri: !ENV SAMPLE_CIE_LOGO_URI
       contacts:
         - ops@rp.example.it
@@ -108,8 +108,8 @@ config:
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
-      signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
+      jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.json"
+      signed_jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.jose"
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it
