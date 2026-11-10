@@ -386,7 +386,7 @@ function help {
   echo "Profiles come from COMPOSE_PROFILES, as in docker compose."
   echo "When COMPOSE_PROFILES is unset, the script uses demo."
   echo "When COMPOSE_PROFILES is empty, only satosa and nginx start."
-  echo "demo starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check, the OIDC demo and pagopa-wallet-cli."
+  echo "demo starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check and the OIDC demo."
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"

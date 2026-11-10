@@ -404,6 +404,8 @@ services:
     depends_on:
       iam-proxy-italia:
         condition: service_healthy
+      relying-party-demo-mongo:
+        condition: service_completed_successfully
     environment:
       HOST: relying-party-demo
       RUNNING_PORT: 8090
@@ -458,14 +460,12 @@ services:
           - ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
 
   # PagoPA IT-Wallet conformance tool (image 1.2.x).
-  # Starts on the demo and wallet profiles after iam-proxy-italia is healthy.
-  # That healthcheck probes OpenID4VP (backend) and OpenID4VCI (frontend)
-  # through nginx. The entrypoint runs test:issuance.
+  # This release does not start it. Issuance and presentation fail against the current issuer.
+  # Add the demo and wallet profiles again when those tests pass locally.
+  # The entrypoint runs test:issuance.
   # test:presentation runs only when CONFIG_PRESENTATION_AUTHORIZE_URI is set.
   pagopa-wallet-cli:
     profiles:
-      - demo
-      - wallet
       - wct
     container_name: pagopa-wallet-cli
     build:
