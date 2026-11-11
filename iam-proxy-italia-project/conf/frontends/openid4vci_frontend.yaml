@@ -28,6 +28,8 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.nonce_endpoint
       class: NonceHandler
       path: '/nonce-endpoint'
+      config:
+        nonce_duration: 600 # seconds
     credential:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_endpoint
       class: CredentialHandler
