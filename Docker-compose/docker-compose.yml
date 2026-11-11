@@ -198,7 +198,10 @@ services:
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - ${CREDENTIAL_ISSUER_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+
     healthcheck:
       test: ["CMD", "sh", "pyeudiw-healthcheck.sh"]
       interval: 30s
@@ -450,7 +453,7 @@ services:
       DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
-      CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      CREDENTIAL_ISSUER_URL: ${CREDENTIAL_ISSUER_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
       OAUTH_AUTHORIZATION_SERVER: ${OAUTH_AUTHORIZATION_SERVER:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       EUDIW_LOTL_URL: ${EUDIW_LOTL_URL:-https://trustedlist.serviceproviders.eudiw.dev/LOTL/01.xml}
     networks:
