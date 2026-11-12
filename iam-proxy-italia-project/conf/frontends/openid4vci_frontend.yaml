@@ -851,6 +851,7 @@ config:
               country: "{{countyOfBirth}}"
               locality: "{{placeOfBirth}}"
           key_binding: true
+          iat: {{iat}}
           user_claims:
             !sd birthdate: "{{dateOfBirth}}"
             !sd family_name: "{{surname}}"
@@ -875,12 +876,8 @@ config:
         metadata_type: "openid_credential_issuer"
         metadata: *openid_credential_issuer_metadata
         authority_hints:
-          - http://trust-anchor.example.org:5002
+          - http://trust-anchor.example.org
         trust_anchors:
-          - http://trust-anchor.example.org:5002:
-              -
-          - https://trust-anchor.edu:
-              -
           - https://trust-anchor.example.org:
               # WARNING: change these keys in production env. Keeping these keys unchanged can pose a serious security risk.
               - kty: EC
@@ -906,77 +903,80 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        include_issued_jwt_header_param: true #include x5c header in the issued jwt
+        include_issued_jwt_header_param: true # include x5c header in the issued jwt
         issuer_id: "x509_san_dns:iam-proxy-italia.example.org"
         certificate_authorities:
-          ca.example.com: |
+          trust-anchor.example.com: |
               -----BEGIN CERTIFICATE-----
-              MIICWzCCAgCgAwIBAgIUHeUm0atKj54XFSyVPi7paKl6akYwCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowXzEXMBUGA1UEAwwOY2Eu
-              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-              KoZIzj0DAQcDQgAEGTuiTGUceZwKGwP3Fk9HoyoG9tYqTrNq0i7jXfCk4CbyhFrI
-              NkV95CzLh+r6bT939O8mBWrPuktb/qdIjWo8FaOBmTCBljASBgNVHRMBAf8ECDAG
-              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-              YW1wbGUuY29tMB0GA1UdDgQWBBQgd95P3hu2G2A8UlCfFaCGCoovbjAKBggqhkjO
-              PQQDAgNJADBGAiEA1YuVPhxg/InxM4yFpPBhqKUkxD0QPf07Tl9jSLyRV+8CIQDs
-              Ghmql4diEUima49h1ikqaVRLSNFlx3M+h/298PPO9g==
+              MIICkzCCAjigAwIBAgIUGY/4Yx8tPYeFiitmO9Otisucj8MwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMGkxITAf
+              BgNVBAMMGHRydXN0LWFuY2hvci5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxIjAg
+              BgkqhkiG9w0BCQEWE2luZm9AY2EuZXhhbXBsZS5jb20xEzARBgNVBAoMCkV4YW1w
+              bGUgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQcwyP/IWz8kcypK7AVo15h
+              bdbSe/84L5TNJ9TXJTwF312BhYiA6exI39Nhrzg6BLgLT7wtPQzGxJnscFdzo0pd
+              o4G9MIG6MBIGA1UdEwEB/wQIMAYBAf8CAQEwPgYDVR0fBDcwNTAzoDGgL4YtaHR0
+              cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5jb20veDUwOS9jcmwucGVtMEUGA1Ud
+              EQQ+MDyGIGh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tghh0cnVzdC1h
+              bmNob3IuZXhhbXBsZS5jb20wHQYDVR0OBBYEFP25OKBsmZ93YN52B9ueyGxKaIcr
+              MAoGCCqGSM49BAMCA0kAMEYCIQCFuG41DjlilJOhsf7DvuPGlxJAV/+uR/mnO2eC
+              fLGRbQIhAJSwlAjbx6j80cyIw0bS3x/fq/rymWXaui6nzSM+7VeB
               -----END CERTIFICATE-----
+
         leaf_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
-          ca.example.com:
+          trust-anchor.example.com:
             - |
               -----BEGIN CERTIFICATE-----
-              MIICpzCCAk2gAwIBAgIUeV5IPzJJZbeDw94Eh0+5nhVvsTkwCgYIKoZIzj0EAwIw
+              MIICsjCCAlegAwIBAgIUM3NTCBkHrY+qdrcK7QC/gR2zAjUwCgYIKoZIzj0EAwIw
               fTEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
               VDEsMCoGCSqGSIb3DQEJARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20x
-              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MDMwOTE3NTkwMFoX
-              DTI3MDMxMDE3NTkwMFowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
+              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MTExMTE3MDQ1MVoX
+              DTI3MTExMjE3MDQ1MVowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
               bXBsZS5vcmcxCzAJBgNVBAYTAklUMTAwLgYJKoZIhvcNAQkBFiFpbmZvQGlhbS1w
               cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcxHjAcBgNVBAoMFUlBTSBQcm94eSBJdGFs
               aWEgTGVhZjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKPCON6EWJlZOcemZqtv
               zYvvnBw+UvNakw/+XELptgLZRrhbyuxVw6ZXEpbb8H/HyvEyL7rX0UeSZqcvulHu
-              yFSjgaAwgZ0wDAYDVR0TAQH/BAIwADBNBgNVHREERjBEhiRodHRwczovL2lhbS1w
-              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmeCHGlhbS1wcm94eS1pdGFsaWEuZXhhbXBs
-              ZS5vcmcwHQYDVR0OBBYEFFEOuDbi+t+aBXvgTSEReOmuxXo9MB8GA1UdIwQYMBaA
-              FJtxbMu+S7Hb+N9yXgIt5VYhCDazMAoGCCqGSM49BAMCA0gAMEUCIQCYdTxoGoYQ
-              LJawK4JPv/pf1TjkglIk36uS1qhfY7tFzwIgAnSAfpnIuCl07Cwx7N3UXQZpTFo6
-              bFx8hjxqNqquPfU=
+              yFSjgaowgacwDAYDVR0TAQH/BAIwADBXBgNVHREEUDBOhi5odHRwczovL2lhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcvb3BlbmlkNHZwghxpYW0tcHJveHktaXRh
+              bGlhLmV4YW1wbGUub3JnMB0GA1UdDgQWBBRRDrg24vrfmgV74E0hEXjprsV6PTAf
+              BgNVHSMEGDAWgBQAQjHNeKJgv+bnzrP9EduPr7vNrzAKBggqhkjOPQQDAgNJADBG
+              AiEA1NlHfOpQR4fhNKr2nB7X09XXfwnW1IZ13aukAVgqh+UCIQD6Dqmxsc4e+mAS
+              p0kQz35o1v/19s2FTWFXjggt3LCnOg==
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICfDCCAiOgAwIBAgIUWqtgUIsqrzt+r6ASl6G4K9pCZZ4wCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowfTEhMB8GA1UEAwwYaW50
-              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJVDEsMCoGCSqGSIb3DQEJ
-              ARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20xHTAbBgNVBAoMFEV4YW1w
-              bGUgSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEFtlFIkZd
-              IhXi2nLiHaH7XiSO4Nibw6LnOF3WIPs/+gLl7o6cQq7TXHhl1ImEgR+9KORLm2Gr
-              teANFIOKpLIonKOBnjCBmzASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdEQQ+MDyG
-              IGh0dHBzOi8vaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tghhpbnRlcm1lZGlhdGUu
-              ZXhhbXBsZS5jb20wHQYDVR0OBBYEFJtxbMu+S7Hb+N9yXgIt5VYhCDazMB8GA1Ud
-              IwQYMBaAFCB33k/eG7YbYDxSUJ8VoIYKii9uMAoGCCqGSM49BAMCA0cAMEQCICPA
-              BZy8ttEIte0lsuD/PeGXkWMWIzcP8nDsl+H4uvmkAiAbkq82Ah8ycNNYR/LBG2H0
-              x9FAcySBsIv22sgY4/vM2w==
+              MIIChjCCAi2gAwIBAgIUT5v1hMoi1C+GMG9Y5j+UAr0PtmwwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMH0xITAf
+              BgNVBAMMGGludGVybWVkaWF0ZS5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxLDAq
+              BgkqhkiG9w0BCQEWHWluZm9AaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMR0wGwYD
+              VQQKDBRFeGFtcGxlIEludGVybWVkaWF0ZTBZMBMGByqGSM49AgEGCCqGSM49AwEH
+              A0IABOaMsxEI+als530HtHsLP6TqigWUmhmCUGEVNk3U69etkqOII+Mr5x61tTKO
+              9wJixK7A07YkD2TNxKWg3mlwNEmjgZ4wgZswEgYDVR0TAQH/BAgwBgEB/wIBADBF
+              BgNVHREEPjA8hiBodHRwczovL2ludGVybWVkaWF0ZS5leGFtcGxlLmNvbYIYaW50
+              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMB0GA1UdDgQWBBQAQjHNeKJgv+bnzrP9EduP
+              r7vNrzAfBgNVHSMEGDAWgBT9uTigbJmfd2DedgfbnshsSmiHKzAKBggqhkjOPQQD
+              AgNHADBEAiBteK6Yp6BysY+47VjSfLm9ueXzPF8c440BWMCBcngKQQIgGE2iwSRb
+              xZ99LPMVCc0XHu3PUrb9/MNjeAHY5rUxuMk=
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICWzCCAgCgAwIBAgIUHeUm0atKj54XFSyVPi7paKl6akYwCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowXzEXMBUGA1UEAwwOY2Eu
-              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-              KoZIzj0DAQcDQgAEGTuiTGUceZwKGwP3Fk9HoyoG9tYqTrNq0i7jXfCk4CbyhFrI
-              NkV95CzLh+r6bT939O8mBWrPuktb/qdIjWo8FaOBmTCBljASBgNVHRMBAf8ECDAG
-              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-              YW1wbGUuY29tMB0GA1UdDgQWBBQgd95P3hu2G2A8UlCfFaCGCoovbjAKBggqhkjO
-              PQQDAgNJADBGAiEA1YuVPhxg/InxM4yFpPBhqKUkxD0QPf07Tl9jSLyRV+8CIQDs
-              Ghmql4diEUima49h1ikqaVRLSNFlx3M+h/298PPO9g==
+              MIICkzCCAjigAwIBAgIUGY/4Yx8tPYeFiitmO9Otisucj8MwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMGkxITAf
+              BgNVBAMMGHRydXN0LWFuY2hvci5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxIjAg
+              BgkqhkiG9w0BCQEWE2luZm9AY2EuZXhhbXBsZS5jb20xEzARBgNVBAoMCkV4YW1w
+              bGUgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQcwyP/IWz8kcypK7AVo15h
+              bdbSe/84L5TNJ9TXJTwF312BhYiA6exI39Nhrzg6BLgLT7wtPQzGxJnscFdzo0pd
+              o4G9MIG6MBIGA1UdEwEB/wQIMAYBAf8CAQEwPgYDVR0fBDcwNTAzoDGgL4YtaHR0
+              cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5jb20veDUwOS9jcmwucGVtMEUGA1Ud
+              EQQ+MDyGIGh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tghh0cnVzdC1h
+              bmNob3IuZXhhbXBsZS5jb20wHQYDVR0OBBYEFP25OKBsmZ93YN52B9ueyGxKaIcr
+              MAoGCCqGSM49BAMCA0kAMEYCIQCFuG41DjlilJOhsf7DvuPGlxJAV/+uR/mnO2eC
+              fLGRbQIhAJSwlAjbx6j80cyIw0bS3x/fq/rymWXaui6nzSM+7VeB
               -----END CERTIFICATE-----
 
         private_keys: *metadata_jwks # the keys must be the same because the key at position 0 must correspond to the one from which the certificate at position 0 of the chain `leaf_certificate_chains_by_ca` is derived
