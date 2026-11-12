@@ -255,12 +255,8 @@ config:
             - http://trust-anchor.example.org:5002
         trust_anchors:
             - http://trust-anchor.example.org:5002:
-              -
-            - https://trust-anchor.edu:
-              -
             - https://trust-anchor.example.org:
               - kty: EC
-                d: WbhdFpNhUTQ7gfh8XUQzMfe8JPVAKAh4qCfHRMqyQE8
                 use: sig
                 crv: P-256
                 kid: 4_6lPScdml0BplAsv8RO0u7B2XnrvusAMpFWNI_QJco

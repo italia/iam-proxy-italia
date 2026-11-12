@@ -876,9 +876,9 @@ config:
         metadata_type: "openid_credential_issuer"
         metadata: *openid_credential_issuer_metadata
         authority_hints:
-          - http://trust-anchor.example.org
+          - http://trust-anchor.example.org:5002
         trust_anchors:
-          - https://trust-anchor.example.org:
+          - http://trust-anchor.example.org:5002:
               # WARNING: change these keys in production env. Keeping these keys unchanged can pose a serious security risk.
               - kty: EC
                 d: WbhdFpNhUTQ7gfh8XUQzMfe8JPVAKAh4qCfHRMqyQE8
