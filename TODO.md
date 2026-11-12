@@ -18,4 +18,4 @@ iam-proxy-italia  | ERROR:pyeudiw.trust.handler.x509:Invalid x509 certificate ch
 - il tasto richiedi nuova credenziale (perché rilevata come scaduta in presentazione) deve fare redirect sulla pagina di emissione
 - quando accedi alla sezione attestati ottenuti, rileva gli attestati scaduti e marcali come tali. Nel menu a sinistra aggiungi l'icona del triangolo di warning
 - il parametro di config del nonce_duration è stato riposizionato, prima era coem se dovesse stare nella root del config. Rilevare tutti gli altri parametri che dvrebbero stare in un contesto specifico piuttosto che nella root
-- 
+- ✅ @run-docker-compose.sh: -h flag implemented (shows help and exits with 0)
