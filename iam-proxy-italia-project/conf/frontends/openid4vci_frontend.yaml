@@ -961,23 +961,6 @@ config:
               AgNHADBEAiBteK6Yp6BysY+47VjSfLm9ueXzPF8c440BWMCBcngKQQIgGE2iwSRb
               xZ99LPMVCc0XHu3PUrb9/MNjeAHY5rUxuMk=
               -----END CERTIFICATE-----
-            - |
-              -----BEGIN CERTIFICATE-----
-              MIICkzCCAjigAwIBAgIUGY/4Yx8tPYeFiitmO9Otisucj8MwCgYIKoZIzj0EAwIw
-              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
-              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
-              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMGkxITAf
-              BgNVBAMMGHRydXN0LWFuY2hvci5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxIjAg
-              BgkqhkiG9w0BCQEWE2luZm9AY2EuZXhhbXBsZS5jb20xEzARBgNVBAoMCkV4YW1w
-              bGUgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQcwyP/IWz8kcypK7AVo15h
-              bdbSe/84L5TNJ9TXJTwF312BhYiA6exI39Nhrzg6BLgLT7wtPQzGxJnscFdzo0pd
-              o4G9MIG6MBIGA1UdEwEB/wQIMAYBAf8CAQEwPgYDVR0fBDcwNTAzoDGgL4YtaHR0
-              cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5jb20veDUwOS9jcmwucGVtMEUGA1Ud
-              EQQ+MDyGIGh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tghh0cnVzdC1h
-              bmNob3IuZXhhbXBsZS5jb20wHQYDVR0OBBYEFP25OKBsmZ93YN52B9ueyGxKaIcr
-              MAoGCCqGSM49BAMCA0kAMEYCIQCFuG41DjlilJOhsf7DvuPGlxJAV/+uR/mnO2eC
-              fLGRbQIhAJSwlAjbx6j80cyIw0bS3x/fq/rymWXaui6nzSM+7VeB
-              -----END CERTIFICATE-----
 
         private_keys: *metadata_jwks # the keys must be the same because the key at position 0 must correspond to the one from which the certificate at position 0 of the chain `leaf_certificate_chains_by_ca` is derived
 
