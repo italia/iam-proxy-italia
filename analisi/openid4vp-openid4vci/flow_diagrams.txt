@@ -1,0 +1,487 @@
+# Flow Diagrams - OpenID4VP/OpenID4VCI Request Tracing
+
+## Diagram 1: Credential Issuance Flow (OpenID4VCI)
+
+```
+┌──────────────────────┐
+│  WALLET (Holder)     │
+│  IT-Wallet Demo      │
+└──────────────────────┘
+         │
+         │ 1. Discover Issuer
+         │
+         ▼
+┌──────────────────────────────────────────────────────────────┐
+│  ISSUER (Verifier's perspective)                             │
+│  iam-proxy-italia.example.org/OpenID4VCI                     │
+└──────────────────────────────────────────────────────────────┘
+         │
+         ├─ GET /.well-known/openid-credential-issuer
+         │  └─ [SATOSA FRONTEND:OpenID4VCI]
+         │     └─ CredentialIssuerMetadataHandler (endpoint:)
+         │        CredentialIssuerMetadataHandler ✓ WORKS
+         │        Path: '.well-known/openid-credential-issuer'
+         │
+         ├─ GET /.well-known/oauth-authorization-server
+         │  └─ [SATOSA FRONTEND:OpenID4VCI]
+         │     └─ OauthAuthorizationServerMetadataHandler ✓ WORKS
+         │
+         ├─ GET /.well-known/jwt-vc-issuer
+         │  └─ [SATOSA FRONTEND:OpenID4VCI]
+         │     └─ ❌ NOT CONFIGURED
+         │     └─ ERROR: ".well-known/jwt-vc-issuer not bound"
+         │     └─ (Wallet can't verify credentials issued here)
+         │
+         ├─ GET /.well-known/openid-federation
+         │  └─ [SATOSA FRONTEND:OpenID4VCI]
+         │     └─ MetadataHandler ✓ WORKS
+         │     └─ Path: '/.well-known/openid-federation'
+         │
+         └─ POST /token (with attestation)
+            └─ [SATOSA FRONTEND:OpenID4VCI]
+               └─ TokenHandler ✓ WORKS
+               └─ Path: '/token'
+```
+
+## Diagram 2: Credential Presentation Flow (OpenID4VP)
+
+```
+┌──────────────────────┐
+│  WALLET (Holder)     │
+│  IT-Wallet Demo      │
+└──────────────────────┘
+         │
+         │ 1. Discover Verifier
+         │
+         ▼
+┌──────────────────────────────────────────────────────────────┐
+│  VERIFIER                                                    │
+│  iam-proxy-italia.example.org/OpenID4VP                      │
+└──────────────────────────────────────────────────────────────┘
+         │
+         ├─ GET /OpenID4VP/.well-known/openid-configuration
+         │  └─ [SATOSA BACKEND:OpenID4VP]
+         │     └─ ❌ NOT CONFIGURED
+         │     └─ ERROR: "'OpenID4VP/.well-known/openid-configuration' not bound"
+         │
+         ├─ GET /OpenID4VP/.well-known/jar-issuer  ⚠️ ERROR CASE
+         │  └─ [SATOSA BACKEND:OpenID4VP]
+         │     └─ Expected: JarIssuerMetadataHandler
+         │     └─ ❌ NOT CONFIGURED
+         │     └─ ERROR: "'OpenID4VP/.well-known/jar-issuer' not bound"
+         │     └─ (Wallet can't verify verifier's authorization requests)
+         │
+         ├─ GET /OpenID4VP/.well-known/openid-federation
+         │  └─ [SATOSA BACKEND:OpenID4VP]
+         │     └─ ❌ NOT CONFIGURED
+         │
+         └─ GET /OpenID4VP/request-uri?request_uri=...
+            └─ [SATOSA BACKEND:OpenID4VP]
+               └─ RequestHandler ✓ WORKS (if trust verified)
+               └─ Path: '/request-uri'
+```
+
+## Diagram 3: SATOSA Path Routing Logic
+
+```
+Incoming Request
+│
+├─ Parse full path: <backend_or_frontend_name>/<endpoint_path>
+│
+├─ Is there a leading component?
+│  │
+│  ├─ YES: Check if it's a backend name
+│  │  └─ Match: <backend_name>/<endpoint_path>
+│  │     └─ Look up endpoint in Backend
+│  │
+│  ├─ YES: Check if it's a frontend name
+│  │  └─ (Usually NOT - frontends typically use root paths)
+│  │
+│  └─ NO: Check if it's a root-level endpoint
+│     └─ Registered by any frontend/backend with path starting with /
+│
+├─ Found match?
+│  │
+│  ├─ YES: Call handler function
+│  │  └─ Return response
+│  │
+│  └─ NO: Return 400 Error
+│     └─ "URL-path not bound to any endpoint function"
+│
+└─ End
+
+
+EXAMPLE 1: .well-known/jwt-vc-issuer/OpenID4VCI
+├─ Path starts with .: YES
+├─ Is it a known backend? NO (.well-known is not a backend name)
+├─ Is it a root-level endpoint?
+│  └─ SATOSA looks in all registered endpoints
+│  └─ FRONTEND:OpenID4VCI registers:
+│     ├─ /as/par
+│     ├─ /credential
+│     ├─ .well-known/openid-credential-issuer
+│     ├─ .well-known/oauth-authorization-server
+│     ├─ /.well-known/openid-federation
+│     └─ NO MATCH FOR: .well-known/jwt-vc-issuer
+│  └─ ERROR
+
+
+EXAMPLE 2: OpenID4VP/.well-known/jar-issuer
+├─ Path starts with OpenID4VP?: YES
+├─ Is "OpenID4VP" a backend name? YES ✓
+├─ Remaining path: /.well-known/jar-issuer
+├─ Look in Backend:OpenID4VP endpoints:
+│  ├─ /pre-request
+│  ├─ /response-uri
+│  ├─ /request-uri
+│  ├─ /status
+│  ├─ /redirect-uri
+│  └─ NO MATCH FOR: /.well-known/jar-issuer
+├─ ERROR
+```
+
+## Diagram 4: Component Registration Map
+
+```
+SATOSA Configuration (proxy_conf.yaml)
+│
+├─ BACKEND MODULES:
+│  ├─ saml2_backend.yaml
+│  │  └─ Name: Saml2
+│  │     └─ Endpoints: /...
+│  │
+│  ├─ spidsaml2_backend.yaml
+│  │  └─ Name: SPID
+│  │     └─ Endpoints: /...
+│  │
+│  ├─ ciesaml2_backend.yaml
+│  │  └─ Name: CIE
+│  │     └─ Endpoints: /...
+│  │
+│  ├─ pyeudiw_backend.yaml  ✓
+│  │  └─ Name: OpenID4VP
+│  │     └─ Endpoints:
+│  │        ├─ /pre-request
+│  │        ├─ /response-uri
+│  │        ├─ /request-uri
+│  │        ├─ /status
+│  │        ├─ /redirect-uri
+│  │        └─ MISSING: /.well-known/*
+│  │
+│  └─ cieoidc_backend.yaml
+│     └─ Name: CIE-OIDC
+│        └─ Endpoints: /...
+│
+└─ FRONTEND MODULES:
+   ├─ saml2_frontend.yaml
+   │  └─ Name: Saml2
+   │
+   ├─ oidcop_frontend.yaml
+   │  └─ Name: SATOSA-OIDCOP
+   │
+   └─ openid4vci_frontend.yaml  ✓
+      └─ Name: OpenID4VCI
+         └─ Endpoints:
+            ├─ /as/par
+            ├─ /credential
+            ├─ /authorize
+            ├─ /token
+            ├─ /credential-qrcode
+            ├─ /nonce-endpoint
+            ├─ /revoke
+            ├─ .well-known/openid-credential-issuer
+            ├─ .well-known/oauth-authorization-server
+            ├─ /.well-known/openid-federation
+            └─ MISSING: /.well-known/jwt-vc-issuer
+
+NOTE: No "openid4vp_frontend.yaml" registered!
+      (OpenID4VP can work as backend-only, but...)
+      (Trust discovery may expect frontend-like behavior)
+```
+
+## Diagram 5: Trust Discovery Process
+
+```
+VERIFIER (Backend OpenID4VP) receives presentation request
+│
+├─ Extract credential from wallet
+├─ Identify issuer: "https://iam-proxy-italia.example.org/OpenID4VCI"
+│
+└─ Verify credential signature
+   │
+   ├─ Get issuer's public key
+   │  │
+   │  ├─ Method 1: Direct Trust (Direct JWK Endpoint)
+   │  │  └─ GET https://iam-proxy-italia.example.org/.well-known/jwt-vc-issuer
+   │  │     └─ Expected: JSON with jwks array
+   │  │     └─ Issue: Endpoint not configured ❌
+   │  │
+   │  ├─ Method 2: Federation Trust
+   │  │  └─ Query trust-anchor.example.org
+   │  │     └─ "Who is iam-proxy-italia.example.org?"
+   │  │     └─ Trust Anchor responds with issuer's metadata + JWK
+   │  │     └─ Currently ENABLED in config ✓
+   │  │
+   │  └─ Method 3: X.509 Trust
+   │     └─ Use certificate chain
+   │        └─ Currently ENABLED in config ✓
+   │
+   └─ Continue verification...
+
+
+WALLET (Holder) receives authorization request
+│
+├─ Parse authorization request (may be JAR-signed)
+├─ Identify verifier: "https://iam-proxy-italia.example.org/OpenID4VP"
+│
+└─ Verify authorization request signature
+   │
+   ├─ Get verifier's public key
+   │  │
+   │  ├─ Method 1: Direct Trust (JAR Issuer Endpoint)
+   │  │  └─ GET https://iam-proxy-italia.example.org/OpenID4VP/.well-known/jar-issuer
+   │  │     └─ Expected: JSON with jwks array
+   │  │     └─ Issue: Endpoint not configured ❌
+   │  │
+   │  ├─ Method 2: Federation Trust
+   │  │  └─ Query trust-anchor.example.org
+   │  │     └─ "Who is iam-proxy-italia.example.org/OpenID4VP?"
+   │  │     └─ Trust Anchor responds with verifier's metadata + JWK
+   │  │     └─ (If configured to trust verifier)
+   │  │
+   │  └─ Method 3: X.509 Trust
+   │     └─ Use certificate chain
+   │
+   └─ Continue verification...
+```
+
+## Diagram 6: Error Flow - Request 1
+
+```
+CLIENT (External/Wallet)
+    │
+    └─ GET https://iam-proxy-italia.example.org/.well-known/jwt-vc-issuer/OpenID4VCI
+       │ HTTP Headers: Accept: application/json, etc.
+       │
+       ▼
+NGINX Reverse Proxy
+    └─ proxy_pass http://iam-proxy-italia:8000
+       │
+       ▼
+SATOSA Application (satosa.base.run)
+    │
+    ├─ Receive request
+    ├─ path = "/.well-known/jwt-vc-issuer/OpenID4VCI"
+    │
+    ├─ Try to route:
+    │  ├─ Check backends for "well-known" prefix... NO MATCH
+    │  ├─ Check frontends for root path... NO MATCH
+    │  └─ Check registered root endpoints...
+    │     ├─ FRONTEND:OpenID4VCI:/.well-known/openid-credential-issuer... NO
+    │     ├─ FRONTEND:OpenID4VCI:/.well-known/oauth-authorization-server... NO
+    │     ├─ FRONTEND:OpenID4VCI:/.well-known/openid-federation... NO
+    │     └─ No other matching endpoint
+    │
+    └─ Endpoint not found
+       │
+       ▼
+SATOSA Error Handler (satosa.base.run:320)
+    │
+    ├─ exception = 'URL-path is not bound to any endpoint function'
+    ├─ path = '.well-known/jwt-vc-issuer/OpenID4VCI'
+    ├─ error_id = 'urn:uuid:8ba07fa4-3c53-42f0-b5ad-a1f8669bedfd'
+    │
+    ▼
+HTTP Response
+    │
+    ├─ Status: 400 Bad Request
+    ├─ Content-Type: application/json
+    │
+    ├─ Body:
+    │  {
+    │    "message": "URL-path is not bound to any endpoint function",
+    │    "error": "'.well-known/jwt-vc-issuer/OpenID4VCI' not bound to any function",
+    │    "error_id": "urn:uuid:8ba07fa4-3c53-42f0-b5ad-a1f8669bedfd"
+    │  }
+    │
+    ▼
+CLIENT
+    └─ Receive 400 Error
+       └─ Cannot proceed with trust verification
+       └─ Cannot issue/validate credentials
+```
+
+## Diagram 7: Error Flow - Request 2
+
+```
+CLIENT (Wallet: IT-Wallet Demo)
+    │
+    └─ GET https://iam-proxy-italia.example.org/OpenID4VP/.well-known/jar-issuer
+       │ Session: <session_id>
+       │ HTTP Headers: Authorization, etc.
+       │
+       ▼
+NGINX Reverse Proxy
+    └─ proxy_pass http://iam-proxy-italia:8000
+       │
+       ▼
+SATOSA Application (satosa.base.run)
+    │
+    ├─ Receive request
+    ├─ path = "/OpenID4VP/.well-known/jar-issuer"
+    │
+    ├─ Try to route:
+    │  ├─ Parse: "/OpenID4VP" = backend name
+    │  ├─ Remaining: "/.well-known/jar-issuer"
+    │  │
+    │  ├─ Get Backend:OpenID4VP
+    │  ├─ Look for endpoint "/.well-known/jar-issuer" ...
+    │  │  ├─ /pre-request... NO
+    │  │  ├─ /response-uri... NO
+    │  │  ├─ /request-uri... NO
+    │  │  ├─ /status... NO
+    │  │  ├─ /redirect-uri... NO
+    │  │  └─ (No /.well-known/* endpoints defined)
+    │  │
+    │  └─ No match found
+    │
+    └─ Endpoint not found
+       │
+       ▼
+SATOSA Error Handler (satosa.base.run:320)
+    │
+    ├─ exception = 'URL-path is not bound to any endpoint function'
+    ├─ path = 'OpenID4VP/.well-known/jar-issuer'
+    ├─ error_id = 'urn:uuid:0e65ff9e-6902-4727-ac64-3adc68de8db8'
+    │
+    ▼
+HTTP Response
+    │
+    ├─ Status: 400 Bad Request
+    ├─ Content-Type: application/json
+    │
+    ├─ Body:
+    │  {
+    │    "message": "URL-path is not bound to any endpoint function",
+    │    "error": "'OpenID4VP/.well-known/jar-issuer' not bound to any function",
+    │    "error_id": "urn:uuid:0e65ff9e-6902-4727-ac64-3adc68de8db8"
+    │  }
+    │
+    ▼
+CLIENT (Wallet)
+    └─ Receive 400 Error
+       └─ Cannot get verifier's public key
+       └─ Cannot verify authorization request signature
+       └─ Cannot proceed with presentation flow
+```
+
+## Diagram 8: Component Interaction Map
+
+```
+                                 ┌─────────────────────┐
+                                 │   WALLET (CLIENT)   │
+                                 │  IT-Wallet Instance │
+                                 └──────────┬──────────┘
+                                            │
+                  ┌─────────────────────────┼─────────────────────────┐
+                  │                         │                         │
+                  │                         │                         │
+        ┌─────────▼──────────┐   ┌──────────▼──────────┐   ┌──────────▼──────┐
+        │ TRUST DISCOVERY    │   │ CREDENTIAL FLOW     │   │ PRESENTATION    │
+        │ (Before Using)     │   │                     │   │ FLOW            │
+        └─────────┬──────────┘   └──────────┬──────────┘   └──────────┬──────┘
+                  │                         │                         │
+                  │                         │                         │
+        ┌─────────▼──────────────────────────────────────────────────┬──────┐
+        │                    SATOSA IAM Proxy                         │      │
+        │                                                             │      │
+        │  ┌─ FRONTEND: OpenID4VCI (ISSUER)                          │      │
+        │  │  Paths:                                                 │      │
+        │  │  ├─ /.well-known/openid-credential-issuer ✓            │      │
+        │  │  ├─ /.well-known/oauth-authorization-server ✓          │      │
+        │  │  ├─ /.well-known/openid-federation ✓                   │      │
+        │  │  ├─ /.well-known/jwt-vc-issuer ❌ MISSING ◄─────────────┤──────┤ ERROR 1
+        │  │  ├─ /authorize ✓                                       │      │
+        │  │  ├─ /token ✓                                           │      │
+        │  │  └─ /credential ✓                                      │      │
+        │  │                                                         │      │
+        │  │  Upstream: SAML2/CIE/SPID backends                     │      │
+        │  │            (User authentication)                       │      │
+        │  │                                                         │      │
+        │  └─ BACKEND: OpenID4VP (VERIFIER)                         │      │
+        │     Paths:                                                │      │
+        │     ├─ /request-uri ✓                                     │      │
+        │     ├─ /response-uri ✓                                    │      │
+        │     ├─ /status ✓                                          │      │
+        │     ├─ /.well-known/jar-issuer ❌ MISSING ◄───────────────┤──────┤ ERROR 2
+        │     ├─ /.well-known/openid-configuration ❌ MISSING       │      │
+        │     └─ /.well-known/openid-federation ❌ MISSING          │      │
+        │                                                            │      │
+        │     Upstream: FRONTEND:OpenID4VCI                          │      │
+        │               (Credential extraction)                     │      │
+        │                                                            │      │
+        └─────────────────────────────────────────────────────────┬─┘      │
+                                                                  │         │
+                                                    ┌─────────────▼────────┘
+                                                    │
+                                         ┌──────────▼──────────┐
+                                         │  TRUST ANCHOR       │
+                                         │  (Federation)       │
+                                         │                     │
+                                         │  Metadata provider  │
+                                         └─────────────────────┘
+```
+
+## Diagram 9: Configuration State
+
+```
+CURRENT STATE:
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    proxy_conf.yaml                              │
+│                                                                 │
+│  BACKEND_MODULES:                                               │
+│  ├─ pyeudiw_backend.yaml (OpenID4VP) ✓                         │
+│  │  └─ Endpoints: 5 basic endpoints, no well-known             │
+│  │  └─ Trust handlers: federation + x509 (direct disabled)     │
+│  │                                                             │
+│  FRONTEND_MODULES:                                              │
+│  ├─ openid4vci_frontend.yaml (OpenID4VCI) ✓                    │
+│  │  └─ Endpoints: ~15 endpoints, 3 well-known ✓               │
+│  │  └─ Well-known paths: credential-issuer, oauth, federation │
+│  │  └─ MISSING: jwt-vc-issuer                                 │
+│  │                                                             │
+│  └─ NOTE: No openid4vp_frontend.yaml                           │
+│     └─ (OpenID4VP is backend-only)                            │
+│                                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+REQUIRED STATE:
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    proxy_conf.yaml                              │
+│                                                                 │
+│  BACKEND_MODULES:                                               │
+│  ├─ pyeudiw_backend.yaml (OpenID4VP) ✓                         │
+│  │  └─ Endpoints: 5 + well-known endpoints                    │
+│  │     ├─ /.well-known/jar-issuer (new)                       │
+│  │     ├─ /.well-known/openid-configuration (new)             │
+│  │     └─ /.well-known/openid-federation (new?)               │
+│  │  └─ Trust handlers: federation + x509 (+ direct enabled?)  │
+│  │                                                             │
+│  FRONTEND_MODULES:                                              │
+│  ├─ openid4vci_frontend.yaml (OpenID4VCI) ✓                    │
+│  │  └─ Endpoints: current 15 + well-known additions           │
+│  │     └─ /.well-known/jwt-vc-issuer (new)                    │
+│  │  └─ Trust handlers: federation + x509 (+ direct enabled?)  │
+│  │                                                             │
+│  └─ openid4vp_frontend.yaml (NEW?)                             │
+│     └─ If OpenID4VP also needs frontend behavior              │
+│     └─ (Unlikely - should stay backend-only)                  │
+│                                                                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+End of Flow Diagrams

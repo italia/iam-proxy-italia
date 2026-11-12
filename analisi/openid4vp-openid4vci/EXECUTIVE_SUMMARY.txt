@@ -1,0 +1,246 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║       IAM PROXY ITALIA - OpenID4VP/OpenID4VCI DEBUGGING INVESTIGATION    ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Date: 2026-11-12 20:16 UTC+1
+Status: ✓ INVESTIGATION COMPLETE - Ready for Implementation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CRITICAL ISSUES IDENTIFIED
+
+Error 1: .well-known/jwt-vc-issuer/OpenID4VCI [HIGH]
+         Location: OpenID4VCI Frontend
+         Impact: External parties cannot validate issued credentials
+         
+Error 2: OpenID4VP/.well-known/jar-issuer [CRITICAL]
+         Location: OpenID4VP Backend  
+         Impact: BLOCKS credential presentation flow entirely
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ROOT CAUSE
+
+Missing well-known metadata endpoints in SATOSA configuration.
+The code exists in pyeudiw library but isn't registered as endpoints.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INVESTIGATION DELIVERABLES
+
+📄 README.md
+   → START HERE: Navigation guide for all documents
+   → Reading recommendations by role
+   → FAQ section with answers
+
+📊 INVESTIGATION_SUMMARY.md  [15-20 min read]
+   → Executive overview of findings
+   → Key findings: 2 critical issues
+   → Root cause analysis
+   → Impact assessment
+   → Recommended solutions
+   ★ BEST FOR: Decision makers, project leads
+
+🔍 openid4vp_openid4vci_debug_analysis.md  [30-45 min read]
+   → Detailed technical analysis
+   → Architecture breakdown
+   → Backend/frontend configurations
+   → Trust handler status
+   → Configuration gaps enumerated
+   ★ BEST FOR: System engineers, architects
+
+🚀 request_tracing_guide.md  [20-30 min read]
+   → Per-request error analysis
+   → Client behavior analysis
+   → Path routing breakdown
+   → Expected vs actual behavior
+   ★ BEST FOR: Debuggers, QA, security analysts
+
+📈 flow_diagrams.txt  [15-25 min read]
+   → 9 detailed ASCII flow diagrams
+   → Issuance flow, presentation flow
+   → Error flows, routing logic
+   → Component interaction map
+   ★ BEST FOR: Visual learners, architects
+
+⚙️  DEBUGGING_COMMANDS.md  [10-15 min reference]
+   → 100+ practical commands
+   → Endpoint testing
+   → Log inspection
+   → Network tracing
+   → Health check script
+   ★ BEST FOR: Operators, support, QA
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMPONENT STATUS
+
+OpenID4VCI Frontend (Issuer)
+  ✓ Credential issuance working
+  ✓ 3 well-known endpoints present
+  ✗ Missing: .well-known/jwt-vc-issuer
+  Priority: HIGH
+
+OpenID4VP Backend (Verifier)  
+  ✓ Presentation flow operational (partial)
+  ✗ Missing: .well-known/jar-issuer
+  ✗ Missing: .well-known/openid-configuration
+  ✗ Missing: .well-known/openid-federation
+  Priority: CRITICAL
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AFFECTED FLOWS
+
+Credential Issuance (OpenID4VCI):
+  ├─ Wallet: Can issue ✓
+  ├─ Wallet: Can receive ✓
+  └─ Verifier: Cannot validate ✗ (can't find issuer's JWK)
+
+Credential Presentation (OpenID4VP):
+  ├─ Wallet: Blocked at trust discovery ✗ (can't find verifier's JWK)
+  ├─ Verifier: Endpoint unreachable ✗
+  └─ Result: Flow fails completely ✗
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECOMMENDED SOLUTION
+
+Solution 1: Add Missing Well-Known Endpoints [PRIORITY: CRITICAL]
+
+  Files to modify:
+  1. Docker-compose/iam-proxy-italia-project/conf/backends/pyeudiw_backend.yaml
+  2. Docker-compose/iam-proxy-italia-project/conf/frontends/openid4vci_frontend.yaml
+  3. iam-proxy-italia-project/conf/backends/pyeudiw_backend.yaml (sync)
+  4. iam-proxy-italia-project/conf/frontends/openid4vci_frontend.yaml (sync)
+
+  Endpoints to add:
+  - Backend OpenID4VP:
+    └─ /.well-known/jar-issuer
+  - Frontend OpenID4VCI:
+    └─ /.well-known/jwt-vc-issuer
+
+  Expected implementation time: 1-2 hours
+  Expected testing time: 1-2 hours
+
+  For detailed instructions, see: INVESTIGATION_SUMMARY.md
+  For practical commands, see: DEBUGGING_COMMANDS.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK REFERENCE
+
+"I need to understand the issues"
+  → Read: INVESTIGATION_SUMMARY.md (5 min)
+
+"I need to trace a specific error"
+  → Read: request_tracing_guide.md (10 min)
+
+"I need to see the architecture visually"
+  → Read: flow_diagrams.txt (15 min)
+
+"I need to test or debug"
+  → Use: DEBUGGING_COMMANDS.md
+
+"I need to implement the fix"
+  → Read: INVESTIGATION_SUMMARY.md → "Recommended Solutions"
+
+"I'm not sure where to start"
+  → Read: README.md (navigation guide)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY STATISTICS
+
+Documents Created: 6
+Total Content: ~2,700 lines
+Total Size: ~100 KB
+Analysis Depth: Comprehensive (architecture → request → error)
+Code Coverage: Backend + Frontend + Trust handlers
+Test Commands: 50+
+Diagrams: 9
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TESTING VERIFICATION
+
+After implementing the fix, use these tests:
+
+1. Health Check Script
+   → DEBUGGING_COMMANDS.md → "Automation: Quick Health Check"
+   → Verifies all endpoints respond correctly
+
+2. Flow Tests
+   → Credential issuance flow (end-to-end)
+   → Credential presentation flow (end-to-end)
+
+3. Log Inspection
+   → Verify no more ".well-known not bound" errors
+   → Confirm endpoints are registered
+
+Expected Result: All tests pass, flows work correctly
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEXT STEPS
+
+1. ☐ Read README.md (5 minutes)
+   → Get oriented with document structure
+
+2. ☐ Read INVESTIGATION_SUMMARY.md (15 minutes)
+   → Understand what's wrong and why
+
+3. ☐ Read flow_diagrams.txt (optional, 15 minutes)
+   → Visual understanding of architecture
+
+4. ☐ Plan implementation (30 minutes)
+   → Review configuration files
+   → Prepare changes
+
+5. ☐ Implement solution (1-2 hours)
+   → Add endpoints to YAML files
+   → Verify syntax
+   → Rebuild containers
+
+6. ☐ Test solution (1-2 hours)
+   → Run health check
+   → Complete end-to-end flows
+   → Verify logs
+
+7. ☐ Deploy (varies)
+   → Push to production
+   → Monitor for issues
+
+Total Estimated Time: 4-7 hours (including testing)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SUPPORT
+
+Questions? Check:
+1. README.md → FAQ section
+2. INVESTIGATION_SUMMARY.md → Key sections
+3. DEBUGGING_COMMANDS.md → Test your environment
+4. flow_diagrams.txt → Visual reference
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INVESTIGATION METADATA
+
+Date Started:     2026-11-12
+Date Completed:   2026-11-12
+Investigation ID: openid4vp-openid4vci-wellknown-endpoints
+Status:           ✓ COMPLETE
+Quality Level:    Comprehensive (Architecture → Implementation → Testing)
+Scope:            Error tracing, root cause, solution design
+Next Phase:       Implementation & Testing
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generated by: AI Assistant using Copilot SDK in VS Code
+Repository: italia/iam-proxy-italia
+Scope: Local investigation + session artifacts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

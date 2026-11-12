@@ -29,6 +29,7 @@ iam-proxy-italia  |   TIME_FORMAT_WITH_FRAGMENT = re.compile("^(\d{4,4}-\d{2,2}-
 
 - [2026-11-12 16:01:40] [ERROR]: [urn:uuid:8e9cd267-4a87-4407-9e1b-942390ee2bc3] {'message': 'URL-path is not bound to any endpoint function', 'error': "'.well-known/jwt-vc-issuer/OpenID4VCI' not bound to any function", 'error_id': 'urn:uuid:8ba07fa4-3c53-42f0-b5ad-a1f8669bedfd'} [satosa.base.run:320]
 
+iam-proxy-italia  | [2026-11-12 20:11:11] [ERROR]: [urn:uuid:44f67cf7-14c1-4f36-a1da-ea243dd36433] {'message': 'URL-path is not bound to any endpoint function', 'error': "'OpenID4VP/.well-known/jar-issuer' not bound to any function", 'error_id': 'urn:uuid:0e65ff9e-6902-4727-ac64-3adc68de8db8'} [satosa.base.run:320]
 
 
 - WARNING:pyeudiw.trust.dynamic:No evaluation type found for handler DirectTrustSdJwtVc
