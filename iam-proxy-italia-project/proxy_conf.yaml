@@ -123,7 +123,7 @@ LOGGING:
       handlers: [console]
       propagate: no
     pyeudiw:
-      level: DEBUG
+      level: INFO
       formatter: simple
       handlers: [console]
       propagate: no

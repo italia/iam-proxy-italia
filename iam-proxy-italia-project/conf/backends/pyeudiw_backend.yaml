@@ -254,7 +254,7 @@ config:
         authority_hints:
             - http://trust-anchor.example.org:5002
         trust_anchors:
-            - http://trust-anchor.example.org:5002:
+            - http://trust-anchor.example.org:5002
             - https://trust-anchor.example.org:
               - kty: EC
                 use: sig

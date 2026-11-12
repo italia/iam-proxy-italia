@@ -29,31 +29,12 @@ iam-proxy-italia  |   TIME_FORMAT_WITH_FRAGMENT = re.compile("^(\d{4,4}-\d{2,2}-
 
 - [2026-11-12 16:01:40] [ERROR]: [urn:uuid:8e9cd267-4a87-4407-9e1b-942390ee2bc3] {'message': 'URL-path is not bound to any endpoint function', 'error': "'.well-known/jwt-vc-issuer/OpenID4VCI' not bound to any function", 'error_id': 'urn:uuid:8ba07fa4-3c53-42f0-b5ad-a1f8669bedfd'} [satosa.base.run:320]
 
+
+
 - WARNING:pyeudiw.trust.dynamic:No evaluation type found for handler DirectTrustSdJwtVc
 - WARNING:pyeudiw.trust.dynamic:No evaluation type found for handler DirectTrustJar
 - WARNING:pyeudiw.trust.handler.federation:Cannot fetch metadata for issuer https://iam-proxy-italia.example.org/OpenID4VCI: HTTPSConnectionPool(host='iam-proxy-italia.example.org', port=443): Read timed out. (read timeout=4)
 
 
 - Non riesco a inviare i dati: Exception :Errore ritornato dall'endpoint https://iam-proxy-italia.example.org/OpenID4VP/request-uri?client_id=openid_federation%3Ahttps%3A%2F%2Fiam-proxy-italia.example.org%2FOpenID4VP&request_uri=https%3A%2F%2Fiam-proxy-italia.example.org%2FOpenID4VP%2Frequest-uri&request_uri_method=get&state=fde82b77-cd62-4c0e-a7b3-1b25dd94715a: invalid_request - request error: request object already issued (HTTP Status code: 400). -> investigare, consentirlo
-
-- iam-proxy-italia  | ERROR:pyeudiw.tools.base_logger:[urn:uuid:0282fcf9-1aa3-4b9c-a633-cd925eaee04d] invalid_request: ValidationError: Error parsing token at position: Failed to retrieve status list token: HTTP error: 400 -- Bad Request. invalid DCQL response: validation error ... pare essere riferito ad un errore di status list endpoint -> iam-proxy-italia  | ERROR:root:Error parsing token for credential 'IT-Wallet ID'
-iam-proxy-italia  | Traceback (most recent call last):
-iam-proxy-italia  |   File "/.venv/lib/python3.12/site-packages/pyeudiw/status_list/helper.py", line 182, in from_status
-iam-proxy-italia  |     status_token = http_get_sync([uri], httpc_params)
-iam-proxy-italia  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-iam-proxy-italia  |   File "/.venv/lib/python3.12/site-packages/pyeudiw/tools/http.py", line 90, in http_get_sync
-iam-proxy-italia  |     raise HttpError(f"HTTP error: {r.status_code} -- {r.reason}")
-iam-proxy-italia  | pyeudiw.tools.exceptions.HttpError: HTTP error: 400 -- Bad Request
-iam-proxy-italia  | 
-iam-proxy-italia  | During handling of the above exception, another exception occurred:
-iam-proxy-italia  | 
-iam-proxy-italia  | Traceback (most recent call last):
-iam-proxy-italia  |   File "/.venv/lib/python3.12/site-packages/pyeudiw/duckle_ql/handler.py", line 134, in validate
-iam-proxy-italia  |     parser.validate(
-iam-proxy-italia  |   File "/.venv/lib/python3.12/site-packages/pyeudiw/satosa/backends/openid4vp/vp_sd_jwt_vc.py", line 100, in validate
-iam-proxy-italia  |     status_list = StatusListTokenHelper.from_status(status)
-iam-proxy-italia  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-iam-proxy-italia  |   File "/.venv/lib/python3.12/site-packages/pyeudiw/status_list/helper.py", line 184, in from_status
-iam-proxy-italia  |     raise StatusListRetrievalError(f"Failed to retrieve status list token: {e}")
-iam-proxy-italia  | pyeudiw.status_list.exceptions.StatusListRetrievalError: Failed to retrieve status list token: HTTP error: 400 -- Bad Request
 
