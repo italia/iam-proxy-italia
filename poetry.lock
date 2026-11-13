@@ -2655,7 +2655,7 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pyeudiw"
-version = "2.4.0"
+version = "2.5.0"
 description = "Python toolchain for building an OpenID4VP RP with a SATOSA backend compliant to the Italian Wallet Solution."
 optional = false
 python-versions = "*"
