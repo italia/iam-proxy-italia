@@ -51,6 +51,10 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.oauth_authorization_server_metadata_endpoint
       class: OauthAuthorizationServerMetadataHandler
       path: '.well-known/oauth-authorization-server'
+    jwt_vc_issuer:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.jwt_vc_issuer_endpoint
+      class: JwtVcIssuerMetadataHandler
+      path: '/.well-known/jwt-vc-issuer'
     metadata:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.metadata_endpoint
       class: MetadataHandler

@@ -32,6 +32,10 @@ config:
       module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
       class: GetResponseHandler
       path: /redirect-uri
+    jar_issuer:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.jar_issuer_endpoint
+      class: JarIssuerMetadataHandler
+      path: /.well-known/jar-issuer
 
   qrcode:
     size: 250 # px

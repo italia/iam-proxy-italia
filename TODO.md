@@ -8,9 +8,7 @@ iam-proxy-italia  | ERROR:pyeudiw.tools.base_logger:[urn:uuid:971ac49d-b048-4980
 
 - il tasto richiedi nuova credenziale (perché rilevata come scaduta in presentazione) deve fare redirect sulla pagina di emissione
 
-- quando accedi alla sezione attestati ottenuti, rileva gli attestati scaduti e marcali come tali. Nel menu a sinistra aggiungi l'icona del triangolo di warning
-
-- il parametro di config del nonce_duration è stato riposizionato, prima era coem se dovesse stare nella root del config. Rilevare tutti gli altri parametri che dvrebbero stare in un contesto specifico piuttosto che nella root
+-in iam-proxy-italia openid4vci frontend, il parametro di config del nonce_duration è stato riposizionato, prima era coem se dovesse stare nella root del config. Rilevare tutti gli altri parametri che dvrebbero stare in un contesto specifico piuttosto che nella root
 
 - iam-proxy-italia  | WARNING:pyeudiw.trust.dynamic:No evaluation type found for handler X509Handler (in pyeudiw/trust/dynamic.py:240)
 
