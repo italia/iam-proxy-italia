@@ -59,7 +59,7 @@ attributes:
     openid: [email_verified]
   familyname:
     saml: [familyName, familyname, FamilyName]
-    openid: [given_name]
+    openid: [family_name]
 
   fiscalnumber:
     saml: [fiscalNumber, fiscalnumber, FiscalNumber]

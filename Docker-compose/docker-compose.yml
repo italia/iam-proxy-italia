@@ -8,6 +8,7 @@ services:
       - wallet
     image: mongo
     container_name: satosa-mongo
+    restart: "no"
     environment:
       MONGO_INITDB_DATABASE: oidcop
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_DBUSER:-satosa}"
@@ -34,6 +35,7 @@ services:
       - mongoexpress
     image: mongo-express
     container_name: satosa-mongo-express
+    restart: "no"
     ports:
       - 8082:8081
     depends_on:
@@ -68,6 +70,7 @@ services:
       satosa-nginx:
         condition: service_started
     container_name: django_sp
+    restart: "no"
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
     volumes:
@@ -78,7 +81,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.5.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.6.0
     # Build the local Dockerfile when this tag is not on the registry.
     pull_policy: build
     build:
@@ -87,6 +90,7 @@ services:
             - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
+    restart: "no"
     depends_on:
         trust-anchor:
           condition: service_healthy
@@ -116,14 +120,12 @@ services:
       - SATOSA_BASE_STATIC=${SATOSA_BASE}/static
       - SATOSA_DISCO_SRV=${SATOSA_BASE_STATIC}/disco.html
       - SATOSA_UNKNOW_ERROR_REDIRECT_PAGE=${SATOSA_BASE_STATIC}/error_page.html
-      # CONFIGURATION ENDPOINT (defaults from env.example when void)
-      - FEDERATION_RESOLVE_ENDPOINT=${FEDERATION_RESOLVE_ENDPOINT:-resolve}
+      # CONFIGURATION ENDPOINT (defaults from env.example when void).
+      # CIE OIDC path segments (resolve, policy, jwks, callback) live in
+      # cieoidc_backend.yaml as <base_url>/<name>/... literals. SATOSA does not
+      # expand ${VAR} inside YAML strings. OPENID_RP_CALLBACK_URI is unused.
       - SAMPLE_CIE_LOGO_URI=${SATOSA_BASE_STATIC}/${SAMPLE_CIE_LOGO_URI:-cie/sample-cie-logo.png}
-      - FEDERATION_LEGAL_INFORMATION_URI=${FEDERATION_LEGAL_INFORMATION_URI:-en/website/legal-information}
       - OPENID_RP_CLIENT_ID=${OPENID_RP_CLIENT_ID:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/CieOidcRp}
-      - OPENID_RP_JWKS_URI=${OPENID_RP_JWKS_URI:-openid_relying_party/jwks.json}
-      - OPENID_RP_SIGNED_JWKS_URI=${OPENID_RP_SIGNED_JWKS_URI:-openid_relying_party/jwks.jose}
-      - OPENID_RP_CALLBACK_URI=${OPENID_RP_CALLBACK_URI:-oidc/callback}
       # END CONFIGURATION ENDPOINT
       # MongoDB: four component-specific env sets (CIE OIDC backend, OpenID4VP backend, oidcop frontend, OpenID4VCI frontend).
       # For single MongoDB, set MONGO_URL/MONGO_PORT/MONGO_DBUSER/MONGO_DBPASSWORD; component vars fall back to these.
@@ -200,7 +202,10 @@ services:
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
     networks:
-      - iam-proxy-italia
+      iam-proxy-italia:
+        aliases:
+          - ${CREDENTIAL_ISSUER_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+
     healthcheck:
       test: ["CMD", "sh", "pyeudiw-healthcheck.sh"]
       interval: 30s
@@ -211,6 +216,7 @@ services:
   satosa-nginx:
     image: nginx:alpine
     container_name: satosa-nginx
+    restart: "no"
     depends_on:
       iam-proxy-italia:
         condition: service_started
@@ -239,6 +245,7 @@ services:
       - saml2
     image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
+    restart: "no"
     ports:
       - "8443:8443"
     networks:
@@ -273,7 +280,6 @@ services:
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
     ports:
       - "5002:5002"
     volumes:
@@ -311,7 +317,7 @@ services:
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8002:8002"
     volumes:
@@ -391,7 +397,7 @@ services:
     container_name: relying-party-demo
     working_dir: /rp-demo-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
+    restart: "no"
     build:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
@@ -428,13 +434,15 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.2-1
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.1.0
     container_name: wallet-instance-demo
+    restart: "no"
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
       - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/application/config:rw"
       - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
+      # - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/application/app:rw"
     environment:
       CONFIG_DIR: /application/config
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
@@ -451,7 +459,7 @@ services:
       DEMO_WALLET_INSTANCE_HOSTNAME: ${DEMO_WALLET_INSTANCE_HOSTNAME:-demo-wi.example.org}
       WALLET_INSTANCE_PORT: ${WALLET_INSTANCE_PORT:-8080}
       OPENID_CIE_PROVIDER_URL: ${OPENID_CIE_PROVIDER_URL:-http://cie-provider.example.org:8002/oidc/op}
-      CREDENTIAL_ISSUER_URLS: ${CREDENTIAL_ISSUER_URLS:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+      CREDENTIAL_ISSUER_URL: ${CREDENTIAL_ISSUER_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
       OAUTH_AUTHORIZATION_SERVER: ${OAUTH_AUTHORIZATION_SERVER:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       EUDIW_LOTL_URL: ${EUDIW_LOTL_URL:-https://trustedlist.serviceproviders.eudiw.dev/LOTL/01.xml}
     networks:

@@ -122,8 +122,8 @@ LOGGING:
       formatter: simple
       handlers: [console]
       propagate: no
-    pyeudiw.satosa.backend:
-      level: DEBUG
+    pyeudiw:
+      level: INFO
       formatter: simple
       handlers: [console]
       propagate: no

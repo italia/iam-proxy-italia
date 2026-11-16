@@ -45,8 +45,10 @@ For demos (e.g. local or custom domain), you can set the leaf FQDN in two ways:
 Then:
 
 - Paste the printed **CA** into `certificate_authorities` in your backend or frontend YAML.
-- Paste the three cert blocks (leaf, intermediate, root) into `leaf_certificate_chains_by_ca` under the same CA key (e.g. `ca.example.com`).
+- Paste the leaf and intermediate cert blocks into `leaf_certificate_chains_by_ca` under the same CA key (e.g. `ca.example.com`). The root CA is optional there because it is already in `certificate_authorities`.
 - Set **client_id** (backend) or **issuer_id** (frontend) to `x509_san_dns:<your-leaf-fqdn>`, e.g. `x509_san_dns:my-demo.example.com`.
+
+Omitting the root requires a pyeudiw version that supports root-omitted configuration. The version currently pinned by this project requires the root in the chain.
 
 The leaf certificate will have Subject CN and SAN DNS equal to the FQDN you used; the trust handler expects `client_id`/`issuer_id` to match that value.
 

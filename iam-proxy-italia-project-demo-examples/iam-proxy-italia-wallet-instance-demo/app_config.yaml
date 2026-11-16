@@ -32,7 +32,7 @@ wallet_instance:
   certification: https://registry.example.org
   oauth_authorization_server: !ENV OAUTH_AUTHORIZATION_SERVER
 
-credential_issuers: !ENV CREDENTIAL_ISSUER_URLS
+credential_issuers: !ENV CREDENTIAL_ISSUER_URL
 eudiw_lotl: !ENV EUDIW_LOTL_URL
 
 ms_trust_configuration:

@@ -32,6 +32,10 @@ config:
       module: pyeudiw.satosa.backends.openid4vp.endpoints.get_response_endpoint
       class: GetResponseHandler
       path: /redirect-uri
+    jar_issuer:
+      module: pyeudiw.satosa.backends.openid4vp.endpoints.jar_issuer_endpoint
+      class: JarIssuerMetadataHandler
+      path: /.well-known/jar-issuer
 
   qrcode:
     size: 250 # px
@@ -41,9 +45,6 @@ config:
 
   response_code:
     sym_key: "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" # hex string of 64 characters
-
-  security:
-    wallet_attestation_required: true # enable wallet attestation interoperability; if missing it will be set to true by default
 
   jwt:
     default_sig_alg: ES256 # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
@@ -71,8 +72,7 @@ config:
     auth_iss_id: # this field if not set will be set to client_id in the authz request
     url_scheme: haip-vp
     scopes:
-    - pid-sd-jwt:unique_id+given_name+family_name
-    default_acr_value: https://www.spid.gov.it/SpidL2
+    - urn:it-wallet:eid:1
     expiration_time: 2 # minutes
     aud: https://self-issued.me/v2
     response_mode: direct_post.jwt
@@ -229,21 +229,21 @@ config:
             dcql_query: *dcql_query
 
   trust:
-    direct_trust_sd_jwt_vc:
-      module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
-      class: DirectTrustSdJwtVc
-      config:
-        cache_ttl: 0
-        httpc_params: *httpc_params
-        jwk_endpoint: /.well-known/jwt-vc-issuer
-    direct_trust_jar:
-      module: pyeudiw.trust.handler.direct_trust_jar
-      class: DirectTrustJar
-      config:
-        cache_ttl: 0
-        httpc_params: *httpc_params
-        jwk_endpoint: /.well-known/jar-issuer
-        jwks: *metadata_jwks
+    # direct_trust_sd_jwt_vc:
+    #  module: pyeudiw.trust.handler.direct_trust_sd_jwt_vc
+    #  class: DirectTrustSdJwtVc
+    #  config:
+    #    cache_ttl: 0
+    #    httpc_params: *httpc_params
+    #    jwk_endpoint: /.well-known/jwt-vc-issuer
+    # direct_trust_jar:
+    #   module: pyeudiw.trust.handler.direct_trust_jar
+    #   class: DirectTrustJar
+    #   config:
+    #     cache_ttl: 0
+    #     httpc_params: *httpc_params
+    #     jwk_endpoint: /.well-known/jar-issuer
+    #     jwks: *metadata_jwks
     federation:
       module: pyeudiw.trust.handler.federation
       class: FederationHandler
@@ -258,13 +258,9 @@ config:
         authority_hints:
             - http://trust-anchor.example.org:5002
         trust_anchors:
-            - http://trust-anchor.example.org:5002:
-              -
-            - https://trust-anchor.edu:
-              -
+            - http://trust-anchor.example.org:5002
             - https://trust-anchor.example.org:
               - kty: EC
-                d: WbhdFpNhUTQ7gfh8XUQzMfe8JPVAKAh4qCfHRMqyQE8
                 use: sig
                 crv: P-256
                 kid: 4_6lPScdml0BplAsv8RO0u7B2XnrvusAMpFWNI_QJco
@@ -293,75 +289,62 @@ config:
       config:
         client_id: !ENV PYEUDIW_X509_CLIENT_ID # e.g. "x509_san_dns:iam-proxy-italia.example.org"; must match leaf cert SAN DNS
         certificate_authorities:
-          ca.example.com: |
+          trust-anchor.example.com: |
             -----BEGIN CERTIFICATE-----
-            MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
-            XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-            hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-            MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
-            ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-            LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-            KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
-            xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
-            AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-            cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-            YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
-            PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
-            WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
+            MIICkzCCAjigAwIBAgIUGY/4Yx8tPYeFiitmO9Otisucj8MwCgYIKoZIzj0EAwIw
+            aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+            VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+            RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMGkxITAf
+            BgNVBAMMGHRydXN0LWFuY2hvci5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxIjAg
+            BgkqhkiG9w0BCQEWE2luZm9AY2EuZXhhbXBsZS5jb20xEzARBgNVBAoMCkV4YW1w
+            bGUgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQcwyP/IWz8kcypK7AVo15h
+            bdbSe/84L5TNJ9TXJTwF312BhYiA6exI39Nhrzg6BLgLT7wtPQzGxJnscFdzo0pd
+            o4G9MIG6MBIGA1UdEwEB/wQIMAYBAf8CAQEwPgYDVR0fBDcwNTAzoDGgL4YtaHR0
+            cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5jb20veDUwOS9jcmwucGVtMEUGA1Ud
+            EQQ+MDyGIGh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tghh0cnVzdC1h
+            bmNob3IuZXhhbXBsZS5jb20wHQYDVR0OBBYEFP25OKBsmZ93YN52B9ueyGxKaIcr
+            MAoGCCqGSM49BAMCA0kAMEYCIQCFuG41DjlilJOhsf7DvuPGlxJAV/+uR/mnO2eC
+            fLGRbQIhAJSwlAjbx6j80cyIw0bS3x/fq/rymWXaui6nzSM+7VeB
             -----END CERTIFICATE-----
-        leaf_certificate_chains_by_ca: # X.509 chains in PEM format (leaf FQDN: iam-proxy-italia.example.org). Leaf MUST match metadata_jwks[0]
-          ca.example.com:
+
+        leaf_certificate_chains_by_ca: # X.509 chains in PEM format (leaf first, FQDN: iam-proxy-italia.example.org). Leaf MUST match metadata_jwks[0]
+          trust-anchor.example.com:
             - |
               -----BEGIN CERTIFICATE-----
-              MIICpzCCAk2gAwIBAgIUICY5d3bzoF3Hai0jckK5OcxS5oYwCgYIKoZIzj0EAwIw
+              MIICsjCCAlegAwIBAgIUG1ZGgDWs+Ds/ElPPxBx/zM+0D0owCgYIKoZIzj0EAwIw
               fTEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
               VDEsMCoGCSqGSIb3DQEJARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20x
-              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MDMwOTE2NDk0NloX
-              DTI3MDMxMDE2NDk0NlowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
+              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MTExMTE3MDQ1MVoX
+              DTI3MTExMjE3MDQ1MVowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
               bXBsZS5vcmcxCzAJBgNVBAYTAklUMTAwLgYJKoZIhvcNAQkBFiFpbmZvQGlhbS1w
               cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcxHjAcBgNVBAoMFUlBTSBQcm94eSBJdGFs
               aWEgTGVhZjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEOOhQ5ITI3sGSD/aj/G
               SmSD/mRHpnLb48Xj9Jd71hzCIT7lsGxdJewmonk9l1/TAVYx/nixydTtI1Sbn0Lk
-              fECjgaAwgZ0wDAYDVR0TAQH/BAIwADBNBgNVHREERjBEhiRodHRwczovL2lhbS1w
-              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmeCHGlhbS1wcm94eS1pdGFsaWEuZXhhbXBs
-              ZS5vcmcwHQYDVR0OBBYEFEgF7Z+nzUlaMeDcOaS5mwDrxiEnMB8GA1UdIwQYMBaA
-              FKVyVQwLn0dMCkkI0mTl/1n8KEuLMAoGCCqGSM49BAMCA0gAMEUCIHNLPGADAdt4
-              fKUa9XQPcjyg7zRfIxIwwRPElMoJHKw1AiEAufQOQKA9lm1hZZB1uquw04NihLOe
-              GENhnF/mdOC++kY=
+              fECjgaowgacwDAYDVR0TAQH/BAIwADBXBgNVHREEUDBOhi5odHRwczovL2lhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcvb3BlbmlkNHZwghxpYW0tcHJveHktaXRh
+              bGlhLmV4YW1wbGUub3JnMB0GA1UdDgQWBBRIBe2fp81JWjHg3DmkuZsA68YhJzAf
+              BgNVHSMEGDAWgBQAQjHNeKJgv+bnzrP9EduPr7vNrzAKBggqhkjOPQQDAgNJADBG
+              AiEAz86WH9tnm372Qn4GS8rnECFAT33RuA2+BiM9oIGD0OgCIQDT6+aK6wymR9X3
+              niZlMvRKdAVNfNzmO4+ufB9z/Iu3ng==
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICfDCCAiOgAwIBAgIUEuIRQvo3vS+MMm2By3wQsFDuOaUwCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowfTEhMB8GA1UEAwwYaW50
-              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJVDEsMCoGCSqGSIb3DQEJ
-              ARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20xHTAbBgNVBAoMFEV4YW1w
-              bGUgSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAD/Ms8fX
-              XwDLr7Lome68ZCRmEyc31bMvnvj5Mpc4NyrljxK0My/Xb1HmM68JXRchJPe6v5/q
-              vYM0IpKi85pDfKOBnjCBmzASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdEQQ+MDyG
-              IGh0dHBzOi8vaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tghhpbnRlcm1lZGlhdGUu
-              ZXhhbXBsZS5jb20wHQYDVR0OBBYEFKVyVQwLn0dMCkkI0mTl/1n8KEuLMB8GA1Ud
-              IwQYMBaAFPxUYnyLWqJnm+vN3UpxiT8yH6ILMAoGCCqGSM49BAMCA0cAMEQCIAjv
-              TXF9zSk4ztvBQweeWRCMB+nWC6ypHVBRz4lPxb7EAiAq+WtiKSY9AXZevTDYgZ1U
-              DH3lMQJPlpJNP0CwLYq6YQ==
+              MIIChjCCAi2gAwIBAgIUT5v1hMoi1C+GMG9Y5j+UAr0PtmwwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMH0xITAf
+              BgNVBAMMGGludGVybWVkaWF0ZS5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxLDAq
+              BgkqhkiG9w0BCQEWHWluZm9AaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMR0wGwYD
+              VQQKDBRFeGFtcGxlIEludGVybWVkaWF0ZTBZMBMGByqGSM49AgEGCCqGSM49AwEH
+              A0IABOaMsxEI+als530HtHsLP6TqigWUmhmCUGEVNk3U69etkqOII+Mr5x61tTKO
+              9wJixK7A07YkD2TNxKWg3mlwNEmjgZ4wgZswEgYDVR0TAQH/BAgwBgEB/wIBADBF
+              BgNVHREEPjA8hiBodHRwczovL2ludGVybWVkaWF0ZS5leGFtcGxlLmNvbYIYaW50
+              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMB0GA1UdDgQWBBQAQjHNeKJgv+bnzrP9EduP
+              r7vNrzAfBgNVHSMEGDAWgBT9uTigbJmfd2DedgfbnshsSmiHKzAKBggqhkjOPQQD
+              AgNHADBEAiBteK6Yp6BysY+47VjSfLm9ueXzPF8c440BWMCBcngKQQIgGE2iwSRb
+              xZ99LPMVCc0XHu3PUrb9/MNjeAHY5rUxuMk=
               -----END CERTIFICATE-----
-            - |
-              -----BEGIN CERTIFICATE-----
-              MIICWTCCAgCgAwIBAgIUal3WAKPh7VmY3WTSPab7hEKlDiswCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE2NDk0NloXDTI3MDMxMDE2NDk0NlowXzEXMBUGA1UEAwwOY2Eu
-              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-              KoZIzj0DAQcDQgAESS5fghKoj+r5S9utM9XvDHahwqLlyL5uuY9r6QnRrykhcRwe
-              xv96JE/gm8rZi4FHt+x3ZjYWofnmbRc8S35RVKOBmTCBljASBgNVHRMBAf8ECDAG
-              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-              YW1wbGUuY29tMB0GA1UdDgQWBBT8VGJ8i1qiZ5vrzd1KcYk/Mh+iCzAKBggqhkjO
-              PQQDAgNHADBEAiBWjgrch74HqmdgnhqQNTgWJfmwLgtmXAyDhxtgjR9kYQIgfE8i
-              WbLkF43nVhI38TNZ37tzjO7KJhlJL9MYav7MMU4=
-              -----END CERTIFICATE-----
+
         private_keys: *metadata_jwks
 
   # Mongodb database configuration

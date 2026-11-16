@@ -98,6 +98,7 @@ function clean_data {
     rm -Rf ./djangosaml2_sp/*
     rm -Rf ./nginx/html/static
     rm -Rf ./spid_cie_oidc_django/*
+    rm -Rf ./wallet-instance-demo/*
 
 #    rm -Rf ./certbot/live/localhost/*
 #    rm -Rf ./certbot/live/${SATOSA_HOSTNAME}/*

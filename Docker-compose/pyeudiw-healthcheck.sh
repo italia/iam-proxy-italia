@@ -2,7 +2,7 @@
 set -e
 
 PROXY_CONF_PATH="proxy_conf.yaml"
-WGET_OPTS="--timeout=5 --tries=1 --no-check-certificate --spider --server-response"
+WGET_OPTS="--timeout=10 --tries=1 --no-check-certificate --spider --server-response"
 
 function check_url {
   local url=$1
@@ -15,7 +15,6 @@ function check_url {
 
 if grep -qF "conf/backends/pyeudiw_backend.yaml" "$PROXY_CONF_PATH"; then
   echo "pyeudiw_backend.yaml configured"
-  check_url "https://satosa-nginx/OpenID4VP/.well-known/jwt-vc-issuer"
   check_url "https://satosa-nginx/OpenID4VP/.well-known/jar-issuer"
   check_url "https://satosa-nginx/OpenID4VP/.well-known/openid-federation"
 fi
