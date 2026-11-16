@@ -8,6 +8,7 @@ services:
       - wallet
     image: mongo
     container_name: satosa-mongo
+    restart: "no"
     environment:
       MONGO_INITDB_DATABASE: oidcop
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_DBUSER:-satosa}"
@@ -196,7 +197,7 @@ services:
     volumes:
       - ./iam-proxy-italia-project:/satosa_proxy:rwx
       - ./pyeudiw-healthcheck.sh:/satosa_proxy/pyeudiw-healthcheck.sh:ro
-      - ../../eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:ro
+      # - ../../eudi-wallet-it-python/pyeudiw:/.venv/lib/python3.12/site-packages/pyeudiw:ro
       # - iam-proxy-italia-data:/satosa_proxy # to be used for external volumes
     working_dir: /satosa_proxy
     entrypoint: "sh entrypoint.sh"
@@ -433,7 +434,7 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.2-1
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.1.0
     container_name: wallet-instance-demo
     restart: "no"
     ports:
@@ -441,7 +442,7 @@ services:
     volumes:
       - "${WALLET_INSTANCE_CONFIG_DIR:-./wallet-instance-demo/config}:/application/config:rw"
       - "${WALLET_INSTANCE_CERTS_DIR:-./wallet-instance-demo/certs}:/certs:ro"
-      - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/application/app:rw"
+      # - "${WALLET_INSTANCE_APP_DIR:-../../iam-proxy-italia-wallet-instance-demo/app}:/application/app:rw"
     environment:
       CONFIG_DIR: /application/config
       FLASK_RUN_HOST: ${FLASK_RUN_HOST:-0.0.0.0}
