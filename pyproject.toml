@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "Apache 2.0"}
 readme = "README.md"
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.11.5,<4.0"
 dependencies = [
     "pip>=26.2",  # CVE-2026-13346
     "setuptools>=84.1.0",  # GHSA-xmj3-9gf7-h52w
@@ -22,6 +22,7 @@ dependencies = [
     "ecdsa (>=0.19.2)",  # CVE-2024-23342 has no upstream fix; CVE-2026-33936 fixed in 0.19.2
     "pillow (>=13.0.0)",  # CVE-2026-112394 et al.; fixed in 13.0.0
     "requests (>=2.33.0)",  # CVE-2026-25645
+    "soupsieve (>=4.0.0)",  # Fixes CVE-2026-126190, CVE-2026-126193, CVE-2026-126191
     "uwsgi (>=2.0.28,<3.0.0)",
     "werkzeug>=3.1.9"  # CVE-2026-102598; fixed in 3.1.9
 ]
