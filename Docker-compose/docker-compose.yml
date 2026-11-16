@@ -34,6 +34,7 @@ services:
       - mongoexpress
     image: mongo-express
     container_name: satosa-mongo-express
+    restart: "no"
     ports:
       - 8082:8081
     depends_on:
@@ -68,6 +69,7 @@ services:
       satosa-nginx:
         condition: service_started
     container_name: django_sp
+    restart: "no"
     working_dir: /django_sp
     entrypoint: "sh ../entrypoint.sh"
     volumes:
@@ -87,6 +89,7 @@ services:
             - NODE_ENV=local
         dockerfile: Dockerfile
     container_name: iam-proxy-italia
+    restart: "no"
     depends_on:
         trust-anchor:
           condition: service_healthy
@@ -212,6 +215,7 @@ services:
   satosa-nginx:
     image: nginx:alpine
     container_name: satosa-nginx
+    restart: "no"
     depends_on:
       iam-proxy-italia:
         condition: service_started
@@ -240,6 +244,7 @@ services:
       - saml2
     image: italia/spid-saml-check:1.11.1
     container_name: spid-samlcheck
+    restart: "no"
     ports:
       - "8443:8443"
     networks:
@@ -274,7 +279,6 @@ services:
     container_name: trust-anchor
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
     ports:
       - "5002:5002"
     volumes:
@@ -312,7 +316,7 @@ services:
     container_name: cie-provider
     working_dir: /django-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8002:8002"
     volumes:
@@ -392,7 +396,7 @@ services:
     container_name: relying-party-demo
     working_dir: /rp-demo-project
     entrypoint: "sh /entrypoint.sh"
-    restart: unless-stopped
+    restart: "no"
     build:
       context: ../
       dockerfile: iam-proxy-italia-project-demo-examples/oidc_rp/oidc_rp.Dockerfile
@@ -431,6 +435,7 @@ services:
       - wallet_instance_demo
     image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.0.2-1
     container_name: wallet-instance-demo
+    restart: "no"
     ports:
       - "${WALLET_INSTANCE_PORT:-8080}:8080"
     volumes:
