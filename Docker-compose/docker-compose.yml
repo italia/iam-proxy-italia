@@ -6,7 +6,7 @@ services:
       - mongoexpress
       - oidc
       - wallet
-    image: mongo
+    image: mongo:8.0.4
     container_name: satosa-mongo
     restart: "no"
     environment:
@@ -434,7 +434,7 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.1.0
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.1.1
     container_name: wallet-instance-demo
     restart: "no"
     ports:
