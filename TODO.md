@@ -37,3 +37,4 @@ iam-proxy-italia  | [2026-11-12 20:11:11] [ERROR]: [urn:uuid:44f67cf7-14c1-4f36-
 
 - Non riesco a inviare i dati: Exception :Errore ritornato dall'endpoint https://iam-proxy-italia.example.org/OpenID4VP/request-uri?client_id=openid_federation%3Ahttps%3A%2F%2Fiam-proxy-italia.example.org%2FOpenID4VP&request_uri=https%3A%2F%2Fiam-proxy-italia.example.org%2FOpenID4VP%2Frequest-uri&request_uri_method=get&state=fde82b77-cd62-4c0e-a7b3-1b25dd94715a: invalid_request - request error: request object already issued (HTTP Status code: 400). -> investigare, consentirlo
 
+- l'emissione di mdoc cbor include la status list ma non funziona la chiamata ... controllare
