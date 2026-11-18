@@ -855,7 +855,6 @@ config:
               country: "{{countyOfBirth}}"
               locality: "{{placeOfBirth}}"
           key_binding: true
-          iat: {{iat}}
           user_claims:
             !sd birthdate: "{{dateOfBirth}}"
             !sd family_name: "{{surname}}"
@@ -865,6 +864,7 @@ config:
               locality: "{{placeOfBirth}}"
             !sd tax_id_code: "TINIT-{{fiscal_code}}"
             !sd unique_id: "{{unique_id}}"
+            iat: {{iat}}
             status: {{status}}
 
 
