@@ -6,7 +6,7 @@ services:
       - mongoexpress
       - oidc
       - wallet
-    image: mongo
+    image: mongo:8.0.4
     container_name: satosa-mongo
     restart: "no"
     environment:
