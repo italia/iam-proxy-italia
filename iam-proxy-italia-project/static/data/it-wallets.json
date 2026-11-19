@@ -1,57 +1,64 @@
 {
   "immediate_subordinate_entities": [
     {
-      "id": "https://io.pagopa.it",
-      "logo_uri": "it-wallet/io_logo.svg",
-      "name": "IO, l'app dei servizi pubblici",
-      "description": "L'app dei servizi pubblici italiani per ricevere notifiche, pagamenti e documenti dalla Pubblica Amministrazione.",
+      "id": "https://it-wallet-app.example",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "nome app IT-Wallet",
+      "name_en": "IT-Wallet app name",
+      "description": "Esempio di app IT-Wallet per l'autenticazione e la gestione delle credenziali verificate.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://wallet-demo.example.org",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Wallet Demo",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Portafoglio dimostrativo",
+      "name_en": "Wallet Demo",
       "description": "Esempio di wallet digitale per l'autenticazione e la gestione delle credenziali verificate.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://example-wallet.net",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Nome Wallet su 2 righe",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Nome portafoglio cinque",
+      "name_en": "Wallet name five",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://lorem-wallet-1.example",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Lorem Wallet One",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Lorem portafoglio uno",
+      "name_en": "Lorem Wallet One",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://lorem-wallet-2.example",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Lorem Wallet Two",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Lorem portafoglio due",
+      "name_en": "Lorem Wallet Two",
       "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://lorem-wallet-3.example",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Lorem Wallet Three",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Lorem portafoglio tre",
+      "name_en": "Lorem Wallet Three",
       "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"
     },
     {
       "id": "https://lorem-wallet-4.example",
-      "logo_uri": "img/wallet-placeholder.svg",
-      "name": "Lorem Wallet Four",
+      "logo_uri": "/static/img/wallet-placeholder.svg",
+      "name": "Lorem portafoglio quattro",
+      "name_en": "Lorem Wallet Four",
       "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
       "uri": "/Saml2/disco?entityID=wallet",
       "how_to_get_url": "#"

@@ -12,9 +12,9 @@
     "message": "JavaScript must be enabled to display this page correctly."
   },
   "header": {
-    "organization_name": "Organization Name",
-    "region_name": "Organization Name",
-    "logo_title": "Your Logo",
+    "organization_name": "Owning entity",
+    "region_name": "Owning entity",
+    "logo_title": "Your logo",
     "lang_active_hint": "active language:",
     "lang_trigger": "Language selection, {{name}} selected"
   },
@@ -37,7 +37,7 @@
     "assistance_link_title": "Go to assistance page"
   },
   "footer": {
-    "organization_name": "Organization Name",
+    "organization_name": "Owning entity",
     "tagline": "Lorem ipsum",
     "contacts": "Contacts",
     "contacts_title": "Go to page: Contacts",
@@ -65,8 +65,8 @@
     "useful_links_section": "Useful links section",
     "legal_notes": "Legal notes",
     "legal_notes_title": "Legal notes",
-    "privacy": "Privacy Policy",
-    "privacy_title": "Privacy Policy",
+    "privacy": "Privacy policy",
+    "privacy_title": "Privacy policy",
     "accessibility": "Accessibility statement",
     "nav_label": "Legal links",
     "new_window_hint": "opens in a new window"

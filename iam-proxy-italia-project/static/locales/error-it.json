@@ -12,8 +12,8 @@
     "message": "Per visualizzare correttamente questa pagina è necessario abilitare JavaScript."
   },
   "header": {
-    "organization_name": "Nome dell'Organizzazione",
-    "region_name": "Nome dell'Organizzazione",
+    "organization_name": "Ente di appartenenza",
+    "region_name": "Ente di appartenenza",
     "logo_title": "Il tuo logo",
     "lang_active_hint": "lingua attiva:",
     "lang_trigger": "Selezione lingua, {{name}} selezionata"
@@ -37,7 +37,7 @@
     "assistance_link_title": "Vai alla pagina di assistenza"
   },
   "footer": {
-    "organization_name": "Nome dell'Organizzazione",
+    "organization_name": "Ente di appartenenza",
     "tagline": "Lorem ipsum",
     "contacts": "Contatti",
     "contacts_title": "Vai alla pagina: Contatti",
@@ -65,9 +65,9 @@
     "useful_links_section": "Sezione Link Utili",
     "legal_notes": "Note legali",
     "legal_notes_title": "Note Legali",
-    "privacy": "Privacy Policy",
-    "privacy_title": "Privacy Policy",
-    "accessibility": "Dichiarazione Accessibilità",
+    "privacy": "Privacy policy",
+    "privacy_title": "Privacy policy",
+    "accessibility": "Dichiarazione accessibilità",
     "nav_label": "Link legali",
     "new_window_hint": "si apre in una nuova finestra"
   }
