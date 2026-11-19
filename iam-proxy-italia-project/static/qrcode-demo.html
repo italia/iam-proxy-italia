@@ -6,15 +6,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title id="tab-title">Accedi</title>
   <meta name="description" id="meta-description" content="">
-  <link rel="icon" href="spid/favicon-32x32.png">
+  <link rel="icon" href="/static/spid/favicon-32x32.png">
 
-  <link rel="stylesheet" href="css/style.css?v=wallet-ui-20260422">
-  <link href="css/bootstrap-italia.min.css" rel="stylesheet">
-  <link href="css/ita.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css?v=wallet-ui-20261119">
+  <link href="/static/css/bootstrap-italia.min.css" rel="stylesheet">
+  <link href="/static/css/ita.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --qr-size: 250px;
+      --brand-blue: #0072CE;
+    }
+
+    .qr-code-link {
+      display: inline-block;
+      text-decoration: none;
+      line-height: 0;
+    }
+
+    .qr-code-link:focus-visible {
+      outline: 2px solid #0066CC;
+      outline-offset: 4px;
+      border-radius: 0.25rem;
+    }
+
+    .qr-code {
+      display: block;
+      margin: auto;
+      background-color: #fff;
+      width: var(--qr-size);
+      height: var(--qr-size);
+    }
+
+    .qr-code-img {
+      width: 10em;
+      height: 10em;
+    }
+
+    .qr-faded {
+      opacity: 0.2;
+    }
+
+    .qr-code-payload-wrap.is-expired {
+      width: var(--qr-size);
+      height: var(--qr-size);
+      background-color: #D0D4D8;
+    }
+
+    .qr-code-payload-wrap.is-expired .qr-code-link {
+      visibility: hidden;
+    }
+
+    .qr-code-payload-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .qr-code-link.qr-faded {
+      pointer-events: none;
+    }
+
+    .qr-code-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 0.5rem;
+    }
+
+    .qr-code-overlay .btn {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .qr-code-overlay .icon {
+      fill: currentColor;
+    }
+
+    .qr-cancel-link {
+      color: #0066CC;
+      font-weight: 600;
+      text-decoration: underline;
+      background: none;
+      border: 0;
+      padding: 0;
+    }
+
+    .qr-cancel-link:hover,
+    .qr-cancel-link:focus {
+      color: #004d99;
+      text-decoration: underline;
+    }
+
+    #content-qrcode-info-text {
+      color: #000;
+    }
+
+    .qr-expired-info {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-align: left;
+    }
+
+    .qr-expired-info .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex: 0 0 auto;
+      color: #995C00;
+      fill: currentColor;
+    }
+
+    .btn-custom {
+      background-color: var(--brand-blue);
+      color: white;
+    }
+
+    .qr-code-link--display-only {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .qr-payload-preview {
+      text-align: center;
+      max-width: 36rem;
+      margin: 0 auto 1rem;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 0.25rem;
+    }
+
+    .qr-payload-preview summary {
+      text-align: center;
+    }
+
+    .qr-payload-preview a#qr-payload-preview {
+      font-family: monospace;
+      font-size: 0.75rem;
+      word-break: break-all;
+      color: #0066CC;
+      text-decoration: underline;
+    }
+
+    .qr-payload-preview a#qr-payload-preview:hover,
+    .qr-payload-preview a#qr-payload-preview:focus {
+      color: #004d99;
+    }
+  </style>
 
   <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.1/i18nextHttpBackend.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
-  <script src="js/qrcode/qr-code.js"></script>
+  <script src="/static/js/qrcode/qr-code.js"></script>
 </head>
 
 <body class="it-wallet-body">
@@ -27,7 +174,7 @@
     <div class="it-header-slim-wrapper bg-primary">
       <div class="container">
         <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
-          <span class="navbar-brand text-white"><strong id="header-region-name">Nome dell'Organizzazione</strong></span>
+          <span class="navbar-brand text-white"><strong id="header-region-name"></strong></span>
           <div class="it-header-slim-right-zone">
             <div class="nav-item dropdown it-header-lang-dropdown">
               <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
@@ -36,7 +183,7 @@
                 <span id="header-lang-active-hint" class="visually-hidden">lingua attiva:</span>
                 <span class="it-header-lang-label" aria-hidden="true">ITA</span>
                 <svg class="icon icon-sm ms-1" aria-hidden="true">
-                  <use href="svg/sprites.svg#it-expand"></use>
+                  <use href="/static/svg/sprites.svg#it-expand"></use>
                 </svg>
               </button>
               <div id="language-menu" class="dropdown-menu dropdown-menu-end">
@@ -47,13 +194,13 @@
                         <li>
                           <button type="button" class="dropdown-item list-item it-lang-option active" data-lang="it"
                             role="menuitemradio" aria-checked="true" aria-current="true">
-                            <span lang="it">Italiano</span>
+                            <span lang="it">ITA</span>
                           </button>
                         </li>
                         <li>
                           <button type="button" class="dropdown-item list-item it-lang-option" data-lang="en"
                             role="menuitemradio" aria-checked="false">
-                            <span lang="en">English</span>
+                            <span lang="en">ENG</span>
                           </button>
                         </li>
                       </ul>
@@ -75,7 +222,7 @@
             <text id="header-logo-text" class="it-header-logo-placeholder__text" x="0" y="28" aria-hidden="true">Il tuo logo</text>
           </svg>
           <span class="navbar-separator" aria-hidden="true"></span>
-          <img src="img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet"
+          <img src="/static/img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet"
             class="it-wallet-navbar-logo qr-header-logo-wallet" height="32" />
         </div>
       </div>
@@ -85,9 +232,9 @@
   <main id="main-content" class="container my-4 it-wallet-page text-center" aria-labelledby="content-title">
     <div class="it-wallet-title-row">
       <div class="it-wallet-title-slot it-wallet-title-slot--start">
-        <a href="it-wallet.html" id="back-link" class="it-wallet-back-link" aria-label="Torna alla pagina precedente">
+        <a href="#" id="back-link" class="it-wallet-back-link" aria-label="Torna alla pagina precedente">
           <svg class="icon icon-sm me-1" aria-hidden="true">
-            <use href="svg/sprites.svg#it-arrow-left"></use>
+            <use href="/static/svg/sprites.svg#it-arrow-left"></use>
           </svg>
           <span class="it-wallet-back-label">Torna indietro</span>
         </a>
@@ -98,43 +245,47 @@
 
     <p id="content-text" class="text-center mb-4 it-wallet-subtitle"></p>
 
-    <div id="content-qrcode" class="d-flex justify-content-center mb-4">
-      <div id="content-qrcode-payload" class="qr-code-payload-wrap">
-        <a id="qr-code-link" class="qr-code-link qr-code-link--display-only" tabindex="-1"
-          aria-label="Codice QR per l'autenticazione con IT-Wallet">
-          <qr-code
-            contents="haip://?client_id=preview&amp;request_uri=https%3A%2F%2Fpreview.example.com%2Frequest&amp;request_uri_method=post"
-            module-color="#000000"
-            position-ring-color="#000000"
-            position-center-color="#000000"
-            class="qr-code"
-            style="--qr-size: 250px"
-          >
-            <span slot="icon" class="qr-code-icon-shell">
-              <img class="icon-qr-code" src="img/IT-Wallet-Mark.svg" alt="" />
-            </span>
-          </qr-code>
-        </a>
-        <div id="content-function" class="qr-code-overlay" hidden>
-          <button id="qr-reload-btn" type="button" class="btn btn-primary">
-            <svg class="icon icon-sm me-2" aria-hidden="true">
-              <use href="svg/sprites.svg#it-refresh"></use>
-            </svg>
-            <span id="qr-reload-label">Genera un nuovo codice</span>
-          </button>
+      <div id="content-qrcode" class="d-flex justify-content-center mb-4">
+        <div id="content-qrcode-payload" class="qr-code-payload-wrap">
+          <a id="qr-code-link" class="qr-code-link" href=""
+            aria-label="Codice QR per l'autenticazione con IT-Wallet">
+            <qr-code
+              contents=""
+              module-color="#000000"
+              position-ring-color="#000000"
+              position-center-color="#000000"
+              class="qr-code"
+            >
+              <span slot="icon" class="qr-code-icon-shell">
+                <img class="icon-qr-code" src="/static/img/IT-Wallet-Mark.svg" alt="" />
+              </span>
+            </qr-code>
+          </a>
+          <div id="content-function" class="qr-code-overlay" hidden>
+            <button id="qr-reload-btn" type="button" class="btn btn-primary">
+              <svg class="icon icon-sm me-2" aria-hidden="true">
+                <use href="/static/svg/sprites.svg#it-refresh"></use>
+              </svg>
+              <span id="qr-reload-label">Genera un nuovo codice</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <p id="content-qrcode-info-text" class="mb-3" aria-live="polite" aria-atomic="true"></p>
+      <p id="content-qrcode-info-text" class="mb-3" aria-live="polite" aria-atomic="true"></p>
 
-    <p class="text-center mb-4">
-      <a href="disco.html" id="qr-cancel-link" class="qr-cancel-link">Annulla</a>
-    </p>
+      <details id="qr-payload-debug" class="qr-payload-preview text-center mb-4" hidden>
+        <summary id="qr-payload-summary" class="mb-2">Contenuto dimostrativo del QR (Authorization Request)</summary>
+        <a id="qr-payload-preview" href=""></a>
+      </details>
 
-    <noscript>
-      <p id="noscript-message">Per usare la pagina del codice QR è necessario abilitare JavaScript.</p>
-    </noscript>
+      <p class="text-center mb-4">
+        <a href="#" id="qr-cancel-link" class="qr-cancel-link">Annulla</a>
+      </p>
+
+      <noscript>
+        <p id="noscript-message">Per usare la pagina del codice QR è necessario abilitare JavaScript.</p>
+      </noscript>
   </main>
 
   <footer id="page-footer" role="contentinfo" tabindex="-1">
@@ -147,123 +298,9 @@
     </div>
   </footer>
 
-  <script src="js/bootstrap-italia.bundle.min.js"></script>
-  <script src="js/header-lang-dropdown.js?v=wallet-ui-20260422"></script>
-  <script>
-    const WALLET_NAME = "IT-Wallet";
-    const PREVIEW_SECONDS = "120";
-
-    function wt(t, key, extra) {
-      return t(key, Object.assign({ walletName: WALLET_NAME }, extra || {}));
-    }
-
-    function setFooterLink(el, text, href, hint) {
-      if (!el || !text) return;
-      el.textContent = text;
-      if (href) el.setAttribute("href", href);
-      el.setAttribute("aria-label", text + " (" + hint + ")");
-    }
-
-    function adjustQrIconLayout() {
-      const qrCode = document.querySelector("qr-code");
-      const wrapper = qrCode && qrCode.shadowRoot && qrCode.shadowRoot.querySelector("#icon-wrapper");
-      if (!wrapper) return;
-      wrapper.style.width = "23.1%";
-      wrapper.style.aspectRatio = "1";
-      wrapper.style.display = "flex";
-      wrapper.style.alignItems = "center";
-      wrapper.style.justifyContent = "center";
-    }
-
-    function updateTexts(t) {
-      const regionEl = document.getElementById("header-region-name");
-      if (regionEl) regionEl.textContent = t("header.region_name");
-
-      const skipNav = document.querySelector(".it-skip-links");
-      if (skipNav) skipNav.setAttribute("aria-label", t("skip_links.nav_label"));
-      const skipMain = document.getElementById("skip-main");
-      if (skipMain) skipMain.textContent = t("skip_links.main_content");
-      const skipFooter = document.getElementById("skip-footer");
-      if (skipFooter) skipFooter.textContent = t("skip_links.footer");
-
-      const logoAlt = t("header.logo_alt");
-      const eidTitle = document.getElementById("eid-title");
-      if (eidTitle) eidTitle.textContent = logoAlt;
-      const headerLogoText = document.getElementById("header-logo-text");
-      if (headerLogoText) headerLogoText.textContent = logoAlt;
-
-      document.querySelectorAll(".qr-header-logo-wallet").forEach(function (img) {
-        img.setAttribute("alt", WALLET_NAME);
-      });
-
-      const qrCodeLink = document.getElementById("qr-code-link");
-      if (qrCodeLink) qrCodeLink.setAttribute("aria-label", wt(t, "qrCodeLinkAriaLabel"));
-
-      const hint = t("footer.new_window_hint");
-      setFooterLink(document.getElementById("footer-legal"), t("footer.legal_notice"), t("footer.legal_url"), hint);
-      setFooterLink(document.getElementById("footer-privacy"), t("footer.privacy_policy"), t("footer.privacy_url"), hint);
-      setFooterLink(document.getElementById("footer-accessibility"), t("footer.accessibility_statement"), t("footer.accessibility_url"), hint);
-
-      const footerNav = document.getElementById("footer-legal-nav");
-      if (footerNav) footerNav.setAttribute("aria-label", t("footer.nav_label"));
-
-      const noscriptMsg = document.getElementById("noscript-message");
-      if (noscriptMsg) noscriptMsg.textContent = t("noscript.message");
-
-      const pageTitle = t("page_title");
-      const tabTitle = document.getElementById("tab-title");
-      if (tabTitle) tabTitle.textContent = pageTitle;
-      document.title = pageTitle;
-
-      const metaDesc = document.getElementById("meta-description");
-      if (metaDesc) metaDesc.setAttribute("content", wt(t, "meta.description"));
-
-      const backText = t("backLabel");
-      const backLink = document.getElementById("back-link");
-      if (backLink) backLink.setAttribute("aria-label", backText);
-      const backLabel = document.querySelector(".it-wallet-back-label");
-      if (backLabel) backLabel.textContent = backText;
-
-      const cancelLink = document.getElementById("qr-cancel-link");
-      if (cancelLink) cancelLink.textContent = t("cancelLabel");
-
-      const reloadLabel = document.getElementById("qr-reload-label");
-      if (reloadLabel) reloadLabel.textContent = t("qrCodeReloadLabel");
-
-      const title = document.getElementById("content-title");
-      if (title) title.textContent = t("contentTitle");
-      const info = document.getElementById("content-qrcode-info-text");
-      if (info) {
-        info.innerHTML = t("qrCodeValidInfo", { seconds: PREVIEW_SECONDS, walletName: WALLET_NAME });
-      }
-      const support = document.getElementById("content-text");
-      if (support) support.innerHTML = wt(t, "supportText");
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      const qrCode = document.querySelector("qr-code");
-      if (qrCode) qrCode.addEventListener("codeRendered", adjustQrIconLayout);
-      requestAnimationFrame(adjustQrIconLayout);
-
-      const initialLang = localStorage.getItem("lang") || "it";
-      i18next.use(i18nextHttpBackend).init({
-        lng: initialLang,
-        fallbackLng: "it",
-        backend: { loadPath: "locales/qr-{{lng}}.json" }
-      }).then(function () {
-        if (typeof initHeaderLangDropdown === "function") {
-          initHeaderLangDropdown(i18next, {
-            afterLanguageChange: function (lng) {
-              const code = (lng || "it").split("-")[0];
-              localStorage.setItem("lang", code === "en" ? "en" : "it");
-              updateTexts(i18next.t);
-            }
-          });
-        }
-        updateTexts(i18next.t);
-      });
-    });
-  </script>
+  <script src="/static/js/bootstrap-italia.bundle.min.js"></script>
+  <script src="/static/js/header-lang-dropdown.js?v=wallet-ui-20261119"></script>
+  <script src="js/qrcode/qr-code-page.js?v=wallet-ui-20261119"></script>
 </body>
 
 </html>

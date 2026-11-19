@@ -24,6 +24,8 @@ if grep -qF "conf/frontends/openid4vci_frontend.yaml" "$PROXY_CONF_PATH"; then
   check_url "https://satosa-nginx/OpenID4VCI/.well-known/openid-federation"
   check_url "https://satosa-nginx/OpenID4VCI/.well-known/oauth-authorization-server"
   check_url "https://satosa-nginx/OpenID4VCI/.well-known/openid-credential-issuer"
+  check_url "https://satosa-nginx/.well-known/openid-credential-issuer/OpenID4VCI"
+  check_url "https://satosa-nginx/.well-known/oauth-authorization-server/OpenID4VCI"
 fi
 
 if grep -qF "conf/frontends/saml2_frontend.yaml" "$PROXY_CONF_PATH"; then

@@ -90,7 +90,7 @@ config:
       {
         "credentials": [
           {
-            "id": "IT-Wallet ID",
+            "id": "it-wallet-id",
             "format": "dc+sd-jwt",
             "meta": {
               "vct_values": [

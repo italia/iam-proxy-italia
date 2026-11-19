@@ -227,7 +227,10 @@
       }
 
       function initI18n() {
-        const initialLang = localStorage.getItem("lang") || "it";
+        const initialLang =
+          typeof getPreferredLang === "function"
+            ? getPreferredLang()
+            : (localStorage.getItem("lang") || "it");
 
         i18next
           .use(i18nextHttpBackend)
@@ -243,9 +246,7 @@
             }
             if (typeof initHeaderLangDropdown === "function") {
               initHeaderLangDropdown(i18next, {
-                afterLanguageChange: function (lng) {
-                  const code = (lng || "it").split("-")[0];
-                  localStorage.setItem("lang", code === "en" ? "en" : "it");
+                afterLanguageChange: function () {
                   updateTexts(i18next.t);
                 }
               });
@@ -278,8 +279,15 @@
 
       function showExpired(t) {
         pageState = "expired";
+        const wrap = document.getElementById("content-qrcode-payload");
+        if (wrap) wrap.classList.add("is-expired");
+
         const qrLink = document.getElementById("qr-code-link");
-        if (qrLink) qrLink.classList.add("qr-faded");
+        if (qrLink) {
+          qrLink.classList.remove("qr-faded");
+          qrLink.setAttribute("aria-hidden", "true");
+          qrLink.setAttribute("tabindex", "-1");
+        }
 
         const info = document.getElementById("content-qrcode-info-text");
         if (info) info.innerHTML = renderExpiredInfo(t);

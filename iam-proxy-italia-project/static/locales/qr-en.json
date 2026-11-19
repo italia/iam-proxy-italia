@@ -1,7 +1,7 @@
 {
   "header": {
-    "region_name": "Organization Name",
-    "logo_alt": "Your Logo",
+    "region_name": "Owning entity",
+    "logo_alt": "Your logo",
     "wallet_brand_alt": "IT-Wallet",
     "lang_active_hint": "active language:",
     "lang_trigger": "Language selection, {{name}} selected"
@@ -21,7 +21,7 @@
   "login_logo": "Log in with your digital wallet",
   "contentTitle": "Scan the QR code",
   "qrCodeValidInfo": "The QR code is valid for <b id=\"timer\">{{seconds}}</b> seconds",
-  "supportText": "Use <b>{{walletName}}</b> or your smartphone <b>camera</b>",
+  "supportText": "Use the <b>{{walletName}}</b> feature<br>or your smartphone <b>camera</b>",
   "qrCodeLinkAriaLabel": "QR code for signing in with {{walletName}}",
   "backLabel": "Go back",
   "cancelLabel": "Cancel",
@@ -41,7 +41,7 @@
     "nav_label": "Legal links",
     "legal_notice": "Legal notes",
     "legal_url": "#",
-    "privacy_policy": "Privacy Policy",
+    "privacy_policy": "Privacy policy",
     "privacy_url": "#",
     "accessibility_statement": "Accessibility statement",
     "accessibility_url": "#",
