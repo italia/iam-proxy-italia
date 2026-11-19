@@ -54,6 +54,36 @@ config:
                 supports_minting:
                   - access_token
                   - refresh_token
+      # Extend profile so userinfo releases IT-Wallet matching claims (SCOPE2CLAIMS default omits them).
+      scopes_to_claims:
+        openid:
+          - sub
+        profile:
+          - name
+          - given_name
+          - family_name
+          - middle_name
+          - nickname
+          - profile
+          - picture
+          - website
+          - gender
+          - birthdate
+          - place_of_birth
+          - fiscal_number
+          - zoneinfo
+          - locale
+          - updated_at
+          - preferred_username
+        email:
+          - email
+          - email_verified
+        address:
+          - address
+        phone:
+          - phone_number
+          - phone_number_verified
+        offline_access: []
       capabilities:
         grant_types_supported:
           - authorization_code
@@ -69,7 +99,10 @@ config:
         claims_supported:
           - sub
           - given_name
+          - family_name
           - birthdate
+          - place_of_birth
+          - fiscal_number
           - email
       endpoint:
         provider_info:

@@ -64,6 +64,7 @@ attributes:
   fiscalnumber:
     saml: [fiscalNumber, fiscalnumber, FiscalNumber]
     openid: [fiscal_number]
+    openid4vp: [tax_id_code]
   gender:
     saml: [gender, Gender]
     openid: [gender]
@@ -80,14 +81,18 @@ attributes:
   placeOfBirth:
     saml: [placeOfBirth]
     openid: [place_of_birth]
+    # IT-Wallet ID discloses place_of_birth as an object; locality is the SPID-style string.
+    openid4vp: [place_of_birth.locality]
   countyOfBirth:
     saml: [countyOfBirth]
   dateOfBirth:
     saml: [dateOfBirth]
     openid: [birthdate]
+    openid4vp: [birthdate]
   birthdate:
     saml: [dateOfBirth]
     openid: [birthdate]
+    openid4vp: [birthdate]
   expirationDate:
     saml: [expirationDate]
   fiscal_code:

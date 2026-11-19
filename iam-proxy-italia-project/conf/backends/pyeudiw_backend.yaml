@@ -78,6 +78,14 @@ config:
     response_mode: direct_post.jwt
 
   duckle:
+    # DCQL for IT-Wallet ID presentation (Attribute-Based Binding + optional CF).
+    # claims: given_name, family_name, birthdate, place_of_birth are always requested.
+    # tax_id_code is optional: it appears only in the first claim_set.
+    # claim_sets: alternative acceptable combinations. Duckle (paths_for_claim_sets)
+    # selects the first set whose claims are all present in the disclosed VP, then
+    # extracts only those paths. Order matters: list the set with tax_id_code first
+    # so the CF is kept when the wallet discloses it; the second set still accepts
+    # a presentation without CF.
     dcql_query: &dcql_query |
       {
         "credentials": [
@@ -90,8 +98,15 @@ config:
               ]
             },
             "claims": [
-              {"path": ["given_name"]},
-              {"path": ["family_name"]}
+              {"id": "given_name", "path": ["given_name"]},
+              {"id": "family_name", "path": ["family_name"]},
+              {"id": "birthdate", "path": ["birthdate"]},
+              {"id": "place_of_birth", "path": ["place_of_birth"]},
+              {"id": "tax_id_code", "path": ["tax_id_code"]}
+            ],
+            "claim_sets": [
+              ["given_name", "family_name", "birthdate", "place_of_birth", "tax_id_code"],
+              ["given_name", "family_name", "birthdate", "place_of_birth"]
             ]
           }
         ]
