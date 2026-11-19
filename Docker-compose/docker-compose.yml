@@ -472,60 +472,60 @@ services:
   # Profile wallet is intentionally omitted so CI (saml2,wallet) does not run WCT.
   # The entrypoint runs test:issuance, then test:presentation when an authorize
   # script or URI is configured.
-  pagopa-wallet-cli:
-    profiles:
-      - demo
-      - wct
-    container_name: pagopa-wallet-cli
-    build:
-      context: ../
-      additional_contexts:
-        wct: ../../wallet-conformance-test
-      dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
-    depends_on:
-      iam-proxy-italia:
-        condition: service_healthy
-      satosa-nginx:
-        condition: service_started
-      satosa-mongo:
-        condition: service_started
-    environment:
-      WCT_TESTS: ${WCT_TESTS:-happy}
-      CONFIG_AUTHORIZE_HEADLESS: ${WCT_AUTHORIZE_HEADLESS:-true}
-      CONFIG_IDP_USERNAME: ${WCT_IDP_USERNAME:-user}
-      CONFIG_IDP_PASSWORD: ${WCT_IDP_PASSWORD:-oidcuser}
-      CONFIG_AUTHORIZE_HEADLESS_TIMEOUT_MS: ${WCT_AUTHORIZE_HEADLESS_TIMEOUT_MS:-180000}
-      CONFIG_WALLET_VERSION: ${WCT_WALLET_VERSION:-V1_4}
-      CONFIG_CREDENTIAL_ISSUER_URI: ${WCT_CREDENTIAL_ISSUER_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
-      CONFIG_CREDENTIAL_TYPES: ${WCT_CREDENTIAL_TYPES:-dc_sd_jwt_eid}
-      CONFIG_UNSAFE_TLS: ${WCT_UNSAFE_TLS:-true}
-      CONFIG_SAVE_CREDENTIAL: ${WCT_SAVE_CREDENTIAL:-true}
-      # Fresh haip-vp authorization URL with a live OpenID4VP session state.
-      CONFIG_PRESENTATION_AUTHORIZE_SCRIPT: ${WCT_PRESENTATION_AUTHORIZE_SCRIPT:-/usr/local/bin/create-presentation-authorize-url.mjs}
-      WCT_OPENID4VP_MONGO_URL: mongodb://${MONGO_PYEUDIW_OPENID4VP_DBUSER:-${MONGO_DBUSER:-satosa}}:${MONGO_PYEUDIW_OPENID4VP_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}@${MONGO_PYEUDIW_OPENID4VP_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_PYEUDIW_OPENID4VP_PORT:-${MONGO_PORT:-27017}}
-      WCT_OPENID4VP_DB_NAME: ${WCT_OPENID4VP_DB_NAME:-pyeudiw_openid4vp}
-      WCT_OPENID4VP_SESSIONS_COLLECTION: ${WCT_OPENID4VP_SESSIONS_COLLECTION:-sessions}
-      SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
-      WCT_VERIFIER_BASE_URL: ${WCT_VERIFIER_BASE_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
-      WCT_VERIFIER_CLIENT_ID: ${WCT_VERIFIER_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
-      WCT_VERIFIER_REQUEST_URI: ${WCT_VERIFIER_REQUEST_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri}
-      WCT_PRESENTATION_FLOW_TYPE: ${WCT_PRESENTATION_FLOW_TYPE:-same-device}
-      OIDF_SERVERS_BIND_ADDRESS: ${WCT_BIND_ADDRESS:-0.0.0.0}
-      CONFIG_LOG_LEVEL: ${WCT_LOG_LEVEL:-INFO}
-    volumes:
-      - ./pagopa-wallet-cli/data:/wallet-conformance-test/data
-      - ../iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/config/example.pagopa_cli.config.ini:/wct-config/config.ini:ro
-    ports:
-      - "3001:3001"
-      - "3002:3002"
-      - "3003:3003"
-    networks:
-      iam-proxy-italia:
-        aliases:
-          - wallet-provider.wct.example.org
-          - trust-anchor.wct.example.org
-          - credential-issuer.wct.example.org
-    restart: "no"
+  # pagopa-wallet-cli:
+  #   profiles:
+  #     - demo
+  #     - wct
+  #   container_name: pagopa-wallet-cli
+  #   build:
+  #     context: ../
+  #     # additional_contexts:
+  #     #  wct: ../../wallet-conformance-test
+  #     dockerfile: iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/pagopa-cli.Dockerfile
+  #   depends_on:
+  #     iam-proxy-italia:
+  #       condition: service_healthy
+  #     satosa-nginx:
+  #       condition: service_started
+  #     satosa-mongo:
+  #       condition: service_started
+  #   environment:
+  #     WCT_TESTS: ${WCT_TESTS:-happy}
+  #     CONFIG_AUTHORIZE_HEADLESS: ${WCT_AUTHORIZE_HEADLESS:-true}
+  #     CONFIG_IDP_USERNAME: ${WCT_IDP_USERNAME:-user}
+  #     CONFIG_IDP_PASSWORD: ${WCT_IDP_PASSWORD:-oidcuser}
+  #     CONFIG_AUTHORIZE_HEADLESS_TIMEOUT_MS: ${WCT_AUTHORIZE_HEADLESS_TIMEOUT_MS:-180000}
+  #     CONFIG_WALLET_VERSION: ${WCT_WALLET_VERSION:-V1_4}
+  #     CONFIG_CREDENTIAL_ISSUER_URI: ${WCT_CREDENTIAL_ISSUER_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VCI}
+  #     CONFIG_CREDENTIAL_TYPES: ${WCT_CREDENTIAL_TYPES:-dc_sd_jwt_eid}
+  #     CONFIG_UNSAFE_TLS: ${WCT_UNSAFE_TLS:-true}
+  #     CONFIG_SAVE_CREDENTIAL: ${WCT_SAVE_CREDENTIAL:-true}
+  #     # Fresh haip-vp authorization URL with a live OpenID4VP session state.
+  #     CONFIG_PRESENTATION_AUTHORIZE_SCRIPT: ${WCT_PRESENTATION_AUTHORIZE_SCRIPT:-/usr/local/bin/create-presentation-authorize-url.mjs}
+  #     WCT_OPENID4VP_MONGO_URL: mongodb://${MONGO_PYEUDIW_OPENID4VP_DBUSER:-${MONGO_DBUSER:-satosa}}:${MONGO_PYEUDIW_OPENID4VP_DBPASSWORD:-${MONGO_DBPASSWORD:-thatpassword}}@${MONGO_PYEUDIW_OPENID4VP_URL:-${MONGO_URL:-satosa-mongo}}:${MONGO_PYEUDIW_OPENID4VP_PORT:-${MONGO_PORT:-27017}}
+  #     WCT_OPENID4VP_DB_NAME: ${WCT_OPENID4VP_DB_NAME:-pyeudiw_openid4vp}
+  #     WCT_OPENID4VP_SESSIONS_COLLECTION: ${WCT_OPENID4VP_SESSIONS_COLLECTION:-sessions}
+  #     SATOSA_HOSTNAME: ${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}
+  #     WCT_VERIFIER_BASE_URL: ${WCT_VERIFIER_BASE_URL:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+  #     WCT_VERIFIER_CLIENT_ID: ${WCT_VERIFIER_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
+  #     WCT_VERIFIER_REQUEST_URI: ${WCT_VERIFIER_REQUEST_URI:-https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP/request-uri}
+  #     WCT_PRESENTATION_FLOW_TYPE: ${WCT_PRESENTATION_FLOW_TYPE:-same-device}
+  #     OIDF_SERVERS_BIND_ADDRESS: ${WCT_BIND_ADDRESS:-0.0.0.0}
+  #     CONFIG_LOG_LEVEL: ${WCT_LOG_LEVEL:-INFO}
+  #   volumes:
+  #     - ./pagopa-wallet-cli/data:/wallet-conformance-test/data
+  #     - ../iam-proxy-italia-project-demo-examples/pagopa-wallet-cli/config/example.pagopa_cli.config.ini:/wct-config/config.ini:ro
+  #   ports:
+  #     - "3001:3001"
+  #     - "3002:3002"
+  #     - "3003:3003"
+  #   networks:
+  #     iam-proxy-italia:
+  #       aliases:
+  #         - wallet-provider.wct.example.org
+  #         - trust-anchor.wct.example.org
+  #         - credential-issuer.wct.example.org
+  #   restart: "no"
 
 networks:
   iam-proxy-italia:
