@@ -180,19 +180,14 @@ def test_get_openid_jwks_jws(mock_pub, mock_create_jws, handler):
     assert signing_key["kid"] == "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
 
 
-@pytest.mark.parametrize(
-    "config_path",
-    [
-        "iam-proxy-italia-project/conf/backends/cieoidc_backend.yaml",
-        "Docker-compose/iam-proxy-italia-project/conf/backends/cieoidc_backend.yaml",
-    ],
-)
-def test_cieoidc_backend_yaml_has_no_shell_style_placeholders(config_path):
+def test_cieoidc_backend_yaml_has_no_shell_style_placeholders():
     """SATOSA does not expand ${VAR} inside YAML strings (issue #326)."""
     from pathlib import Path
 
+    # Docker-compose/iam-proxy-italia-project is gitignored runtime data; CI only has the source conf.
     root = Path(__file__).resolve().parents[4]
-    text = (root / config_path).read_text(encoding="utf-8")
+    config_path = root / "iam-proxy-italia-project/conf/backends/cieoidc_backend.yaml"
+    text = config_path.read_text(encoding="utf-8")
     assert "${" not in text
 
 
