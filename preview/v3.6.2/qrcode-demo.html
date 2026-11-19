@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="it" class="it-wallet-html">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title id="tab-title">Accedi</title>
+  <meta name="description" id="meta-description" content="">
+  <link rel="icon" href="spid/favicon-32x32.png">
+
+  <link rel="stylesheet" href="css/style.css?v=wallet-ui-20260422">
+  <link href="css/bootstrap-italia.min.css" rel="stylesheet">
+  <link href="css/ita.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.1/i18nextHttpBackend.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/i18next@25.5.2/i18next.min.js"></script>
+  <script src="js/qrcode/qr-code.js"></script>
+</head>
+
+<body class="it-wallet-body">
+  <nav class="it-skip-links" aria-label="Collegamenti di salto">
+    <a id="skip-main" class="visually-hidden-focusable" href="#main-content">Vai al contenuto principale</a>
+    <a id="skip-footer" class="visually-hidden-focusable" href="#page-footer">Vai al piè di pagina</a>
+  </nav>
+
+  <header class="it-header-wrapper" role="banner">
+    <div class="it-header-slim-wrapper bg-primary">
+      <div class="container">
+        <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
+          <span class="navbar-brand text-white"><strong id="header-region-name">Nome dell'Organizzazione</strong></span>
+          <div class="it-header-slim-right-zone">
+            <div class="nav-item dropdown it-header-lang-dropdown">
+              <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
+                aria-controls="language-menu"
+                data-bs-toggle="dropdown" aria-haspopup="menu" aria-expanded="false">
+                <span id="header-lang-active-hint" class="visually-hidden">lingua attiva:</span>
+                <span class="it-header-lang-label" aria-hidden="true">ITA</span>
+                <svg class="icon icon-sm ms-1" aria-hidden="true">
+                  <use href="svg/sprites.svg#it-expand"></use>
+                </svg>
+              </button>
+              <div id="language-menu" class="dropdown-menu dropdown-menu-end">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="link-list-wrapper">
+                      <ul class="link-list" role="menu" aria-labelledby="languagesDropButton">
+                        <li>
+                          <button type="button" class="dropdown-item list-item it-lang-option active" data-lang="it"
+                            role="menuitemradio" aria-checked="true" aria-current="true">
+                            <span lang="it">Italiano</span>
+                          </button>
+                        </li>
+                        <li>
+                          <button type="button" class="dropdown-item list-item it-lang-option" data-lang="en"
+                            role="menuitemradio" aria-checked="false">
+                            <span lang="en">English</span>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-title-section">
+      <div class="container py-3">
+        <div class="d-flex align-items-center">
+          <span id="eid-title" class="visually-hidden">Il tuo logo</span>
+          <svg id="header-logo" class="it-header-logo-placeholder" role="img" aria-labelledby="eid-title"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 40" height="32" focusable="false">
+            <text id="header-logo-text" class="it-header-logo-placeholder__text" x="0" y="28" aria-hidden="true">Il tuo logo</text>
+          </svg>
+          <span class="navbar-separator" aria-hidden="true"></span>
+          <img src="img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet"
+            class="it-wallet-navbar-logo qr-header-logo-wallet" height="32" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container my-4 it-wallet-page text-center" aria-labelledby="content-title">
+    <div class="it-wallet-title-row">
+      <div class="it-wallet-title-slot it-wallet-title-slot--start">
+        <a href="it-wallet.html" id="back-link" class="it-wallet-back-link" aria-label="Torna alla pagina precedente">
+          <svg class="icon icon-sm me-1" aria-hidden="true">
+            <use href="svg/sprites.svg#it-arrow-left"></use>
+          </svg>
+          <span class="it-wallet-back-label">Torna indietro</span>
+        </a>
+      </div>
+      <h1 class="it-wallet-title-heading mb-0" id="content-title"></h1>
+      <div class="it-wallet-title-slot it-wallet-title-slot--end" aria-hidden="true"></div>
+    </div>
+
+    <p id="content-text" class="text-center mb-4 it-wallet-subtitle"></p>
+
+    <div id="content-qrcode" class="d-flex justify-content-center mb-4">
+      <div id="content-qrcode-payload" class="qr-code-payload-wrap">
+        <a id="qr-code-link" class="qr-code-link qr-code-link--display-only" tabindex="-1"
+          aria-label="Codice QR per l'autenticazione con IT-Wallet">
+          <qr-code
+            contents="haip://?client_id=preview&amp;request_uri=https%3A%2F%2Fpreview.example.com%2Frequest&amp;request_uri_method=post"
+            module-color="#000000"
+            position-ring-color="#000000"
+            position-center-color="#000000"
+            class="qr-code"
+            style="--qr-size: 250px"
+          >
+            <span slot="icon" class="qr-code-icon-shell">
+              <img class="icon-qr-code" src="img/IT-Wallet-Mark.svg" alt="" />
+            </span>
+          </qr-code>
+        </a>
+        <div id="content-function" class="qr-code-overlay" hidden>
+          <button id="qr-reload-btn" type="button" class="btn btn-primary">
+            <svg class="icon icon-sm me-2" aria-hidden="true">
+              <use href="svg/sprites.svg#it-refresh"></use>
+            </svg>
+            <span id="qr-reload-label">Genera un nuovo codice</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p id="content-qrcode-info-text" class="mb-3" aria-live="polite" aria-atomic="true"></p>
+
+    <p class="text-center mb-4">
+      <a href="disco.html" id="qr-cancel-link" class="qr-cancel-link">Annulla</a>
+    </p>
+
+    <noscript>
+      <p id="noscript-message">Per usare la pagina del codice QR è necessario abilitare JavaScript.</p>
+    </noscript>
+  </main>
+
+  <footer id="page-footer" role="contentinfo" tabindex="-1">
+    <div class="container h-100 d-flex align-items-center">
+      <nav id="footer-legal-nav" class="d-flex flex-wrap justify-content-start" aria-label="Link legali">
+        <a id="footer-legal" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener"></a>
+        <a id="footer-privacy" href="#" class="text-white me-4 mb-2" target="_blank" rel="noopener"></a>
+        <a id="footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener"></a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/bootstrap-italia.bundle.min.js"></script>
+  <script src="js/header-lang-dropdown.js?v=wallet-ui-20260422"></script>
+  <script>
+    const WALLET_NAME = "IT-Wallet";
+    const PREVIEW_SECONDS = "120";
+
+    function wt(t, key, extra) {
+      return t(key, Object.assign({ walletName: WALLET_NAME }, extra || {}));
+    }
+
+    function setFooterLink(el, text, href, hint) {
+      if (!el || !text) return;
+      el.textContent = text;
+      if (href) el.setAttribute("href", href);
+      el.setAttribute("aria-label", text + " (" + hint + ")");
+    }
+
+    function adjustQrIconLayout() {
+      const qrCode = document.querySelector("qr-code");
+      const wrapper = qrCode && qrCode.shadowRoot && qrCode.shadowRoot.querySelector("#icon-wrapper");
+      if (!wrapper) return;
+      wrapper.style.width = "23.1%";
+      wrapper.style.aspectRatio = "1";
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "center";
+      wrapper.style.justifyContent = "center";
+    }
+
+    function updateTexts(t) {
+      const regionEl = document.getElementById("header-region-name");
+      if (regionEl) regionEl.textContent = t("header.region_name");
+
+      const skipNav = document.querySelector(".it-skip-links");
+      if (skipNav) skipNav.setAttribute("aria-label", t("skip_links.nav_label"));
+      const skipMain = document.getElementById("skip-main");
+      if (skipMain) skipMain.textContent = t("skip_links.main_content");
+      const skipFooter = document.getElementById("skip-footer");
+      if (skipFooter) skipFooter.textContent = t("skip_links.footer");
+
+      const logoAlt = t("header.logo_alt");
+      const eidTitle = document.getElementById("eid-title");
+      if (eidTitle) eidTitle.textContent = logoAlt;
+      const headerLogoText = document.getElementById("header-logo-text");
+      if (headerLogoText) headerLogoText.textContent = logoAlt;
+
+      document.querySelectorAll(".qr-header-logo-wallet").forEach(function (img) {
+        img.setAttribute("alt", WALLET_NAME);
+      });
+
+      const qrCodeLink = document.getElementById("qr-code-link");
+      if (qrCodeLink) qrCodeLink.setAttribute("aria-label", wt(t, "qrCodeLinkAriaLabel"));
+
+      const hint = t("footer.new_window_hint");
+      setFooterLink(document.getElementById("footer-legal"), t("footer.legal_notice"), t("footer.legal_url"), hint);
+      setFooterLink(document.getElementById("footer-privacy"), t("footer.privacy_policy"), t("footer.privacy_url"), hint);
+      setFooterLink(document.getElementById("footer-accessibility"), t("footer.accessibility_statement"), t("footer.accessibility_url"), hint);
+
+      const footerNav = document.getElementById("footer-legal-nav");
+      if (footerNav) footerNav.setAttribute("aria-label", t("footer.nav_label"));
+
+      const noscriptMsg = document.getElementById("noscript-message");
+      if (noscriptMsg) noscriptMsg.textContent = t("noscript.message");
+
+      const pageTitle = t("page_title");
+      const tabTitle = document.getElementById("tab-title");
+      if (tabTitle) tabTitle.textContent = pageTitle;
+      document.title = pageTitle;
+
+      const metaDesc = document.getElementById("meta-description");
+      if (metaDesc) metaDesc.setAttribute("content", wt(t, "meta.description"));
+
+      const backText = t("backLabel");
+      const backLink = document.getElementById("back-link");
+      if (backLink) backLink.setAttribute("aria-label", backText);
+      const backLabel = document.querySelector(".it-wallet-back-label");
+      if (backLabel) backLabel.textContent = backText;
+
+      const cancelLink = document.getElementById("qr-cancel-link");
+      if (cancelLink) cancelLink.textContent = t("cancelLabel");
+
+      const reloadLabel = document.getElementById("qr-reload-label");
+      if (reloadLabel) reloadLabel.textContent = t("qrCodeReloadLabel");
+
+      const title = document.getElementById("content-title");
+      if (title) title.textContent = t("contentTitle");
+      const info = document.getElementById("content-qrcode-info-text");
+      if (info) {
+        info.innerHTML = t("qrCodeValidInfo", { seconds: PREVIEW_SECONDS, walletName: WALLET_NAME });
+      }
+      const support = document.getElementById("content-text");
+      if (support) support.innerHTML = wt(t, "supportText");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const qrCode = document.querySelector("qr-code");
+      if (qrCode) qrCode.addEventListener("codeRendered", adjustQrIconLayout);
+      requestAnimationFrame(adjustQrIconLayout);
+
+      const initialLang = localStorage.getItem("lang") || "it";
+      i18next.use(i18nextHttpBackend).init({
+        lng: initialLang,
+        fallbackLng: "it",
+        backend: { loadPath: "locales/qr-{{lng}}.json" }
+      }).then(function () {
+        if (typeof initHeaderLangDropdown === "function") {
+          initHeaderLangDropdown(i18next, {
+            afterLanguageChange: function (lng) {
+              const code = (lng || "it").split("-")[0];
+              localStorage.setItem("lang", code === "en" ? "en" : "it");
+              updateTexts(i18next.t);
+            }
+          });
+        }
+        updateTexts(i18next.t);
+      });
+    });
+  </script>
+</body>
+
+</html>
