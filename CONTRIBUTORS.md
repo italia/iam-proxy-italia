@@ -19,5 +19,4 @@
 - GARR IDEM Community
 - Pasquale De Rose @ E&Y
 - Sara Longobardi @ Accenture
-- Manuel Pacella @ IPZS
-- Manuel Ciofo @ IPZS
+- IPZS Team
