@@ -58,7 +58,7 @@ jobs:
         env:
           # saml2 starts the SP under test.
           # wallet starts Mongo and the wallet instance.
-          # WCT stays off the demo and wallet profiles until issuance and presentation pass locally.
+          # pagopa-wallet-cli is on demo/wct only, so this profile set does not start WCT.
           COMPOSE_PROFILES: saml2,wallet
         run: |
           cd Docker-compose

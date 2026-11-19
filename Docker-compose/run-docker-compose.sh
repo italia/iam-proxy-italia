@@ -187,7 +187,9 @@ function initialize_satosa {
   mkdir -p ./wallet-instance-demo/config
   mkdir -p ./wallet-instance-demo/certs
   mkdir -p ./pagopa-wallet-cli/data
-  chmod 777 ./pagopa-wallet-cli/data || true
+  # Container runs as wct (uid 1001). Nested files from host runs are often
+  # uid 1000 mode 644; chmod only the top dir leaves wct.db and logs unwritable.
+  chmod -R a+rwX ./pagopa-wallet-cli/data || true
 
   if [ -f ./.env ] && [ "$SATOSA_FORCE_ENV" != "true" ]; then echo ".env file is already initialized" ; else cp env.example .env ; fi
   init_files ./iam-proxy-italia-project/proxy_conf.yaml "iam-proxy-italia" "cp -R ../iam-proxy-italia-project ./"

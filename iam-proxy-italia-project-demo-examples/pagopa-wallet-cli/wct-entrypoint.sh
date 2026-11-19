@@ -1,7 +1,7 @@
 #!/bin/sh
 # Default start runs issuance.
-# Presentation runs only when CONFIG_PRESENTATION_AUTHORIZE_URI is set:
-# the ini authorize_request_url is a placeholder and has no client_id.
+# Presentation runs when CONFIG_PRESENTATION_AUTHORIZE_SCRIPT or
+# CONFIG_PRESENTATION_AUTHORIZE_URI is set.
 # Any arguments are forwarded to the upstream entrypoint (one wct command).
 set -eu
 
@@ -22,10 +22,10 @@ set +e
 issuance_status=$?
 set -e
 
-if [ -z "${CONFIG_PRESENTATION_AUTHORIZE_URI:-}" ]; then
+if [ -z "${CONFIG_PRESENTATION_AUTHORIZE_SCRIPT:-}" ] && [ -z "${CONFIG_PRESENTATION_AUTHORIZE_URI:-}" ]; then
   echo "*************************************************"
   echo "          TEST:PRESENTATION skipped"
-  echo "          Set CONFIG_PRESENTATION_AUTHORIZE_URI to run it"
+  echo "          Set CONFIG_PRESENTATION_AUTHORIZE_SCRIPT or CONFIG_PRESENTATION_AUTHORIZE_URI to run it"
   echo "*************************************************"
   exit "$issuance_status"
 fi

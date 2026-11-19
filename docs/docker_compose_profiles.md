@@ -15,7 +15,8 @@ The services `iam-proxy-italia` and `satosa-nginx` do not have a profile and are
 * **oidc** – OIDC-related services: trust-anchor, CIE provider, relying-party demo (requires storage for backend)
 * **wallet** – enable MongoDB for Wallet (OpenID4VP / OpenID4VCI) backends
 * **dev** – development/test: SAML2 SP and SPID checker (same stack as saml2 for dev)
-* **demo** – start all demo services (storage, SAML2, OIDC, Wallet-related)
+* **demo** – start all demo services (storage, SAML2, OIDC, Wallet-related), including the PagoPA WCT (`pagopa-wallet-cli`)
+* **wct** – start only the PagoPA wallet-conformance-test service (plus its dependencies when combined with other profiles)
 
 You can specify the required profile with `--profile` option in Docker Compose. Example with the `demo` profile to start all services:
 ```
@@ -50,6 +51,7 @@ COMPOSE_PROFILES=dev,storage_mongo docker compose up
 | relying-party-demo   | demo, storage_mongo, oidc |
 | satosa-nginx         | (none – always on) |
 | iam-proxy-italia     | (none – always on) |
+| pagopa-wallet-cli    | demo, wct |
 
 #### Services by profile
 
@@ -62,7 +64,8 @@ COMPOSE_PROFILES=dev,storage_mongo docker compose up
 | oidc            | satosa-mongo, trust-anchor, cie-provider, relying-party-demo-mongo, relying-party-demo, satosa-nginx, iam-proxy-italia |
 | wallet          | satosa-mongo, satosa-nginx, iam-proxy-italia |
 | dev             | django_sp, spid-samlcheck, satosa-nginx, iam-proxy-italia |
-| demo            | all of the above |
+| demo            | all of the above, plus pagopa-wallet-cli |
+| wct             | pagopa-wallet-cli (pair with demo or wallet stack services as needed) |
 
 #### Semantic grouping (SAML2 vs OIDC vs Wallet)
 
