@@ -2,14 +2,14 @@
   "$schema": "./branding.config.schema.json",
   "staticBasePath": "/static",
   "organizationName": {
-    "it": "Nome dell'Organizzazione",
-    "en": "Organization Name"
+    "it": "Ente di appartenenza",
+    "en": "Owning entity"
   },
   "logo": {
     "image": "",
     "alt": {
       "it": "Il tuo logo",
-      "en": "Your Logo"
+      "en": "Your logo"
     }
   },
   "walletBrandLogo": "img/IT-Wallet-Logo-Primary-BlueItalia.svg",
@@ -24,11 +24,11 @@
       "en": "Legal notes"
     },
     "privacy": {
-      "it": "Privacy Policy",
-      "en": "Privacy Policy"
+      "it": "Privacy policy",
+      "en": "Privacy policy"
     },
     "accessibility": {
-      "it": "Dichiarazione Accessibilità",
+      "it": "Dichiarazione accessibilità",
       "en": "Accessibility statement"
     }
   },
@@ -45,7 +45,7 @@
     "privacyUrl": "https://www.example.org/privacy/"
   },
   "assets": {
-    "cacheBustVersion": "wallet-ui-20260422",
+    "cacheBustVersion": "wallet-ui-20261119",
     "fontsPublicPath": "spid/fonts"
   }
 }

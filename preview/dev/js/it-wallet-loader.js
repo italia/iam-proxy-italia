@@ -7,6 +7,30 @@ const SHOW_CARD_LEARN_MORE = false;
 const SEARCH_MIN_WALLETS = 7;
 const WALLET_LOADING_FALLBACK = 'Caricamento in corso...';
 const WALLET_ERROR_FALLBACK = 'Impossibile caricare l\'elenco wallet. Ricarica la pagina.';
+const SHARED_UI = './';
+
+function resolveAsset(path) {
+  if (!path) return path;
+  if (/^(https?:|\/)/.test(path)) return path;
+  return new URL(path, window.location.href).href;
+}
+
+function walletDisplayName(wallet) {
+  const lang = String(i18next.language || 'it').toLowerCase();
+  if (lang.startsWith('en') && wallet?.name_en) return wallet.name_en;
+  return wallet?.name || '';
+}
+
+function fitHeaderLogoToText() {
+  const svg = document.getElementById('header-logo');
+  const text = document.getElementById('header-logo-text');
+  if (!(svg instanceof SVGSVGElement) || !text || typeof text.getBBox !== 'function') return;
+  const box = text.getBBox();
+  const x = Math.min(0, box.x);
+  const width = Math.max(1, box.x + box.width - x);
+  svg.setAttribute('viewBox', `${x} 0 ${width} 40`);
+  svg.style.width = '';
+}
 
 function getWalletGrid() {
   return document.getElementById('wallet-grid');
@@ -66,6 +90,10 @@ function loadDocument(resource) {
   if (eidTitle) eidTitle.textContent = logoText;
   const headerLogoText = document.getElementById('header-logo-text');
   if (headerLogoText) headerLogoText.textContent = logoText;
+  fitHeaderLogoToText();
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => fitHeaderLogoToText());
+  }
   const headerLogo = document.getElementById('header-logo');
   if (headerLogo instanceof SVGElement && eidTitle) {
     headerLogo.setAttribute('role', 'img');
@@ -159,10 +187,10 @@ function shuffleWallets(wallets) {
 
 function sortWallets(wallets, sortValue) {
   if (sortValue === 'az') {
-    return [...wallets].sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+    return [...wallets].sort((a, b) => walletDisplayName(a).localeCompare(walletDisplayName(b), undefined, { sensitivity: 'base' }));
   }
   if (sortValue === 'za') {
-    return [...wallets].sort((a, b) => (b.name || '').localeCompare(a.name || '', undefined, { sensitivity: 'base' }));
+    return [...wallets].sort((a, b) => walletDisplayName(b).localeCompare(walletDisplayName(a), undefined, { sensitivity: 'base' }));
   }
   return wallets;
 }
@@ -180,24 +208,35 @@ function filterWallets(wallets, query) {
   const q = query.trim().toLowerCase();
   return wallets.filter((w) => {
     const idMatch = matchesLike(w.id, q);
-    const nameMatch = matchesLike(w.name, q);
+    const nameMatch = matchesLike(walletDisplayName(w), q);
     return idMatch || nameMatch;
   });
 }
 
-function buildWalletUri(uri) {
-  const params = new URLSearchParams(window.location.search);
-  // Default return to proxy's disco callback when missing (e.g. direct access or params lost)
-  const returnUrl = params.get('return') || (window.location.origin + '/Saml2/disco');
-  // For wallet flow, entityID must be 'wallet' to route to OpenID4VP; do not overwrite with page params
-  const entityID = uri.includes('entityID=wallet') ? 'wallet' : (params.get('entityID') || 'wallet');
+function buildWalletUri(wallet) {
+  const uri = wallet.uri;
+  const pageParams = new URLSearchParams(window.location.search);
+  const returnUrl = pageParams.get('return') || (window.location.origin + '/Saml2/disco');
+  const entityID = uri.includes('entityID=wallet') ? 'wallet' : (pageParams.get('entityID') || 'wallet');
   try {
-    const u = new URL(uri, window.location.origin);
-    u.searchParams.set('return', returnUrl);
-    u.searchParams.set('entityID', entityID);
+    const u = new URL(uri, window.location.href);
+    if (uri.includes('entityID=wallet')) {
+      u.searchParams.set('return', returnUrl);
+      u.searchParams.set('entityID', entityID);
+    } else {
+      if (pageParams.has('return')) u.searchParams.set('return', pageParams.get('return'));
+      if (pageParams.has('entityID')) u.searchParams.set('entityID', pageParams.get('entityID'));
+    }
+    if (wallet.id) u.searchParams.set('wallet_id', wallet.id);
     return u.toString();
   } catch {
-    return uri + (uri.includes('?') ? '&' : '?') + 'return=' + encodeURIComponent(returnUrl) + '&entityID=' + encodeURIComponent(entityID);
+    const params = new URLSearchParams();
+    if (pageParams.has('return')) params.set('return', pageParams.get('return'));
+    if (pageParams.has('entityID')) params.set('entityID', pageParams.get('entityID'));
+    if (wallet.id) params.set('wallet_id', wallet.id);
+    const query = params.toString();
+    const separator = uri.includes('?') ? '&' : '?';
+    return query ? `${uri}${separator}${query}` : uri;
   }
 }
 
@@ -216,7 +255,7 @@ function createWalletCard(wallet, resource, basePath) {
   body.className = 'it-card-body d-flex flex-column justify-content-center';
 
   const cardLink = document.createElement('a');
-  cardLink.href = buildWalletUri(wallet.uri);
+  cardLink.href = buildWalletUri(wallet);
   cardLink.className = 'it-wallet-card-hit';
 
   const row = document.createElement('div');
@@ -225,7 +264,7 @@ function createWalletCard(wallet, resource, basePath) {
   const left = document.createElement('div');
   left.className = 'it-wallet-card-left';
   const img = document.createElement('img');
-  img.src = (wallet.logo_uri || '').startsWith('/') ? wallet.logo_uri : basePath + (wallet.logo_uri || '');
+  img.src = resolveAsset(wallet.logo_uri || SHARED_UI + 'img/wallet-placeholder.svg');
   img.alt = '';
   img.setAttribute('aria-hidden', 'true');
   img.className = 'wallet-card-logo flex-shrink-0';
@@ -234,7 +273,7 @@ function createWalletCard(wallet, resource, basePath) {
   const title = document.createElement('h2');
   title.id = `it-wallet-card-title-${walletCardSlug(wallet)}`;
   title.className = 'it-card-title mb-0 it-wallet-card-title text-start h5';
-  title.textContent = wallet.name;
+  title.textContent = walletDisplayName(wallet);
   card.setAttribute('aria-labelledby', title.id);
   left.appendChild(title);
 
@@ -244,7 +283,7 @@ function createWalletCard(wallet, resource, basePath) {
   const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   arrowSvg.setAttribute('class', 'icon');
   const arrowUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-  arrowUse.setAttribute('href', basePath + 'svg/sprites.svg#it-arrow-right');
+  arrowUse.setAttribute('href', SHARED_UI + 'svg/sprites.svg#it-arrow-right');
   arrowSvg.appendChild(arrowUse);
   arrow.appendChild(arrowSvg);
 
@@ -293,7 +332,7 @@ function createWalletCard(wallet, resource, basePath) {
     extIcon.setAttribute('class', 'icon icon-sm ms-1');
     extIcon.setAttribute('aria-hidden', 'true');
     const useEl = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    useEl.setAttribute('href', basePath + 'svg/sprites.svg#it-external-link');
+    useEl.setAttribute('href', SHARED_UI + 'svg/sprites.svg#it-external-link');
     extIcon.appendChild(useEl);
     howToGetLink.appendChild(extIcon);
 
@@ -339,7 +378,7 @@ function renderWallets(wallets, resource, basePath) {
     const emptyDiv = document.createElement('div');
     emptyDiv.className = 'col-12 d-flex flex-column align-items-center justify-content-center py-5';
     const img = document.createElement('img');
-    img.src = basePath + 'img/error-icon.svg';
+    img.src = resolveAsset(SHARED_UI + 'img/error-icon.svg');
     img.alt = '';
     img.className = 'it-wallet-no-results-icon mb-3';
     img.setAttribute('aria-hidden', 'true');
@@ -371,7 +410,8 @@ function setupBackLink() {
   if (backLink) {
     const params = new URLSearchParams(window.location.search);
     const search = params.toString();
-    backLink.href = search ? 'disco.html?' + search : 'disco.html';
+    const discoUrl = '../discovery-page/disco.html';
+    backLink.href = search ? discoUrl + '?' + search : discoUrl;
   }
 }
 
@@ -411,7 +451,7 @@ async function loadItWalletPage() {
   let wallets = [];
   let loadFailed = false;
   try {
-    const resp = await fetch(basePath + 'data/it-wallets.json');
+    const resp = await fetch(basePath + 'data/it-wallets.json?v=wallet-ui-20261119');
     if (!resp.ok) {
       loadFailed = true;
       console.error('Error loading it-wallets.json: HTTP', resp.status);
@@ -779,12 +819,18 @@ async function loadItWalletPage() {
   setupBackLink();
 }
 
+// Keep language across pages via localStorage
+const walletInitialLang =
+  typeof window.getPreferredLang === 'function'
+    ? window.getPreferredLang()
+    : (localStorage.getItem('lang') || 'it');
+
 i18next
   .use(i18nextHttpBackend)
   .init({
-    lng: 'it',
+    lng: walletInitialLang,
     fallbackLng: 'it',
-    backend: { loadPath: getBasePath() + 'locales/it-wallet-{{lng}}.json' }
+    backend: { loadPath: getBasePath() + 'locales/it-wallet-{{lng}}.json?v=wallet-ui-20261119' }
   })
   .then(() => {
     if (typeof window.initHeaderLangDropdown === 'function') {

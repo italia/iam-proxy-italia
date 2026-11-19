@@ -1,4 +1,4 @@
-/* global initHeaderLangDropdown */
+/* global initHeaderLangDropdown, getPreferredLang */
 /**
  * i18n for error_page.html: load locale and apply to data-i18n / data-i18n-title elements.
  */
@@ -58,7 +58,7 @@ if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined')
   i18next
     .use(i18nextHttpBackend)
     .init({
-      lng: document.documentElement.lang || 'it',
+      lng: (typeof getPreferredLang === 'function' ? getPreferredLang() : (localStorage.getItem('lang') || document.documentElement.lang || 'it')),
       fallbackLng: 'it',
       backend: {
         loadPath: basePath + 'locales/error-{{lng}}.json'
