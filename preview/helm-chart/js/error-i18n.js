@@ -1,11 +1,13 @@
-/* global initHeaderLangDropdown */
+/* global initHeaderLangDropdown, getPreferredLang */
 /**
  * i18n for error_page.html: load locale and apply to data-i18n / data-i18n-title elements.
  */
 
 function applyErrorTranslations() {
-  // Meta
-  document.title = i18next.t('meta.title');
+  var pageTitle = i18next.t('meta.title');
+  document.title = pageTitle;
+  var titleEl = document.getElementById('error-page-title');
+  if (titleEl) titleEl.textContent = pageTitle;
   var metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', i18next.t('meta.description'));
 
@@ -20,10 +22,31 @@ function applyErrorTranslations() {
     el.textContent = val;
   });
 
-  // data-i18n-title: set title attribute (for links)
-  document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
-    var key = el.getAttribute('data-i18n-title');
-    if (key) el.setAttribute('title', i18next.t(key));
+  // Header logo wordmark (same structure as disco / it-wallet / qr-code)
+  var logoTitle = i18next.t('header.logo_title');
+  var eidTitle = document.getElementById('eid-title');
+  if (eidTitle) eidTitle.textContent = logoTitle;
+  var headerLogoText = document.getElementById('header-logo-text');
+  if (headerLogoText) headerLogoText.textContent = logoTitle;
+  var headerLogoImg = document.getElementById('header-logo');
+  if (headerLogoImg && headerLogoImg.tagName === 'IMG') {
+    headerLogoImg.setAttribute('alt', logoTitle);
+  }
+
+  // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
+    var key = el.getAttribute('data-i18n-aria-label');
+    if (key) el.setAttribute('aria-label', i18next.t(key));
+  });
+
+  // data-i18n-newwindow: build an accessible name that announces the link opens
+  // in a new window/tab ("<visible text> (<hint>)"), mirroring disco/it-wallet.
+  var newWindowHint = i18next.t('footer.new_window_hint');
+  document.querySelectorAll('[data-i18n-newwindow]').forEach(function (el) {
+    var textEl = el.matches('[data-i18n]') ? el : el.querySelector('[data-i18n]');
+    var text = (textEl ? textEl.textContent : el.textContent) || '';
+    text = text.trim();
+    el.setAttribute('aria-label', newWindowHint ? text + ' (' + newWindowHint + ')' : text);
   });
 
   // Update html lang
@@ -46,7 +69,7 @@ if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined')
   i18next
     .use(i18nextHttpBackend)
     .init({
-      lng: document.documentElement.lang || 'it',
+      lng: (typeof getPreferredLang === 'function' ? getPreferredLang() : (localStorage.getItem('lang') || document.documentElement.lang || 'it')),
       fallbackLng: 'it',
       backend: {
         loadPath: basePath + 'locales/error-{{lng}}.json'

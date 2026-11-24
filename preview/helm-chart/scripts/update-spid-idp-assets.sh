@@ -15,4 +15,4 @@ for id in arubaid etnaid infocertid intesaid intesigroupspid lepidaid namirialid
 done
 
 echo "SPID IdP assets updated from italia/spid-graphics."
-echo "Note: InfoCamere logo (spid-idp-infocamereid.svg) not yet in official repo; add manually when available."
+echo "Note: InfoCamere logo (img/spid-idp-infocamereid.svg) is not in italia/spid-graphics; it is bundled and maintained manually in this repo (not downloaded here)."
