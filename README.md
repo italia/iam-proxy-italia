@@ -92,15 +92,16 @@ IAM Proxy Italia includes a set of demo components to exercise the features.
 
 User may run them via [Docker Compose](docs/docker-compose.md); use [profiles](docs/docker_compose_profiles.md) to select services. Components live in `iam-proxy-italia-project-demo-examples` and are wired in [Docker-compose/docker-compose.yml](Docker-compose/docker-compose.yml):
 
-| Component                | Path                                         | Docker service         | Profiles                                        | Exercises                                |
-| ------------------------ | -------------------------------------------- | ---------------------- | ----------------------------------------------- | ---------------------------------------- |
-| **Django SAML2 SP**      | `djangosaml2_sp/`                            | `django_sp`            | demo, dev, saml2                                | SAML2 frontend, SPID/CIE/Wallet backends |
-| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor`         | demo, storage_mongo, oidc                       | OpenID Federation 1.0 Trust Anchor / X.509 PKI certificate authority                         |
-| **CIE OIDC provider**    | `spid_cie_oidc_django/provider/`             | `cie-provider`         | demo, storage_mongo, oidc                       | CIE OIDC backend                         |
-| **OIDC RP**              | `oidc_rp/`                                   | `relying-party-demo`   | demo, storage_mongo, oidc                       | OIDC frontend (satosa-oidcop)            |
-| **MongoDB**              | —                                            | `satosa-mongo`         | demo, storage_mongo, mongoexpress, oidc, wallet | OIDC frontend, CIE OIDC backend, Wallet  |
-| **Mongo Express**        | —                                            | `satosa-mongo-express` | demo, mongoexpress                              | MongoDB UI                               |
-| **SPID SAML checker**    | —                                            | `spid-samlcheck`       | demo, dev, saml2                                | SPID backend (metadata & flows)          |
+| Component                | Path                                         | Docker service         | Profiles                                                           | Exercises                                |
+| ------------------------ | -------------------------------------------- | ---------------------- | ------------------------------------------------------------------ | ---------------------------------------- |
+| **Django SAML2 SP**      | `djangosaml2_sp/`                            | `django_sp`            | demo, dev, saml2                                                   | SAML2 frontend, SPID/CIE/Wallet backends |
+| **Federation authority** | `spid_cie_oidc_django/federation_authority/` | `trust-anchor`         | demo, storage_mongo, oidc                                          | OpenID Federation 1.0 Trust Anchor / X.509 PKI certificate authority                         |
+| **CIE OIDC provider**    | `spid_cie_oidc_django/provider/`             | `cie-provider`         | demo, storage_mongo, oidc                                          | CIE OIDC backend                         |
+| **OIDC RP**              | `oidc_rp/`                                   | `relying-party-demo`   | demo, storage_mongo, oidc                                          | OIDC frontend (satosa-oidcop)            |
+| **Wallet Instance Demo** | `iam-proxy-italia-wallet-instance-demo/`     | `wallet-instance-demo` | demo, storage_mongo, oidc, wallet, wallet_instance_demo            | OpenID4VCI issuance, OpenID4VP presentation |
+| **MongoDB**              | —                                            | `satosa-mongo`         | demo, storage_mongo, mongoexpress, oidc, wallet                    | OIDC frontend, CIE OIDC backend, Wallet  |
+| **Mongo Express**        | —                                            | `satosa-mongo-express` | demo, mongoexpress                                                 | MongoDB UI                               |
+| **SPID SAML checker**    | —                                            | `spid-samlcheck`       | demo, dev, saml2                                                   | SPID backend (metadata & flows)          |
 
 See [docs/docker_compose_profiles.md](docs/docker_compose_profiles.md) and [Docker-compose/run-docker-compose.sh](Docker-compose/run-docker-compose.sh).
 
