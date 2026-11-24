@@ -280,6 +280,7 @@ mongodb:
       authentication: "cie_oidc_authentication"
       authenticationToken: "cie_oidc_authentication_token"
       users: "cie_oidc_users"
+      trustChains: "cie_oidc_trust_chains"
   # External MongoDB configuration (used when enabled: false)
   # Note: usernames, passwords, and databases are taken from mongodb.auth.* arrays
   # where index 0 = frontend and index 1 = backend
@@ -444,33 +445,16 @@ proxyConf:
 internalAttributes:
   attributes:
     address:
-      openid: [address.street_address]
-      orcid: [addresses.str]
+      openid: [address]
       saml: [postaladdress, address]
       openid4vp: [address]
     displayname:
       openid: [nickname]
-      orcid: [name.credit-name]
-      github: [login]
       saml: [displayName, familyname, FamilyName, familyName]
-      cie_oidc: [first_name]
     edupersontargetedid:
-      facebook: [id]
-      linkedin: [id]
-      orcid: [orcid]
-      github: [id]
       openid: [sub]
-      saml:
-        [
-          eduPersonTargetedID,
-          eduPersonTargetedId,
-          spidCode,
-          sub,
-          id,
-          fiscalNumber,
-        ]
+      saml: [eduPersonTargetedID, eduPersonTargetedId, spidCode, sub, id, fiscalNumber]
       openid4vp: [sub]
-      cie_oidc: [sub]
     edupersonprincipalname:
       saml: [eduPersonPrincipalName]
     edupersonscopedaffiliation:
@@ -479,6 +463,7 @@ internalAttributes:
       saml: [eduPersonEntitlement]
     schacpersonaluniqueid:
       saml: [schacPersonalUniqueID, fiscalNumber]
+      openid: [fiscal_number]
     schacpersonaluniquecode:
       saml: [schacPersonalUniqueCode]
     schachomeorganizationtype:
@@ -486,62 +471,48 @@ internalAttributes:
     schachomeorganization:
       saml: [schacHomeOrganization]
     givenname:
-      facebook: [first_name]
-      linkedin: [email-address]
-      orcid: [name.given-names.value]
       openid: [given_name]
       openid4vp: [given_name]
       saml: [givenName, name, Name]
-      cie_oidc: [first_name]
     mail:
-      facebook: [email]
-      linkedin: [email-address]
-      orcid: [emails.str]
-      github: [email]
       openid: [email]
       saml: [mail, email]
       openid4vp: [mail, email]
-      openid4vci: [mail, email]
-      cie_oidc: [email]
     name:
-      facebook: [name]
-      orcid: [name.credit-name]
-      github: [name]
       openid: [name]
       saml: [name, Name]
       openid4vp: [given_name]
-      openid4vci: [given_name]
-      cie_oidc: [first_name]
+      # Session attributes are already internal names (givenname), plus the original claim names.
+      openid4vci: [givenname, given_name]
     surname:
-      facebook: [last_name]
-      linkedin: [lastName]
-      orcid: [name.family-name.value]
       openid: [family_name]
       saml: [sn, surname, familyName, FamilyName]
       openid4vp: [family_name]
-      openid4vci: [family_name]
-      cie_oidc: [last_name]
+      openid4vci: [surname, family_name]
+    # spid related
     spidcode:
-      openid: [spidcode]
+      openid: [sub]
       openid4vp: [sub]
       saml: [spidCode]
+  # decommentando questo la email rilasciata anche in caso di account linking sarà quella di spid
+  # commentando: email sarà rilasciato in formato URI
     email:
-      facebook: [email]
-      linkedin: [email-address]
-      orcid: [emails.str]
-      github: [email]
       openid: [email]
       openid4vp: [mail, email]
       saml: [mail]
-      cie_oidc: [email]
+    email_verified:
+      openid: [email_verified]
     familyname:
       saml: [familyName, familyname, FamilyName]
-      cie_oidc: [last_name]
+      openid: [family_name]
+
     fiscalnumber:
       saml: [fiscalNumber, fiscalnumber, FiscalNumber]
-      cie_oidc: [fiscal_number]
+      openid: [fiscal_number]
+      openid4vp: [tax_id_code]
     gender:
       saml: [gender, Gender]
+      openid: [gender]
     companyName:
       saml: [companyName]
     registeredOffice:
@@ -554,19 +525,23 @@ internalAttributes:
       saml: [digitalAddress]
     placeOfBirth:
       saml: [placeOfBirth]
-      openid4vci: [placeOfBirth]
+      openid: [place_of_birth]
+      # IT-Wallet ID discloses place_of_birth as an object; locality is the SPID-style string.
+      openid4vp: [place_of_birth.locality]
     countyOfBirth:
       saml: [countyOfBirth]
-      openid4vci: [countyOfBirth]
     dateOfBirth:
       saml: [dateOfBirth]
-      openid4vci: [dateOfBirth]
-    mobilePhone:
-      saml: [mobilePhone]
+      openid: [birthdate]
+      openid4vp: [birthdate]
+    birthdate:
+      saml: [dateOfBirth]
+      openid: [birthdate]
+      openid4vp: [birthdate]
     expirationDate:
       saml: [expirationDate]
     fiscal_code:
-      openid4vci: [fiscal_code]
+      openid4vci: [fiscalnumber, fiscal_code, fiscal_number]
   userIdFromAttrs: [edupersontargetedid]
   userIdToAttr: spidcode
 
@@ -615,14 +590,15 @@ secret:
   # Annotations to add to the created secret (only used when creating a new secret)
   annotations: {}
 
+# CIE OIDC backend federation settings.
+# The resolve, policy and jwks paths are literals in backendsConfig.cieoidc
+# because SATOSA does not expand ${VAR} inside YAML strings.
 openid:
-  federation:
-    resolveEndpoint: "resolve"
-    legalInformationUri: "en/website/legal-information"
-  rp:
-    jwksUri: "openid_relying_party/jwks.json"
-    signedJwksUri: "openid_relying_party/jwks.jose"
-    callbackUri: "oidc/callback"
+  # Trust anchor URL (TRUST_ANCHOR_URL), used for trust_anchor and authority_hints.
+  trustAnchorUrl: "http://trust-anchor.example.org:5002"
+  # CIE OpenID Provider URL (OPENID_CIE_PROVIDER_URL).
+  # Keep it equal to the CieOidcRp key in microservicesConfig.target_based_routing.
+  cieProviderUrl: "http://cie-provider.example.org:8002/oidc/op"
 
 backendsConfig:
   cieoidc: |
@@ -647,7 +623,7 @@ backendsConfig:
               db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
               db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
               db_trust_chain_collection: !ENV MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION
-              data_ttl: 63072000 # 2 years
+              data_ttl: 15768000 # 6 months
             connection_params:
               username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
               password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
@@ -723,10 +699,10 @@ backendsConfig:
 
       metadata: &metadata
         federation_entity:
-          federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
+          federation_resolve_endpoint: "<base_url>/<name>/resolve"
           organization_name: Example RP
           homepage_uri: <base_url>/<name>
-          policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
+          policy_uri: "<base_url>/<name>/en/website/legal-information"
           logo_uri: !ENV SAMPLE_CIE_LOGO_URI
           contacts:
             - ops@rp.example.it
@@ -737,8 +713,8 @@ backendsConfig:
           organization_name: Example RP
           client_registration_types:
             - automatic
-          jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
-          signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
+          jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.json"
+          signed_jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.jose"
           jwks: # this field is autopopulated
           contacts:
             - ops@rp.example.it
@@ -1163,6 +1139,36 @@ frontendsConfig:
                     supports_minting:
                       - access_token
                       - refresh_token
+          # Extend profile so userinfo releases IT-Wallet matching claims (SCOPE2CLAIMS default omits them).
+          scopes_to_claims:
+            openid:
+              - sub
+            profile:
+              - name
+              - given_name
+              - family_name
+              - middle_name
+              - nickname
+              - profile
+              - picture
+              - website
+              - gender
+              - birthdate
+              - place_of_birth
+              - fiscal_number
+              - zoneinfo
+              - locale
+              - updated_at
+              - preferred_username
+            email:
+              - email
+              - email_verified
+            address:
+              - address
+            phone:
+              - phone_number
+              - phone_number_verified
+            offline_access: []
           capabilities:
             grant_types_supported:
               - authorization_code
@@ -1178,7 +1184,10 @@ frontendsConfig:
             claims_supported:
               - sub
               - given_name
+              - family_name
               - birthdate
+              - place_of_birth
+              - fiscal_number
               - email
           endpoint:
             provider_info:
@@ -1433,7 +1442,7 @@ microservicesConfig:
         "https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO": "cieSaml2"
         #IT Wallet
         "wallet": "OpenID4VP"
-        "http://cie-provider.example.org:8002/oidc/op/": "CieOidcRp"
+        "http://cie-provider.example.org:8002/oidc/op": "CieOidcRp"
 
 metadata:
   idp:

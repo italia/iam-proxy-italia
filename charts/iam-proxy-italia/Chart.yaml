@@ -5,10 +5,10 @@ description: |
   SAML-to-SAML, OIDC-to-SAML, SAML-to-Wallet and OIDC-to-Wallet
   interoperability with the  Italian Digital Identity Systems.
 version: 0.1.0
-appVersion: "v3.3"
+appVersion: "v3.8.0"
 
 dependencies:
   - name: mongodb
-    version: 19.1.13
+    version: 20.0.23
     repository: "https://charts.bitnami.com/bitnami"
     condition: mongodb.enabled

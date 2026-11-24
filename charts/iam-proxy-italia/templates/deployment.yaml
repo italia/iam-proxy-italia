@@ -101,20 +101,12 @@ spec:
               value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/disco.html" | quote }}
             - name: SATOSA_UNKNOW_ERROR_REDIRECT_PAGE
               value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/error_page.html" | quote }}
-            - name: FEDERATION_RESOLVE_ENDPOINT
-              value: {{ .Values.openid.federation.resolveEndpoint }}
             - name: SAMPLE_CIE_LOGO_URI
               value: {{ .Values.staticFiles.externalUrl | default (printf "https://%s%s" .Values.satosa.hostname .Values.staticFiles.staticPath) | printf "%s/cie/sample-cie-logo.png" | quote }}
-            - name: FEDERATION_LEGAL_INFORMATION_URI
-              value: {{ .Values.openid.federation.legalInformationUri }}
-            - name: OPENID_RP_CLIENT_ID
-              value: {{ .Values.openid.rp.clientId | default (printf "https://%s/CieOidcRp" .Values.satosa.hostname) | quote }}
-            - name: OPENID_RP_JWKS_URI
-              value: {{ .Values.openid.rp.jwksUri }}
-            - name: OPENID_RP_SIGNED_JWKS_URI
-              value: {{ .Values.openid.rp.signedJwksUri }}
-            - name: OPENID_RP_CALLBACK_URI
-              value: {{ .Values.openid.rp.callbackUri }}
+            - name: TRUST_ANCHOR_URL
+              value: {{ .Values.openid.trustAnchorUrl | quote }}
+            - name: OPENID_CIE_PROVIDER_URL
+              value: {{ .Values.openid.cieProviderUrl | quote }}
             - name: MONGO_CIE_OIDC_BACKEND_HOST
               value: {{ if .Values.mongodb.enabled }}"mongodb://{{ include "iam-proxy-italia.fullname" . }}-mongodb:27017"{{ else }}"mongodb://{{ .Values.mongodb.external.backend.host }}:{{ .Values.mongodb.external.backend.port }}"{{ end }}
             - name: MONGO_CIE_OIDC_BACKEND_DB_NAME
@@ -125,6 +117,8 @@ spec:
               value: {{ .Values.mongodb.cieOidcBackend.collections.authenticationToken | quote }}
             - name: MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
               value: {{ .Values.mongodb.cieOidcBackend.collections.users | quote }}
+            - name: MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION
+              value: {{ .Values.mongodb.cieOidcBackend.collections.trustChains | quote }}
             - name: MONGODB_CIE_OIDC_BACKEND_USERNAME
               value: {{ index .Values.mongodb.auth.usernames 1 | quote }}
             - name: MONGODB_CIE_OIDC_BACKEND_PASSWORD
