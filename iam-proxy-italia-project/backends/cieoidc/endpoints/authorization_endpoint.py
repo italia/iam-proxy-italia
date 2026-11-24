@@ -9,6 +9,7 @@ from copy import deepcopy
 
 from satosa.attribute_mapping import AttributeMapper
 from satosa.context import Context
+from satosa.exception import SATOSABadRequestError, SATOSAError
 from satosa.internal import InternalData
 from satosa.response import Response
 from satosa.response import Redirect
@@ -108,9 +109,9 @@ class AuthorizationHandler(BaseEndpoint):
 
         provider_url = context.internal_data.get("target_entity_id")
         if not provider_url:
-            return self._handle_400(
-                context,
-                "No identity provider was selected. The request is missing target_entity_id.",
+            # Propagate so SATOSA redirects to proxy_conf ERROR_URL / error_page.html.
+            raise SATOSABadRequestError(
+                "No identity provider was selected. The request is missing target_entity_id."
             )
 
         try:
@@ -122,12 +123,11 @@ class AuthorizationHandler(BaseEndpoint):
                 exc,
                 exc_info=False,
             )
-            return self._handle_500(
-                context,
+            # Propagate so SATOSA redirects to proxy_conf ERROR_URL / error_page.html.
+            raise SATOSAError(
                 "The selected identity provider is temporarily unavailable. "
-                "Please try again later or choose another provider.",
-                exc,
-            )
+                "Please try again later or choose another provider."
+            ) from exc
 
         metadata = trust_chain.subject_configuration.payload["metadata"]["openid_provider"]
         authorization_endpoint = metadata["authorization_endpoint"]
