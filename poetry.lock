@@ -2967,7 +2967,7 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pyeudiw"
-version = "2.7.0"
+version = "2.8.0"
 description = "Python toolchain for building an OpenID4VP RP with a SATOSA backend compliant to the Italian Wallet Solution."
 optional = false
 python-versions = "*"
@@ -3000,8 +3000,8 @@ test = ["pytest", "pytest-mock"]
 [package.source]
 type = "git"
 url = "https://github.com/italia/eudi-wallet-it-python"
-reference = "dev"
-resolved_reference = "a952055dbe31e655f075dd42e22c105851c43852"
+reference = "2.8.0"
+resolved_reference = "40c6eb675aa1d5af1248b23c9e86535581041ba8"
 
 [[package]]
 name = "pyflakes"
@@ -4293,4 +4293,4 @@ test = ["flake8", "lxml", "msgpack", "pip-audit", "pyOpenSSL", "pygments", "pyte
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11.5,<4.0"
-content-hash = "fe6911b26512e2b48eec007d47018a25c1b6faa01b017421e3bbe0f3bef09480"
+content-hash = "699d8a4199fe9393110115903694c37c69bed46f95c159a25aae2c45514f858d"
