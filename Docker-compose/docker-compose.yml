@@ -178,7 +178,6 @@ services:
       - SATOSA_UI_LOGO_URL=${SATOSA_UI_LOGO_URL:-https://example_organization.org/logo.png}
       - SATOSA_UI_PRIVACY_URL_EN=${SATOSA_UI_PRIVACY_URL_EN:-https://example_organization.org/privacy}
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
-      - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}

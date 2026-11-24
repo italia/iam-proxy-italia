@@ -91,7 +91,6 @@ You can override the configuration of the proxy by setting one or more of the fo
 | **SATOSA_ENCRYPTION_KEY**            | Encryption key for state and OIDC tokens                   | CHANGE_ME!                     |
 | **SATOSA_SALT**                      | General-purpose salt for hashing/encryption                | CHANGE_ME!                     |
 | **SATOSA_STATE_ENCRYPTION_KEY**      | State encryption key                                       | CHANGE_ME!                     |
-| **SATOSA_USER_ID_HASH_SALT**         | User ID hash salt                                          | CHANGE_ME!                     |
 
 #### SAML2 / SPID / CIE backends
 
