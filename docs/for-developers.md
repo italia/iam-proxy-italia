@@ -5,7 +5,7 @@
 If you're running tests and don't want to pass through the Discovery page each time, you can use `idphinting` if your SP supports it. Example using a djangosaml2 Service Provider:
 
 ```
-https://localhost:8000/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8080
+http://localhost:8000/saml2/login/?idp=https://iam-proxy-italia.example.org/Saml2IDP/metadata&next=/saml2/echo_attributes&idphint=https%253A%252F%252Flocalhost%253A8443
 ```
 
 For spid-sp-test integration, see [.github/workflows/docker-compose-test.yml](../.github/workflows/docker-compose-test.yml) (SAML / spid-sp-test) and [.github/workflows/lint.yml](../.github/workflows/lint.yml) (flake8).

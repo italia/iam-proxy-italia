@@ -70,8 +70,10 @@ export SATOSA_HOSTNAME="${SATOSA_HOSTNAME:-$DEFAULT_SATOSA_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PROTO="${DEMO_WALLET_INSTANCE_PROTO:-$DEFAULT_DEMO_WALLET_INSTANCE_PROTO}"
 export DEMO_WALLET_INSTANCE_HOSTNAME="${DEMO_WALLET_INSTANCE_HOSTNAME:-$DEFAULT_DEMO_WALLET_INSTANCE_HOSTNAME}"
 export DEMO_WALLET_INSTANCE_PORT="${DEMO_WALLET_INSTANCE_PORT:-$DEFAULT_DEMO_WALLET_INSTANCE_PORT}"
+# docker-compose.yml port mapping and container env use WALLET_INSTANCE_PORT.
+export WALLET_INSTANCE_PORT="${WALLET_INSTANCE_PORT:-$DEMO_WALLET_INSTANCE_PORT}"
 export WALLET_INSTANCE_PASSWORD="${WALLET_INSTANCE_PASSWORD:-$DEFAULT_WALLET_INSTANCE_PASSWORD}"
-export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${DEMO_WALLET_INSTANCE_PORT}/provider}"
+export WALLET_PROVIDER_URL="${WALLET_PROVIDER_URL:-${DEMO_WALLET_INSTANCE_PROTO}://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT}/provider}"
 
 # --- pagopa wallet-conformance-test (pagopa-wallet-cli) ---
 export PAGOPA_CLI_SERVICE_NAME="${PAGOPA_CLI_SERVICE_NAME:-pagopa-wallet-cli}"
@@ -285,8 +287,10 @@ function start {
   if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",dev,"* || "${profiles}" == *",saml2,"* ]]; then
     echo -e "  SAML SP (djangosaml2_sp):  http://localhost:8000"
   fi
-  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",storage_mongo,"* || "${profiles}" == *",oidc,"* || "${profiles}" == *",wallet,"* || "${profiles}" == *",wallet_instance_demo,"* ]]; then
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",storage_mongo,"* || "${profiles}" == *",oidc,"* ]]; then
     echo -e "  OIDC RP demo:              http://localhost:8090"
+  fi
+  if [[ "${profiles}" == *",demo,"* || "${profiles}" == *",storage_mongo,"* || "${profiles}" == *",oidc,"* || "${profiles}" == *",wallet,"* || "${profiles}" == *",wallet_instance_demo,"* ]]; then
     echo -e "  Wallet instance demo:      https://${DEMO_WALLET_INSTANCE_HOSTNAME}:${WALLET_INSTANCE_PORT:-8080}"
     echo -e "  Wallet instance password:  ${WALLET_INSTANCE_PASSWORD}"
   fi
@@ -334,10 +338,10 @@ function announce {
   echo "  -s  lascia container e immagini: niente rimozione, pull o down -v"
   echo "  -t  dopo l'avvio esegue spid-sp-test"
   echo "  COMPOSE_PROFILES seleziona i profili del compose. Se la variabile non è impostata, il profilo è demo."
-  echo "  COMPOSE_PROFILES vuota avvia solo satosa e nginx."
+  echo "  COMPOSE_PROFILES vuota avvia solo satosa, nginx e certbot."
   echo ""
   if [ -z "${COMPOSE_PROFILES}" ]; then
-    echo "Profilo di questa esecuzione: nessuno (satosa e nginx)."
+    echo "Profilo di questa esecuzione: nessuno (satosa, nginx e certbot)."
   else
     echo "Profilo di questa esecuzione: ${COMPOSE_PROFILES}."
   fi
@@ -390,8 +394,8 @@ function help {
   echo ""
   echo "Profiles come from COMPOSE_PROFILES, as in docker compose."
   echo "When COMPOSE_PROFILES is unset, the script uses demo."
-  echo "When COMPOSE_PROFILES is empty, only satosa and nginx start."
-  echo "demo starts satosa, nginx, storage_mongo, mongo-express, django-sp, spid-saml-check and the OIDC demo."
+  echo "When COMPOSE_PROFILES is empty, only satosa, nginx, and certbot start."
+  echo "demo starts satosa, nginx, certbot, MongoDB, mongo-express, django-sp, spid-saml-check, the OIDC demo, and the Wallet Instance Demo."
   echo ""
   echo "#### SATOSA_HOSTNAME"
   echo "Hostname for the proxy (default when void: $DEFAULT_SATOSA_HOSTNAME). If it does not resolve,"

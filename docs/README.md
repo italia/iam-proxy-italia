@@ -9,7 +9,7 @@ Technical documentation for IAM Proxy Italia, organized by purpose.
 | [setup.md](setup.md) | Setup without Docker: installation, configuration, environment variables |
 | [docker-compose.md](docker-compose.md) | Docker Compose overview, run script, demo and production use |
 | [run-docker-compose.md](run-docker-compose.md) | `run-docker-compose.sh` options and behaviour |
-| [docker_compose_profiles.md](docker_compose_profiles.md) | Compose profiles (demo, dev, storage_mongo, saml2, oidc, wallet, etc.) |
+| [docker_compose_profiles.md](docker_compose_profiles.md) | Compose profiles (demo, dev, storage_mongo, saml2, oidc, wallet, wallet_instance_demo, etc.) |
 
 ## Configuration
 
@@ -41,6 +41,7 @@ Technical documentation for IAM Proxy Italia, organized by purpose.
 | -------- | ----------- |
 | [demo-djangosaml2-sp.md](demo-djangosaml2-sp.md) | Django SAML2 Service Provider demo |
 | [demo-oidc-rp.md](demo-oidc-rp.md) | OIDC Relying Party demo (auth code + PKCE, env vars, Docker) |
+| [iam-proxy-italia-wallet-instance-demo](https://github.com/italia/iam-proxy-italia-wallet-instance-demo) | Wallet Instance Demo (separate repo; Compose service `wallet-instance-demo`, config under `iam-proxy-italia-project-demo-examples/iam-proxy-italia-wallet-instance-demo/`) |
 | [demo-login-walkthrough.md](demo-login-walkthrough.md) | Step-by-step demo login walkthrough |
 | [demo-identity-python-forks-patching.md](demo-identity-python-forks-patching.md) | PySAML2 and SATOSA forked branches and patching |
 | [pyff-metadata.md](pyff-metadata.md) | pyFF metadata aggregation and Discovery Service |
