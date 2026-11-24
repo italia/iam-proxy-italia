@@ -4,9 +4,12 @@ import time
 from datetime import datetime, timezone
 from types import SimpleNamespace
 from typing import Optional, List
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 from satosa.backends.base import BackendModule
 from satosa.backends.oauth import get_metadata_desc_for_oauth_backend
+from satosa.context import Context
+from satosa.response import SeeOther
 
 from .utils.endpoints_loader import EndpointsLoader
 from .storage.db_engine import OidcDbEngine
@@ -112,11 +115,45 @@ class CieOidcBackend(BackendModule):
             f"Params [metadata: {context}, conf: {internal_request}]"
         )
 
+        if not context.get_decoration(Context.KEY_TARGET_ENTITYID):
+            return self.disco_query(context)
+
         authorization_endpoint = self.endpoints.get("authorization")
         if not authorization_endpoint:
             raise ValueError("No authorization endpoint configured in the CieOidc backend")
 
         return authorization_endpoint(context)
+
+    def disco_query(self, context):
+        """
+        Redirect the user to the discovery page so they can pick a CIE OIDC OP.
+
+        Mirrors satosa.backends.saml2.SAMLBackend.disco_query: the return URL is
+        ``<base_url>/<name>/disco``, which DiscoToTargetIssuer already handles.
+
+        :type context: satosa.context.Context
+        :rtype: satosa.response.SeeOther
+        """
+        disco_srv = self.config.get("disco_srv")
+        if not disco_srv:
+            raise ValueError(
+                "disco_srv is not configured in the CieOidc backend; "
+                "it is required when no identity provider was selected"
+            )
+
+        return_url = f"{self.base_url}/{self.name}/disco"
+        parsed = urlparse(disco_srv)
+        query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+        query["return"] = return_url
+        query.setdefault("entityID", self._client_id)
+        loc = urlunparse(parsed._replace(query=urlencode(query)))
+
+        logger.info(
+            "Sending user to the discovery service disco_url=%s return=%s",
+            loc,
+            return_url,
+        )
+        return SeeOther(loc)
 
     def register_endpoints(self):
         el = EndpointsLoader(
