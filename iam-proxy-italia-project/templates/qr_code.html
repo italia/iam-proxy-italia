@@ -46,7 +46,7 @@
 
     <p id="content-qrcode-info-text" class="mb-3" aria-live="polite" aria-atomic="true"></p>
 
-    <p class="text-center mb-4">
+    <p class="text-center mb-4 qr-cancel-wrap">
       <a href="{{ static }}disco.html" id="qr-cancel-link" class="qr-cancel-link">Annulla</a>
     </p>
 
@@ -84,9 +84,11 @@
         if (!wrapper) return;
         wrapper.style.width = "23.1%";
         wrapper.style.aspectRatio = "1";
+        wrapper.style.height = "auto";
         wrapper.style.display = "flex";
         wrapper.style.alignItems = "center";
         wrapper.style.justifyContent = "center";
+        wrapper.style.overflow = "visible";
       }
 
       function setupNavigation() {
@@ -109,6 +111,17 @@
           const search = kept.toString();
           cancelLink.href = search ? DISCO_URL + "?" + search : DISCO_URL;
         }
+      }
+
+      function fitHeaderLogoToText() {
+        const svg = document.getElementById("header-logo");
+        const text = document.getElementById("header-logo-text");
+        if (!(svg instanceof SVGSVGElement) || !text || typeof text.getBBox !== "function") return;
+        const box = text.getBBox();
+        const x = Math.min(0, box.x);
+        const width = Math.max(1, box.x + box.width - x);
+        svg.setAttribute("viewBox", x + " 0 " + width + " 40");
+        svg.style.width = "";
       }
 
       function updateBackLink(t) {
@@ -137,8 +150,12 @@
         if (eidTitle) eidTitle.textContent = logoAlt;
         const headerLogoText = document.getElementById("header-logo-text");
         if (headerLogoText) headerLogoText.textContent = logoAlt;
+        fitHeaderLogoToText();
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(fitHeaderLogoToText);
+        }
 
-        document.querySelectorAll(".qr-header-logo-wallet").forEach(function (img) {
+        document.querySelectorAll(".header-title-section .it-wallet-navbar-logo").forEach(function (img) {
           img.setAttribute("alt", WALLET_NAME);
         });
 
@@ -191,7 +208,7 @@
         }
         if (pageState === "connected") {
           changeTitle(t("connectedTitle"));
-          changeQrCodeInfo(t("connectedText"));
+          changeQrCodeInfo(connectedSupportText(t));
           const access = document.querySelector("#content-actions .btn");
           if (access) access.textContent = t("clickAccessLabel");
           return;
@@ -327,11 +344,12 @@
         if (info) info.textContent = str;
       }
 
-      function changeQrCodeImg(str) {
+      function changeQrCodeImg(str, imgClass) {
         const link = document.getElementById("qr-code-link");
         if (!link) return;
         link.classList.remove("qr-faded");
-        link.innerHTML = '<img src="' + str + '" alt="" class="qr-code-img">';
+        const cls = imgClass || "qr-code-img";
+        link.innerHTML = '<img src="' + str + '" alt="" class="' + cls + '">';
       }
 
       function hideOverlay() {
@@ -339,14 +357,27 @@
         if (actions) actions.hidden = true;
       }
 
+      function connectedSupportText(t) {
+        return t("connectedText", {
+          siteName: t("header.region_name"),
+          interpolation: { escapeValue: true }
+        });
+      }
+
+      function enterThankYouLayout() {
+        const main = document.getElementById("main-content");
+        if (main) main.classList.add("is-thank-you");
+      }
+
       function connectionCompleted(data) {
         pageState = "connected";
         clearInterval(countdown);
         clearTimeout(pollingTimer);
         hideOverlay();
+        enterThankYouLayout();
         changeTitle(i18next.t("connectedTitle"));
-        changeQrCodeImg(STATIC_BASE + "img/new_check.svg");
-        changeQrCodeInfo(i18next.t("connectedText"));
+        changeQrCodeImg(STATIC_BASE + "img/OK_State.svg", "qr-thank-you-pictogram");
+        changeQrCodeInfo(connectedSupportText(i18next.t.bind(i18next)));
         changeText("");
         document.getElementById("content-actions").innerHTML =
           '<a href="' + data.redirect_uri + '" class="btn btn-primary btn-custom">' +

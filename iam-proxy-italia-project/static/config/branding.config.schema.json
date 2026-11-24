@@ -27,7 +27,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["image", "alt"],
-      "description": "Header logo for disco.html, it-wallet.html and error_page.html. When `image` is a non-empty path (SVG or PNG) it replaces the placeholder (text wordmark on disco/it-wallet, generic icon on the error page) with an <img>; otherwise the localized `alt` text is shown. On disco/it-wallet `alt` is the image alt text; on the error page the image is decorative and the title heading carries `alt`.",
+      "description": "Header logo for disco.html, it-wallet.html and error_page.html. When `image` is a non-empty path (SVG or PNG) it replaces the text wordmark placeholder with an <img> whose alt is the localized `alt` text; otherwise the localized `alt` text is shown as the wordmark.",
       "properties": {
         "image": {
           "type": "string",

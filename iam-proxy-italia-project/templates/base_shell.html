@@ -49,7 +49,10 @@
     .qr-code-payload-wrap.is-expired {
       width: var(--qr-size);
       height: var(--qr-size);
-      background-color: #D0D4D8;
+      background-color: #EBECED;
+      border: 1px dashed #C5C7C9;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
 
     .qr-code-payload-wrap.is-expired .qr-code-link {
@@ -120,6 +123,7 @@
       justify-content: center;
       gap: 0.5rem;
       text-align: left;
+      font-weight: 700;
     }
 
     .qr-expired-info .icon {
@@ -204,9 +208,11 @@
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 40" height="32" focusable="false">
             <text id="header-logo-text" class="it-header-logo-placeholder__text" x="0" y="28" aria-hidden="true">Il tuo logo</text>
           </svg>
+
           <span class="navbar-separator" aria-hidden="true"></span>
-          <img src="{{ static }}img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet"
-            class="it-wallet-navbar-logo qr-header-logo-wallet" height="32" />
+
+          <img src="{{ static }}img/IT-Wallet-Logo-Primary-BlueItalia.svg" alt="IT-Wallet" class="it-wallet-navbar-logo" height="32">
+
         </div>
       </div>
     </div>

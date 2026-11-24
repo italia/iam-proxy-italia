@@ -161,45 +161,6 @@ export function setHeaderLogo(html, { image, altText }) {
   return html;
 }
 
-// error_page.html uses a different header: a generic icon (`#it-code-circle`)
-// next to a visible `<h2>` title. We anchor on the icon content (and on the
-// injected image class) so the swap works without requiring an id and without
-// editing the template, on both the source and the nginx copy.
-const ERROR_LOGO_SVG_RE = /<svg\b[^>]*>[\s\S]*?sprites\.svg#it-code-circle[\s\S]*?<\/svg>/;
-const ERROR_LOGO_IMG_RE = /<img\b[^>]*\bit-header-logo-image\b[^>]*>/;
-
-function errorHeaderLogoSvg() {
-  return (
-    '<svg class="icon icon-lg me-2" aria-hidden="true">\n' +
-    '              <!-- YOUR LOGO HERE (same as disco) -->\n' +
-    '              <use href="svg/sprites.svg#it-code-circle"></use>\n' +
-    '            </svg>'
-  );
-}
-
-/**
- * Swap the error page header logo between the generic icon and a real logo
- * `<img>`. The image is decorative (`alt=""`, `aria-hidden`) because the
- * adjacent `#error-header-logo-title` heading already carries the visible name.
- * Idempotent; no-op when already in the desired form.
- */
-export function setErrorHeaderLogo(html, { image }) {
-  const hasSvg = ERROR_LOGO_SVG_RE.test(html);
-  const hasImg = ERROR_LOGO_IMG_RE.test(html);
-
-  if (image) {
-    const imgTag =
-      `<img class="it-header-logo-image me-2" src="${escapeHtmlAttr(image)}" ` +
-      'alt="" aria-hidden="true" height="32">';
-    if (hasSvg) return html.replace(ERROR_LOGO_SVG_RE, imgTag);
-    if (hasImg) return html.replace(ERROR_LOGO_IMG_RE, imgTag);
-    return html;
-  }
-
-  if (hasImg) return html.replace(ERROR_LOGO_IMG_RE, errorHeaderLogoSvg());
-  return html;
-}
-
 // ----------------------------------------------------------------------------
 // Config -> target mapping
 // ----------------------------------------------------------------------------
@@ -296,9 +257,9 @@ export function buildHtmlPipeline(config) {
     ],
     'error_page.html': [
       (html) => rewriteStaticBasePath(html, base),
-      (html) => setErrorHeaderLogo(html, { image: logoImage }),
+      applyHeaderLogo,
+      applyHeaderLogoText,
       (html) => setHtmlTextById(html, 'error-header-region-name', config.organizationName.it),
-      (html) => setHtmlTextById(html, 'error-header-logo-title', logoIt),
       (html) => setHtmlAttrByClass(html, 'error-page-cta', 'href', errorPage.loginUrl),
       (html) => setHtmlAttrByClass(html, 'error-page-assistance', 'href', errorPage.assistanceUrl),
       (html) => setHtmlAttrById(html, 'error-footer-privacy', 'href', errorPage.privacyUrl),

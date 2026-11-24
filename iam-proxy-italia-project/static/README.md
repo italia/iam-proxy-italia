@@ -29,14 +29,11 @@ cache-busting version, and the fonts public path.
 }
 ```
 
-- When `logo.image` is **empty**, the pages keep their placeholder: the text
-  wordmark on disco/it-wallet, the generic icon next to the title on the error
-  page. The localized text comes from the locale files (`logo.alt`).
+- When `logo.image` is **empty**, the pages keep the shared text wordmark
+  placeholder. The localized text comes from the locale files (`logo.alt`).
 - When `logo.image` is a **path** (e.g. `img/my-org-logo.svg`), the build swaps
-  the placeholder for an `<img>`:
-  - disco/it-wallet → `<img id="header-logo" src="…" alt="…">` (alt = `logo.alt`).
-  - error page → decorative `<img>` replacing the icon (`alt=""`, `aria-hidden`),
-    while the visible title heading keeps the `logo.alt` text.
+  the placeholder for `<img id="header-logo" src="…" alt="…">` (alt = `logo.alt`)
+  on disco, it-wallet and error_page alike.
   Drop your asset under `img/` (or any path you reference) and run the build.
   Clearing `logo.image` restores the placeholder.
 
@@ -146,6 +143,7 @@ Discovery page (IT-Wallet card) and QR code page use official IT-Wallet logos fr
 
 - **Discovery page** (`disco.html`): `it-wallet/wallet_icon.svg` — white symbol on primary button (from IT-Wallet-Symbol-Negative-White).
 - **QR code page** and backend config: `img/IT-Wallet-Mark.svg` — mark in the QR center (from the official IT-Wallet mark).
+- **Thank you (post-auth) state**: `img/OK_State.svg` — official OK pictogram from Icons-and-pictograms.
 
 To refresh assets from the official repo:
 

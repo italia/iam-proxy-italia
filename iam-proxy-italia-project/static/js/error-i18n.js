@@ -22,6 +22,17 @@ function applyErrorTranslations() {
     el.textContent = val;
   });
 
+  // Header logo wordmark (same structure as disco / it-wallet / qr-code)
+  var logoTitle = i18next.t('header.logo_title');
+  var eidTitle = document.getElementById('eid-title');
+  if (eidTitle) eidTitle.textContent = logoTitle;
+  var headerLogoText = document.getElementById('header-logo-text');
+  if (headerLogoText) headerLogoText.textContent = logoTitle;
+  var headerLogoImg = document.getElementById('header-logo');
+  if (headerLogoImg && headerLogoImg.tagName === 'IMG') {
+    headerLogoImg.setAttribute('alt', logoTitle);
+  }
+
   // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)
   document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
     var key = el.getAttribute('data-i18n-aria-label');
