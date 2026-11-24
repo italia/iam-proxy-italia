@@ -81,7 +81,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.8.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.9.0
     # Build the local Dockerfile when this tag is not on the registry.
     pull_policy: build
     build:
@@ -433,7 +433,7 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.2.0
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.3.0
     container_name: wallet-instance-demo
     restart: "no"
     ports:

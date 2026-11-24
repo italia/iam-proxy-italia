@@ -829,14 +829,14 @@ config:
             family_name: "{{surname}}"
             given_name: "{{name}}"
             birth_date: "{{dateOfBirth}}"
-            expiry_date: "{{expiryDate}}"
-            issue_date: "{{issueDate}}"
-            issuing_country: "{{issuingCountry}}"
-            issuing_authority: "{{issuingAuthority}}"
-            document_number: "{{documentNumber}}"
+            expiry_date: "{{ (expiryDate or expiry_date)[:10] }}"
+            issue_date: "{{ (issueDate or issuance_date)[:10] }}"
+            issuing_country: "{{ issuingCountry or issuing_country }}"
+            issuing_authority: "{{ issuingAuthority or issuing_authority }}"
+            document_number: "{{ documentNumber or 'IT-MDL-DEMO-001' }}"
             un_distinguishing_sign: "I"
             portrait: !!binary "{{portrait_b64}}"
-            driving_privileges: "{{driving_privileges}}"
+            driving_privileges: {% if driving_privileges %}{{ driving_privileges }}{% else %}[]{% endif %}
           org.iso.18013.5.1.IT:
             verification:
               trust_framework: "{{trust_framework}}"
