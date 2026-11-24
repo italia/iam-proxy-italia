@@ -81,7 +81,7 @@ services:
       - iam-proxy-italia
 
   iam-proxy-italia:
-    image: ghcr.io/italia/iam-proxy-italia:v3.8.0
+    image: ghcr.io/italia/iam-proxy-italia:v3.9.0
     # Build the local Dockerfile when this tag is not on the registry.
     pull_policy: build
     build:
@@ -178,7 +178,6 @@ services:
       - SATOSA_UI_LOGO_URL=${SATOSA_UI_LOGO_URL:-https://example_organization.org/logo.png}
       - SATOSA_UI_PRIVACY_URL_EN=${SATOSA_UI_PRIVACY_URL_EN:-https://example_organization.org/privacy}
       - SATOSA_UI_PRIVACY_URL_IT=${SATOSA_UI_PRIVACY_URL_IT:-https://example_organization.org/it/privacy}
-      - SATOSA_USER_ID_HASH_SALT=${SATOSA_USER_ID_HASH_SALT:-CHANGE_ME!}
 
       - PYEUDIW_FEDERATION_CLIENT_ID=${PYEUDIW_FEDERATION_CLIENT_ID:-openid_federation:https://${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}/OpenID4VP}
       - PYEUDIW_X509_CLIENT_ID=${PYEUDIW_X509_CLIENT_ID:-x509_san_dns:${SATOSA_HOSTNAME:-iam-proxy-italia.example.org}}
@@ -434,7 +433,7 @@ services:
       - oidc
       - wallet
       - wallet_instance_demo
-    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.2.0
+    image: ghcr.io/italia/iam-proxy-italia-wallet-instance-demo:1.3.0
     container_name: wallet-instance-demo
     restart: "no"
     ports:
