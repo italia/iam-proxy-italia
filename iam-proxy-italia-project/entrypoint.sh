@@ -41,7 +41,7 @@ if [ "${demo_profile}" = "true" ] && grep -Eq '^[[:space:]]*-[[:space:]]*"conf/f
   python /satosa_proxy/conf/frontends/openid4vci/seed_users.py || echo "openid4vci demo user seed failed"
 fi
 
-wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
+wsgi_file=/satosa_proxy/wsgi.py
 wsgi_cmd=""
 if [[ $SATOSA_DEBUG == "true" ]]; then
   uwsgi --ini /satosa_proxy/uwsgi_setup/uwsgi/uwsgi.ini.debug --wsgi-file $wsgi_file

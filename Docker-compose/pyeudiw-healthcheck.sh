@@ -13,6 +13,8 @@ function check_url {
   fi
 }
 
+check_url "https://satosa-nginx/readyz"
+
 if grep -qF "conf/backends/pyeudiw_backend.yaml" "$PROXY_CONF_PATH"; then
   echo "pyeudiw_backend.yaml configured"
   check_url "https://satosa-nginx/OpenID4VP/.well-known/jar-issuer"
