@@ -65,10 +65,10 @@ wget https://satosa.testunical.it:10000/spidSaml2/metadata  -O conf/satosa_metad
 
 Run in debug mode, `--reload` will restart process if source code changes
 ````
-gunicorn -b0.0.0.0:10000 satosa.wsgi:app --keyfile=./pki/frontend.key --certfile=./pki/frontend.cert  --reload
+gunicorn -b0.0.0.0:10000 wsgi:app --keyfile=./pki/frontend.key --certfile=./pki/frontend.cert  --reload
 
 # run with uwsgi if you prefer, --honour-stdin needs for debugging with pdb
-uwsgi --wsgi-file ../apps/SATOSA/src/satosa/wsgi.py  --https 0.0.0.0:10000,./pki/frontend.cert,./pki/frontend.key --callable app --honour-stdin
+uwsgi --wsgi-file wsgi.py  --https 0.0.0.0:10000,./pki/frontend.cert,./pki/frontend.key --callable app --honour-stdin
 
 # in uwsgi_setup there a some production examples, the following is to debug with pdb a satosa running whit that configuration
 uwsgi --ini uwsgi_setup/uwsgi.ini --honour-stdin

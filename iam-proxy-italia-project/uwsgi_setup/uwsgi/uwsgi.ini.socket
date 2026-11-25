@@ -17,7 +17,7 @@ processes   = 12
 # set max connections to 1024 in uWSGI
 listen = 5000
 
-wsgi-file   = %(base)/apps/SATOSA/src/satosa/wsgi.py
+wsgi-file   = %(chdir)/wsgi.py
 callable = app
 # se installato con pip non serve il plugin perchè embedded
 #plugins    = python
