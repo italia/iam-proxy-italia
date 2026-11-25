@@ -229,7 +229,6 @@ satosa:
   encryptionKey: ""
   salt: ""
   stateEncryptionKey: ""
-  userIdHashSalt: ""
 
 # MongoDB configuration
 mongodb:
@@ -566,7 +565,6 @@ uwsgi:
 # - satosa-encryption-key
 # - satosa-salt
 # - satosa-state-encryption-key
-# - satosa-user-id-hash-salt
 # - mongodb-password
 # - mongodb-backend-password
 # - mongodb-frontend-password
@@ -631,6 +629,9 @@ backendsConfig:
 
       providers:
         - !ENV OPENID_CIE_PROVIDER_URL # http://cie-provider.example.org:8002/oidc/op
+
+      # Redirect here when CieOidcRp is selected without an OP (same as SAML disco_srv).
+      disco_srv: !ENV SATOSA_DISCO_SRV
 
       security_operations:
         hash:

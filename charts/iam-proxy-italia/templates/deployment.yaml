@@ -196,11 +196,6 @@ spec:
               value: {{ .Values.ui.privacyUrl.en | quote }}
             - name: SATOSA_UI_PRIVACY_URL_IT
               value: {{ .Values.ui.privacyUrl.it | quote }}
-            - name: SATOSA_USER_ID_HASH_SALT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "iam-proxy-italia.secret" . }}
-                  key: satosa-user-id-hash-salt
             - name: PYEUDIW_FEDERATION_CLIENT_ID
               value: {{ .Values.pyeudiw.federationClientId | default (printf "openid_federation:https://%s/OpenID4VP" .Values.satosa.hostname) | quote }}
             - name: PYEUDIW_X509_CLIENT_ID

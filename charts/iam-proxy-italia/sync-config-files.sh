@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -9,12 +9,29 @@ TARGET_DIR="$SCRIPT_DIR/config-files"
 
 INCLUDE_DIRS=("attributes-map" "backends" "conf" "metadata" "templates")
 
+# Use the same release as the image, even when the chart branch has older sources.
+# Pass --working-tree to include local application changes during development.
+SOURCE_REF="${1:-$(awk '$1 == "appVersion:" {gsub(/"/, "", $2); print $2}' "$SCRIPT_DIR/Chart.yaml")}"
+if [ "$SOURCE_REF" != "--working-tree" ]; then
+    git -C "$PROJECT_ROOT" rev-parse --verify "${SOURCE_REF}^{commit}" > /dev/null
+    SOURCE_CHECKOUT="$(mktemp -d)"
+    trap 'rm -rf "$SOURCE_CHECKOUT"' EXIT
+    SOURCE_PATHS=()
+    for dir in "${INCLUDE_DIRS[@]}"; do
+        SOURCE_PATHS+=("iam-proxy-italia-project/$dir")
+    done
+    git -C "$PROJECT_ROOT" archive "$SOURCE_REF" -- "${SOURCE_PATHS[@]}" |
+        tar -xf - -C "$SOURCE_CHECKOUT"
+    SOURCE_DIR="$SOURCE_CHECKOUT/iam-proxy-italia-project"
+fi
+
 if [ ! -d "$SOURCE_DIR" ]; then
     echo "Error: Source directory not found: $SOURCE_DIR"
     exit 1
 fi
 
 echo "Syncing config files..."
+echo "Reference: $SOURCE_REF"
 echo "Source: $SOURCE_DIR"
 echo "Target: $TARGET_DIR"
 echo "Including: ${INCLUDE_DIRS[*]}"
