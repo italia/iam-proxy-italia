@@ -19,13 +19,16 @@ config:
           db_token_collection: !ENV MONGO_CIE_OIDC_BACKEND_TOKEN_COLLECTION
           db_user_collection: !ENV MONGO_CIE_OIDC_BACKEND_USER_COLLECTION
           db_trust_chain_collection: !ENV MONGO_CIE_OIDC_BACKEND_TRUST_CHAIN_COLLECTION
-          data_ttl: 63072000 # 2 years
+          data_ttl: 15768000 # 6 months
         connection_params:
           username: !ENV MONGODB_CIE_OIDC_BACKEND_USERNAME
           password: !ENV MONGODB_CIE_OIDC_BACKEND_PASSWORD
 
   providers:
     - !ENV OPENID_CIE_PROVIDER_URL # http://cie-provider.example.org:8002/oidc/op
+
+  # Redirect here when CieOidcRp is selected without an OP (same as SAML disco_srv).
+  disco_srv: !ENV SATOSA_DISCO_SRV
 
   security_operations:
     hash:
@@ -94,10 +97,10 @@ config:
 
   metadata: &metadata
     federation_entity:
-      federation_resolve_endpoint: "<base_url>/<name>/${FEDERATION_RESOLVE_ENDPOINT}"
+      federation_resolve_endpoint: "<base_url>/<name>/resolve"
       organization_name: Example RP
       homepage_uri: <base_url>/<name>
-      policy_uri: "<base_url>/<name>/${FEDERATION_LEGAL_INFORMATION_URI}"
+      policy_uri: "<base_url>/<name>/en/website/legal-information"
       logo_uri: !ENV SAMPLE_CIE_LOGO_URI
       contacts:
         - ops@rp.example.it
@@ -108,8 +111,8 @@ config:
       organization_name: Example RP
       client_registration_types:
         - automatic
-      jwks_uri: "<base_url>/<name>/${OPENID_RP_JWKS_URI}"
-      signed_jwks_uri: "<base_url>/<name>/${OPENID_RP_SIGNED_JWKS_URI}"
+      jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.json"
+      signed_jwks_uri: "<base_url>/<name>/openid_relying_party/jwks.jose"
       jwks: # this field is autopopulated
       contacts:
         - ops@rp.example.it

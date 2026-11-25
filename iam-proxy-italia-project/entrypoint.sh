@@ -22,6 +22,25 @@ get_data https://registry.spid.gov.it/entities-idp ./metadata/idp/spid-entities-
 get_data https://sp-proxy.eid.gov.it/metadata ./metadata/idp/ficep.xml $SATOSA_GET_FICEP_IDP_METADATA
 get_data https://idserver.servizicie.interno.gov.it/idp/shibboleth?Metadata ./metadata/idp/cie-production.xml $SATOSA_GET_CIE_IDP_METADATA
 
+# Demo credential users for the OpenID4VCI frontend. The credential endpoint
+# looks them up and does not create them from the IdP login. Run only when
+# that frontend is enabled and the compose profile list contains demo.
+# POSIX sh: the container entrypoint is "sh entrypoint.sh".
+demo_profile=false
+_old_ifs=$IFS
+IFS=','
+for _profile in $(printf '%s' "${COMPOSE_PROFILES:-}" | tr -d ' '); do
+  if [ "${_profile}" = "demo" ]; then
+    demo_profile=true
+    break
+  fi
+done
+IFS=$_old_ifs
+unset _old_ifs _profile
+if [ "${demo_profile}" = "true" ] && grep -Eq '^[[:space:]]*-[[:space:]]*"conf/frontends/openid4vci_frontend.yaml"' proxy_conf.yaml; then
+  python /satosa_proxy/conf/frontends/openid4vci/seed_users.py || echo "openid4vci demo user seed failed"
+fi
+
 wsgi_file=/.venv/lib/$(python -c 'import sys; print(f"python{sys.version_info.major}.{sys.version_info.minor}")')/site-packages/satosa/wsgi.py
 wsgi_cmd=""
 if [[ $SATOSA_DEBUG == "true" ]]; then

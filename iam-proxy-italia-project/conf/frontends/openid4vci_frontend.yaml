@@ -28,6 +28,8 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.nonce_endpoint
       class: NonceHandler
       path: '/nonce-endpoint'
+      config:
+        nonce_duration: 600 # seconds
     credential:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.credential_endpoint
       class: CredentialHandler
@@ -49,6 +51,10 @@ config:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.oauth_authorization_server_metadata_endpoint
       class: OauthAuthorizationServerMetadataHandler
       path: '.well-known/oauth-authorization-server'
+    jwt_vc_issuer:
+      module: pyeudiw.satosa.frontends.openid4vci.endpoints.jwt_vc_issuer_endpoint
+      class: JwtVcIssuerMetadataHandler
+      path: '/.well-known/jwt-vc-issuer'
     metadata:
       module: pyeudiw.satosa.frontends.openid4vci.endpoints.metadata_endpoint
       class: MetadataHandler
@@ -67,7 +73,7 @@ config:
     size: 250 # px
     color: '#000000'  # hex
     expiration_time: 120 # seconds
-    logo_path: 'img/IT-Wallet-Logo-Primary-BlueItalia.svg' # relative to static_storage_url
+    logo_path: 'img/IT-Wallet-Mark.svg' # relative to static_storage_url
 
   network:
     httpc_params: &httpc_params
@@ -80,20 +86,16 @@ config:
     dpop_required: true
   jwt:
     default_sig_alg: ES256  # or RS256. Please note that this signature alg MUST be compliant with the private keys used for the signature. X.509 certificates MUST be therefore ECDSA using ES, and RSA using RS
-    default_enc_alg: RSA-OAEP
-    default_enc_enc: A256CBC-HS512
+    default_enc_alg: RSA-OAEP-256
+    default_enc_enc: A256GCM
     default_exp: 6         # minutes
     enc_alg_supported:
-      - RSA-OAEP
       - RSA-OAEP-256
       - ECDH-ES
       - ECDH-ES+A128KW
       - ECDH-ES+A192KW
       - ECDH-ES+A256KW
     enc_enc_supported:
-      - A128CBC-HS256
-      - A192CBC-HS384
-      - A256CBC-HS512
       - A128GCM
       - A192GCM
       - A256GCM
@@ -106,7 +108,7 @@ config:
       - ES512
     access_token_exp: 90 # mandatory expiration time, in minutes, for the JWT access token returned by the `token` endpoint
     refresh_token_exp: 120 # mandatory expiration time, in minutes, for the JWT refresh token returned by the `token` endpoint
-    par_exp: 90 # mandatory expiration time, in minutes, for the JWT token returned by the `par` endpoint
+    par_exp: 60 # mandatory expiration time, in seconds, for the JWT token returned by the `par` endpoint
 
   # private jwk
   # WARNING: change these keys in production env. Keeping these keys unchanged can pose a serious security risk.
@@ -136,7 +138,7 @@ config:
         - https://trust-registry.eid-wallet.example.it/loa/high
       scopes_supported:
         - pid
-        - EuropeanDisabilityCard
+        - eid
         - mDL
       response_modes_supported:
         - form_post.jwt
@@ -179,18 +181,17 @@ config:
       nonce_endpoint:  <base_url>/<name>/nonce-endpoint
       deferred_credential_endpoint:  <base_url>/<name>/deferred-credential
       revocation_endpoint:  <base_url>/<name>/revoke
-      status_assertion_endpoint:  <base_url>/<name>/status
       notification_endpoint:  <base_url>/<name>/notification
       credential_hash_alg_supported: sha-256
 #      authorization_servers: #optional if this parameter is omitted, the entity providing the PID/(Q)EAA Provider is also acting as the Authorization Server.
 #        - www.authorization-server.example.com
       display:
-        - name: EAA Provider
+        - name: IAM Proxy Italia Example EAA Provider
           locale: it-IT
-        - name: EAA Provider
+        - name: IAM Proxy Italia Example EAA Provider
           locale: en-US
       credential_configurations_supported:
-        dc_sd_jwt_pid:
+        dc_sd_jwt_pid: &dc_sd_jwt_pid_config
           format: dc+sd-jwt
           scope: pid
           cryptographic_binding_methods_supported:
@@ -208,14 +209,15 @@ config:
           vct: urn:it-wallet:pid:1
           credential_metadata:
             display:
-              - name: Dati di Identificazione Personale
-                description: Dati di identificazione personale
+              - name: EUDIW PID (Dati di identificazione personale)
+                description: EUDIW PID (Dati di identificazione personale)
                 locale: it-IT
               - name: Person Identification Data
                 description: Person identification data
                 locale: en-US
-            claims:
-              - path:
+            claims: &pid_sd_jwt_claims
+              - &pid_claim_given_name
+                path:
                   - given_name
                 mandatory: true
                 sd: always
@@ -229,7 +231,8 @@ config:
                     locale: en-US
                     name: First Name
 
-              - path:
+              - &pid_claim_family_name
+                path:
                   - family_name
                 mandatory: true
                 sd: always
@@ -243,7 +246,8 @@ config:
                     locale: en-US
                     name: Family Name
 
-              - path:
+              - &pid_claim_birthdate
+                path:
                   - birthdate
                 mandatory: true
                 sd: always
@@ -256,7 +260,8 @@ config:
                     label: Date of birth
                     locale: en-US
                     name: Date of Birth
-              - path:
+              - &pid_claim_place_of_birth
+                path:
                   - place_of_birth
                 mandatory: true
                 sd: always
@@ -270,21 +275,8 @@ config:
                     locale: en-US
                     name: Place of Birth
 
-              - path:
-                - tax_id_code
-
-                sd: always
-                display:
-                  - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
-                    label: Codice Fiscale
-                    locale: it-IT
-                    name: Codice fiscale
-                  - description: National tax identification code of natural person as a String format.
-                    label: Tax id code
-                    locale: en-US
-                    name: Tax id code
-
-              - path:
+              - &pid_claim_nationalities
+                path:
                   - nationalities
                 mandatory: true
                 sd: always
@@ -301,103 +293,37 @@ config:
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
             dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
-        dc_sd_jwt_EuropeanDisabilityCard:
-          format: dc+sd-jwt
-          scope: EuropeanDisabilityCard
-          cryptographic_binding_methods_supported:
-            - jwk
-          credential_signing_alg_values_supported:
-            - ES256
-            - ES384
-            - ES512
-          proof_types_supported:
-            jwt:
-              proof_signing_alg_values_supported:
-                - ES256
-                - ES384
-                - ES512
-          display:
-            - name: Carta della disabilità europea
-              locale: it-IT
-            - name: European Disability Card
-              locale: en-US
-          vct: https://trust-registry.eid-wallet.example.it/v1.0/EuropeanDisabilityCard
+        dc_sd_jwt_eid:
+          <<: *dc_sd_jwt_pid_config
+          scope: eid
+          vct: urn:it-wallet:eid:1
+          schema_id: eid+dc+sd-jwt+urn:it-wallet:eid:1
           credential_metadata:
             display:
-              - name: Carta della disabilità europea
-                description: Versione digitale della carta della disabilità europea
+              - name: IT-Wallet ID
+                description: IT-Wallet ID
                 locale: it-IT
-              - name: European Disability Card
-                description: Digital version of the European Disability Card
+              - name: IT-Wallet ID
+                description: IT-Wallet ID
                 locale: en-US
             claims:
+              - *pid_claim_given_name
+              - *pid_claim_family_name
+              - *pid_claim_birthdate
+              - *pid_claim_place_of_birth
               - path:
-                  - document_number
+                  - tax_id_code
+                sd: always
                 display:
-                  - name: Numero Documento
+                  - description: Codice nazionale di identificazione fiscale della persona fisica in formato String.
+                    label: Codice Fiscale
                     locale: it-IT
-                  - name: Document Number
+                    name: Codice fiscale
+                  - description: National tax identification code of natural person as a String format.
+                    label: Tax id code
                     locale: en-US
-              - path:
-                  - given_name
-                display:
-                  - name: Nome
-                    locale: it-IT
-                  - name: Name
-                    locale: en-US
-              - path:
-                  - family_name
-                display:
-                  - name: Cognome
-                    locale: it-IT
-                  - name: Family Name
-                    locale: en-US
-              - path:
-                  - birth_date
-                display:
-                  - name: Data di Nascita (YYYY-MM-GG)
-                    locale: it-IT
-                  - name: Date of Birth (YYYY-MM-GG)
-                    locale: en-US
-              - path:
-                  - personal_administrative_number
-                display:
-                  - name: Codice Fiscale
-                    locale: it-IT
-                  - name: Tax Identification Number
-                    locale: en-US
-              - path:
-                  - expiry_date
-                display:
-                  - name: Data di Scadenza (YYYY-MM-GG)
-                    locale: it-IT
-                  - name: Expiration Date (YYYY-MM-GG)
-                    locale: en-US
-              - path:
-                  - constant_attendance_allowance
-                display:
-                  - name: Diritto accompagnatore
-                    locale: it-IT
-                  - name: Constant attendance allowance
-                    locale: en-US
-              - path:
-                  - portrait
-                display:
-                  - name: Foto codificata in base64
-                    locale: it-IT
-                  - name: Portrait base64 encoded
-                    locale: en-US
-              - path:
-                  - link_qr_code
-                display:
-                  - name: Link QR Code
-                    locale: it-IT
-                  - name: Link QR Code
-                    locale: en-US
-          schema_id: EuropeanDisabilityCard+dc+sd-jwt+urn:it-wallet:EuropeanDisabilityCard:v1.0.0
-          authentic_sources:
-            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
-            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
+                    name: Tax id code
+              - *pid_claim_nationalities
         dc_sd_jwt_mDL:
           format: dc+sd-jwt
           scope: mDL
@@ -516,6 +442,160 @@ config:
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
             dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential
+        mso_mdoc_pid:
+          format: mso_mdoc
+          scope: pid
+          doctype: eu.europa.ec.eudi.pid.1
+          cryptographic_binding_methods_supported:
+            - cose_key
+          credential_signing_alg_values_supported:
+            - ES256
+            - ES384
+            - ES512
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported:
+                - ES256
+                - ES384
+                - ES512
+          credential_metadata:
+            display:
+              - name: EUDIW PID (Dati di identificazione personale)
+                description: EUDIW PID (Dati di identificazione personale)
+                locale: it-IT
+              - name: Person Identification Data
+                description: Person identification data
+                locale: en-US
+            claims:
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - given_name
+                mandatory: true
+                display:
+                  - description: Nome attuale
+                    label: Nome
+                    locale: it-IT
+                    name: Nome
+                  - description: Current First Name
+                    label: First Name
+                    locale: en-US
+                    name: First Name
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - family_name
+                mandatory: true
+                display:
+                  - description: Cognome attuale
+                    label: Cognome
+                    locale: it-IT
+                    name: Cognome
+                  - description: Current Family Name
+                    label: Family Name
+                    locale: en-US
+                    name: Family Name
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - birth_date
+                mandatory: true
+                display:
+                  - description: Data di nascita. DEVE essere impostato secondo ISO8601-1 (formato AAAA-MM-GG).
+                    label: Data di nascita
+                    locale: it-IT
+                    name: Data di nascita
+                  - description: Date of Birth. It MUST be set according to ISO8601-1 (YYYY-MM-DD format).
+                    label: Date of birth
+                    locale: en-US
+                    name: Date of Birth
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - place_of_birth
+                mandatory: true
+                display:
+                  - description: Luogo di nascita. DEVE essere presente almeno uno tra paese, regione, località.
+                    locale: it-IT
+                    label: Luogo di nascita
+                    name: Luogo di nascita
+                  - description: Place of Birth. At least one of country, region, locality MUST be present.
+                    label: Place of birth
+                    locale: en-US
+                    name: Place of Birth
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - nationality
+                mandatory: true
+                display:
+                  - description: Uno o più codici paese alfa-2 come specificato nella norma ISO 3166-1.
+                    label: Nazionalità
+                    locale: it-IT
+                    name: Nazionalità
+                  - description: One or more alpha-2 country codes as specified in ISO 3166-1.
+                    label: Nationalities
+                    locale: en-US
+                    name: Nationalities
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - portrait
+                mandatory: true
+                display:
+                  - description: Immagine del volto in formato JPEG. Può essere vuota fino al termine del periodo transitorio.
+                    label: Foto
+                    locale: it-IT
+                    name: Foto
+                  - description: Facial image in JPEG format. It may be empty until the end of the transitional period.
+                    label: Portrait
+                    locale: en-US
+                    name: Portrait
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - expiry_date
+                mandatory: true
+                display:
+                  - description: Data di scadenza (AAAA-MM-GG).
+                    label: Data di scadenza
+                    locale: it-IT
+                    name: Data di scadenza
+                  - description: Expiry date (YYYY-MM-DD).
+                    label: Expiry date
+                    locale: en-US
+                    name: Expiry date
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - issuing_country
+                display:
+                  - name: Paese di rilascio
+                    locale: it-IT
+                  - name: Issuing Country
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.1
+                  - issuing_authority
+                display:
+                  - name: Autorità di rilascio
+                    locale: it-IT
+                  - name: Issuing Authority
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.it.1
+                  - sub
+                mandatory: true
+                display:
+                  - name: Identificativo del soggetto
+                    locale: it-IT
+                  - name: Subject identifier
+                    locale: en-US
+              - path:
+                  - eu.europa.ec.eudi.pid.it.1
+                  - verification
+                mandatory: true
+                display:
+                  - name: Verifica
+                    locale: it-IT
+                  - name: Verification
+                    locale: en-US
+          schema_id: pid+mso_mdoc+eu.europa.ec.eudi.pid.1
+          authentic_sources:
+            entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential, for example a national registry or an authoritative identity provider.
+            dataset_id: dataset_id.example # this is an example value, in production environment it should be the identifier of the dataset used as source for the credential, for example a specific dataset provided by the national registry or authoritative identity provider.
         mso_mdoc_mDL:
           format: mso_mdoc
           scope: mDL
@@ -635,6 +715,14 @@ config:
                     locale: it-IT
                   - name: Distinguishing sign of the issuing country
                     locale: en-US
+              - path:
+                  - org.iso.18013.5.1.IT
+                  - verification
+                display:
+                  - name: Verifica
+                    locale: it-IT
+                  - name: Verification
+                    locale: en-US
           schema_id: mDL+mso_mdoc+org.iso.18013.5.1.mDL
           authentic_sources:
             entity_id: entity_id.example # this is an example value, in production environment it should be the entity_id of the trusted source of the credential
@@ -664,9 +752,9 @@ config:
     status_list:
       path: *status_list_endpoint_path
       exp: 90 # minutes
-      ttl: 43200
+      ttl: 90
     credential_specification:
-      dc_sd_jwt_pid:
+      dc_sd_jwt_pid: &dc_sd_jwt_pid_spec
         trust_framework: it_wallet
         assurance_level: high
         expiry_days: 365
@@ -678,8 +766,7 @@ config:
             !sd place_of_birth:
                locality: "{{placeOfBirth}}"
             !sd nationalities: {{nationalities}}
-            !sd tax_id_code: "TINIT-{{fiscal_code}}"
-          
+
             sub: "{{sub}}"
             iat: {{iat}}
             status: {{status}}
@@ -688,29 +775,74 @@ config:
               trust_framework: "{{trust_framework}}"
               assurance_level: "{{assurance_level}}"
           add_decoy_claims: false
-      mso_mdoc_mDL:
+      dc_sd_jwt_eid:
+        <<: *dc_sd_jwt_pid_spec
+        template: |
+          user_claims:
+            !sd given_name: "{{name}}"
+            !sd family_name: "{{surname}}"
+            !sd birthdate: "{{dateOfBirth}}"
+            !sd place_of_birth:
+               locality: "{{placeOfBirth}}"
+            !sd nationalities: {{nationalities}}
+            !sd tax_id_code: "TINIT-{{fiscal_code}}"
+
+            sub: "{{sub}}"
+            iat: {{iat}}
+            status: {{status}}
+            date_of_expiry: "{{date_of_expiry}}"
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
+          add_decoy_claims: false
+      mso_mdoc_pid:
+        trust_framework: it_wallet
+        assurance_level: high
         expiry_days: 365
+        optional_mso_attrs:
+          status: true
+        template: |
+          eu.europa.ec.eudi.pid.1:
+            given_name: "{{name}}"
+            family_name: "{{surname}}"
+            birth_date: "{{dateOfBirth}}"
+            place_of_birth:
+              locality: "{{placeOfBirth}}"
+            nationality: [{% for code in nationalities %}"{{code}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+            portrait: !!binary "{{portrait_b64}}"
+            expiry_date: "{{expiry_date[:10]}}"
+            issuing_country: "{{issuing_country}}"
+            issuing_authority: "{{issuing_authority}}"
+          eu.europa.ec.eudi.pid.it.1:
+            sub: "{{sub}}"
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
+      mso_mdoc_mDL:
+        trust_framework: it_wallet
+        assurance_level: high
+        expiry_days: 365
+        optional_mso_attrs:
+          status: true
         template: |
           org.iso.18013.5.1:
             family_name: "{{surname}}"
             given_name: "{{name}}"
             birth_date: "{{dateOfBirth}}"
-            expiry_date: "{{expiryDate}}"
-            issue_date: "{{issueDate}}"
-            issuing_country: "{{issuingCountry}}"
-            issuing_authority: "{{issuingAuthority}}"
-            document_number: "{{documentNumber}}"
+            expiry_date: "{{ (expiryDate or expiry_date)[:10] }}"
+            issue_date: "{{ (issueDate or issuance_date)[:10] }}"
+            issuing_country: "{{ issuingCountry or issuing_country }}"
+            issuing_authority: "{{ issuingAuthority or issuing_authority }}"
+            document_number: "{{ documentNumber or 'IT-MDL-DEMO-001' }}"
             un_distinguishing_sign: "I"
             portrait: !!binary "{{portrait_b64}}"
-            driving_privileges: "{{driving_privileges}}"
-          org.iso.18013.5.1.it:
-            verification.evidence:
-              organization_name: "{{verification.organization_name}}"
-              organization_id: "{{verification.organization_id}}"
-              country_code: "{{verification.country_code}}"
-            verification.trust_framework: "{{trust_framework}}"
-            verification.assurance_level: "{{assurance_level}}"
+            driving_privileges: {% if driving_privileges %}{{ driving_privileges }}{% else %}[]{% endif %}
+          org.iso.18013.5.1.IT:
+            verification:
+              trust_framework: "{{trust_framework}}"
+              assurance_level: "{{assurance_level}}"
       dc_sd_jwt_mDL:
+        expiry_days: 365
         template: |
           holder_disclosed_claims:
             !sd given_name: "{{name}}"
@@ -728,6 +860,8 @@ config:
               locality: "{{placeOfBirth}}"
             !sd tax_id_code: "TINIT-{{fiscal_code}}"
             !sd unique_id: "{{unique_id}}"
+            iat: {{iat}}
+            status: {{status}}
 
 
   trust:
@@ -745,10 +879,6 @@ config:
           - http://trust-anchor.example.org:5002
         trust_anchors:
           - http://trust-anchor.example.org:5002:
-              -
-          - https://trust-anchor.edu:
-              -
-          - https://trust-anchor.example.org:
               # WARNING: change these keys in production env. Keeping these keys unchanged can pose a serious security risk.
               - kty: EC
                 d: WbhdFpNhUTQ7gfh8XUQzMfe8JPVAKAh4qCfHRMqyQE8
@@ -759,7 +889,9 @@ config:
                 y: cUnLFFz8S_STZmDRYOghxMNJobDCtVQLEyeF_VkJl9Y
                 alg: ES256
         default_sig_alg: "RS256"
-        trust_marks: []
+        trust_marks:
+          - trust_mark_type: https://registry.agid.gov.it/trust_marks/openid_credential_issuer/public
+            trust_mark: eyJhbGciOiJSUzI1NiIsImtpZCI6IkZpZll4MDNibm9zRDhtNmdZUUlmTkhOUDljTV9TYW05VGM1bkxsb0lJcmMifQ.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIiwic3ViIjoiaHR0cHM6Ly9pYW0tcHJveHktaXRhbGlhLmV4YW1wbGUub3JnL09wZW5JRDRWQ0kiLCJpYXQiOjE2NDU2MTI0MDEsImlkIjoiaHR0cHM6Ly9yZWdpc3RyeS5hZ2lkLmdvdi5pdC9vcGVuaWRfY3JlZGVudGlhbF9pc3N1ZXIvcHVibGljLyIsIm1hcmsiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGlhLml0L2l0YWxpYS9pdC13YWxsZXQifQ.mSPNR0AOPBn3UNJAIbrWUMQ8vGTetQajpa3i59JDKDXYWqo2TUGh4AQBghCiG3qqV9cl-hleLtuwoeZ1InKHeslTLftVdcR3meeMLs3mLobHYr26Mi7pC7-jx1ZFVyk4GXl7mn9WVSQGEUOiuhL01tdlUfxf0TJSFSOMEZGpCA3hXroLOnEl3FjkAw7sPvjfImsbadbHVusb72HTTs1n5Xo7z3As3fDWHcxD-fvvq0beu9cx-L2sT4YaNC-ELd1M3m5r0NIjjEUAt4Gnot-l5Z3-C_bA41uvh2hX34U_fGZ6jpmuluJo1Lqi26N8LTB-Rbu0UMaZnkRg9E72_YRZig
         federation_entity_metadata: *federation_entity_metadata
         federation_jwks: # !ENV PYEUDIW_FEDERATION_JWKS
           - crv: P-256
@@ -773,77 +905,63 @@ config:
       module: pyeudiw.trust.handler.x509
       class: X509Handler
       config:
-        include_issued_jwt_header_param: true #include x5c header in the issued jwt
+        include_issued_jwt_header_param: true # include x5c header in the issued jwt
         issuer_id: "x509_san_dns:iam-proxy-italia.example.org"
         certificate_authorities:
-          ca.example.com: |
+          trust-anchor.example.com: |
               -----BEGIN CERTIFICATE-----
-              MIICWzCCAgCgAwIBAgIUHeUm0atKj54XFSyVPi7paKl6akYwCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowXzEXMBUGA1UEAwwOY2Eu
-              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-              KoZIzj0DAQcDQgAEGTuiTGUceZwKGwP3Fk9HoyoG9tYqTrNq0i7jXfCk4CbyhFrI
-              NkV95CzLh+r6bT939O8mBWrPuktb/qdIjWo8FaOBmTCBljASBgNVHRMBAf8ECDAG
-              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-              YW1wbGUuY29tMB0GA1UdDgQWBBQgd95P3hu2G2A8UlCfFaCGCoovbjAKBggqhkjO
-              PQQDAgNJADBGAiEA1YuVPhxg/InxM4yFpPBhqKUkxD0QPf07Tl9jSLyRV+8CIQDs
-              Ghmql4diEUima49h1ikqaVRLSNFlx3M+h/298PPO9g==
+              MIICkzCCAjigAwIBAgIUGY/4Yx8tPYeFiitmO9Otisucj8MwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMGkxITAf
+              BgNVBAMMGHRydXN0LWFuY2hvci5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxIjAg
+              BgkqhkiG9w0BCQEWE2luZm9AY2EuZXhhbXBsZS5jb20xEzARBgNVBAoMCkV4YW1w
+              bGUgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQcwyP/IWz8kcypK7AVo15h
+              bdbSe/84L5TNJ9TXJTwF312BhYiA6exI39Nhrzg6BLgLT7wtPQzGxJnscFdzo0pd
+              o4G9MIG6MBIGA1UdEwEB/wQIMAYBAf8CAQEwPgYDVR0fBDcwNTAzoDGgL4YtaHR0
+              cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5jb20veDUwOS9jcmwucGVtMEUGA1Ud
+              EQQ+MDyGIGh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tghh0cnVzdC1h
+              bmNob3IuZXhhbXBsZS5jb20wHQYDVR0OBBYEFP25OKBsmZ93YN52B9ueyGxKaIcr
+              MAoGCCqGSM49BAMCA0kAMEYCIQCFuG41DjlilJOhsf7DvuPGlxJAV/+uR/mnO2eC
+              fLGRbQIhAJSwlAjbx6j80cyIw0bS3x/fq/rymWXaui6nzSM+7VeB
               -----END CERTIFICATE-----
+
         leaf_certificate_chains_by_ca: # X.509 chains in PEM format. Please note: Leaf's certificate MUST be related to metadata_jwks[0]
-          ca.example.com:
+          trust-anchor.example.com:
             - |
               -----BEGIN CERTIFICATE-----
-              MIICpzCCAk2gAwIBAgIUeV5IPzJJZbeDw94Eh0+5nhVvsTkwCgYIKoZIzj0EAwIw
+              MIICsjCCAlegAwIBAgIUM3NTCBkHrY+qdrcK7QC/gR2zAjUwCgYIKoZIzj0EAwIw
               fTEhMB8GA1UEAwwYaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
               VDEsMCoGCSqGSIb3DQEJARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20x
-              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MDMwOTE3NTkwMFoX
-              DTI3MDMxMDE3NTkwMFowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
+              HTAbBgNVBAoMFEV4YW1wbGUgSW50ZXJtZWRpYXRlMB4XDTI2MTExMTE3MDQ1MVoX
+              DTI3MTExMjE3MDQ1MVowgYYxJTAjBgNVBAMMHGlhbS1wcm94eS1pdGFsaWEuZXhh
               bXBsZS5vcmcxCzAJBgNVBAYTAklUMTAwLgYJKoZIhvcNAQkBFiFpbmZvQGlhbS1w
               cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcxHjAcBgNVBAoMFUlBTSBQcm94eSBJdGFs
               aWEgTGVhZjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKPCON6EWJlZOcemZqtv
               zYvvnBw+UvNakw/+XELptgLZRrhbyuxVw6ZXEpbb8H/HyvEyL7rX0UeSZqcvulHu
-              yFSjgaAwgZ0wDAYDVR0TAQH/BAIwADBNBgNVHREERjBEhiRodHRwczovL2lhbS1w
-              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmeCHGlhbS1wcm94eS1pdGFsaWEuZXhhbXBs
-              ZS5vcmcwHQYDVR0OBBYEFFEOuDbi+t+aBXvgTSEReOmuxXo9MB8GA1UdIwQYMBaA
-              FJtxbMu+S7Hb+N9yXgIt5VYhCDazMAoGCCqGSM49BAMCA0gAMEUCIQCYdTxoGoYQ
-              LJawK4JPv/pf1TjkglIk36uS1qhfY7tFzwIgAnSAfpnIuCl07Cwx7N3UXQZpTFo6
-              bFx8hjxqNqquPfU=
+              yFSjgaowgacwDAYDVR0TAQH/BAIwADBXBgNVHREEUDBOhi5odHRwczovL2lhbS1w
+              cm94eS1pdGFsaWEuZXhhbXBsZS5vcmcvb3BlbmlkNHZwghxpYW0tcHJveHktaXRh
+              bGlhLmV4YW1wbGUub3JnMB0GA1UdDgQWBBRRDrg24vrfmgV74E0hEXjprsV6PTAf
+              BgNVHSMEGDAWgBQAQjHNeKJgv+bnzrP9EduPr7vNrzAKBggqhkjOPQQDAgNJADBG
+              AiEA1NlHfOpQR4fhNKr2nB7X09XXfwnW1IZ13aukAVgqh+UCIQD6Dqmxsc4e+mAS
+              p0kQz35o1v/19s2FTWFXjggt3LCnOg==
               -----END CERTIFICATE-----
             - |
               -----BEGIN CERTIFICATE-----
-              MIICfDCCAiOgAwIBAgIUWqtgUIsqrzt+r6ASl6G4K9pCZZ4wCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowfTEhMB8GA1UEAwwYaW50
-              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJVDEsMCoGCSqGSIb3DQEJ
-              ARYdaW5mb0BpbnRlcm1lZGlhdGUuZXhhbXBsZS5jb20xHTAbBgNVBAoMFEV4YW1w
-              bGUgSW50ZXJtZWRpYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEFtlFIkZd
-              IhXi2nLiHaH7XiSO4Nibw6LnOF3WIPs/+gLl7o6cQq7TXHhl1ImEgR+9KORLm2Gr
-              teANFIOKpLIonKOBnjCBmzASBgNVHRMBAf8ECDAGAQH/AgEAMEUGA1UdEQQ+MDyG
-              IGh0dHBzOi8vaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tghhpbnRlcm1lZGlhdGUu
-              ZXhhbXBsZS5jb20wHQYDVR0OBBYEFJtxbMu+S7Hb+N9yXgIt5VYhCDazMB8GA1Ud
-              IwQYMBaAFCB33k/eG7YbYDxSUJ8VoIYKii9uMAoGCCqGSM49BAMCA0cAMEQCICPA
-              BZy8ttEIte0lsuD/PeGXkWMWIzcP8nDsl+H4uvmkAiAbkq82Ah8ycNNYR/LBG2H0
-              x9FAcySBsIv22sgY4/vM2w==
-              -----END CERTIFICATE-----
-            - |
-              -----BEGIN CERTIFICATE-----
-              MIICWzCCAgCgAwIBAgIUHeUm0atKj54XFSyVPi7paKl6akYwCgYIKoZIzj0EAwIw
-              XzEXMBUGA1UEAwwOY2EuZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZI
-              hvcNAQkBFhNpbmZvQGNhLmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENB
-              MB4XDTI2MDMwOTE3NTkwMFoXDTI3MDMxMDE3NTkwMFowXzEXMBUGA1UEAwwOY2Eu
-              ZXhhbXBsZS5jb20xCzAJBgNVBAYTAklUMSIwIAYJKoZIhvcNAQkBFhNpbmZvQGNh
-              LmV4YW1wbGUuY29tMRMwEQYDVQQKDApFeGFtcGxlIENBMFkwEwYHKoZIzj0CAQYI
-              KoZIzj0DAQcDQgAEGTuiTGUceZwKGwP3Fk9HoyoG9tYqTrNq0i7jXfCk4CbyhFrI
-              NkV95CzLh+r6bT939O8mBWrPuktb/qdIjWo8FaOBmTCBljASBgNVHRMBAf8ECDAG
-              AQH/AgEBMC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jYS5leGFtcGxlLmNvbS9j
-              cmwucGVtMDEGA1UdEQQqMCiGFmh0dHBzOi8vY2EuZXhhbXBsZS5jb22CDmNhLmV4
-              YW1wbGUuY29tMB0GA1UdDgQWBBQgd95P3hu2G2A8UlCfFaCGCoovbjAKBggqhkjO
-              PQQDAgNJADBGAiEA1YuVPhxg/InxM4yFpPBhqKUkxD0QPf07Tl9jSLyRV+8CIQDs
-              Ghmql4diEUima49h1ikqaVRLSNFlx3M+h/298PPO9g==
+              MIIChjCCAi2gAwIBAgIUT5v1hMoi1C+GMG9Y5j+UAr0PtmwwCgYIKoZIzj0EAwIw
+              aTEhMB8GA1UEAwwYdHJ1c3QtYW5jaG9yLmV4YW1wbGUuY29tMQswCQYDVQQGEwJJ
+              VDEiMCAGCSqGSIb3DQEJARYTaW5mb0BjYS5leGFtcGxlLmNvbTETMBEGA1UECgwK
+              RXhhbXBsZSBDQTAeFw0yNjExMTExNzA0NTFaFw0yNzExMTIxNzA0NTFaMH0xITAf
+              BgNVBAMMGGludGVybWVkaWF0ZS5leGFtcGxlLmNvbTELMAkGA1UEBhMCSVQxLDAq
+              BgkqhkiG9w0BCQEWHWluZm9AaW50ZXJtZWRpYXRlLmV4YW1wbGUuY29tMR0wGwYD
+              VQQKDBRFeGFtcGxlIEludGVybWVkaWF0ZTBZMBMGByqGSM49AgEGCCqGSM49AwEH
+              A0IABOaMsxEI+als530HtHsLP6TqigWUmhmCUGEVNk3U69etkqOII+Mr5x61tTKO
+              9wJixK7A07YkD2TNxKWg3mlwNEmjgZ4wgZswEgYDVR0TAQH/BAgwBgEB/wIBADBF
+              BgNVHREEPjA8hiBodHRwczovL2ludGVybWVkaWF0ZS5leGFtcGxlLmNvbYIYaW50
+              ZXJtZWRpYXRlLmV4YW1wbGUuY29tMB0GA1UdDgQWBBQAQjHNeKJgv+bnzrP9EduP
+              r7vNrzAfBgNVHSMEGDAWgBT9uTigbJmfd2DedgfbnshsSmiHKzAKBggqhkjOPQQD
+              AgNHADBEAiBteK6Yp6BysY+47VjSfLm9ueXzPF8c440BWMCBcngKQQIgGE2iwSRb
+              xZ99LPMVCc0XHu3PUrb9/MNjeAHY5rUxuMk=
               -----END CERTIFICATE-----
 
         private_keys: *metadata_jwks # the keys must be the same because the key at position 0 must correspond to the one from which the certificate at position 0 of the chain `leaf_certificate_chains_by_ca` is derived
@@ -861,7 +979,7 @@ config:
           conf:
             db_name: pyeudiw_openid4vci
             db_users_collection: users
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
@@ -878,7 +996,7 @@ config:
           conf:
             db_name: pyeudiw_openid4vci
             db_credentials_collection: credentials
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD
@@ -908,7 +1026,7 @@ config:
             db_trust_attestations_collection: trust_attestations
             db_trust_anchors_collection: trust_anchors
             db_trust_sources_collection: trust_sources
-            data_ttl: 63072000 # 2 years
+            data_ttl: 15768000 # 6 months
           connection_params:
             username: !ENV MONGODB_PYEUDIW_OPENID4VCI_USERNAME
             password: !ENV MONGODB_PYEUDIW_OPENID4VCI_PASSWORD

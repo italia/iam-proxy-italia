@@ -11,7 +11,8 @@ Common issues and solutions when deploying or running IAM Proxy Italia.
 ## Configuration
 
 - **Metadata or entity ID errors**: Confirm metadata URLs and entity IDs in `proxy_conf.yaml` and backend/frontend configs match your IdP/SP. See [setup.md](setup.md#configuration-by-environment-variables) for environment overrides.
-- **MongoDB connection refused**: If using the `storage_mongo`, `oidc`, `wallet`, or `demo` profile, ensure the MongoDB service is up (`docker compose ps`) and MongoDB env vars in `.env` match the compose configuration (see [mongodb-env.md](mongodb-env.md)).
+- **MongoDB connection refused**: If using the `storage_mongo`, `oidc`, `wallet`, or `demo` profile, ensure the MongoDB service is up (`docker compose ps`) and MongoDB env vars in `.env` match the compose configuration (see [mongodb-env.md](mongodb-env.md)). The `wallet_instance_demo` profile alone does not start MongoDB.
+- **Wallet Instance Demo unreachable**: With the `demo` profile, open `https://demo-wi.example.org:8080` (or `DEMO_WALLET_INSTANCE_HOSTNAME` / `WALLET_INSTANCE_PORT`). Ensure that hostname is in `/etc/hosts` and the TLS cert exists under `Docker-compose/wallet-instance-demo/certs/`.
 
 ## Tests and CI
 

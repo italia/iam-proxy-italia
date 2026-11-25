@@ -28,7 +28,7 @@ sudo apt-get install -y docker-ce
 sudo docker run --rm hello-world
 ```
 
-For docker-compose you can also [see here](https://docs.docker.com/compose/install/other/).
+For the Docker Compose plugin you can also [see here](https://docs.docker.com/compose/install/linux/).
 
 ## Run the Composition for Demo Purposes
 
@@ -48,12 +48,16 @@ The script can be run with different options:
 > ℹ️ **Note:**   
 > To install `spid_sp_test`, run `pip install git+https://github.com/italia/spid-sp-test.git` or `pip install spid-sp-test`.
 
-The result is represented by the following services:
+The default `demo` profile starts the following services (published ports from `docker-compose.yml`):
 
-* iam-proxy-italia is published with nginx frontend on https://iam-proxy-italia.example.org
-* Mongo Espress is published on http://localhost:8081
-* Django SAML2 SP is published on https://localhost:8000
-* Spid-samlcheck is published on https://localhost:8443
+* iam-proxy-italia with nginx frontend on https://iam-proxy-italia.example.org
+* Mongo Express on http://localhost:8082
+* Django SAML2 SP on http://localhost:8000
+* Spid-samlcheck on https://localhost:8443
+* OIDC RP demo on http://localhost:8090
+* Wallet Instance Demo on https://demo-wi.example.org:8080
+* Trust Anchor on http://trust-anchor.example.org:5002
+* CIE OIDC provider on http://cie-provider.example.org:8002
 
 More details and start options are available on [run-docker-compose.sh](./run-docker-compose.md) page
 
@@ -66,12 +70,17 @@ mkdir -p ./mongo/db          # DB Data directory
 mkdir -p ./iam-proxy-italia-project   # iam-proxy-italia data instance
 mkdir -p ./djangosaml2_sp    # Service provider directory
 mkdir -p ./nginx/html/static # static files for nginx
+mkdir -p ./spid_cie_oidc_django
+mkdir -p ./wallet-instance-demo/config
+mkdir -p ./wallet-instance-demo/certs
 ```
 
 Copy required files
 ```bash
 cp -R ../iam-proxy-italia-project/* ./iam-proxy-italia-project
 cp -R ../iam-proxy-italia-project-demo-examples/djangosaml2_sp/* ./djangosaml2_sp
+cp -R ../iam-proxy-italia-project-demo-examples/spid_cie_oidc_django/* ./spid_cie_oidc_django
+cp -a ../iam-proxy-italia-project-demo-examples/iam-proxy-italia-wallet-instance-demo/. ./wallet-instance-demo/config/
 cp -E ../iam-proxy-italia-project/static/* ./nginx/html/static
 ```
 
@@ -120,7 +129,10 @@ Add the following entries to your hosts file (`/etc/hosts` on Linux/macOS, `C:\W
 127.0.0.1		cie-provider.example.org
 127.0.0.1		trust-anchor.example.org
 127.0.0.1		iam-proxy-italia.example.org
+127.0.0.1		demo-wi.example.org
 ```
+
+`run-docker-compose.sh` tries to add these hostnames (and the WCT example hostnames) to `/etc/hosts` when they do not resolve.
 
 ### Certificates
 

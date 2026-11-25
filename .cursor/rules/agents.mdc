@@ -1,0 +1,16 @@
+---
+description: How to change IAM Proxy Italia against the IT-Wallet specification
+alwaysApply: true
+---
+
+# IAM Proxy Italia
+
+The normative text is the IT-Wallet Technical Specifications. Its reStructuredText rules apply only in that repository.
+
+- A metadata change goes in both `iam-proxy-italia-project/conf/` and `Docker-compose/iam-proxy-italia-project/conf/`.
+- Implement the specified behavior once. Do not restate it in a second module, and do not change its strength unless the user asks.
+- Revocation is the Status List. Do not reintroduce the status assertion.
+- Example hostnames stay under `example.org`.
+- pyeudiw in the running issuer is the commit pinned in `pyproject.toml`, not the local checkout.
+- Do not commit, push, or rebuild the image unless the user asks in this request.
+- Change only the requested part.

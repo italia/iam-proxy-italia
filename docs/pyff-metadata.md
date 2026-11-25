@@ -137,7 +137,7 @@ The best implementation would be a pure httpd static serve, see `production_setu
 Otherwise you can use a real MDQ/X server like the followings
 
 - pyffd (discouraged)
-- [Django-MDQ](https://developers.italia.it/it/software/unical-universitadellacalabria-django-mdq.html)
+- [Django-MDQ](https://github.com/UniversitaDellaCalabria/Django-MDQ)
 - [mdq-server](https://github.com/iay/mdq-server)
 
 

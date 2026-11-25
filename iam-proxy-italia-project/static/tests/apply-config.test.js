@@ -26,7 +26,6 @@ import {
   setCacheBustVersion,
   setPublicFontsPath,
   setHeaderLogo,
-  setErrorHeaderLogo,
   buildJsonEdits,
   targetFiles,
   applyToSources,
@@ -169,39 +168,6 @@ test('setHeaderLogo: escapes quotes in image path and alt text', () => {
   assert.match(out, /alt="A &quot;B&quot;"/);
 });
 
-const ERROR_LOGO_BLOCK =
-  '<svg class="icon icon-lg me-2" aria-hidden="true">\n' +
-  '              <!-- YOUR LOGO HERE (same as disco) -->\n' +
-  '              <use xlink:href="svg/sprites.svg#it-code-circle"></use>\n' +
-  '            </svg>\n' +
-  '            <h2 id="error-header-logo-title" class="mb-0" data-i18n="header.logo_title">Il tuo logo</h2>';
-
-test('setErrorHeaderLogo: empty image keeps the icon and the title heading', () => {
-  const out = setErrorHeaderLogo(ERROR_LOGO_BLOCK, { image: '' });
-  assert.equal(out, ERROR_LOGO_BLOCK);
-});
-
-test('setErrorHeaderLogo: a configured image replaces the icon with a decorative <img>', () => {
-  const out = setErrorHeaderLogo(ERROR_LOGO_BLOCK, { image: 'img/acme.svg' });
-  assert.match(out, /<img class="it-header-logo-image me-2" src="img\/acme\.svg" alt="" aria-hidden="true" height="32">/);
-  assert.doesNotMatch(out, /it-code-circle/);
-  // The visible title heading must survive.
-  assert.match(out, /<h2 id="error-header-logo-title"/);
-});
-
-test('setErrorHeaderLogo: idempotent when image already applied', () => {
-  const once = setErrorHeaderLogo(ERROR_LOGO_BLOCK, { image: 'img/acme.svg' });
-  const twice = setErrorHeaderLogo(once, { image: 'img/acme.svg' });
-  assert.equal(twice, once);
-});
-
-test('setErrorHeaderLogo: clearing the image restores the icon', () => {
-  const asImage = setErrorHeaderLogo(ERROR_LOGO_BLOCK, { image: 'img/acme.svg' });
-  const restored = setErrorHeaderLogo(asImage, { image: '' });
-  assert.match(restored, /sprites\.svg#it-code-circle/);
-  assert.doesNotMatch(restored, /it-header-logo-image/);
-});
-
 // ---------------------------------------------------------------------------
 // Config validation
 // ---------------------------------------------------------------------------
@@ -323,29 +289,14 @@ test('overriding error page URLs and fonts path updates error_page.html', () => 
   assert.match(out['error_page.html'], /window\.__PUBLIC_PATH__ = "assets\/fonts"/);
 });
 
-test('a logo image swaps the error page icon for an <img>; default keeps the icon', () => {
-  const base = loadDefaultConfig();
-  const baseSources = readSources(base);
-  const defaultOut = applyToSources(base, baseSources);
-  assert.match(defaultOut['error_page.html'], /sprites\.svg#it-code-circle/);
-  assert.doesNotMatch(defaultOut['error_page.html'], /it-header-logo-image/);
-
-  const config = deepClone(base);
-  config.logo.image = 'img/my-org-logo.svg';
-  const out = applyToSources(config, readSources(config));
-  assert.match(out['error_page.html'], /<img class="it-header-logo-image me-2" src="img\/my-org-logo\.svg"/);
-  assert.doesNotMatch(out['error_page.html'], /it-code-circle/);
-  assert.match(out['error_page.html'], /<h2 id="error-header-logo-title"/);
-});
-
-test('configuring a logo image swaps the SVG placeholder in disco and it-wallet', () => {
+test('configuring a logo image swaps the SVG placeholder in disco, it-wallet and error_page', () => {
   const config = deepClone(loadDefaultConfig());
   config.logo.image = 'img/my-org-logo.svg';
 
   const sources = readSources(config);
   const out = applyToSources(config, sources);
 
-  for (const rel of ['disco.html', 'it-wallet.html']) {
+  for (const rel of ['disco.html', 'it-wallet.html', 'error_page.html']) {
     assert.match(out[rel], /<img id="header-logo" class="it-header-logo-image" src="img\/my-org-logo\.svg" alt="Il tuo logo" height="32">/);
     assert.doesNotMatch(out[rel], /<svg id="header-logo"/);
     // Accessible label span is preserved.
@@ -357,7 +308,7 @@ test('the default config (empty logo image) leaves the SVG placeholder in place'
   const config = loadDefaultConfig();
   const sources = readSources(config);
   const out = applyToSources(config, sources);
-  for (const rel of ['disco.html', 'it-wallet.html']) {
+  for (const rel of ['disco.html', 'it-wallet.html', 'error_page.html']) {
     assert.match(out[rel], /<svg id="header-logo"/);
     assert.doesNotMatch(out[rel], /<img id="header-logo"/);
   }

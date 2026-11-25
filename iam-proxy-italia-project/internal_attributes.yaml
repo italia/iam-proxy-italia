@@ -37,12 +37,13 @@ attributes:
     openid: [name]
     saml: [name, Name]
     openid4vp: [given_name]
-    openid4vci: [given_name]
+    # Session attributes are already internal names (givenname), plus the original claim names.
+    openid4vci: [givenname, given_name]
   surname:
     openid: [family_name]
     saml: [sn, surname, familyName, FamilyName]
     openid4vp: [family_name]
-    openid4vci: [family_name]
+    openid4vci: [surname, family_name]
   # spid related
   spidcode:
     openid: [sub]
@@ -58,11 +59,12 @@ attributes:
     openid: [email_verified]
   familyname:
     saml: [familyName, familyname, FamilyName]
-    openid: [given_name]
+    openid: [family_name]
 
   fiscalnumber:
     saml: [fiscalNumber, fiscalnumber, FiscalNumber]
     openid: [fiscal_number]
+    openid4vp: [tax_id_code]
   gender:
     saml: [gender, Gender]
     openid: [gender]
@@ -79,18 +81,22 @@ attributes:
   placeOfBirth:
     saml: [placeOfBirth]
     openid: [place_of_birth]
+    # IT-Wallet ID discloses place_of_birth as an object; locality is the SPID-style string.
+    openid4vp: [place_of_birth.locality]
   countyOfBirth:
     saml: [countyOfBirth]
   dateOfBirth:
     saml: [dateOfBirth]
     openid: [birthdate]
+    openid4vp: [birthdate]
   birthdate:
     saml: [dateOfBirth]
     openid: [birthdate]
+    openid4vp: [birthdate]
   expirationDate:
     saml: [expirationDate]
   fiscal_code:
-    openid4vci: [fiscal_code, fiscal_number]
+    openid4vci: [fiscalnumber, fiscal_code, fiscal_number]
 # user identification mapping
 user_id_from_attrs: [edupersontargetedid]
 user_id_to_attr: spidcode

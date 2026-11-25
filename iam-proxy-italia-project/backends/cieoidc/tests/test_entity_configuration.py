@@ -112,12 +112,6 @@ def test_get_entity_configuration_dict(mock_fed_conf, handler):
     assert res_jws
 
 
-@patch("backends.cieoidc.utils.helpers.jwtse.create_jws")
-@patch("backends.cieoidc.utils.helpers.jwks.public_jwk_from_private_jwk")
-def test_get_openid_jwks(mock_pub, mock_create_jws, handler):
-    mock_pub.s_
-
-
 def test_endpoint_well_known_json(handler):
     context = Context()
     context.target_backend = "/auth"
@@ -184,3 +178,71 @@ def test_get_openid_jwks_jws(mock_pub, mock_create_jws, handler):
     payload, signing_key = args
     assert "keys" in payload
     assert signing_key["kid"] == "wL_LmP8UjLVN-sAeoZ7KGEMJfBkFtbNLd24eDD9RGCs"
+
+
+def test_cieoidc_backend_yaml_has_no_shell_style_placeholders():
+    """SATOSA does not expand ${VAR} inside YAML strings (issue #326)."""
+    from pathlib import Path
+
+    # Docker-compose/iam-proxy-italia-project is gitignored runtime data; CI only has the source conf.
+    root = Path(__file__).resolve().parents[4]
+    config_path = root / "iam-proxy-italia-project/conf/backends/cieoidc_backend.yaml"
+    text = config_path.read_text(encoding="utf-8")
+    assert "${" not in text
+
+
+def test_metadata_urls_match_registered_jwks_and_callback_paths(minimal_config):
+    """Entity configuration must advertise concrete paths after <base_url>/<name> substitution."""
+    base_url = "https://iam-proxy-italia.example.org"
+    name = "CieOidcRp"
+    backend = f"{base_url}/{name}"
+    minimal_config["metadata"] = {
+        "federation_entity": {
+            "federation_resolve_endpoint": f"{backend}/resolve",
+            "homepage_uri": backend,
+            "policy_uri": f"{backend}/en/website/legal-information",
+            "logo_uri": f"{base_url}/static/cie/sample-cie-logo.png",
+        },
+        "openid_relying_party": {
+            "client_id": backend,
+            "jwks_uri": f"{backend}/openid_relying_party/jwks.json",
+            "signed_jwks_uri": f"{backend}/openid_relying_party/jwks.jose",
+            "redirect_uris": [f"{backend}/oidc/callback"],
+        },
+    }
+
+    with patch("backends.cieoidc.utils.validators.validate_private_jwks") as mock_val_jwks, \
+            patch("backends.cieoidc.utils.validators.validate_entity_metadata") as mock_val_meta, \
+            patch("backends.cieoidc.endpoints.entity_configuration.public_jwk_from_private_jwk") as mock_pub:
+        mock_val_jwks.return_value = None
+        mock_val_meta.return_value = None
+        mock_pub.side_effect = lambda x: {"kty": x["kty"], "kid": x["kid"]}
+
+        handler = EntityConfigHandler(
+            config=minimal_config,
+            internal_attributes={},
+            base_url=base_url,
+            name=name,
+            auth_callback_func=MagicMock(),
+            converter=MagicMock(),
+            trust=None,
+        )
+        meta = handler._metadata
+        serialized = json.dumps(meta)
+
+        assert "${" not in serialized
+        assert meta["openid_relying_party"]["jwks_uri"] == (
+            f"{backend}/openid_relying_party/jwks.json"
+        )
+        assert meta["openid_relying_party"]["signed_jwks_uri"] == (
+            f"{backend}/openid_relying_party/jwks.jose"
+        )
+        assert meta["openid_relying_party"]["redirect_uris"] == [
+            f"{backend}/oidc/callback"
+        ]
+        assert meta["federation_entity"]["federation_resolve_endpoint"] == (
+            f"{backend}/resolve"
+        )
+        assert meta["federation_entity"]["policy_uri"] == (
+            f"{backend}/en/website/legal-information"
+        )

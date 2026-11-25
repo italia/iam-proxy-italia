@@ -1,4 +1,4 @@
-/* global initHeaderLangDropdown */
+/* global initHeaderLangDropdown, getPreferredLang */
 /**
  * i18n for error_page.html: load locale and apply to data-i18n / data-i18n-title elements.
  */
@@ -21,6 +21,17 @@ function applyErrorTranslations() {
     }
     el.textContent = val;
   });
+
+  // Header logo wordmark (same structure as disco / it-wallet / qr-code)
+  var logoTitle = i18next.t('header.logo_title');
+  var eidTitle = document.getElementById('eid-title');
+  if (eidTitle) eidTitle.textContent = logoTitle;
+  var headerLogoText = document.getElementById('header-logo-text');
+  if (headerLogoText) headerLogoText.textContent = logoTitle;
+  var headerLogoImg = document.getElementById('header-logo');
+  if (headerLogoImg && headerLogoImg.tagName === 'IMG') {
+    headerLogoImg.setAttribute('alt', logoTitle);
+  }
 
   // data-i18n-aria-label: set aria-label attribute (skip links nav, footer nav, ...)
   document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
@@ -58,7 +69,7 @@ if (typeof i18next !== 'undefined' && typeof i18nextHttpBackend !== 'undefined')
   i18next
     .use(i18nextHttpBackend)
     .init({
-      lng: document.documentElement.lang || 'it',
+      lng: (typeof getPreferredLang === 'function' ? getPreferredLang() : (localStorage.getItem('lang') || document.documentElement.lang || 'it')),
       fallbackLng: 'it',
       backend: {
         loadPath: basePath + 'locales/error-{{lng}}.json'

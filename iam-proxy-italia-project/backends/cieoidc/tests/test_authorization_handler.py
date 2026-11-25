@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
+from satosa.exception import SATOSABadRequestError, SATOSAError
+
 from backends.cieoidc.endpoints.authorization_endpoint import AuthorizationHandler
 
 
@@ -165,21 +167,19 @@ def test_us05():
 
 
 def test_us07_missing_target_entity_id(handler):
-    """When target_entity_id is missing, returns 400 Bad Request."""
+    """When target_entity_id is missing, raise so SATOSA redirects to ERROR_URL."""
     ctx = MagicMock()
     ctx.internal_data = {}
-    response = handler.endpoint(ctx)
-    assert response.status == "400"
-    assert "error" in str(response.message).lower() or "invalid_request" in str(response.message)
+    with pytest.raises(SATOSABadRequestError, match="target_entity_id"):
+        handler.endpoint(ctx)
 
 
-def test_us08_trust_chain_not_found_returns_500(handler):
-    """When provider is not in trust chains, returns 500 with eloquent message."""
+def test_us08_trust_chain_not_found_raises_satosa_error(handler):
+    """When provider is not in trust chains, raise so SATOSA redirects to ERROR_URL."""
     ctx = MagicMock()
     ctx.internal_data = {"target_entity_id": "http://unknown-provider.example.org/oidc/op/"}
-    response = handler.endpoint(ctx)
-    assert response.status == "500"
-    assert "error" in str(response.message).lower() or "server_error" in str(response.message)
+    with pytest.raises(SATOSAError, match="temporarily unavailable"):
+        handler.endpoint(ctx)
 
 
 @patch("backends.cieoidc.utils.helpers.misc.get_pkce")

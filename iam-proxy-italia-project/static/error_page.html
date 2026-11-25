@@ -35,7 +35,7 @@
       <div class="it-header-slim-wrapper bg-primary">
         <div class="container">
           <div class="it-header-slim-wrapper-content d-flex justify-content-between align-items-center">
-            <span class="navbar-brand text-white"><strong id="error-header-region-name" data-i18n="header.region_name">Nome dell'Organizzazione</strong></span>
+            <span class="navbar-brand text-white"><strong id="error-header-region-name" data-i18n="header.region_name">Ente di appartenenza</strong></span>
             <div class="it-header-slim-right-zone">
               <div class="nav-item dropdown it-header-lang-dropdown">
                 <button type="button" id="languagesDropButton" class="nav-link dropdown-toggle"
@@ -55,13 +55,13 @@
                           <li>
                             <button type="button" class="dropdown-item list-item it-lang-option active" data-lang="it"
                               role="menuitemradio" aria-checked="true" aria-current="true">
-                              <span lang="it">Italiano</span>
+                              <span lang="it">ITA</span>
                             </button>
                           </li>
                           <li>
                             <button type="button" class="dropdown-item list-item it-lang-option" data-lang="en"
                               role="menuitemradio" aria-checked="false">
-                              <span lang="en">English</span>
+                              <span lang="en">ENG</span>
                             </button>
                           </li>
                         </ul>
@@ -77,10 +77,11 @@
       <div class="header-title-section">
         <div class="container py-3">
           <div class="d-flex align-items-center">
-            <svg class="icon icon-lg me-2" aria-hidden="true">
-              <use href="svg/sprites.svg#it-code-circle"></use>
+            <span id="eid-title" class="visually-hidden">Il tuo logo</span>
+            <svg id="header-logo" class="it-header-logo-placeholder" role="img" aria-labelledby="eid-title"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 40" height="32" focusable="false">
+              <text id="header-logo-text" class="it-header-logo-placeholder__text" x="0" y="28" aria-hidden="true">Il tuo logo</text>
             </svg>
-            <h2 id="error-header-logo-title" class="mb-0" data-i18n="header.logo_title">Il tuo logo</h2>
           </div>
         </div>
       </div>
@@ -112,7 +113,7 @@
       <div class="container h-100 d-flex align-items-center">
         <nav id="footer-legal-nav" class="d-flex flex-wrap justify-content-start" aria-label="Link legali" data-i18n-aria-label="footer.nav_label">
           <a id="error-footer-legal" href="/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.legal_notes" data-i18n-newwindow="true">Note legali</a>
-          <a id="error-footer-privacy" href="https://www.example.org/privacy/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.privacy" data-i18n-newwindow="true">Privacy Policy</a>
+          <a id="error-footer-privacy" href="https://www.example.org/privacy/" class="text-white me-4 mb-2" target="_blank" rel="noopener" data-i18n="footer.privacy" data-i18n-newwindow="true">Privacy policy</a>
           <a id="error-footer-accessibility" href="#" class="text-white mb-2" target="_blank" rel="noopener" data-i18n="footer.accessibility" data-i18n-newwindow="true">Dichiarazione Accessibilità</a>
         </nav>
       </div>

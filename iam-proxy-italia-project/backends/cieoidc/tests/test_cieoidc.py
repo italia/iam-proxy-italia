@@ -102,18 +102,43 @@ def test_initialization_calls_generate_trust_chains(minimal_config, internal_att
 
 
 def test_start_auth_without_authorization_endpoint_raises(backend):
+    context = Context()
+    context.decorate(Context.KEY_TARGET_ENTITYID, "http://cie-provider.example.org/oidc/op")
     with pytest.raises(ValueError):
-        backend.start_auth(Context(), MagicMock())
+        backend.start_auth(context, MagicMock())
 
 
 def test_start_auth_calls_authorization_endpoint(backend):
     mock_auth = MagicMock(return_value="response")
     backend.endpoints["authorization"] = mock_auth
 
-    res = backend.start_auth(Context(), MagicMock())
+    context = Context()
+    context.decorate(Context.KEY_TARGET_ENTITYID, "http://cie-provider.example.org/oidc/op")
+    res = backend.start_auth(context, MagicMock())
 
     mock_auth.assert_called_once()
     assert res == "response"
+
+
+def test_start_auth_without_provider_redirects_to_disco(backend):
+    backend.config["disco_srv"] = "https://iam-proxy-italia.example.org/static/disco.html"
+    backend.endpoints["authorization"] = MagicMock()
+
+    res = backend.start_auth(Context(), MagicMock())
+
+    assert res.status == "303 See Other"
+    assert res.message.startswith(
+        "https://iam-proxy-italia.example.org/static/disco.html?"
+    )
+    assert "return=http%3A%2F%2Flocalhost%2Ftest_endpoint%2Fdisco" in res.message
+    assert "entityID=client123" in res.message
+    backend.endpoints["authorization"].assert_not_called()
+
+
+def test_start_auth_without_provider_and_without_disco_srv_raises(backend):
+    backend.config.pop("disco_srv", None)
+    with pytest.raises(ValueError, match="disco_srv"):
+        backend.start_auth(Context(), MagicMock())
 
 
 @patch("backends.cieoidc.utils.endpoints_loader.EndpointsLoader")

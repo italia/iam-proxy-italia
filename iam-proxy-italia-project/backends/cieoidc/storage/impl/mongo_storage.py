@@ -2,7 +2,7 @@ import uuid
 
 import logging
 
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from pymongo.errors import InvalidOperation, PyMongoError
 
 from bson import ObjectId
@@ -10,7 +10,10 @@ from bson.binary import Binary
 from pydantic import BaseModel
 from typing import Optional, Any, List, TypeVar
 
-from backends.cieoidc.models.oidc_auth import OidcAuthentication
+from backends.cieoidc.models.oidc_auth import (
+    OidcAuthentication,
+    unused_authorization_filter,
+)
 from backends.cieoidc.models.trust_chain_cache import TrustChainCache
 from backends.cieoidc.storage.interfaces.storage import OidcStorage
 
@@ -140,6 +143,27 @@ class MongoStorage(OidcStorage):
 
     def get_sessions(self, state: str) -> list[OidcAuthentication]:
         return self._find_all(self._auth_collection, {"state": state}, OidcAuthentication)
+
+    def consume_session(self, state: str) -> Optional[OidcAuthentication]:
+        """Atomically mark one unused authorization session as completed.
+
+        Only one caller can match a given ``state``. A replay finds the row
+        already completed and receives None.
+        """
+        if not state or self._db is None:
+            return None
+        try:
+            doc = self._db[self._auth_collection].find_one_and_update(
+                unused_authorization_filter(state),
+                {"$set": {"completed": True}},
+                return_document=ReturnDocument.AFTER,
+            )
+        except PyMongoError as exc:
+            logger.debug(exc)
+            return None
+        if not doc:
+            return None
+        return self._from_doc(doc, OidcAuthentication)
 
     def get_trust_chain_by_provider(self, provider_url: str) -> Optional[TrustChainCache]:
         try:

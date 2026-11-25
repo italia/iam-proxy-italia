@@ -1,12 +1,11 @@
 ## SPID technical Requirements
 
-The SaToSa **SPID** backend contained in this project uses specialized forks of pySAML2 and SATOSA, that implements the following patches,
-read [identity-python-forks.md](identity-python-forks.md) for any further explaination about how to patch by hands.
+The SaToSa **SPID** backend contained in this project uses a specialized fork of pySAML2. SATOSA comes from the upstream release. Read [identity-python-forks.md](identity-python-forks.md) for how the pySAML2 patches are applied.
 
-All the patches and features are currently merged and available with the following releases:
+The releases in use are:
 
-- [pysaml2](https://github.com/peppelinux/pysaml2/tree/pplnx-v7.5.4-1)
-- [SATOSA](https://github.com/peppelinux/SATOSA/tree/oidcop-v8.0.0)
+- [pysaml2](https://github.com/peppelinux/pysaml2/tree/pplnx-v7.5.5)
+- [SATOSA 8.5.1](https://github.com/IdentityPython/SATOSA/releases/tag/v8.5.1)
 
 ## Pending contributions to idpy
 
@@ -14,8 +13,6 @@ These are mandatory only for getting Spid SAML2 working, these are not needed fo
 
 - [disabled_weak_algs](https://github.com/IdentityPython/pysaml2/pull/628)
 - [ns_prefixes](https://github.com/IdentityPython/pysaml2/pull/625)
-- [SATOSA unknow error handling](https://github.com/IdentityPython/SATOSA/pull/324)
-- [SATOSA redirect page on error](https://github.com/IdentityPython/SATOSA/pull/325)
 
 ## Recommendations
 

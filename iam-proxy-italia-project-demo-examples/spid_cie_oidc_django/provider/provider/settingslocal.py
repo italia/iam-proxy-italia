@@ -27,6 +27,9 @@ OIDCFED_PROVIDER_PROFILE = "cie"
 OIDCFED_PROVIDER_MAX_CONSENT_TIMEFRAME = 3600 #used in CIE (seconds)
 
 OIDCFED_REQUIRED_TRUST_MARKS = []
+OIDCFED_FETCH_PRIVATE_NETS = os.environ.get(
+    "OIDCFED_FETCH_PRIVATE_NETS", ""
+).lower() in ("1", "true", "yes")
 
 HTTPC_PARAMS = {
     "connection": {"ssl": False},

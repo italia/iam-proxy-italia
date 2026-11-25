@@ -55,6 +55,11 @@ jobs:
         run: bash .github/scripts/patch-pyeudiw-branch.sh
 
       - name: docker compose
+        env:
+          # saml2 starts the SP under test.
+          # wallet starts Mongo and the wallet instance.
+          # pagopa-wallet-cli is on demo/wct only, so this profile set does not start WCT.
+          COMPOSE_PROFILES: saml2,wallet
         run: |
           cd Docker-compose
           ./run-docker-compose.sh

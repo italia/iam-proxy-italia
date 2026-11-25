@@ -1,5 +1,6 @@
 SATOSA/
-*/__pyc__/*
+__pycache__/
+*.py[cod]
 example/logs/*.log
 example/metadata/*.md
 example/data/*
@@ -36,6 +37,7 @@ Docker-compose/eudi-wallet-it-python
 Docker-compose/wwwallet
 Docker-compose/wallet-instance-demo
 Docker-compose/spid_cie_oidc_django
+Docker-compose/pagopa-wallet-cli/
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
@@ -68,3 +70,5 @@ iam-proxy-italia-project/static/node_modules/
 iam-proxy-italia-project/static/static
 .node
 .bin
+
+/.direnv
